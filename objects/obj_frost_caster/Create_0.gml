@@ -1,0 +1,18 @@
+event_inherited();
+
+body_colour = c_blue;
+hp_max = 26;
+hp = hp_max;
+move_speed = 40;
+contact_damage = 5;
+aggro_range = 240;
+preferred_range = 150;
+attack_cooldown = 3.0;
+attack_cooldown_timer = 1.0;
+telegraph_time = 0.8;
+aoe_radius = 70;
+aoe_damage = 20;
+cast_target_x = 0;
+cast_target_y = 0;
+cast_timer = 0;
+state = "idle";

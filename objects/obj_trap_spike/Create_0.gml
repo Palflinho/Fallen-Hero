@@ -1,0 +1,10 @@
+base_size = 32;
+state = "hidden";
+delay_time = 0.5;
+delay_timer = 0;
+erupt_time = 0.4;
+erupt_timer = 0;
+cooldown_time = 1.0;
+cooldown_timer = 0;
+damage = 15;
+has_hit = false;
