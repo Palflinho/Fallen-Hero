@@ -9,7 +9,13 @@ draw_set_valign(fa_middle);
 
 draw_set_color(c_white);
 draw_text(room_width / 2, 80, "Escolha seu Heroi");
-draw_text(room_width / 2, room_height - 60, "Setas para mover  -  Z para confirmar");
+draw_text(room_width / 2, room_height - 60, "Setas para mover  -  Z para confirmar (novo jogo)");
+
+if (global.has_save) {
+    draw_set_color(c_yellow);
+    draw_text(room_width / 2, 110, "C - Continuar (" + global.save_character + " - " + global.save_room + ")");
+    draw_set_color(c_white);
+}
 
 for (var _i = 0; _i < _n; _i++) {
     var _bx = _start_x + _i * (box_w + box_gap);

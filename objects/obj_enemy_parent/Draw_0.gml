@@ -1,11 +1,18 @@
-var _col = body_colour;
-if (poison_active) _col = merge_colour(body_colour, c_lime, 0.4);
-if (hit_flash_timer > 0) _col = c_white;
+if (sprite_index != -1) {
+    var _blend = body_colour;
+    if (poison_active) _blend = merge_colour(body_colour, c_lime, 0.4);
+    if (hit_flash_timer > 0) _blend = c_white;
+    draw_sprite_ext(sprite_index, image_index, x, y, 1, 1, 0, _blend, 1);
+} else {
+    var _col = body_colour;
+    if (poison_active) _col = merge_colour(body_colour, c_lime, 0.4);
+    if (hit_flash_timer > 0) _col = c_white;
 
-draw_set_color(_col);
-draw_rectangle(x - body_radius, y - body_radius, x + body_radius, y + body_radius, false);
-draw_set_color(c_black);
-draw_rectangle(x - body_radius, y - body_radius, x + body_radius, y + body_radius, true);
+    draw_set_color(_col);
+    draw_rectangle(x - body_radius, y - body_radius, x + body_radius, y + body_radius, false);
+    draw_set_color(c_black);
+    draw_rectangle(x - body_radius, y - body_radius, x + body_radius, y + body_radius, true);
+}
 
 var _w = body_radius * 2;
 var _hx = x - body_radius;

@@ -12,6 +12,6 @@ with (obj_enemy_parent) {
     }
 }
 
-if (_hit_something || life <= 0) {
+if (_hit_something || life <= 0 || !fh_place_free_of_walls(x, y, body_radius)) {
     instance_destroy();
 }

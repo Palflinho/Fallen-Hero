@@ -7,12 +7,13 @@ hp = hp_max;
 move_speed = 32;
 contact_damage = 18;
 attack_range = 46;
-aggro_range = 200;
 attack_cooldown = 1.3;
 attack_cooldown_timer = 0;
 attack_windup = 0.45;
 attack_windup_timer = 0;
-state = "idle";
+state = "patrol";
+vision_range = 200;
+patrol_radius = 80;
 
 shield_interval = 4.5;
 shield_timer = shield_interval;

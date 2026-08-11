@@ -30,7 +30,7 @@ switch (state) {
     case "erupt":
         erupt_timer -= _dt;
         if (!has_hit && _player_on) {
-            player_take_damage(damage);
+            player_take_damage(damage, "melee");
             has_hit = true;
         }
         if (erupt_timer <= 0) {

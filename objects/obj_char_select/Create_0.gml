@@ -1,3 +1,6 @@
+if (!variable_global_exists("paused")) global.paused = false;
+load_save_from_disk();
+
 classes = ["knight", "mage", "archer", "assassin"];
 labels = ["Cavaleiro", "Mago", "Arqueiro", "Assassino"];
 colours = [c_aqua, c_fuchsia, c_lime, c_gray];

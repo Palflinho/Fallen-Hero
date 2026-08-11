@@ -21,3 +21,15 @@ slow_duration = 0;
 move_speed_effective = move_speed;
 
 damage_reduction = 1;
+
+home_x = x;
+home_y = y;
+patrol_radius = 150;
+patrol_target_x = x;
+patrol_target_y = y;
+patrol_wait_timer = random_range(0, 1.5);
+facing_dir = random(360);
+vision_range = 180;
+vision_angle = 110;
+lost_sight_timer = 0;
+lost_sight_grace = 1.5;

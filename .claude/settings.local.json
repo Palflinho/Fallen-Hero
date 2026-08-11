@@ -28,7 +28,30 @@
       "Bash(python \"C:\\\\Users\\\\palfn\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\6605a8a4-7b54-4436-a760-4bdebc5e5635\\\\7e5a171e-1866-4016-ba75-47ca136a0e29\\\\skills\\\\docx\\\\scripts\\\\office\\\\soffice.py\" --headless --convert-to pdf Fallen_Hero_Resumo_Desenvolvimento.docx)",
       "Bash(where.exe soffice *)",
       "Bash(soffice --version)",
-      "Bash(BUILD=\"C:\\\\Users\\\\palfn\\\\OneDrive\\\\Documentos\\\\GameMakerStudio2\\\\Fallen Hero\\\\Build\" *)"
+      "Bash(BUILD=\"C:\\\\Users\\\\palfn\\\\OneDrive\\\\Documentos\\\\GameMakerStudio2\\\\Fallen Hero\\\\Build\" *)",
+      "Bash(cp 'C:\\\\Users\\\\palfn\\\\AppData\\\\Local\\\\GameMakerStudio2\\\\GMS2TEMP\\\\Fallen_Hero_748B9923_VM/Fallen Hero.exe' 'C:\\\\Users\\\\palfn\\\\OneDrive\\\\Documentos\\\\GameMakerStudio2\\\\Fallen Hero\\\\Build/Fallen Hero.exe')",
+      "Bash(cp 'C:\\\\Users\\\\palfn\\\\AppData\\\\Local\\\\GameMakerStudio2\\\\GMS2TEMP\\\\Fallen_Hero_748B9923_VM/data.win' 'C:\\\\Users\\\\palfn\\\\OneDrive\\\\Documentos\\\\GameMakerStudio2\\\\Fallen Hero\\\\Build/data.win')",
+      "Bash(cp 'C:\\\\Users\\\\palfn\\\\AppData\\\\Local\\\\GameMakerStudio2\\\\GMS2TEMP\\\\Fallen_Hero_748B9923_VM/options.ini' 'C:\\\\Users\\\\palfn\\\\OneDrive\\\\Documentos\\\\GameMakerStudio2\\\\Fallen Hero\\\\Build/options.ini')",
+      "Bash(rm -f \"Fallen Hero - Build.zip\")",
+      "Bash(python3 build_sprites.py)",
+      "WebFetch(domain:yal.cc)",
+      "Bash(npm config *)",
+      "Bash(pnpm install *)",
+      "Bash(taskkill //F //IM node.exe //FI \"WINDOWTITLE eq *\")",
+      "Bash(wmic process *)",
+      "Bash(powershell -NoProfile -Command \"Get-NetTCPConnection -LocalPort 3333 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique\")",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 23800 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; Get-Process -Id 23800 -ErrorAction SilentlyContinue\")",
+      "Bash(powershell -NoProfile -Command \"Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique\")",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 25804 -Force -ErrorAction SilentlyContinue\")",
+      "Bash(pnpm -r typecheck)",
+      "Bash(pnpm -r lint)",
+      "Bash(pnpm format *)",
+      "Bash(pnpm exec *)",
+      "Bash(DATABASE_URL=\"postgresql://school:school@localhost:5432/school_system?schema=public\" pnpm exec prisma validate)",
+      "Bash(DATABASE_URL=\"postgresql://school:school@localhost:5432/school_system?schema=public\" pnpm exec prisma generate)",
+      "PowerShell(Get-ChildItem -Path \"$env:APPDATA\\\\GameMakerStudio2\" -Directory -ErrorAction SilentlyContinue | Select-Object FullName)",
+      "Bash(python3 \"C:\\\\Users\\\\palfn\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-palfn-OneDrive-Documentos-GameMakerStudio2-Fallen-Hero\\\\17480bb4-b3d9-439e-8481-6f90653ba42e\\\\scratchpad\\\\gen_maze_room.py\")",
+      "Bash(git status *)"
     ]
   }
 }

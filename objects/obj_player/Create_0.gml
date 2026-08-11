@@ -24,6 +24,11 @@ defend_roll_speed = 0;
 defend_roll_duration = 0;
 defend_cooldown = 0;
 
+pickup_damage_reduction = 1;
+
+sprite_walk = -1;
+sprite_attack = -1;
+
 switch (character_class) {
     case "mage":
         hp_max = 70;
@@ -42,6 +47,9 @@ switch (character_class) {
 
         defend_mode = "manashield";
         defend_mana_drain = 30;
+
+        sprite_walk = -1;
+        sprite_attack = -1;
         break;
 
     case "archer":
@@ -62,6 +70,9 @@ switch (character_class) {
         defend_roll_speed = 320;
         defend_roll_duration = 0.25;
         defend_cooldown = 0.4;
+
+        sprite_walk = -1;
+        sprite_attack = -1;
         break;
 
     case "assassin":
@@ -81,11 +92,27 @@ switch (character_class) {
 
         defend_mode = "invisible";
         defend_mana_drain = 25;
+
+        sprite_walk = -1;
+        sprite_attack = -1;
         break;
 
     case "knight":
     default:
         break;
+}
+
+// Persisted progress from an earlier room/checkpoint (pickup upgrades) overrides the
+// pure class defaults above. Current resources still refill to full below -- a room
+// transition is a checkpoint, not a mid-fight save.
+if (variable_global_exists("use_saved_stats") && global.use_saved_stats) {
+    hp_max = global.save_hp_max;
+    stamina_max = global.save_stamina_max;
+    mana_max = global.save_mana_max;
+    attack_damage = global.save_attack_damage;
+    attack_cooldown = global.save_attack_cooldown;
+    move_speed = global.save_move_speed;
+    pickup_damage_reduction = global.save_pickup_damage_reduction;
 }
 
 hp = hp_max;
@@ -124,3 +151,9 @@ body_radius = 14;
 vx = 0;
 vy = 0;
 on_ice = false;
+
+poison_active = false;
+poison_damage = 0;
+poison_tick_interval = 0;
+poison_tick_timer = 0;
+poison_duration = 0;

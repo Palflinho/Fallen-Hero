@@ -9,8 +9,18 @@ if (invuln_timer > 0) invuln_timer -= _dt;
 if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
 if (defend_cooldown_timer > 0) defend_cooldown_timer -= _dt;
 
+if (poison_active) {
+    poison_duration -= _dt;
+    poison_tick_timer -= _dt;
+    if (poison_tick_timer <= 0) {
+        hp -= poison_damage;
+        poison_tick_timer = poison_tick_interval;
+        hit_flash_timer = hit_flash_duration;
+    }
+    if (poison_duration <= 0) poison_active = false;
+}
+
 if (state == "dead") {
-    if (keyboard_check_pressed(ord("R"))) room_restart();
     exit;
 }
 
@@ -155,3 +165,19 @@ if (!_draining_mana) {
 hp = clamp(hp, 0, hp_max);
 stamina = clamp(stamina, 0, stamina_max);
 mana = clamp(mana, 0, mana_max);
+
+if (sprite_walk != -1) {
+    var _wanted_sprite = (state == "attack") ? sprite_attack : sprite_walk;
+    if (sprite_index != _wanted_sprite) {
+        sprite_index = _wanted_sprite;
+        image_index = 0;
+    }
+
+    if (state == "attack") {
+        image_speed = 1;
+    } else {
+        var _moving = (x != xprevious || y != yprevious);
+        image_speed = _moving ? 1 : 0;
+        if (!_moving) image_index = 0;
+    }
+}
