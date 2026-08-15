@@ -1,5 +1,6 @@
 owner = noone;
 damage = 0;
+damage_type = "physical";
 dir_x = 1;
 dir_y = 0;
 speed_px = 200;

@@ -13,3 +13,4 @@ attack_windup_timer = 0;
 state = "patrol";
 vision_range = 150;
 patrol_radius = 100;
+exp_reward = 15;

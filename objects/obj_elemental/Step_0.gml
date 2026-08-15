@@ -54,6 +54,7 @@ switch (state) {
                 _p.dir_y = lengthdir_y(1, _pdir);
                 _p.speed_px = projectile_speed;
                 _p.colour = c_aqua;
+                _p.damage_type = "magical";
             }
             attack_cooldown_timer = attack_cooldown;
             state = "chase";

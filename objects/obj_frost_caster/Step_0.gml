@@ -45,7 +45,7 @@ switch (state) {
         cast_timer -= _dt;
         if (cast_timer <= 0) {
             if (_player != noone && !_player.invisible && point_distance(cast_target_x, cast_target_y, _player.x, _player.y) <= aoe_radius) {
-                player_take_damage(aoe_damage, "ranged");
+                player_take_damage(aoe_damage, "magical");
             }
             attack_cooldown_timer = attack_cooldown;
             state = "chase";

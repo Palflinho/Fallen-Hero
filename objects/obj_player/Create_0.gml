@@ -1,97 +1,91 @@
 character_class = variable_global_exists("selected_character") ? global.selected_character : "knight";
 
-// Defaults (Cavaleiro / Knight)
-hp_max = 100;
-stamina_max = 100;
-stamina_regen = 25;
-mana_max = 0;
-mana_regen = 0;
-move_speed = 180;
+// ---- Class identity: level-1 natural attribute bases + attack identity (Cavaleiro / Knight) ----
+nat_power_base = 12;
+nat_defesa_base = 8;
+nat_atk_spd_base = 1 / 0.28;
+nat_move_spd_base = 180;
+nat_hp_base = 100;
 body_colour = c_aqua;
 
 attack_duration = 0.22;
-attack_cooldown = 0.28;
 attack_range = 30;
-attack_damage = 12;
 attack_object = obj_atk_knight;
 attack_is_ranged = false;
+attack_damage_type = "physical";
 projectile_speed = 0;
 
 defend_mode = "block";
-defend_block_cost = 20;
-defend_mana_drain = 0;
+defend_duration = 2.5;
+defend_cooldown_base = 4.0;
 defend_roll_speed = 0;
-defend_roll_duration = 0;
-defend_cooldown = 0;
-
-pickup_damage_reduction = 1;
 
 sprite_walk = -1;
 sprite_attack = -1;
 
 switch (character_class) {
     case "mage":
-        hp_max = 70;
-        stamina_max = 40;
-        mana_max = 100;
-        mana_regen = 12;
-        move_speed = 160;
+        nat_power_base = 18;
+        nat_defesa_base = 3;
+        nat_atk_spd_base = 1 / 0.9;
+        nat_move_spd_base = 160;
+        nat_hp_base = 70;
         body_colour = c_fuchsia;
 
         attack_duration = 0.18;
-        attack_cooldown = 0.9;
-        attack_damage = 18;
         attack_object = obj_atk_fireball;
         attack_is_ranged = true;
+        attack_damage_type = "magical";
         projectile_speed = 260;
 
         defend_mode = "manashield";
-        defend_mana_drain = 30;
+        defend_duration = 2.0;
+        defend_cooldown_base = 5.0;
 
         sprite_walk = -1;
         sprite_attack = -1;
         break;
 
     case "archer":
-        hp_max = 80;
-        stamina_max = 100;
-        move_speed = 200;
+        nat_power_base = 10;
+        nat_defesa_base = 4;
+        nat_atk_spd_base = 1 / 0.35;
+        nat_move_spd_base = 200;
+        nat_hp_base = 80;
         body_colour = c_lime;
 
         attack_duration = 0.12;
-        attack_cooldown = 0.35;
-        attack_damage = 10;
         attack_object = obj_atk_arrow;
         attack_is_ranged = true;
+        attack_damage_type = "physical";
         projectile_speed = 420;
 
         defend_mode = "roll";
-        defend_block_cost = 25;
+        defend_duration = 0.25;
+        defend_cooldown_base = 3.0;
         defend_roll_speed = 320;
-        defend_roll_duration = 0.25;
-        defend_cooldown = 0.4;
 
         sprite_walk = -1;
         sprite_attack = -1;
         break;
 
     case "assassin":
-        hp_max = 60;
-        stamina_max = 60;
-        mana_max = 60;
-        mana_regen = 10;
-        move_speed = 190;
+        nat_power_base = 6;
+        nat_defesa_base = 2;
+        nat_atk_spd_base = 1 / 0.15;
+        nat_move_spd_base = 190;
+        nat_hp_base = 60;
         body_colour = c_gray;
+        attack_range = 16;
 
         attack_duration = 0.1;
-        attack_cooldown = 0.15;
-        attack_range = 16;
-        attack_damage = 6;
         attack_object = obj_atk_dagger;
         attack_is_ranged = false;
+        attack_damage_type = "physical";
 
         defend_mode = "invisible";
-        defend_mana_drain = 25;
+        defend_duration = 3.0;
+        defend_cooldown_base = 6.0;
 
         sprite_walk = -1;
         sprite_attack = -1;
@@ -102,27 +96,40 @@ switch (character_class) {
         break;
 }
 
-// Persisted progress from an earlier room/checkpoint (pickup upgrades) overrides the
-// pure class defaults above. Current resources still refill to full below -- a room
-// transition is a checkpoint, not a mid-fight save.
+// Flat per-level growth -- identical across classes; differentiation lives in the bases above.
+nat_power_growth = 2;
+nat_defesa_growth = 1.5;
+nat_atk_spd_growth = 0.05;
+nat_move_spd_growth = 3;
+nat_hp_growth = 12;
+
+// ---- Level / EXP ----
+level = 1;
+xp = 0;
+xp_to_next = 40;
+
 if (variable_global_exists("use_saved_stats") && global.use_saved_stats) {
-    hp_max = global.save_hp_max;
-    stamina_max = global.save_stamina_max;
-    mana_max = global.save_mana_max;
-    attack_damage = global.save_attack_damage;
-    attack_cooldown = global.save_attack_cooldown;
-    move_speed = global.save_move_speed;
-    pickup_damage_reduction = global.save_pickup_damage_reduction;
+    level = global.save_level;
+    xp = global.save_xp;
 }
 
-hp = hp_max;
-stamina = stamina_max;
-mana = mana_max;
+// ---- Synthetic attributes -- only ever granted by talents, which don't exist yet.
+// Fields exist and are already wired into combat below; they just stay at 0 until then.
+synth_hp_reg = 0;
+synth_crit_chance = 0;
+synth_crit_mult = 1.5;
+synth_cdr = 0;
+synth_dodge = 0;
+synth_armor_hp = 0;
+synth_pwr_fisica = 0;
+synth_pwr_magica = 0;
+synth_def_fisica = 0;
+synth_def_magica = 0;
 
-stamina_regen_delay = 0.6;
-stamina_regen_timer = 0;
-mana_regen_delay = 0.6;
-mana_regen_timer = 0;
+hp_max = 0;
+hp = 0;
+player_recompute_attributes(id);
+hp = hp_max;
 
 facing_x = 0;
 facing_y = 1;
@@ -136,8 +143,8 @@ attack_cooldown_timer = 0;
 attack_has_fired = false;
 
 defend_active = false;
+defend_timer = 0;
 defend_cooldown_timer = 0;
-roll_timer = 0;
 
 hit_flash_timer = 0;
 hit_flash_duration = 0.15;

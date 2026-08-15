@@ -16,29 +16,29 @@ draw_rectangle(_x - 2, _y - 2, _x + bar_w + 2, _y + bar_h + 2, false);
 draw_set_color(c_red);
 draw_rectangle(_x, _y, _x + bar_w * (target.hp / target.hp_max), _y + bar_h, false);
 draw_set_color(c_white);
-draw_text(_x + 4, _y + 1, "HP " + string(max(0, round(target.hp))) + "/" + string(target.hp_max));
+draw_text(_x + 4, _y + 1, "HP " + string(max(0, round(target.hp))) + "/" + string(round(target.hp_max)));
 
 _y += bar_h + bar_gap;
 
-// Stamina
+// Level / EXP
 draw_set_color(c_black);
 draw_rectangle(_x - 2, _y - 2, _x + bar_w + 2, _y + bar_h + 2, false);
-draw_set_color(c_orange);
-draw_rectangle(_x, _y, _x + bar_w * (target.stamina / target.stamina_max), _y + bar_h, false);
+draw_set_color(c_yellow);
+draw_rectangle(_x, _y, _x + bar_w * (target.xp / target.xp_to_next), _y + bar_h, false);
 draw_set_color(c_white);
-draw_text(_x + 4, _y + 1, "STA " + string(max(0, round(target.stamina))) + "/" + string(target.stamina_max));
+draw_text(_x + 4, _y + 1, "Nv " + string(target.level) + "  " + string(round(target.xp)) + "/" + string(round(target.xp_to_next)) + " EXP");
 
 _y += bar_h + bar_gap;
 
-// Mana (only characters that use mana)
-if (target.mana_max > 0) {
-    draw_set_color(c_black);
-    draw_rectangle(_x - 2, _y - 2, _x + bar_w + 2, _y + bar_h + 2, false);
-    draw_set_color(c_blue);
-    draw_rectangle(_x, _y, _x + bar_w * (target.mana / target.mana_max), _y + bar_h, false);
-    draw_set_color(c_white);
-    draw_text(_x + 4, _y + 1, "MP " + string(max(0, round(target.mana))) + "/" + string(target.mana_max));
+// Special ability cooldown
+draw_set_color(c_white);
+if (target.defend_cooldown_timer > 0) {
+    draw_text(_x, _y, "Habilidade: " + string(round(target.defend_cooldown_timer * 10) / 10) + "s");
+} else {
+    draw_text(_x, _y, "Habilidade: pronta");
 }
+
+_y += 20;
 
 // Low HP red vignette
 if (target.hp / target.hp_max <= 0.3) {
@@ -50,7 +50,7 @@ if (target.hp / target.hp_max <= 0.3) {
 
 draw_set_color(c_white);
 if (!boss_room) {
-    draw_text(_x, _y + bar_h + bar_gap, "Botoes: " + string(global.boss_buttons_pressed) + "/4");
+    draw_text(_x, _y + bar_gap, "Botoes: " + string(global.boss_buttons_pressed) + "/4");
 }
 
 if (boss_room) {

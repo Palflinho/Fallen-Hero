@@ -48,4 +48,6 @@ vulnerable_duration = 4.0;
 post_slam_recover = 1.3;
 recover_timer = 0;
 
+exp_reward = 300;
+
 state = "barrage";

@@ -17,3 +17,4 @@ cast_timer = 0;
 state = "patrol";
 vision_range = 220;
 patrol_radius = 120;
+exp_reward = 25;

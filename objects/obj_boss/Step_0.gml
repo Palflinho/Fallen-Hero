@@ -59,6 +59,7 @@ if (vulnerable) {
                     _p.speed_px = projectile_speed;
                     _p.colour = c_maroon;
                     _p.body_radius = 10;
+                    _p.damage_type = "magical";
                     barrage_shots_fired += 1;
                     barrage_shot_timer = barrage_shot_interval;
                 } else {
@@ -74,7 +75,7 @@ if (vulnerable) {
                 var _hit = instance_create_layer(x, y, layer, obj_enemy_melee_hit);
                 _hit.owner = id;
                 _hit.damage = slam_damage;
-                _hit.damage_type = "melee";
+                _hit.damage_type = "physical";
                 _hit.body_radius = slam_hit_radius;
 
                 vulnerable = true;

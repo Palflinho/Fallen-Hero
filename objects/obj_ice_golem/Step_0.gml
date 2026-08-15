@@ -61,7 +61,7 @@ switch (state) {
             var _hit = instance_create_layer(x, y, layer, obj_enemy_melee_hit);
             _hit.owner = id;
             _hit.damage = contact_damage;
-            _hit.damage_type = "melee";
+            _hit.damage_type = "physical";
             _hit.body_radius = attack_range + 6;
             attack_cooldown_timer = attack_cooldown;
             state = "chase";

@@ -22,6 +22,8 @@ move_speed_effective = move_speed;
 
 damage_reduction = 1;
 
+exp_reward = 10;
+
 home_x = x;
 home_y = y;
 patrol_radius = 150;

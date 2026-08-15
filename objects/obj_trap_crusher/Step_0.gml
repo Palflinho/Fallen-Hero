@@ -23,7 +23,7 @@ switch (state) {
         if (!has_hit) {
             var _player = instance_find(obj_player, 0);
             if (_player != noone && point_distance(x, y, _player.x, _player.y) <= radius + _player.body_radius) {
-                player_take_damage(damage, "melee");
+                player_take_damage(damage, "physical");
                 has_hit = true;
             }
         }

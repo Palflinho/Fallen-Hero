@@ -16,3 +16,4 @@ projectile_speed = 220;
 state = "patrol";
 vision_range = 240;
 patrol_radius = 130;
+exp_reward = 20;

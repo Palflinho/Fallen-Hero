@@ -19,3 +19,4 @@ shield_interval = 4.5;
 shield_timer = shield_interval;
 shield_duration = 1.3;
 shield_active_timer = 0;
+exp_reward = 40;
