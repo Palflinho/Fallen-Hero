@@ -7,5 +7,8 @@ if (!triggered) {
         with (obj_ice_patch) {
             active = true;
         }
+        with (obj_lava_pool) {
+            active = true;
+        }
     }
 }

@@ -1,6 +1,6 @@
 var _player = instance_find(obj_player, 0);
 
-if (!level_complete && boss_room && instance_number(obj_enemy_parent) == 0) {
+if (!level_complete && boss_room && is_final_room && instance_number(obj_enemy_parent) == 0) {
     level_complete = true;
 }
 

@@ -66,11 +66,13 @@ if (!boss_room) {
 
 if (boss_room) {
     var _boss = instance_find(obj_boss, 0);
+    if (_boss == noone) _boss = instance_find(obj_boss2, 0);
     if (_boss != noone) {
         var _bw = 500;
         var _bh = 26;
         var _bx = display_get_gui_width() / 2 - _bw / 2;
         var _by = 24;
+        var _boss_name = (_boss.object_index == obj_boss2) ? "GENERAL MAGMA" : "GUARDIAO DAS AGUAS";
 
         draw_set_color(c_black);
         draw_rectangle(_bx - 2, _by - 2, _bx + _bw + 2, _by + _bh + 2, false);
@@ -79,7 +81,7 @@ if (boss_room) {
         draw_set_color(c_white);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        draw_text(_bx + _bw / 2, _by + _bh / 2, _boss.vulnerable ? "GUARDIAO DAS AGUAS - VULNERAVEL!" : "GUARDIAO DAS AGUAS");
+        draw_text(_bx + _bw / 2, _by + _bh / 2, _boss.vulnerable ? (_boss_name + " - VULNERAVEL!") : _boss_name);
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     }
