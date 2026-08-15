@@ -10,6 +10,10 @@ if (!game_over && _player != noone && _player.state == "dead") {
         global.paused = false;
         instance_activate_all();
     }
+    if (global.attr_window_open) {
+        global.attr_window_open = false;
+        instance_activate_all();
+    }
 }
 
 if (game_over) {
@@ -29,21 +33,36 @@ if (level_complete) {
     exit;
 }
 
-if (keyboard_check_pressed(vk_escape)) {
-    global.paused = !global.paused;
-    if (global.paused) {
-        instance_deactivate_all(true);
-    } else {
+if (global.attr_window_open) {
+    if (keyboard_check_pressed(ord("T")) || keyboard_check_pressed(vk_escape)) {
+        global.attr_window_open = false;
         instance_activate_all();
+    } else if (_player != noone) {
+        if (keyboard_check_pressed(ord("1"))) player_apply_talent_point(_player, 0);
+        if (keyboard_check_pressed(ord("2"))) player_apply_talent_point(_player, 1);
+        if (keyboard_check_pressed(ord("3"))) player_apply_talent_point(_player, 2);
     }
+    exit;
 }
 
 if (global.paused) {
-    if (keyboard_check_pressed(ord("M"))) {
+    if (keyboard_check_pressed(vk_escape)) {
+        global.paused = false;
+        instance_activate_all();
+    } else if (keyboard_check_pressed(ord("M"))) {
         instance_activate_all();
         global.paused = false;
         room_goto(room_char_select);
     } else if (keyboard_check_pressed(ord("Q"))) {
         game_end();
     }
+    exit;
+}
+
+if (keyboard_check_pressed(vk_escape)) {
+    global.paused = true;
+    instance_deactivate_all(true);
+} else if (keyboard_check_pressed(ord("T"))) {
+    global.attr_window_open = true;
+    instance_deactivate_all(true);
 }

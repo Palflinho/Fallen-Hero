@@ -14,8 +14,8 @@ function player_recompute_attributes(_p) {
     var _cdr_mult = max(0.2, 1 - _p.synth_cdr);
 
     _p.hp_max = _p.nat_hp + _p.synth_armor_hp;
-    _p.move_speed = _p.nat_move_spd;
-    _p.attack_cooldown = (1 / _p.nat_atk_spd) * _cdr_mult;
+    _p.move_speed = _p.nat_move_spd + _p.synth_move_spd_bonus;
+    _p.attack_cooldown = (1 / (_p.nat_atk_spd + _p.synth_atk_spd_bonus)) * _cdr_mult;
     _p.defend_cooldown = _p.defend_cooldown_base * _cdr_mult;
 
     var _pwr_synth = (_p.attack_damage_type == "physical") ? _p.synth_pwr_fisica : _p.synth_pwr_magica;
@@ -38,6 +38,7 @@ function player_gain_exp(_amount) {
     while (_p.xp >= _p.xp_to_next) {
         _p.xp -= _p.xp_to_next;
         _p.level += 1;
+        _p.talent_pending_points += 1;
         player_recompute_attributes(_p);
     }
 }

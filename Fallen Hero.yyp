@@ -74,6 +74,7 @@
     {"id":{"name":"Room2","path":"rooms/Room2/Room2.yy",},},
     {"id":{"name":"scr_save","path":"scripts/scr_save/scr_save.yy",},},
     {"id":{"name":"scr_progression","path":"scripts/scr_progression/scr_progression.yy",},},
+    {"id":{"name":"scr_talents","path":"scripts/scr_talents/scr_talents.yy",},},
     {"id":{"name":"obj_trap_dart","path":"objects/obj_trap_dart/obj_trap_dart.yy",},},
     {"id":{"name":"obj_trap_crusher","path":"objects/obj_trap_crusher/obj_trap_crusher.yy",},},
     {"id":{"name":"obj_trap_gas","path":"objects/obj_trap_gas/obj_trap_gas.yy",},},

@@ -49,5 +49,6 @@ post_slam_recover = 1.3;
 recover_timer = 0;
 
 exp_reward = 300;
+gold_reward = 100;
 
 state = "barrage";

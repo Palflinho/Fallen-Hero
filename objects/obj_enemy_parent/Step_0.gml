@@ -25,5 +25,6 @@ move_speed_effective = move_speed * (slow_active ? slow_multiplier : 1);
 
 if (hp <= 0) {
     player_gain_exp(exp_reward);
+    player_gain_gold(gold_reward);
     instance_destroy();
 }

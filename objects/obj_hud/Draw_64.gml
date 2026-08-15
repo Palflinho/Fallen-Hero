@@ -40,6 +40,17 @@ if (target.defend_cooldown_timer > 0) {
 
 _y += 20;
 
+if (target.talent_pending_points > 0) {
+    draw_set_color(c_yellow);
+    draw_text(_x, _y, "Pontos de talento: " + string(target.talent_pending_points) + " (T)");
+    draw_set_color(c_white);
+    _y += 20;
+} else {
+    draw_set_color(c_white);
+    draw_text(_x, _y, "Atributos: T");
+    _y += 20;
+}
+
 // Low HP red vignette
 if (target.hp / target.hp_max <= 0.3) {
     draw_set_alpha(0.25);
@@ -102,6 +113,62 @@ if (game_over) {
     draw_text(display_get_gui_width() / 2, display_get_gui_height() / 2 + 20, "Aperte Z para escolher outro personagem");
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
+} else if (global.attr_window_open) {
+    draw_set_alpha(0.85);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, display_get_gui_width(), display_get_gui_height(), false);
+    draw_set_alpha(1);
+
+    var _p = target;
+    var _cx = display_get_gui_width() / 2;
+    var _ty = 50;
+
+    draw_set_color(c_white);
+    draw_set_halign(fa_center);
+    draw_text(_cx, _ty, "ATRIBUTOS  (T fecha)");
+    _ty += 40;
+
+    draw_set_halign(fa_left);
+    var _lx = _cx - 260;
+
+    draw_text(_lx, _ty, "Nivel " + string(_p.level) + "   -   Atributos Naturais");
+    _ty += 26;
+    draw_text(_lx, _ty, "Power " + string(round(_p.nat_power)) + "     Defesa " + string(round(_p.nat_defesa)));
+    _ty += 22;
+    draw_text(_lx, _ty, "Vel. Ataque " + string(round(_p.nat_atk_spd * 100) / 100) + "     Vel. Movimento " + string(round(_p.nat_move_spd)));
+    _ty += 22;
+    draw_text(_lx, _ty, "HP " + string(round(_p.nat_hp)));
+    _ty += 34;
+
+    draw_text(_lx, _ty, "Atributos Sinteticos (de talentos)");
+    _ty += 26;
+    draw_text(_lx, _ty, "HP Regen " + string(_p.synth_hp_reg) + "     Critico " + string(round(_p.synth_crit_chance * 100)) + "%");
+    _ty += 22;
+    draw_text(_lx, _ty, "Reducao Recarga " + string(round(_p.synth_cdr * 100)) + "%     Dodge " + string(round(_p.synth_dodge * 100)) + "%");
+    _ty += 22;
+    draw_text(_lx, _ty, "Armor (HP) " + string(_p.synth_armor_hp) + "     Pwr Fisica " + string(_p.synth_pwr_fisica) + "     Pwr Magica " + string(_p.synth_pwr_magica));
+    _ty += 22;
+    draw_text(_lx, _ty, "Def Fisica " + string(_p.synth_def_fisica) + "     Def Magica " + string(_p.synth_def_magica));
+    _ty += 34;
+
+    draw_text(_lx, _ty, "Talentos desta run  (pontos disponiveis: " + string(_p.talent_pending_points) + ")");
+    _ty += 26;
+    for (var _i = 0; _i < array_length(_p.talent_slot_ids); _i++) {
+        var _id = _p.talent_slot_ids[_i];
+        var _line = string(_i + 1) + " - ";
+        if (_id == "") {
+            _line += "(vazio)";
+        } else {
+            var _def = get_talent_def_by_id(_id);
+            var _label = is_undefined(_def) ? _id : _def.label;
+            _line += _label + "  (rank " + string(_p.talent_slot_ranks[_i]) + ")";
+            if (_p.talent_pending_points > 0) _line += "   [aperte " + string(_i + 1) + "]";
+        }
+        draw_text(_lx, _ty, _line);
+        _ty += 22;
+    }
+
+    draw_set_halign(fa_left);
 } else if (global.paused) {
     draw_set_alpha(0.7);
     draw_set_color(c_black);
@@ -111,12 +178,12 @@ if (game_over) {
     draw_set_color(c_white);
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
-    var _cx = display_get_gui_width() / 2;
-    var _cy = display_get_gui_height() / 2;
-    draw_text(_cx, _cy - 50, "PAUSADO");
-    draw_text(_cx, _cy - 10, "ESC - Continuar");
-    draw_text(_cx, _cy + 20, "M - Menu Principal");
-    draw_text(_cx, _cy + 50, "Q - Sair do Jogo");
+    var _cx2 = display_get_gui_width() / 2;
+    var _cy2 = display_get_gui_height() / 2;
+    draw_text(_cx2, _cy2 - 50, "PAUSADO");
+    draw_text(_cx2, _cy2 - 10, "ESC - Continuar");
+    draw_text(_cx2, _cy2 + 20, "M - Menu Principal");
+    draw_text(_cx2, _cy2 + 50, "Q - Sair do Jogo");
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 }

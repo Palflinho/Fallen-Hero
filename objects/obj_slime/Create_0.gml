@@ -14,3 +14,4 @@ state = "patrol";
 vision_range = 150;
 patrol_radius = 100;
 exp_reward = 15;
+gold_reward = 5;

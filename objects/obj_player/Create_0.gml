@@ -108,13 +108,24 @@ level = 1;
 xp = 0;
 xp_to_next = 40;
 
+// ---- Talents chosen for this run (picked at the char-select talent screen, or restored
+// from a checkpoint). Up to 3 slots; ranks grow in-run from level-up points.
+talent_slot_ids = ["", "", ""];
+talent_slot_ranks = [0, 0, 0];
+talent_pending_points = 0;
+
 if (variable_global_exists("use_saved_stats") && global.use_saved_stats) {
     level = global.save_level;
     xp = global.save_xp;
+    talent_slot_ids = global.save_talent_ids;
+    talent_slot_ranks = global.save_talent_ranks;
+    talent_pending_points = global.save_talent_pending;
+} else if (variable_global_exists("chosen_talent_ids")) {
+    talent_slot_ids = global.chosen_talent_ids;
 }
 
-// ---- Synthetic attributes -- only ever granted by talents, which don't exist yet.
-// Fields exist and are already wired into combat below; they just stay at 0 until then.
+// ---- Synthetic attributes -- only ever granted by talents. Recomputed from the talent
+// slots above right below; anything not covered by a chosen talent stays at 0.
 synth_hp_reg = 0;
 synth_crit_chance = 0;
 synth_crit_mult = 1.5;
@@ -125,9 +136,12 @@ synth_pwr_fisica = 0;
 synth_pwr_magica = 0;
 synth_def_fisica = 0;
 synth_def_magica = 0;
+synth_atk_spd_bonus = 0;
+synth_move_spd_bonus = 0;
 
 hp_max = 0;
 hp = 0;
+player_recompute_synthetics(id);
 player_recompute_attributes(id);
 hp = hp_max;
 

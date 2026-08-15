@@ -1,7 +1,8 @@
 // Checkpoint granularity is room-level: leaving char select checkpoints "Room1" (level 1,
 // no EXP yet), and passing the boss gate checkpoints "Room2" together with the player's
-// current level/EXP -- natural attributes are derived from level, so that's all that
-// needs to persist (synthetic attributes stay at 0 until talents exist).
+// current level/EXP/talent ranks -- natural attributes are derived from level, so that's
+// all that needs to persist for those; synthetic attributes are re-derived from the
+// talent slots + their ranks each time via player_recompute_synthetics.
 
 function save_checkpoint_fresh(_character, _room_name) {
     global.save_character = _character;
@@ -9,10 +10,21 @@ function save_checkpoint_fresh(_character, _room_name) {
     global.save_has_stats = false;
     global.has_save = true;
 
+    global.save_talent_ids = variable_global_exists("chosen_talent_ids") ? global.chosen_talent_ids : ["", "", ""];
+    global.save_talent_ranks = [0, 0, 0];
+    global.save_talent_pending = 0;
+
     ini_open("save.ini");
     ini_write_string("save", "character", _character);
     ini_write_string("save", "room", _room_name);
     ini_write_real("save", "has_stats", 0);
+    ini_write_string("save", "talent0", global.save_talent_ids[0]);
+    ini_write_string("save", "talent1", global.save_talent_ids[1]);
+    ini_write_string("save", "talent2", global.save_talent_ids[2]);
+    ini_write_real("save", "rank0", 0);
+    ini_write_real("save", "rank1", 0);
+    ini_write_real("save", "rank2", 0);
+    ini_write_real("save", "pending", 0);
     ini_close();
 }
 
@@ -27,6 +39,9 @@ function save_checkpoint(_room_name) {
 
     global.save_level = _p.level;
     global.save_xp = _p.xp;
+    global.save_talent_ids = _p.talent_slot_ids;
+    global.save_talent_ranks = _p.talent_slot_ranks;
+    global.save_talent_pending = _p.talent_pending_points;
 
     global.use_saved_stats = true;
 
@@ -36,6 +51,13 @@ function save_checkpoint(_room_name) {
     ini_write_real("save", "has_stats", 1);
     ini_write_real("save", "level", global.save_level);
     ini_write_real("save", "xp", global.save_xp);
+    ini_write_string("save", "talent0", global.save_talent_ids[0]);
+    ini_write_string("save", "talent1", global.save_talent_ids[1]);
+    ini_write_string("save", "talent2", global.save_talent_ids[2]);
+    ini_write_real("save", "rank0", global.save_talent_ranks[0]);
+    ini_write_real("save", "rank1", global.save_talent_ranks[1]);
+    ini_write_real("save", "rank2", global.save_talent_ranks[2]);
+    ini_write_real("save", "pending", global.save_talent_pending);
     ini_close();
 }
 
@@ -55,6 +77,17 @@ function load_save_from_disk() {
     global.save_has_stats = (ini_read_real("save", "has_stats", 0) >= 1);
     global.save_level = ini_read_real("save", "level", 1);
     global.save_xp = ini_read_real("save", "xp", 0);
+    global.save_talent_ids = [
+        ini_read_string("save", "talent0", ""),
+        ini_read_string("save", "talent1", ""),
+        ini_read_string("save", "talent2", ""),
+    ];
+    global.save_talent_ranks = [
+        ini_read_real("save", "rank0", 0),
+        ini_read_real("save", "rank1", 0),
+        ini_read_real("save", "rank2", 0),
+    ];
+    global.save_talent_pending = ini_read_real("save", "pending", 0);
     ini_close();
 
     global.has_save = true;
