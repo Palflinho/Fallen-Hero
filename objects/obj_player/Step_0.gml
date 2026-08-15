@@ -1,3 +1,5 @@
+if (global.paused || global.attr_window_open) exit;
+
 var _dt = delta_time / 1000000;
 
 if (hp <= 0) {

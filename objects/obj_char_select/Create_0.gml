@@ -1,4 +1,5 @@
 if (!variable_global_exists("paused")) global.paused = false;
+if (!variable_global_exists("attr_window_open")) global.attr_window_open = false;
 load_save_from_disk();
 load_meta_from_disk();
 
