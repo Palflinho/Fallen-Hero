@@ -115,6 +115,44 @@ if (game_over) {
     draw_text(display_get_gui_width() / 2, display_get_gui_height() / 2 + 20, "Aperte Z para escolher outro personagem");
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
+} else if (global.chest_reward_open) {
+    draw_set_alpha(0.85);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, display_get_gui_width(), display_get_gui_height(), false);
+    draw_set_alpha(1);
+
+    var _found_def = get_talent_def_by_id(global.chest_reward_talent_id);
+    var _found_label = is_undefined(_found_def) ? global.chest_reward_talent_id : _found_def.label;
+
+    var _cx3 = display_get_gui_width() / 2;
+    var _ty3 = display_get_gui_height() / 2 - 90;
+
+    draw_set_color(c_yellow);
+    draw_set_halign(fa_center);
+    draw_text(_cx3, _ty3, "BAU ENCONTRADO!");
+    _ty3 += 34;
+    draw_set_color(c_white);
+    draw_text(_cx3, _ty3, "Talento: " + _found_label);
+    _ty3 += 40;
+
+    draw_text(_cx3, _ty3, "Escolha um slot pra equipar:");
+    _ty3 += 28;
+
+    for (var _i = 0; _i < array_length(target.talent_slot_ids); _i++) {
+        var _cur_id = target.talent_slot_ids[_i];
+        var _cur_label = "(vazio)";
+        if (_cur_id != "") {
+            var _cur_def = get_talent_def_by_id(_cur_id);
+            _cur_label = is_undefined(_cur_def) ? _cur_id : (_cur_def.label + " rank " + string(target.talent_slot_ranks[_i]));
+        }
+        draw_text(_cx3, _ty3, string(_i + 1) + " - " + _cur_label);
+        _ty3 += 24;
+    }
+
+    _ty3 += 16;
+    draw_text(_cx3, _ty3, "X - Descartar e continuar");
+
+    draw_set_halign(fa_left);
 } else if (global.attr_window_open) {
     draw_set_alpha(0.85);
     draw_set_color(c_black);

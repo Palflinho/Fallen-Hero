@@ -4,10 +4,18 @@ if (!level_complete && boss_room && is_final_room && instance_number(obj_enemy_p
     level_complete = true;
 }
 
+if (!boss_room && !mob_clear_chest_spawned && instance_number(obj_enemy_parent) == 0) {
+    mob_clear_chest_spawned = true;
+    if (_player != noone) {
+        instance_create_layer(_player.x, _player.y, layer, obj_chest);
+    }
+}
+
 if (!game_over && _player != noone && _player.state == "dead") {
     game_over = true;
     global.paused = false;
     global.attr_window_open = false;
+    global.chest_reward_open = false;
 }
 
 if (game_over) {
@@ -23,6 +31,16 @@ if (level_complete) {
     if (keyboard_check_pressed(ord("Z"))) {
         clear_save();
         room_goto(room_char_select);
+    }
+    exit;
+}
+
+if (global.chest_reward_open) {
+    if (_player != noone) {
+        if (keyboard_check_pressed(ord("1"))) equip_chest_talent(_player, 0);
+        if (keyboard_check_pressed(ord("2"))) equip_chest_talent(_player, 1);
+        if (keyboard_check_pressed(ord("3"))) equip_chest_talent(_player, 2);
+        if (keyboard_check_pressed(ord("X")) || keyboard_check_pressed(vk_escape)) skip_chest_reward();
     }
     exit;
 }

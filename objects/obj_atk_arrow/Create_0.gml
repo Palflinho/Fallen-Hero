@@ -5,3 +5,6 @@ dir_y = 0;
 speed_px = 420;
 life = 0.6;
 body_radius = 5;
+hit_list = [];
+pierce_remaining = 0;
+should_destroy = false;

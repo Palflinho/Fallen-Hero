@@ -138,6 +138,15 @@ synth_def_fisica = 0;
 synth_def_magica = 0;
 synth_atk_spd_bonus = 0;
 synth_move_spd_bonus = 0;
+synth_lifesteal = 0;
+synth_thorns_dmg = 0;
+synth_block_reduction = 0;
+synth_pierce_count = 0;
+synth_execute_bonus = 0;
+synth_poison_on_hit = 0;
+synth_gold_bonus = 0;
+synth_second_wind = 0;
+second_wind_cooldown_timer = 0;
 
 hp_max = 0;
 hp = 0;

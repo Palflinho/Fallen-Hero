@@ -1,4 +1,4 @@
-if (global.paused || global.attr_window_open) exit;
+if (is_world_paused()) exit;
 
 if (!triggered) {
     var _player = instance_find(obj_player, 0);

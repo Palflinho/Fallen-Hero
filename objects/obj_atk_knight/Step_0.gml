@@ -11,7 +11,7 @@ with (obj_enemy_parent) {
     }
     if (!_already_hit && point_distance(x, y, other.x, other.y) <= body_radius + other.body_radius) {
         array_push(other.hit_list, id);
-        enemy_take_damage(id, other.damage);
+        player_on_hit_enemy(other.owner, id, other.damage);
     }
 }
 

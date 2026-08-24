@@ -1,4 +1,4 @@
-if (global.paused || global.attr_window_open) exit;
+if (is_world_paused()) exit;
 if (!active) exit;
 
 var _dt = delta_time / 1000000;

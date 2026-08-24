@@ -89,6 +89,7 @@
     {"id":{"name":"obj_stage_gate3","path":"objects/obj_stage_gate3/obj_stage_gate3.yy",},},
     {"id":{"name":"Room3","path":"rooms/Room3/Room3.yy",},},
     {"id":{"name":"Room4","path":"rooms/Room4/Room4.yy",},},
+    {"id":{"name":"obj_chest","path":"objects/obj_chest/obj_chest.yy",},},
   ],
   "RoomOrderNodes": [
     {"roomId":{"name":"room_char_select","path":"rooms/room_char_select/room_char_select.yy",},},

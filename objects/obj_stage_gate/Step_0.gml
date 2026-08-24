@@ -1,4 +1,4 @@
-if (global.paused || global.attr_window_open) exit;
+if (is_world_paused()) exit;
 
 var _ready = (trigger_mode == "boss_dead")
     ? (instance_number(obj_enemy_parent) == 0)

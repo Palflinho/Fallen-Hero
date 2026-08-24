@@ -1,4 +1,4 @@
-if (global.paused || global.attr_window_open) exit;
+if (is_world_paused()) exit;
 
 var _dt = delta_time / 1000000;
 
@@ -10,6 +10,7 @@ if (hit_flash_timer > 0) hit_flash_timer -= _dt;
 if (invuln_timer > 0) invuln_timer -= _dt;
 if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
 if (defend_cooldown_timer > 0) defend_cooldown_timer -= _dt;
+if (second_wind_cooldown_timer > 0) second_wind_cooldown_timer -= _dt;
 
 if (poison_active) {
     poison_duration -= _dt;

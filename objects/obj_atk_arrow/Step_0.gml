@@ -4,14 +4,25 @@ life -= _dt;
 x += dir_x * speed_px * _dt;
 y += dir_y * speed_px * _dt;
 
-var _hit_something = false;
 with (obj_enemy_parent) {
-    if (point_distance(x, y, other.x, other.y) <= body_radius + other.body_radius) {
-        enemy_take_damage(id, other.damage);
-        _hit_something = true;
+    var _already_hit = false;
+    for (var _i = 0; _i < array_length(other.hit_list); _i++) {
+        if (other.hit_list[_i] == id) {
+            _already_hit = true;
+            break;
+        }
+    }
+    if (!_already_hit && point_distance(x, y, other.x, other.y) <= body_radius + other.body_radius) {
+        array_push(other.hit_list, id);
+        player_on_hit_enemy(other.owner, id, other.damage);
+        if (other.pierce_remaining > 0) {
+            other.pierce_remaining -= 1;
+        } else {
+            other.should_destroy = true;
+        }
     }
 }
 
-if (_hit_something || life <= 0 || !fh_place_free_of_walls(x, y, body_radius)) {
+if (should_destroy || life <= 0 || !fh_place_free_of_walls(x, y, body_radius)) {
     instance_destroy();
 }
