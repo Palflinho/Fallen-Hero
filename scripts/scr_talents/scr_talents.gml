@@ -205,8 +205,9 @@ function equip_chest_talent(_p, _slot_index) {
     if (!global.chest_reward_open) return;
     if (_slot_index < 0 || _slot_index >= array_length(_p.talent_slot_ids)) return;
 
+    // Rank belongs to the slot, not to whichever talent currently occupies it -- swapping
+    // in a new talent keeps the rank already earned in that slot.
     _p.talent_slot_ids[_slot_index] = global.chest_reward_talent_id;
-    _p.talent_slot_ranks[_slot_index] = 0;
 
     player_recompute_synthetics(_p);
     player_recompute_attributes(_p);
