@@ -1,15 +1,18 @@
-// Shop talents: 8 per class (3 original + 5 new), 5 free / 3 locked per class -- cost 0
-// means unlocked from the start, cost > 0 must be bought with gold in the shop before it
-// can be picked at the pre-run talent-selection screen.
+// Shop talents per class -- cost 0 means unlocked from the start, cost > 0 must be bought
+// with gold in the shop before it can be picked at the pre-run talent-selection screen.
 //
 // General talents (character: "general") are never sold in a shop and never offered at
 // the pre-run screen -- they're only found in chests during a run (see roll_chest_talent
 // / equip_chest_talent below), and are always "unlocked" the moment they're found.
 //
+// Each synth_field has exactly one class-specific source (stronger, chosen deliberately)
+// and, where it makes sense across classes, one general/chest source (weaker, found at
+// random) -- no synth_field should have two talents competing for the same role in the
+// same class.
+//
 // Numbers here (per_rank, cost) are placeholders, easy to retune.
 function get_talent_defs() {
     return [
-        {id: "knight_hp_regen", character: "knight", label: "HP Regen", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0},
         {id: "knight_def_fisica", character: "knight", label: "Def Fisica", synth_field: "synth_def_fisica", per_rank: 3, cost: 0},
         {id: "knight_hp_max", character: "knight", label: "HP Maximo", synth_field: "synth_armor_hp", per_rank: 15, cost: 50},
         {id: "knight_golpe_pesado", character: "knight", label: "Golpe Pesado", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
@@ -18,26 +21,19 @@ function get_talent_defs() {
         {id: "knight_vampirismo", character: "knight", label: "Vampirismo", synth_field: "synth_lifesteal", per_rank: 0.02, cost: 60},
         {id: "knight_escudo_inabalavel", character: "knight", label: "Escudo Inabalavel", synth_field: "synth_block_reduction", per_rank: 0.08, cost: 80},
 
-        {id: "archer_atk_spd", character: "archer", label: "Velocidade de Ataque", synth_field: "synth_atk_spd_bonus", per_rank: 0.08, cost: 0},
         {id: "archer_pwr_fisica", character: "archer", label: "Power Fisico", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
-        {id: "archer_crit", character: "archer", label: "Critico", synth_field: "synth_crit_chance", per_rank: 0.05, cost: 50},
         {id: "archer_mira_precisa", character: "archer", label: "Mira Precisa", synth_field: "synth_crit_chance", per_rank: 0.03, cost: 0},
         {id: "archer_fluxo_flechas", character: "archer", label: "Fluxo de Flechas", synth_field: "synth_atk_spd_bonus", per_rank: 0.05, cost: 0},
         {id: "archer_passo_leve", character: "archer", label: "Passo Leve", synth_field: "synth_move_spd_bonus", per_rank: 3, cost: 0},
         {id: "archer_flechas_perfurantes", character: "archer", label: "Flechas Perfurantes", synth_field: "synth_pierce_count", per_rank: 1, cost: 70},
         {id: "archer_instinto_cacador", character: "archer", label: "Instinto Cacador", synth_field: "synth_execute_bonus", per_rank: 0.08, cost: 70},
 
-        {id: "mage_pwr_magica", character: "mage", label: "Power Magico", synth_field: "synth_pwr_magica", per_rank: 3, cost: 0},
-        {id: "mage_def_magica", character: "mage", label: "Def Magica", synth_field: "synth_def_magica", per_rank: 3, cost: 0},
-        {id: "mage_cdr", character: "mage", label: "Reducao de Recarga", synth_field: "synth_cdr", per_rank: 0.04, cost: 50},
-        {id: "mage_fluxo_arcano", character: "mage", label: "Fluxo Arcano", synth_field: "synth_cdr", per_rank: 0.03, cost: 0},
         {id: "mage_couraca_magica", character: "mage", label: "Couraca Magica", synth_field: "synth_def_magica", per_rank: 2, cost: 0},
+        {id: "mage_fluxo_arcano", character: "mage", label: "Fluxo Arcano", synth_field: "synth_cdr", per_rank: 0.03, cost: 0},
         {id: "mage_vigor_arcano", character: "mage", label: "Vigor Arcano", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0},
         {id: "mage_sobrecarga", character: "mage", label: "Sobrecarga", synth_field: "synth_pwr_magica", per_rank: 3, cost: 70},
         {id: "mage_explosao_perfurante", character: "mage", label: "Explosao Perfurante", synth_field: "synth_pierce_count", per_rank: 1, cost: 70},
 
-        {id: "assassin_power", character: "assassin", label: "Power", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
-        {id: "assassin_dodge", character: "assassin", label: "Dodge", synth_field: "synth_dodge", per_rank: 0.03, cost: 0},
         {id: "assassin_move_spd", character: "assassin", label: "Velocidade de Movimento", synth_field: "synth_move_spd_bonus", per_rank: 5, cost: 50},
         {id: "assassin_instinto_assassino", character: "assassin", label: "Instinto Assassino", synth_field: "synth_execute_bonus", per_rank: 0.08, cost: 0},
         {id: "assassin_reflexos_sombrios", character: "assassin", label: "Reflexos Sombrios", synth_field: "synth_dodge", per_rank: 0.02, cost: 0},
@@ -50,6 +46,11 @@ function get_talent_defs() {
         {id: "general_reflexos", character: "general", label: "Reflexos", synth_field: "synth_dodge", per_rank: 0.025, cost: 0},
         {id: "general_folego_extra", character: "general", label: "Folego Extra", synth_field: "synth_second_wind", per_rank: 1, cost: 0},
         {id: "general_impeto", character: "general", label: "Impeto", synth_field: "synth_cdr", per_rank: 0.03, cost: 0},
+        {id: "general_presteza", character: "general", label: "Presteza", synth_field: "synth_atk_spd_bonus", per_rank: 0.08, cost: 0},
+        {id: "general_precisao", character: "general", label: "Precisao", synth_field: "synth_crit_chance", per_rank: 0.05, cost: 0},
+        {id: "general_essencia", character: "general", label: "Essencia Arcana", synth_field: "synth_pwr_magica", per_rank: 3, cost: 0},
+        {id: "general_aura", character: "general", label: "Aura Protetora", synth_field: "synth_def_magica", per_rank: 3, cost: 0},
+        {id: "general_forca", character: "general", label: "Forca Bruta", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
     ];
 }
 
