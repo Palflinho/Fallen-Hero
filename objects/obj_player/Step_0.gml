@@ -9,6 +9,7 @@ if (hp <= 0) {
 if (hit_flash_timer > 0) hit_flash_timer -= _dt;
 if (invuln_timer > 0) invuln_timer -= _dt;
 if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
+if (attack_buffer_timer > 0) attack_buffer_timer -= _dt;
 if (defend_cooldown_timer > 0) defend_cooldown_timer -= _dt;
 if (second_wind_cooldown_timer > 0) second_wind_cooldown_timer -= _dt;
 
@@ -37,6 +38,8 @@ var _up    = keyboard_check(vk_up);
 var _down  = keyboard_check(vk_down);
 var _attack_pressed = keyboard_check_pressed(ord("Z"));
 var _defend_pressed = keyboard_check_pressed(ord("X"));
+
+if (_attack_pressed) attack_buffer_timer = attack_buffer_duration;
 
 input_h = _right - _left;
 input_v = _down - _up;
@@ -68,7 +71,8 @@ switch (state) {
 
         state = (point_distance(0, 0, vx, vy) > 5) ? "walk" : "idle";
 
-        if (_attack_pressed && attack_cooldown_timer <= 0) {
+        if (attack_buffer_timer > 0 && attack_cooldown_timer <= 0) {
+            attack_buffer_timer = 0;
             state = "attack";
             attack_timer = attack_duration;
             attack_has_fired = false;

@@ -1,3 +1,7 @@
+// Ticks down regardless of any pause/UI state -- if this lived behind is_world_paused()
+// itself, hitstop would freeze permanently the moment it started.
+if (global.hitstop_timer > 0) global.hitstop_timer -= delta_time / 1000000;
+
 var _player = instance_find(obj_player, 0);
 
 if (!level_complete && boss_room && is_final_room && instance_number(obj_enemy_parent) == 0) {

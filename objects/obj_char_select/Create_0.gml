@@ -1,6 +1,7 @@
 if (!variable_global_exists("paused")) global.paused = false;
 if (!variable_global_exists("attr_window_open")) global.attr_window_open = false;
 if (!variable_global_exists("chest_reward_open")) global.chest_reward_open = false;
+if (!variable_global_exists("hitstop_timer")) global.hitstop_timer = 0;
 load_save_from_disk();
 load_meta_from_disk();
 

@@ -1,3 +1,10 @@
+// Brief shared freeze on an impactful hit (Sakurai's "feedback" principle: confirming an
+// impact lands is one of the cheapest, highest-payoff things to add). Reuses
+// is_world_paused() so every object that already gates on it freezes for free.
+function trigger_hitstop(_duration) {
+    global.hitstop_timer = max(global.hitstop_timer, _duration);
+}
+
 function enemy_take_damage(_inst, _amount) {
     if (!instance_exists(_inst)) return;
     _inst.hp -= _amount * _inst.damage_reduction;
@@ -50,6 +57,8 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
     var _before_hp = _enemy.hp;
     enemy_take_damage(_enemy, _dmg);
     var _dealt = max(0, _before_hp - _enemy.hp);
+
+    if (_dealt > 0) trigger_hitstop(0.06);
 
     if (_owner.synth_lifesteal > 0 && _dealt > 0) {
         _owner.hp = min(_owner.hp_max, _owner.hp + _dealt * _owner.synth_lifesteal);
@@ -135,7 +144,10 @@ function player_take_damage(_amount, _damage_type) {
         _p.hp -= _final;
         _p.hit_flash_timer = _p.hit_flash_duration;
         _p.invuln_timer = _p.invuln_duration;
-        if (_final > 0) _p.state = "hurt";
+        if (_final > 0) {
+            _p.state = "hurt";
+            trigger_hitstop(0.05);
+        }
 
         // "Retaliacao" talent: physical hits that actually land trigger a burst around the
         // player, hitting anything close by.

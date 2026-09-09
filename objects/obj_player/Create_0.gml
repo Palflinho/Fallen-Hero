@@ -165,6 +165,11 @@ attack_timer = 0;
 attack_cooldown_timer = 0;
 attack_has_fired = false;
 
+// Input buffering: a Z press is remembered for a short window even if it lands slightly
+// before the cooldown clears (or mid-animation), instead of being silently dropped.
+attack_buffer_timer = 0;
+attack_buffer_duration = 0.12;
+
 defend_active = false;
 defend_timer = 0;
 defend_cooldown_timer = 0;

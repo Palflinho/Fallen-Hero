@@ -220,8 +220,9 @@ function skip_chest_reward() {
     global.chest_reward_open = false;
 }
 
-// Single source of truth for "is the world frozen for a full-screen UI right now" --
-// every Step event that matters checks this instead of the individual flags directly.
+// Single source of truth for "is the world frozen right now" -- covers full-screen UI
+// (pause/attribute window/chest reward) AND the brief hit-stop freeze on impactful hits.
+// Every Step event that matters checks this instead of the individual flags directly.
 function is_world_paused() {
-    return global.paused || global.attr_window_open || global.chest_reward_open;
+    return global.paused || global.attr_window_open || global.chest_reward_open || global.hitstop_timer > 0;
 }
