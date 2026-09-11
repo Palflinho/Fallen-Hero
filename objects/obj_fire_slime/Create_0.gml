@@ -15,3 +15,4 @@ vision_range = 150;
 patrol_radius = 100;
 exp_reward = 20;
 gold_reward = 7;
+knockback_resistance = 0.0;

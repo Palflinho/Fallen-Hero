@@ -9,6 +9,7 @@ contact_damage = 16;
 
 // Immune by default -- only takes damage while `vulnerable` is true.
 damage_reduction = 0;
+knockback_resistance = 1.0;
 
 vision_range = 9999;
 vision_angle = 360;

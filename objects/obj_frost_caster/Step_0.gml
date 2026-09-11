@@ -43,12 +43,19 @@ switch (state) {
 
     case "cast":
         cast_timer -= _dt;
+        // Sakurai Polish: Levitating magical channeling
+        scale_y = 1.25;
+        scale_x = 0.85;
         if (cast_timer <= 0) {
             if (_player != noone && !_player.invisible && point_distance(cast_target_x, cast_target_y, _player.x, _player.y) <= aoe_radius) {
                 player_take_damage(aoe_damage, "magical");
             }
             attack_cooldown_timer = attack_cooldown;
             state = "chase";
+            // Detonation impact squash and sparks
+            scale_y = 0.85;
+            scale_x = 1.15;
+            fx_spawn_sparks(cast_target_x, cast_target_y, c_purple, 12);
         }
         break;
 }

@@ -1,5 +1,8 @@
 character_class = variable_global_exists("selected_character") ? global.selected_character : "knight";
 
+element_affinity = variable_global_exists("selected_element") ? global.selected_element : "none";
+archetype_name = "Cavaleiro";
+
 // ---- Class identity: level-1 natural attribute bases + attack identity (Cavaleiro / Knight) ----
 nat_power_base = 12;
 nat_defesa_base = 8;
@@ -20,10 +23,76 @@ defend_duration = 2.5;
 defend_cooldown_base = 4.0;
 defend_roll_speed = 0;
 
-sprite_walk = -1;
-sprite_attack = -1;
+sprite_walk = spr_knight_walk;
+sprite_attack = spr_knight_attack;
+
+// Sub-archetype parameters for Knight
+paladin_aura_radius = 90;
+paladin_aura_tick_timer = 0;
+paladin_aura_tick_interval = 0.5;
+paladin_barrier_active = 0;
+
+duelist_combo_count = 0;
+duelist_combo_timer = 0;
+parry_flash_timer = 0;
 
 switch (character_class) {
+    case "knight":
+        sprite_walk = spr_knight_walk;
+        sprite_attack = spr_knight_attack;
+
+        switch (element_affinity) {
+            case "water":
+                archetype_name = "Paladino";
+                body_colour = c_teal;
+                defend_mode = "paladin_aura";
+                defend_duration = 3.5;
+                defend_cooldown_base = 5.0;
+                break;
+
+            case "fire":
+                archetype_name = "Berserker";
+                body_colour = c_orange;
+                attack_range = 42;
+                attack_duration = 0.25;
+                defend_mode = "berserk_fury";
+                defend_duration = 4.0;
+                defend_cooldown_base = 6.0;
+                break;
+
+            case "wind":
+                archetype_name = "Duelista";
+                body_colour = c_yellow;
+                nat_atk_spd_base = 1 / 0.20;
+                nat_move_spd_base = 205;
+                attack_duration = 0.12;
+                defend_mode = "parry";
+                defend_duration = 0.45;
+                defend_cooldown_base = 3.0;
+                break;
+
+            case "earth":
+                archetype_name = "Guardiao";
+                body_colour = make_colour_rgb(160, 95, 45);
+                nat_defesa_base = 12;
+                nat_hp_base = 125;
+                nat_move_spd_base = 165;
+                attack_range = 24;
+                defend_mode = "guardian_aegis";
+                defend_duration = 3.0;
+                defend_cooldown_base = 5.5;
+                break;
+
+            default:
+                archetype_name = "Cavaleiro";
+                body_colour = c_aqua;
+                defend_mode = "block";
+                defend_duration = 2.5;
+                defend_cooldown_base = 4.0;
+                break;
+        }
+        break;
+
     case "mage":
         nat_power_base = 18;
         nat_defesa_base = 3;
@@ -90,10 +159,6 @@ switch (character_class) {
         sprite_walk = -1;
         sprite_attack = -1;
         break;
-
-    case "knight":
-    default:
-        break;
 }
 
 // Flat per-level growth -- identical across classes; differentiation lives in the bases above.
@@ -147,6 +212,26 @@ synth_poison_on_hit = 0;
 synth_gold_bonus = 0;
 synth_second_wind = 0;
 second_wind_cooldown_timer = 0;
+
+// Paladino
+synth_paladin_aura_heal = 0;
+synth_paladin_barrier = 0;
+synth_paladin_heal_hit = 0;
+
+// Berserker
+synth_berserk_dmg_bonus = 0;
+synth_berserk_burn = 0;
+synth_berserk_lifesteal = 0;
+
+// Duelista
+synth_duelist_parry_bonus = 0;
+synth_duelist_counter_mult = 0;
+synth_duelist_speed = 0;
+
+// Guardiao
+synth_guardian_duration = 0;
+synth_guardian_def = 0;
+synth_guardian_taunt_shock = 0;
 
 hp_max = 0;
 hp = 0;

@@ -13,14 +13,35 @@
 // Numbers here (per_rank, cost) are placeholders, easy to retune.
 function get_talent_defs() {
     return [
+        // ---- Cavaleiro (Knight) - Fundamentais ----
         {id: "knight_def_fisica", character: "knight", label: "Def Fisica", synth_field: "synth_def_fisica", per_rank: 3, cost: 0},
-        {id: "knight_hp_max", character: "knight", label: "HP Maximo", synth_field: "synth_armor_hp", per_rank: 15, cost: 50},
+        {id: "knight_hp_max", character: "knight", label: "HP Maximo", synth_field: "synth_armor_hp", per_rank: 15, cost: 40},
         {id: "knight_golpe_pesado", character: "knight", label: "Golpe Pesado", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
         {id: "knight_retaliacao", character: "knight", label: "Retaliacao", synth_field: "synth_thorns_dmg", per_rank: 5, cost: 0},
         {id: "knight_folego_aco", character: "knight", label: "Folego de Aco", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0},
-        {id: "knight_vampirismo", character: "knight", label: "Vampirismo", synth_field: "synth_lifesteal", per_rank: 0.02, cost: 60},
-        {id: "knight_escudo_inabalavel", character: "knight", label: "Escudo Inabalavel", synth_field: "synth_block_reduction", per_rank: 0.08, cost: 80},
+        {id: "knight_escudo_inabalavel", character: "knight", label: "Escudo Inabalavel", synth_field: "synth_block_reduction", per_rank: 0.08, cost: 50},
 
+        // ---- Cavaleiro + Agua (Paladino) ----
+        {id: "knight_paladino_aura", character: "knight", label: "Aura Revigorante", synth_field: "synth_paladin_aura_heal", per_rank: 2, cost: 50},
+        {id: "knight_paladino_sobrevida", character: "knight", label: "Bencao da Sobrevida", synth_field: "synth_paladin_barrier", per_rank: 25, cost: 60},
+        {id: "knight_paladino_golpe_sagrado", character: "knight", label: "Golpe Sagrado", synth_field: "synth_paladin_heal_hit", per_rank: 2, cost: 70},
+
+        // ---- Cavaleiro + Fogo (Berserker) ----
+        {id: "knight_berserk_furia", character: "knight", label: "Furia Devastadora", synth_field: "synth_berserk_dmg_bonus", per_rank: 0.20, cost: 50},
+        {id: "knight_berserk_chamas", character: "knight", label: "Laminas Flamejantes", synth_field: "synth_berserk_burn", per_rank: 4, cost: 60},
+        {id: "knight_berserk_sede_sangue", character: "knight", label: "Sede de Sangue", synth_field: "synth_berserk_lifesteal", per_rank: 0.03, cost: 70},
+
+        // ---- Cavaleiro + Ar (Duelista) ----
+        {id: "knight_duelista_parry_cd", character: "knight", label: "Reflexo do Vento", synth_field: "synth_duelist_parry_bonus", per_rank: 1, cost: 50},
+        {id: "knight_duelista_contra_ataque", character: "knight", label: "Riposte Letal", synth_field: "synth_duelist_counter_mult", per_rank: 0.40, cost: 60},
+        {id: "knight_duelista_combo_veloz", character: "knight", label: "Passo da Tempestade", synth_field: "synth_duelist_speed", per_rank: 0.08, cost: 70},
+
+        // ---- Cavaleiro + Terra (Guardiao) ----
+        {id: "knight_guardiao_bastiao", character: "knight", label: "Fortaleza de Rocha", synth_field: "synth_guardian_duration", per_rank: 1.0, cost: 50},
+        {id: "knight_guardiao_casca_rocha", character: "knight", label: "Casca de Pedra", synth_field: "synth_guardian_def", per_rank: 4, cost: 60},
+        {id: "knight_guardiao_taunt_choque", character: "knight", label: "Onda Sismica", synth_field: "synth_guardian_taunt_shock", per_rank: 12, cost: 70},
+
+        // ---- Arqueiro (Archer) ----
         {id: "archer_pwr_fisica", character: "archer", label: "Power Fisico", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
         {id: "archer_mira_precisa", character: "archer", label: "Mira Precisa", synth_field: "synth_crit_chance", per_rank: 0.03, cost: 0},
         {id: "archer_fluxo_flechas", character: "archer", label: "Fluxo de Flechas", synth_field: "synth_atk_spd_bonus", per_rank: 0.05, cost: 0},
@@ -28,12 +49,14 @@ function get_talent_defs() {
         {id: "archer_flechas_perfurantes", character: "archer", label: "Flechas Perfurantes", synth_field: "synth_pierce_count", per_rank: 1, cost: 70},
         {id: "archer_instinto_cacador", character: "archer", label: "Instinto Cacador", synth_field: "synth_execute_bonus", per_rank: 0.08, cost: 70},
 
+        // ---- Mago (Mage) ----
         {id: "mage_couraca_magica", character: "mage", label: "Couraca Magica", synth_field: "synth_def_magica", per_rank: 2, cost: 0},
         {id: "mage_fluxo_arcano", character: "mage", label: "Fluxo Arcano", synth_field: "synth_cdr", per_rank: 0.03, cost: 0},
         {id: "mage_vigor_arcano", character: "mage", label: "Vigor Arcano", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0},
         {id: "mage_sobrecarga", character: "mage", label: "Sobrecarga", synth_field: "synth_pwr_magica", per_rank: 3, cost: 70},
         {id: "mage_explosao_perfurante", character: "mage", label: "Explosao Perfurante", synth_field: "synth_pierce_count", per_rank: 1, cost: 70},
 
+        // ---- Assassino (Assassin) ----
         {id: "assassin_move_spd", character: "assassin", label: "Velocidade de Movimento", synth_field: "synth_move_spd_bonus", per_rank: 5, cost: 50},
         {id: "assassin_instinto_assassino", character: "assassin", label: "Instinto Assassino", synth_field: "synth_execute_bonus", per_rank: 0.08, cost: 0},
         {id: "assassin_reflexos_sombrios", character: "assassin", label: "Reflexos Sombrios", synth_field: "synth_dodge", per_rank: 0.02, cost: 0},
@@ -41,6 +64,7 @@ function get_talent_defs() {
         {id: "assassin_vampirismo_sombrio", character: "assassin", label: "Vampirismo Sombrio", synth_field: "synth_lifesteal", per_rank: 0.02, cost: 70},
         {id: "assassin_sombra_mortal", character: "assassin", label: "Sombra Mortal", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 70},
 
+        // ---- Talentos Gerais (Baús) ----
         {id: "general_vigor", character: "general", label: "Vigor", synth_field: "synth_hp_reg", per_rank: 2, cost: 0},
         {id: "general_fortuna", character: "general", label: "Fortuna", synth_field: "synth_gold_bonus", per_rank: 0.15, cost: 0},
         {id: "general_reflexos", character: "general", label: "Reflexos", synth_field: "synth_dodge", per_rank: 0.025, cost: 0},
@@ -52,6 +76,36 @@ function get_talent_defs() {
         {id: "general_aura", character: "general", label: "Aura Protetora", synth_field: "synth_def_magica", per_rank: 3, cost: 0},
         {id: "general_forca", character: "general", label: "Forca Bruta", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
     ];
+}
+
+function element_get_name(_elem) {
+    switch (_elem) {
+        case "water": return "Agua";
+        case "fire": return "Fogo";
+        case "wind": return "Ar";
+        case "earth": return "Terra";
+        default: return "Neutro";
+    }
+}
+
+function knight_get_archetype_name(_elem) {
+    switch (_elem) {
+        case "water": return "Paladino";
+        case "fire": return "Berserker";
+        case "wind": return "Duelista";
+        case "earth": return "Guardiao";
+        default: return "Cavaleiro";
+    }
+}
+
+function knight_get_archetype_desc(_elem) {
+    switch (_elem) {
+        case "water": return "Paladino: Especial gera Aura de Sobrevida em area que cura/protege.";
+        case "fire": return "Berserker: Ataque amplo devastador. Especial entra em Furia Ardente (+50% dano/+regen).";
+        case "wind": return "Duelista: Ataque duplo veloz em combo. Especial e Aparar (Parry com contra-ataque de 360).";
+        case "earth": return "Guardiao: Ataque concentrado. Especial Bastiao bloqueia 100% dano fisico e magico + Taunt.";
+        default: return "Cavaleiro: Espada de medio alcance e escudo com bloqueio fisico tradicional.";
+    }
 }
 
 function get_talents_for_character(_character) {
@@ -87,9 +141,26 @@ function talent_is_unlocked(_id) {
     return variable_struct_exists(global.meta_unlocked, _id);
 }
 
+function element_is_unlocked(_elem) {
+    if (_elem == "none") return true;
+    ensure_meta_loaded();
+    if (variable_global_exists("meta_elements") && variable_struct_exists(global.meta_elements, _elem)) {
+        return global.meta_elements[$ _elem];
+    }
+    return true; // Default unlocked for testing & play
+}
+
+function element_unlock(_elem) {
+    ensure_meta_loaded();
+    if (!variable_global_exists("meta_elements")) global.meta_elements = {};
+    global.meta_elements[$ _elem] = true;
+    save_meta();
+}
+
 function load_meta_from_disk() {
     global.meta_unlocked = {};
     global.gold = 0;
+    global.meta_elements = { "water": true, "fire": true, "wind": true, "earth": true };
 
     if (!file_exists("meta.ini")) return;
 
@@ -103,6 +174,12 @@ function load_meta_from_disk() {
             global.meta_unlocked[$ _id] = true;
         }
     }
+
+    global.meta_elements.water = (ini_read_real("elements", "water", 1) >= 1);
+    global.meta_elements.fire  = (ini_read_real("elements", "fire", 1) >= 1);
+    global.meta_elements.wind  = (ini_read_real("elements", "wind", 1) >= 1);
+    global.meta_elements.earth = (ini_read_real("elements", "earth", 1) >= 1);
+
     ini_close();
 }
 
@@ -115,6 +192,13 @@ function save_meta() {
     for (var i = 0; i < array_length(_all); i++) {
         var _id = _all[i].id;
         ini_write_real("unlocks", _id, talent_is_unlocked(_id) ? 1 : 0);
+    }
+
+    if (variable_global_exists("meta_elements")) {
+        ini_write_real("elements", "water", (variable_struct_exists(global.meta_elements, "water") && global.meta_elements.water) ? 1 : 0);
+        ini_write_real("elements", "fire",  (variable_struct_exists(global.meta_elements, "fire") && global.meta_elements.fire) ? 1 : 0);
+        ini_write_real("elements", "wind",  (variable_struct_exists(global.meta_elements, "wind") && global.meta_elements.wind) ? 1 : 0);
+        ini_write_real("elements", "earth", (variable_struct_exists(global.meta_elements, "earth") && global.meta_elements.earth) ? 1 : 0);
     }
     ini_close();
 }
@@ -162,6 +246,26 @@ function player_recompute_synthetics(_p) {
     _p.synth_poison_on_hit = 0;
     _p.synth_gold_bonus = 0;
     _p.synth_second_wind = 0;
+
+    // Paladino
+    _p.synth_paladin_aura_heal = 0;
+    _p.synth_paladin_barrier = 0;
+    _p.synth_paladin_heal_hit = 0;
+
+    // Berserker
+    _p.synth_berserk_dmg_bonus = 0;
+    _p.synth_berserk_burn = 0;
+    _p.synth_berserk_lifesteal = 0;
+
+    // Duelista
+    _p.synth_duelist_parry_bonus = 0;
+    _p.synth_duelist_counter_mult = 0;
+    _p.synth_duelist_speed = 0;
+
+    // Guardiao
+    _p.synth_guardian_duration = 0;
+    _p.synth_guardian_def = 0;
+    _p.synth_guardian_taunt_shock = 0;
 
     for (var i = 0; i < array_length(_p.talent_slot_ids); i++) {
         var _id = _p.talent_slot_ids[i];

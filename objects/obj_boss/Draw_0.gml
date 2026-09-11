@@ -16,14 +16,19 @@ if (state == "slam_windup") {
 
 var _label = "Guardiao das Aguas";
 if (vulnerable) {
-    _label = "VULNERAVEL!";
+    _label = "VULNERAVEL! ATAQUE AGORA!";
+    // Miyamoto Polish: Golden opportunity aura
+    draw_set_alpha(0.35 + 0.15 * sin(current_time * 0.01));
+    draw_set_color(c_yellow);
+    draw_circle(x, y, body_radius + 16 + 4 * sin(current_time * 0.008), true);
+    draw_set_alpha(1);
 } else if (state == "recover") {
     _label = "Recuperando...";
 }
 
 draw_set_halign(fa_center);
 draw_set_valign(fa_bottom);
-draw_set_color(vulnerable ? c_lime : c_white);
+draw_set_color(vulnerable ? c_yellow : c_white);
 draw_text(x, y - body_radius - 24, _label);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);

@@ -19,6 +19,7 @@ vision_range = 220;
 patrol_radius = 120;
 exp_reward = 32;
 gold_reward = 10;
+knockback_resistance = 0.15;
 
 // Burn -- fire's answer to frost's slow: a lingering damage-over-time instead.
 burn_damage = 3;

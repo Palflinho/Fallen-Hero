@@ -4,9 +4,13 @@
 // all that needs to persist for those; synthetic attributes are re-derived from the
 // talent slots + their ranks each time via player_recompute_synthetics.
 
-function save_checkpoint_fresh(_character, _room_name) {
+function save_checkpoint_fresh(_character, _room_name, _element) {
+    if (is_undefined(_element)) {
+        _element = variable_global_exists("selected_element") ? global.selected_element : "none";
+    }
     global.save_character = _character;
     global.save_room = _room_name;
+    global.save_element = _element;
     global.save_has_stats = false;
     global.has_save = true;
 
@@ -17,6 +21,7 @@ function save_checkpoint_fresh(_character, _room_name) {
     ini_open("save.ini");
     ini_write_string("save", "character", _character);
     ini_write_string("save", "room", _room_name);
+    ini_write_string("save", "element", _element);
     ini_write_real("save", "has_stats", 0);
     ini_write_string("save", "talent0", global.save_talent_ids[0]);
     ini_write_string("save", "talent1", global.save_talent_ids[1]);
@@ -34,6 +39,7 @@ function save_checkpoint(_room_name) {
 
     global.save_character = _p.character_class;
     global.save_room = _room_name;
+    global.save_element = variable_instance_exists(_p, "element_affinity") ? _p.element_affinity : "none";
     global.save_has_stats = true;
     global.has_save = true;
 
@@ -48,6 +54,7 @@ function save_checkpoint(_room_name) {
     ini_open("save.ini");
     ini_write_string("save", "character", global.save_character);
     ini_write_string("save", "room", global.save_room);
+    ini_write_string("save", "element", global.save_element);
     ini_write_real("save", "has_stats", 1);
     ini_write_real("save", "level", global.save_level);
     ini_write_real("save", "xp", global.save_xp);
@@ -74,6 +81,7 @@ function load_save_from_disk() {
 
     global.save_character = _character;
     global.save_room = ini_read_string("save", "room", "Room1");
+    global.save_element = ini_read_string("save", "element", "none");
     global.save_has_stats = (ini_read_real("save", "has_stats", 0) >= 1);
     global.save_level = ini_read_real("save", "level", 1);
     global.save_xp = ini_read_real("save", "xp", 0);
@@ -105,10 +113,12 @@ function goto_checkpoint() {
     if (!global.has_save) return;
 
     global.selected_character = global.save_character;
+    global.selected_element = variable_global_exists("save_element") ? global.save_element : "none";
     global.use_saved_stats = global.save_has_stats;
 
-    if (global.save_room == "Room2") {
-        room_goto(Room2);
+    var _target = asset_get_index(global.save_room);
+    if (_target != -1) {
+        room_goto(_target);
     } else {
         room_goto(Room1);
     }

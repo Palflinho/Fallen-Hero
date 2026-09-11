@@ -43,6 +43,9 @@ switch (state) {
 
     case "windup":
         attack_windup_timer -= _dt;
+        // Sakurai Polish: Squash coiling before leap
+        scale_x = 1.35;
+        scale_y = 0.65;
         if (attack_windup_timer <= 0) {
             var _hit = instance_create_layer(x, y, layer, obj_enemy_melee_hit);
             _hit.owner = id;
@@ -51,6 +54,9 @@ switch (state) {
             _hit.body_radius = attack_range + 6;
             attack_cooldown_timer = attack_cooldown;
             state = "chase";
+            // Stretch forward on attack leap
+            scale_x = 0.8;
+            scale_y = 1.3;
         }
         break;
 }

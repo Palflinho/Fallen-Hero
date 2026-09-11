@@ -44,6 +44,9 @@ switch (state) {
 
     case "windup":
         attack_windup_timer -= _dt;
+        // Sakurai Polish: Pulsating magical charge
+        scale_x = 1.25 + 0.05 * sin(current_time * 0.03);
+        scale_y = 1.25 + 0.05 * sin(current_time * 0.03);
         if (attack_windup_timer <= 0) {
             if (_player != noone && !_player.invisible) {
                 var _pdir = point_direction(x, y, _player.x, _player.y);
@@ -58,6 +61,10 @@ switch (state) {
             }
             attack_cooldown_timer = attack_cooldown;
             state = "chase";
+            // Recoil & fiery spark burst on projectile launch
+            scale_x = 0.8;
+            scale_y = 0.8;
+            fx_spawn_sparks(x, y, c_orange, 5);
         }
         break;
 }

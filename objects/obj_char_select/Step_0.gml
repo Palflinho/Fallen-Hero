@@ -32,6 +32,16 @@ switch (state) {
     case "select_talents":
         var _m = array_length(talent_select_list);
 
+        if (classes[selected_index] == "knight") {
+            var _el_n = array_length(elements);
+            if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(vk_left)) {
+                selected_element_index = (selected_element_index - 1 + _el_n) mod _el_n;
+            }
+            if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(vk_right)) {
+                selected_element_index = (selected_element_index + 1) mod _el_n;
+            }
+        }
+
         if (_m > 0) {
             if (keyboard_check_pressed(vk_down)) talent_select_cursor = (talent_select_cursor + 1) mod _m;
             if (keyboard_check_pressed(vk_up)) talent_select_cursor = (talent_select_cursor - 1 + _m) mod _m;
@@ -55,6 +65,7 @@ switch (state) {
 
         if (keyboard_check_pressed(ord("Z"))) {
             global.selected_character = classes[selected_index];
+            global.selected_element = (classes[selected_index] == "knight") ? elements[selected_element_index] : "none";
             global.use_saved_stats = false;
 
             global.chosen_talent_ids = ["", "", ""];
@@ -62,7 +73,7 @@ switch (state) {
                 global.chosen_talent_ids[i] = talent_selected_ids[i];
             }
 
-            save_checkpoint_fresh(global.selected_character, "Room1");
+            save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
             room_goto(Room1);
         }
 

@@ -76,6 +76,9 @@ switch (state) {
 
     case "windup":
         attack_windup_timer -= _dt;
+        // Sakurai Polish: Energy coiling
+        scale_x = 1.2;
+        scale_y = 1.2;
         if (attack_windup_timer <= 0) {
             if (_player != noone && !_player.invisible) {
                 var _pdir = point_direction(x, y, _player.x, _player.y);
@@ -91,17 +94,28 @@ switch (state) {
             }
             attack_cooldown_timer = attack_cooldown;
             state = "chase";
+            // Recoil
+            scale_x = 0.85;
+            scale_y = 0.85;
+            fx_spawn_sparks(x, y, c_orange, 6);
         }
         break;
 
     case "magia_windup":
         magia_windup_timer -= _dt;
+        // Sakurai Polish: Pulsating dangerous molten core
+        scale_x = 1.2 + 0.1 * sin(current_time * 0.03);
+        scale_y = 1.2 + 0.1 * sin(current_time * 0.03);
         if (magia_windup_timer <= 0) {
             if (_player != noone && point_distance(x, y, _player.x, _player.y) <= magia_radius + _player.body_radius) {
                 player_take_damage(magia_damage, "magical");
             }
             magia_timer = magia_interval;
             state = "chase";
+            // Volcanic eruption shockwave
+            scale_x = 1.4;
+            scale_y = 0.6;
+            fx_spawn_sparks(x, y, c_red, 16);
         }
         break;
 }

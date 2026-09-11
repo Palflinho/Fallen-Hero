@@ -21,3 +21,4 @@ shield_duration = 1.3;
 shield_active_timer = 0;
 exp_reward = 40;
 gold_reward = 12;
+knockback_resistance = 0.75;

@@ -57,6 +57,9 @@ switch (state) {
 
     case "windup":
         attack_windup_timer -= _dt;
+        // Sakurai Polish: Heavy fists raised overhead
+        scale_y = 1.35;
+        scale_x = 0.85;
         if (attack_windup_timer <= 0) {
             var _hit = instance_create_layer(x, y, layer, obj_enemy_melee_hit);
             _hit.owner = id;
@@ -65,6 +68,10 @@ switch (state) {
             _hit.body_radius = attack_range + 6;
             attack_cooldown_timer = attack_cooldown;
             state = "chase";
+            // Heavy slam impact squash and shockwave sparks
+            scale_y = 0.7;
+            scale_x = 1.35;
+            fx_spawn_sparks(x, y + body_radius, c_silver, 10);
         }
         break;
 }

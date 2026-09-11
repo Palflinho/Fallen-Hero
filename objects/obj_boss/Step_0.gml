@@ -71,6 +71,9 @@ if (vulnerable) {
 
         case "slam_windup":
             slam_windup_timer -= _dt;
+            // Sakurai Polish: Grand overhead windup coiling
+            scale_y = 1.35;
+            scale_x = 0.85;
             if (slam_windup_timer <= 0) {
                 var _hit = instance_create_layer(x, y, layer, obj_enemy_melee_hit);
                 _hit.owner = id;
@@ -80,6 +83,12 @@ if (vulnerable) {
 
                 vulnerable = true;
                 vulnerable_timer = vulnerable_duration;
+
+                // Earth-shattering slam squash and water spark burst
+                scale_y = 0.65;
+                scale_x = 1.45;
+                fx_spawn_sparks(x, y, c_aqua, 24);
+                trigger_hitstop(0.08);
             }
             break;
     }

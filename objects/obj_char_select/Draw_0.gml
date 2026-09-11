@@ -44,14 +44,28 @@ switch (state) {
 
     case "select_talents":
         draw_set_color(c_white);
-        draw_text(room_width / 2, 80, "Talentos - " + labels[selected_index]);
-        draw_text(room_width / 2, room_height - 90, "Cima/baixo navega  -  Espaco marca (max 3)  -  Z confirma e comeca  -  X volta");
-        draw_text(room_width / 2, room_height - 60, string(array_length(talent_selected_ids)) + "/3 selecionados");
+        draw_text(room_width / 2, 50, "Talentos - " + labels[selected_index]);
+
+        var _ly = 150;
+        if (classes[selected_index] == "knight") {
+            var _elem_id = elements[selected_element_index];
+            var _arch = knight_get_archetype_name(_elem_id);
+            var _desc = knight_get_archetype_desc(_elem_id);
+
+            draw_set_color(c_yellow);
+            draw_text(room_width / 2, 80, "< Q / E : Sintonia Elemental - " + element_labels[selected_element_index] + " >");
+            draw_set_color(c_aqua);
+            draw_text(room_width / 2, 105, _desc);
+            _ly = 145;
+        }
+
+        draw_set_color(c_white);
+        draw_text(room_width / 2, room_height - 70, "Cima/baixo navega  -  Espaco marca (max 3)  -  Z confirma e comeca  -  X volta");
+        draw_text(room_width / 2, room_height - 40, string(array_length(talent_selected_ids)) + "/3 selecionados");
 
         var _m = array_length(talent_select_list);
-        var _ly = 160;
         if (_m == 0) {
-            draw_text(room_width / 2, _ly, "Nenhum talento desbloqueado ainda -- volte e aperte S pra abrir a loja.");
+            draw_text(room_width / 2, _ly + 30, "Nenhum talento desbloqueado ainda -- volte e aperte S pra abrir a loja.");
         }
         for (var _i = 0; _i < _m; _i++) {
             var _t = talent_select_list[_i];
@@ -65,7 +79,7 @@ switch (state) {
             }
 
             draw_set_color(_is_cursor ? c_yellow : c_white);
-            draw_text(room_width / 2, _ly + _i * 30, (_is_picked ? "[X] " : "[ ] ") + _t.label);
+            draw_text(room_width / 2, _ly + _i * 26, (_is_picked ? "[X] " : "[ ] ") + _t.label);
         }
         draw_set_color(c_white);
         break;

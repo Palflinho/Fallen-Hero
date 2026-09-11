@@ -1,24 +1,88 @@
+// 1. Miyamoto Telegraphs: Ground Danger Circles (Casters & Golem AoE)
+if (state == "cast" && variable_instance_exists(id, "cast_target_x") && variable_instance_exists(id, "aoe_radius")) {
+    var _t = clamp(1 - (cast_timer / telegraph_time), 0, 1);
+    var _col = (object_index == obj_magma_caster) ? c_orange : c_purple;
+    draw_set_alpha(0.3);
+    draw_set_color(_col);
+    draw_circle(cast_target_x, cast_target_y, aoe_radius * _t, false);
+    draw_set_alpha(0.7);
+    draw_circle(cast_target_x, cast_target_y, aoe_radius, true);
+    draw_set_alpha(1);
+}
+
+if (state == "magia_windup" && variable_instance_exists(id, "magia_radius")) {
+    var _t = clamp(1 - (magia_windup_timer / magia_telegraph), 0, 1);
+    draw_set_alpha(0.25 + 0.15 * sin(current_time * 0.03));
+    draw_set_color(c_red);
+    draw_circle(x, y, magia_radius * _t, false);
+    draw_set_alpha(0.8);
+    draw_circle(x, y, magia_radius, true);
+    draw_set_alpha(1);
+}
+
+// 2. Body Rendering with Sakurai Squash & Stretch Deformation
 if (sprite_index != -1) {
     var _blend = body_colour;
     if (poison_active) _blend = merge_colour(body_colour, c_lime, 0.4);
     if (hit_flash_timer > 0) _blend = c_white;
-    draw_sprite_ext(sprite_index, image_index, x, y, 1, 1, 0, _blend, 1);
+    var _facing_sign = (variable_instance_exists(id, "facing_dir") && (facing_dir > 90 && facing_dir < 270)) ? -1 : 1;
+    draw_sprite_ext(sprite_index, image_index, x, y, scale_x * _facing_sign, scale_y, 0, _blend, 1);
 } else {
     var _col = body_colour;
     if (poison_active) _col = merge_colour(body_colour, c_lime, 0.4);
     if (hit_flash_timer > 0) _col = c_white;
 
+    var _hw = body_radius * scale_x;
+    var _hh = body_radius * scale_y;
     draw_set_color(_col);
-    draw_rectangle(x - body_radius, y - body_radius, x + body_radius, y + body_radius, false);
+    draw_rectangle(x - _hw, y - _hh, x + _hw, y + _hh, false);
     draw_set_color(c_black);
-    draw_rectangle(x - body_radius, y - body_radius, x + body_radius, y + body_radius, true);
+    draw_rectangle(x - _hw, y - _hh, x + _hw, y + _hh, true);
 }
 
-var _w = body_radius * 2;
-var _hx = x - body_radius;
-var _hy = y - body_radius - 10;
-draw_set_color(c_black);
-draw_rectangle(_hx - 1, _hy - 1, _hx + _w + 1, _hy + 5, false);
-draw_set_color(c_red);
-draw_rectangle(_hx, _hy, _hx + _w * (hp / hp_max), _hy + 4, false);
-draw_set_color(c_white);
+// 3. Miyamoto Attack Telegraph: Overhead "!" Warning Bubble
+var _is_telegraphing = (state == "windup" || state == "cast" || state == "slam_windup" || state == "magia_windup");
+if (_is_telegraphing) {
+    var _ty = y - body_radius * scale_y - 18 + sin(current_time * 0.02) * 2;
+    draw_set_alpha(0.9);
+    draw_set_color(c_red);
+    draw_circle(x, _ty, 8, false);
+    draw_set_color(c_white);
+    draw_circle(x, _ty, 8, true);
+
+    draw_set_font(-1);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(c_white);
+    draw_text_transformed(x, _ty, "!", 1.2, 1.2, 0);
+    draw_set_alpha(1);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+}
+
+// 4. Dynamic Combat Health Bar (Lagging yellow damage chunk)
+var _is_boss = (object_index == obj_boss || object_index == obj_boss2);
+var _should_draw_hp = _is_boss || (hp_bar_timer > 0 && hp < hp_max);
+
+if (_should_draw_hp) {
+    var _w = body_radius * 2 + 6;
+    var _hx = x - _w * 0.5;
+    var _hy = y - body_radius * scale_y - 8;
+
+    // Background border
+    draw_set_color(c_black);
+    draw_rectangle(_hx - 1, _hy - 1, _hx + _w + 1, _hy + 5, false);
+
+    // Lagging yellow damage chunk
+    var _lag_ratio = clamp(hp_lag / hp_max, 0, 1);
+    draw_set_color(c_yellow);
+    draw_rectangle(_hx, _hy, _hx + _w * _lag_ratio, _hy + 4, false);
+
+    // Active HP bar (red)
+    var _hp_ratio = clamp(hp / hp_max, 0, 1);
+    draw_set_color(c_red);
+    draw_rectangle(_hx, _hy, _hx + _w * _hp_ratio, _hy + 4, false);
+
+    draw_set_color(c_white);
+}
+

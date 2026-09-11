@@ -22,3 +22,7 @@ shop_talent_index = 0;
 talent_select_list = [];
 talent_select_cursor = 0;
 talent_selected_ids = [];
+
+elements = ["none", "water", "fire", "wind", "earth"];
+element_labels = ["Neutro (Cavaleiro)", "Agua (Paladino)", "Fogo (Berserker)", "Ar (Duelista)", "Terra (Guardiao)"];
+selected_element_index = 0;

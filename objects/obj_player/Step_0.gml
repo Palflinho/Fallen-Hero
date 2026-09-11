@@ -1,6 +1,7 @@
 if (is_world_paused()) exit;
 
 var _dt = delta_time / 1000000;
+fx_system_update(_dt);
 
 if (hp <= 0) {
     state = "dead";
@@ -12,6 +13,7 @@ if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
 if (attack_buffer_timer > 0) attack_buffer_timer -= _dt;
 if (defend_cooldown_timer > 0) defend_cooldown_timer -= _dt;
 if (second_wind_cooldown_timer > 0) second_wind_cooldown_timer -= _dt;
+if (parry_flash_timer > 0) parry_flash_timer -= _dt;
 
 if (poison_active) {
     poison_duration -= _dt;
@@ -77,13 +79,36 @@ switch (state) {
             attack_timer = attack_duration;
             attack_has_fired = false;
         } else if (_defend_pressed && defend_cooldown_timer <= 0) {
-            // Special ability: press to activate a fixed window, then it's on cooldown.
-            // No resource cost anymore -- just the cooldown gate.
             state = "defend";
             defend_active = true;
             defend_timer = defend_duration;
             if (defend_mode == "invisible") invisible = true;
             if (defend_mode == "roll") invuln_timer = defend_duration;
+
+            if (defend_mode == "paladin_aura") {
+                paladin_aura_tick_timer = 0;
+                if (synth_paladin_barrier > 0) {
+                    paladin_barrier_active = synth_paladin_barrier;
+                }
+            } else if (defend_mode == "berserk_fury") {
+                trigger_hitstop(0.04);
+            } else if (defend_mode == "parry") {
+                parry_flash_timer = 0.15;
+            } else if (defend_mode == "guardian_aegis") {
+                trigger_hitstop(0.05);
+                // Provocar (Taunt) todos os inimigos da sala
+                with (obj_enemy_parent) {
+                    agro = true;
+                }
+                if (synth_guardian_taunt_shock > 0) {
+                    with (obj_enemy_parent) {
+                        if (point_distance(x, y, other.x, other.y) <= 180) {
+                            enemy_take_damage(id, other.synth_guardian_taunt_shock, other.x, other.y, 160);
+                            enemy_apply_slow(id, 0.5, 2.0);
+                        }
+                    }
+                }
+            }
         }
         break;
 
@@ -94,8 +119,17 @@ switch (state) {
             player_perform_attack();
         }
         if (attack_timer <= 0) {
-            state = "idle";
-            attack_cooldown_timer = attack_cooldown;
+            // Combo duplo para o Duelista
+            if (character_class == "knight" && element_affinity == "wind" && duelist_combo_count == 0) {
+                duelist_combo_count = 1;
+                state = "attack";
+                attack_timer = attack_duration * 0.8;
+                attack_has_fired = false;
+            } else {
+                duelist_combo_count = 0;
+                state = "idle";
+                attack_cooldown_timer = attack_cooldown;
+            }
         }
         break;
 
@@ -106,11 +140,58 @@ switch (state) {
             fh_move_and_collide(facing_x * defend_roll_speed * _dt, facing_y * defend_roll_speed * _dt);
         }
 
+        // Paladino: Aura de Sobrevida cura em pulsos e reduz velocidade de movimento
+        if (defend_mode == "paladin_aura") {
+            paladin_aura_tick_timer -= _dt;
+            if (paladin_aura_tick_timer <= 0) {
+                paladin_aura_tick_timer = paladin_aura_tick_interval;
+                var _heal = 3 + synth_paladin_aura_heal;
+                hp = min(hp_max, hp + _heal);
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, other.x, other.y) <= other.paladin_aura_radius) {
+                        enemy_apply_slow(id, 0.7, 0.6);
+                    }
+                }
+            }
+            if (input_h != 0 || input_v != 0) {
+                var _len = point_distance(0, 0, input_h, input_v);
+                fh_move_and_collide((input_h / _len) * move_speed * 0.6 * _dt, (input_v / _len) * move_speed * 0.6 * _dt);
+            }
+        }
+
+        // Berserker: Fúria permite movimento livre e ataque contínuo
+        if (defend_mode == "berserk_fury") {
+            hp = min(hp_max, hp + (8 + synth_hp_reg * 2) * _dt);
+            if (input_h != 0 || input_v != 0) {
+                var _len = point_distance(0, 0, input_h, input_v);
+                facing_x = input_h / _len;
+                facing_y = input_v / _len;
+                fh_move_and_collide((input_h / _len) * move_speed * 1.15 * _dt, (input_v / _len) * move_speed * 1.15 * _dt);
+            }
+            if (attack_buffer_timer > 0 && attack_cooldown_timer <= 0) {
+                attack_buffer_timer = 0;
+                player_perform_attack();
+                attack_cooldown_timer = attack_cooldown;
+            }
+        }
+
+        // Guardião: Bloqueio pesado com movimento reduzido
+        if (defend_mode == "guardian_aegis") {
+            if (input_h != 0 || input_v != 0) {
+                var _len = point_distance(0, 0, input_h, input_v);
+                fh_move_and_collide((input_h / _len) * move_speed * 0.35 * _dt, (input_v / _len) * move_speed * 0.35 * _dt);
+            }
+        }
+
         if (defend_timer <= 0) {
             defend_active = false;
             invisible = false;
             state = "idle";
-            defend_cooldown_timer = defend_cooldown;
+            var _cd = defend_cooldown;
+            if (defend_mode == "parry" && synth_duelist_parry_bonus > 0) {
+                _cd = max(1.2, _cd - synth_duelist_parry_bonus * 0.35);
+            }
+            defend_cooldown_timer = _cd;
         }
         break;
 

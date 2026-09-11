@@ -10,6 +10,7 @@ move_speed = 22;
 contact_damage = 18;
 
 damage_reduction = 0;
+knockback_resistance = 1.0;
 
 vision_range = 9999;
 vision_angle = 360;

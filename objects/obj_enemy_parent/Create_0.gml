@@ -8,6 +8,26 @@ state = "idle";
 body_radius = 14;
 body_colour = c_lime;
 
+// Sakurai Polish: Knockback Physics
+knockback_vx = 0;
+knockback_vy = 0;
+knockback_friction = 0.85;
+knockback_resistance = 0.0;
+
+// Sakurai Polish: Squash & Stretch Animation
+scale_x = 1.0;
+scale_y = 1.0;
+squash_recovery = 0.18;
+
+// Dynamic Combat Health Bar (Clutter reduction + Souls-like lagging damage bar)
+hp_bar_timer = 0;
+hp_bar_duration = 2.8;
+hp_lag = hp_max;
+hp_lag_speed = 0.08;
+
+// Miyamoto Polish: Attack Telegraphing
+telegraph_alert_timer = 0;
+
 poison_active = false;
 poison_damage = 0;
 poison_tick_interval = 0;

@@ -8,15 +8,38 @@ draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
 var _x = pad;
-var _y = pad;
+var _y = pad + 16;
+
+// Archetype Name
+var _hero_title = string_upper(target.character_class);
+if (variable_instance_exists(target, "archetype_name") && target.archetype_name != "") {
+    _hero_title = string_upper(target.archetype_name);
+}
+draw_set_color(c_yellow);
+draw_text(_x, _y - 18, _hero_title);
+draw_set_color(c_white);
 
 // HP
 draw_set_color(c_black);
 draw_rectangle(_x - 2, _y - 2, _x + bar_w + 2, _y + bar_h + 2, false);
 draw_set_color(c_red);
 draw_rectangle(_x, _y, _x + bar_w * (target.hp / target.hp_max), _y + bar_h, false);
+
+// Paladin Overlife Barrier overlay
+if (variable_instance_exists(target, "paladin_barrier_active") && target.paladin_barrier_active > 0) {
+    draw_set_alpha(0.5);
+    draw_set_color(c_aqua);
+    var _bar_ratio = min(1, target.paladin_barrier_active / target.hp_max);
+    draw_rectangle(_x, _y, _x + bar_w * _bar_ratio, _y + bar_h, false);
+    draw_set_alpha(1);
+}
+
 draw_set_color(c_white);
-draw_text(_x + 4, _y + 1, "HP " + string(max(0, round(target.hp))) + "/" + string(round(target.hp_max)));
+var _hp_str = "HP " + string(max(0, round(target.hp))) + "/" + string(round(target.hp_max));
+if (variable_instance_exists(target, "paladin_barrier_active") && target.paladin_barrier_active > 0) {
+    _hp_str += " (+" + string(round(target.paladin_barrier_active)) + ")";
+}
+draw_text(_x + 4, _y + 1, _hp_str);
 
 _y += bar_h + bar_gap;
 
@@ -30,12 +53,29 @@ draw_text(_x + 4, _y + 1, "Nv " + string(target.level) + "  " + string(round(tar
 
 _y += bar_h + bar_gap;
 
-// Special ability cooldown
-draw_set_color(c_white);
-if (target.defend_cooldown_timer > 0) {
-    draw_text(_x, _y, "Habilidade: " + string(round(target.defend_cooldown_timer * 10) / 10) + "s");
+// Special ability cooldown / active
+var _skill_name = "Habilidade";
+if (target.defend_mode == "paladin_aura") _skill_name = "Aura Sobrevida";
+else if (target.defend_mode == "berserk_fury") _skill_name = "Furia Ardente";
+else if (target.defend_mode == "parry") _skill_name = "Aparar (Parry)";
+else if (target.defend_mode == "guardian_aegis") _skill_name = "Bastiao";
+else if (target.defend_mode == "block") _skill_name = "Bloqueio";
+else if (target.defend_mode == "manashield") _skill_name = "Escudo Magico";
+else if (target.defend_mode == "roll") _skill_name = "Rolamento";
+else if (target.defend_mode == "invisible") _skill_name = "Invisibilidade";
+
+if (target.state == "defend" && target.defend_active) {
+    draw_set_color(c_lime);
+    draw_text(_x, _y, _skill_name + ": ATIVA (" + string(round(target.defend_timer * 10) / 10) + "s)");
+    draw_set_color(c_white);
+} else if (target.defend_cooldown_timer > 0) {
+    draw_set_color(c_ltgray);
+    draw_text(_x, _y, _skill_name + ": " + string(round(target.defend_cooldown_timer * 10) / 10) + "s");
+    draw_set_color(c_white);
 } else {
-    draw_text(_x, _y, "Habilidade: pronta");
+    draw_set_color(c_yellow);
+    draw_text(_x, _y, _skill_name + ": pronta [X]");
+    draw_set_color(c_white);
 }
 
 _y += 20;
