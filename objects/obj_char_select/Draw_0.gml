@@ -245,6 +245,7 @@ switch (state) {
                     draw_set_color(c_black);
                     draw_text(_cx + talent_card_w - 13, _cy + 13, string(_slot_idx + 1));
                 }
+                }
             }
 
             // ---- Bottom Info Box (Caixa de Texto Embaixo) ----
@@ -444,6 +445,7 @@ switch (state) {
                     draw_set_color(c_yellow);
                     draw_rectangle(_cx + talent_card_w - 42, _cy + 4, _cx + talent_card_w - 4, _cy + 20, true);
                     draw_text(_cx + talent_card_w - 23, _cy + 12, string(_t.cost) + "G");
+                }
                 }
             }
 
