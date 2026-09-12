@@ -231,43 +231,175 @@ if (game_over) {
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 } else if (global.chest_reward_open) {
-    draw_set_alpha(0.85);
-    draw_set_color(c_black);
-    draw_rectangle(0, 0, display_get_gui_width(), display_get_gui_height(), false);
+    var _gw = display_get_gui_width();
+    var _gh = display_get_gui_height();
+
+    // Fundo escurecido semitransparente permitindo ver o jogo congelado
+    draw_set_alpha(0.86);
+    draw_set_color(make_colour_rgb(10, 14, 22));
+    draw_rectangle(0, 0, _gw, _gh, false);
     draw_set_alpha(1);
 
+    // Janela Modal do Bau
+    var _win_w = min(880, _gw - 40);
+    var _win_h = min(530, _gh - 30);
+    var _win_x = (_gw - _win_w) / 2;
+    var _win_y = (_gh - _win_h) / 2;
+
+    // Fundo da Janela
+    draw_set_alpha(0.95);
+    draw_set_color(make_colour_rgb(16, 20, 32));
+    draw_rectangle(_win_x, _win_y, _win_x + _win_w, _win_y + _win_h, false);
+    draw_set_alpha(1);
+
+    // Borda dupla estilizada dourada (Sakurai: impacto de tesouro)
+    draw_set_color(make_colour_rgb(220, 175, 50));
+    draw_rectangle(_win_x, _win_y, _win_x + _win_w, _win_y + _win_h, true);
+    draw_set_color(make_colour_rgb(90, 70, 25));
+    draw_rectangle(_win_x + 2, _win_y + 2, _win_x + _win_w - 2, _win_y + _win_h - 2, true);
+
+    // ================= CABECALHO DO BAU =================
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_top);
+
+    var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
+    draw_set_color(merge_colour(c_yellow, c_white, _pulse));
+    draw_text(_win_x + _win_w / 2, _win_y + 16, "*  BAU DE TESOURO ABERTO!  *");
+
+    draw_set_color(c_ltgray);
+    draw_text(_win_x + _win_w / 2, _win_y + 38, "Voce encontrou um novo talento! Escolha um slot para equipar ou descarte-o.");
+
+    draw_set_color(make_colour_rgb(60, 50, 30));
+    draw_line(_win_x + 30, _win_y + 60, _win_x + _win_w - 30, _win_y + 60);
+
+    // ================= CARD DO NOVO TALENTO ENCONTRADO =================
     var _found_def = get_talent_def_by_id(global.chest_reward_talent_id);
     var _found_label = is_undefined(_found_def) ? global.chest_reward_talent_id : _found_def.label;
+    var _found_icon = is_undefined(_found_def) ? "sword" : talent_get_icon_type(_found_def);
+    var _found_desc_val = is_undefined(_found_def) ? "" : talent_get_desc_value(_found_def);
+    var _found_desc_flv = is_undefined(_found_def) ? "" : talent_get_desc_flavor(_found_def);
 
-    var _cx3 = display_get_gui_width() / 2;
-    var _ty3 = display_get_gui_height() / 2 - 90;
+    var _card_top_x = _win_x + 30;
+    var _card_top_y = _win_y + 72;
+    var _card_top_w = _win_w - 60;
+    var _card_top_h = 104;
 
+    // Fundo do card de destaque
+    draw_set_alpha(0.85);
+    draw_set_color(make_colour_rgb(22, 30, 46));
+    draw_rectangle(_card_top_x, _card_top_y, _card_top_x + _card_top_w, _card_top_y + _card_top_h, false);
+    draw_set_alpha(1);
+    draw_set_color(make_colour_rgb(215, 170, 50));
+    draw_rectangle(_card_top_x, _card_top_y, _card_top_x + _card_top_w, _card_top_y + _card_top_h, true);
+
+    // Icone do talento encontrado
+    var _icon_box_x = _card_top_x + 16;
+    var _icon_box_y = _card_top_y + 18;
+    var _icon_box_s = 68;
+    draw_set_color(make_colour_rgb(14, 18, 28));
+    draw_rectangle(_icon_box_x, _icon_box_y, _icon_box_x + _icon_box_s, _icon_box_y + _icon_box_s, false);
+    draw_set_color(make_colour_rgb(215, 170, 50));
+    draw_rectangle(_icon_box_x, _icon_box_y, _icon_box_x + _icon_box_s, _icon_box_y + _icon_box_s, true);
+    draw_talent_icon(_found_icon, _icon_box_x + _icon_box_s / 2, _icon_box_y + _icon_box_s / 2, 38, c_yellow);
+
+    // Textos do novo talento
+    draw_set_halign(fa_left);
     draw_set_color(c_yellow);
-    draw_set_halign(fa_center);
-    draw_text(_cx3, _ty3, "BAU ENCONTRADO!");
-    _ty3 += 34;
-    draw_set_color(c_white);
-    draw_text(_cx3, _ty3, "Talento: " + _found_label);
-    _ty3 += 40;
+    draw_text(_card_top_x + 100, _card_top_y + 14, "NOVO TALENTO ENCONTRADO:");
 
-    draw_text(_cx3, _ty3, "Escolha um slot pra equipar:");
-    _ty3 += 28;
+    draw_set_color(c_white);
+    draw_text(_card_top_x + 100, _card_top_y + 34, _found_label);
+
+    draw_set_color(make_colour_rgb(160, 220, 255));
+    draw_text_ext(_card_top_x + 100, _card_top_y + 56, "Efeito: " + _found_desc_val, 16, _card_top_w - 120);
+
+    if (_found_desc_flv != "") {
+        draw_set_color(c_ltgray);
+        draw_text_ext(_card_top_x + 100, _card_top_y + 78, _found_desc_flv, 14, _card_top_w - 120);
+    }
+
+    // ================= SLOTS COMPARATIVOS =================
+    var _slots_y = _card_top_y + _card_top_h + 16;
+    draw_set_halign(fa_center);
+    draw_set_color(c_yellow);
+    draw_text(_win_x + _win_w / 2, _slots_y, "SELECIONE O SLOT PARA SUBSTITUIR  (O NOVO TALENTO HERDARA O RANK DO SLOT):");
+
+    var _col_w = (_win_w - 60 - 2 * 16) / 3;
+    var _col_h = 195;
+    var _cols_start_y = _slots_y + 24;
 
     for (var _i = 0; _i < array_length(target.talent_slot_ids); _i++) {
         var _cur_id = target.talent_slot_ids[_i];
-        var _cur_label = "(vazio)";
-        if (_cur_id != "") {
+        var _cur_rank = target.talent_slot_ranks[_i];
+        var _cx = _win_x + 30 + _i * (_col_w + 16);
+
+        // Fundo do card de slot
+        draw_set_alpha(0.85);
+        draw_set_color(make_colour_rgb(18, 22, 34));
+        draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + _col_h, false);
+        draw_set_alpha(1);
+        draw_set_color(make_colour_rgb(50, 70, 100));
+        draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + _col_h, true);
+
+        // Cabecalho do Slot
+        draw_set_color(make_colour_rgb(26, 34, 52));
+        draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 26, false);
+        draw_set_color(c_yellow);
+        draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 26, true);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_text(_cx + _col_w / 2, _cols_start_y + 13, "SLOT " + string(_i + 1));
+        draw_set_valign(fa_top);
+
+        // Detalhes do Talento Atual do Slot
+        if (_cur_id == "") {
+            draw_set_color(c_gray);
+            draw_text(_cx + _col_w / 2, _cols_start_y + 55, "(Slot Vazio)");
+            draw_set_color(make_colour_rgb(80, 220, 120));
+            draw_text_ext(_cx + _col_w / 2, _cols_start_y + 85, "Instale diretamente com Rank " + string(_cur_rank) + "!", 16, _col_w - 24);
+        } else {
             var _cur_def = get_talent_def_by_id(_cur_id);
-            _cur_label = is_undefined(_cur_def) ? _cur_id : (_cur_def.label + " rank " + string(target.talent_slot_ranks[_i]));
+            var _cur_label = is_undefined(_cur_def) ? _cur_id : _cur_def.label;
+            var _cur_icon = is_undefined(_cur_def) ? "sword" : talent_get_icon_type(_cur_def);
+
+            draw_talent_icon(_cur_icon, _cx + _col_w / 2, _cols_start_y + 50, 26, c_yellow);
+
+            draw_set_color(c_white);
+            draw_text(_cx + _col_w / 2, _cols_start_y + 70, _cur_label);
+
+            draw_set_color(c_yellow);
+            var _r_str = "Rank " + string(_cur_rank) + "  ";
+            for (var _s = 1; _s <= 3; _s++) _r_str += (_s <= _cur_rank) ? "[X] " : "[ ] ";
+            draw_text(_cx + _col_w / 2, _cols_start_y + 92, _r_str);
+
+            draw_set_color(make_colour_rgb(240, 110, 110));
+            draw_text_ext(_cx + _col_w / 2, _cols_start_y + 114, "Substituira " + _cur_label, 14, _col_w - 18);
         }
-        draw_text(_cx3, _ty3, string(_i + 1) + " - " + _cur_label);
-        _ty3 += 24;
+
+        // Botao de Acao
+        var _btn_y = _cols_start_y + _col_h - 38;
+        draw_set_color(make_colour_rgb(30, 45, 70));
+        draw_rectangle(_cx + 10, _btn_y, _cx + _col_w - 10, _btn_y + 28, false);
+        draw_set_color(c_yellow);
+        draw_rectangle(_cx + 10, _btn_y, _cx + _col_w - 10, _btn_y + 28, true);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_text(_cx + _col_w / 2, _btn_y + 14, "[Aperte " + string(_i + 1) + " para Equipar]");
+        draw_set_valign(fa_top);
     }
 
-    _ty3 += 16;
-    draw_text(_cx3, _ty3, "X - Descartar e continuar");
+    // ================= RODAPE DO BAU =================
+    var _footer_y = _win_y + _win_h - 40;
+    draw_set_color(make_colour_rgb(60, 50, 30));
+    draw_line(_win_x + 30, _footer_y, _win_x + _win_w - 30, _footer_y);
+
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(make_colour_rgb(240, 95, 95));
+    draw_text(_win_x + _win_w / 2, _footer_y + 18, "[X ou ESC] Descartar este Talento e Continuar a Partida");
 
     draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
 } else if (global.paused || global.attr_window_open) {
     var _gw = display_get_gui_width();
     var _gh = display_get_gui_height();
