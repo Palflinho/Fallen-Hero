@@ -34,6 +34,18 @@ if (state == "patrol" && variable_instance_exists(id, "vision_range") && variabl
     draw_set_alpha(1);
 }
 
+// 1.8. Aura Pulsante de Monstro Raro / Campeão
+if (variable_instance_exists(id, "is_rare_mob") && is_rare_mob) {
+    var _pulse = 0.5 + 0.5 * sin(current_time * 0.008);
+    draw_set_alpha(0.18 + 0.12 * _pulse);
+    draw_set_color(c_yellow);
+    draw_circle(x, y, (body_radius + 6) * scale_x, false);
+    draw_set_alpha(0.6 + 0.4 * _pulse);
+    draw_circle(x, y, (body_radius + 7) * scale_x, true);
+    draw_set_alpha(1);
+    draw_set_color(c_white);
+}
+
 // 2. Body Rendering with Sakurai Squash & Stretch Deformation
 if (sprite_index != -1) {
     var _blend = body_colour;
@@ -115,6 +127,16 @@ if (_should_draw_hp) {
     var _hp_ratio = clamp(hp / hp_max, 0, 1);
     draw_set_color(c_red);
     draw_rectangle(_hx, _hy, _hx + _w * _hp_ratio, _hy + 4, false);
+
+    // Indicador textual para monstros raros
+    if (variable_instance_exists(id, "is_rare_mob") && is_rare_mob) {
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_bottom);
+        draw_set_color(c_yellow);
+        draw_text_transformed(x, _hy - 2, "★ RARO ★", 0.75, 0.75, 0);
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+    }
 
     draw_set_color(c_white);
 }

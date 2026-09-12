@@ -25,3 +25,5 @@ attack_windup_timer = 0;
 exp_reward = 35;
 gold_reward = 14;
 state = "patrol";
+is_rare_mob = true;
+rare_chest_drop_chance = 0.20;

@@ -38,3 +38,5 @@ magia_damage = 18;
 exp_reward = 45;
 gold_reward = 14;
 knockback_resistance = 0.75;
+is_rare_mob = true;
+rare_chest_drop_chance = 0.25;

@@ -22,3 +22,5 @@ patrol_radius = 120;
 exp_reward = 25;
 gold_reward = 8;
 knockback_resistance = 0.15;
+is_rare_mob = true;
+rare_chest_drop_chance = 0.20;

@@ -27,3 +27,5 @@ knockback_resistance = 0.15;
 burn_damage = 3;
 burn_tick_interval = 0.6;
 burn_duration = 2.5;
+is_rare_mob = true;
+rare_chest_drop_chance = 0.20;

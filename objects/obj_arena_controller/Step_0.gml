@@ -56,7 +56,7 @@ switch (arena_state) {
                 } else {
                     arena_state = "victory";
                     arena_barrier_active = false;
-                    banner_text = "TRIUNFO NA ARENA! RECOMPENSA LIBERADA";
+                    banner_text = "✦ ARENA CONQUISTADA! BAU DO CAMPEAO LIBERADO! ✦";
                     banner_timer = 3.5;
                 }
             }

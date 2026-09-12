@@ -24,3 +24,5 @@ shield_active_timer = 0;
 exp_reward = 40;
 gold_reward = 12;
 knockback_resistance = 0.75;
+is_rare_mob = true;
+rare_chest_drop_chance = 0.25;

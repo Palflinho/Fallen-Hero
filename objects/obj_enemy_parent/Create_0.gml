@@ -59,3 +59,19 @@ lost_sight_grace = 1.5;
 spider_sense_range = 65;
 spider_alert_timer = 0;
 has_spotted_player = false;
+
+// Sistema de Monstros Raros e Drops de Baús
+is_rare_mob = false;
+rare_chest_drop_chance = 0.0;
+
+// Chance de ~12% de um monstro padrão surgir como Campeão Raro (exceto chefes)
+var _is_boss = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")));
+if (!_is_boss && random(1) < 0.12) {
+    is_rare_mob = true;
+    rare_chest_drop_chance = 0.20;
+    hp_max = round(hp_max * 1.5);
+    hp = hp_max;
+    gold_reward = round(gold_reward * 2.5);
+    exp_reward = round(exp_reward * 2.0);
+    contact_damage = round(contact_damage * 1.25);
+}

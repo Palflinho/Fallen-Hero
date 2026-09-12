@@ -67,6 +67,16 @@ if (hp <= 0) {
     player_gain_exp(exp_reward);
     player_gain_gold(gold_reward);
 
+    // Drop raro de Baú de Talento para Monstros Raros / Campeões
+    if (variable_instance_exists(id, "is_rare_mob") && is_rare_mob) {
+        var _chance = variable_instance_exists(id, "rare_chest_drop_chance") ? rare_chest_drop_chance : 0.20;
+        if (random(1) < _chance) {
+            var _chest = instance_create_layer(x, y, layer, obj_chest);
+            fx_spawn_sparks(x, y, c_yellow, 30);
+            fx_spawn_damage_popup(x, y - 24, "✦ BAU DE TALENTO RARO! ✦", false, c_yellow);
+        }
+    }
+
     var _is_boss = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")));
     if (_is_boss) trigger_hitstop(0.25);
 
