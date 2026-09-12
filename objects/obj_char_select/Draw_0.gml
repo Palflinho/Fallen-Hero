@@ -261,9 +261,9 @@ switch (state) {
             }
 
             var _box_w = 980;
-            var _box_h = 135;
+            var _box_h = 145;
             var _box_x = (room_width - _box_w) / 2;
-            var _box_y = room_height - 180;
+            var _box_y = room_height - 188;
 
             // Background & border
             draw_set_alpha(0.92);
@@ -276,40 +276,48 @@ switch (state) {
 
             // Left icon container
             draw_set_color(make_colour_rgb(22, 28, 42));
-            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + 116, false);
+            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + _box_h - 18, false);
             draw_set_color(make_colour_rgb(55, 75, 110));
-            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + 116, true);
-            draw_talent_icon(talent_get_icon_type(_cur_t), _box_x + 66, _box_y + 67, 44, c_yellow);
+            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + _box_h - 18, true);
+            draw_talent_icon(talent_get_icon_type(_cur_t), _box_x + 66, _box_y + _box_h / 2, 44, c_yellow);
 
             // Title and Status
             draw_set_halign(fa_left);
             draw_set_valign(fa_top);
             draw_set_color(c_yellow);
-            draw_text(_box_x + 130, _box_y + 20, _cur_t.label);
+            draw_text(_box_x + 130, _box_y + 18, _cur_t.label);
 
             draw_set_halign(fa_right);
             if (_cur_picked) {
                 draw_set_color(c_aqua);
-                draw_text(_box_x + _box_w - 24, _box_y + 20, "SELECIONADO (Slot " + string(_cur_slot + 1) + "/3)");
+                draw_text(_box_x + _box_w - 24, _box_y + 18, "SELECIONADO (Slot " + string(_cur_slot + 1) + "/3)");
             } else if (array_length(talent_selected_ids) < 3) {
                 draw_set_color(c_white);
-                draw_text(_box_x + _box_w - 24, _box_y + 20, "[Espaco] para Selecionar  (" + string(array_length(talent_selected_ids)) + "/3)");
+                draw_text(_box_x + _box_w - 24, _box_y + 18, "[Espaco] para Selecionar  (" + string(array_length(talent_selected_ids)) + "/3)");
             } else {
                 draw_set_color(c_gray);
-                draw_text(_box_x + _box_w - 24, _box_y + 20, "[Limite de 3 Atingido]");
+                draw_text(_box_x + _box_w - 24, _box_y + 18, "[Limite de 3 Atingido]");
             }
 
             // Divider line
             draw_set_color(make_colour_rgb(45, 60, 85));
-            draw_line(_box_x + 130, _box_y + 48, _box_x + _box_w - 24, _box_y + 48);
+            draw_line(_box_x + 130, _box_y + 44, _box_x + _box_w - 24, _box_y + 44);
 
-            // Description with numeric values (sem mostrar preco/ouro)
+            // Description with numeric values (calculo dinâmico de altura para evitar sobreposicao)
+            var _eff_str = "Efeito: " + talent_get_desc_value(_cur_t);
+            var _eff_sep = 18;
+            var _text_max_w = _box_w - 160;
+
             draw_set_halign(fa_left);
             draw_set_color(c_white);
-            draw_text_ext(_box_x + 130, _box_y + 58, "Efeito: " + talent_get_desc_value(_cur_t), 20, _box_w - 160);
+            draw_text_ext(_box_x + 130, _box_y + 52, _eff_str, _eff_sep, _text_max_w);
 
-            draw_set_color(c_ltgray);
-            draw_text_ext(_box_x + 130, _box_y + 86, talent_get_desc_flavor(_cur_t), 18, _box_w - 160);
+            var _eff_h = string_height_ext(_eff_str, _eff_sep, _text_max_w);
+            var _flavor_str = talent_get_desc_flavor(_cur_t);
+            if (_flavor_str != "") {
+                draw_set_color(c_ltgray);
+                draw_text_ext(_box_x + 130, _box_y + 52 + _eff_h + 6, _flavor_str, 16, _text_max_w);
+            }
         }
 
         // Footer instructions
@@ -454,9 +462,9 @@ switch (state) {
             var _unlocked = talent_is_unlocked(_cur_t.id);
 
             var _box_w = 980;
-            var _box_h = 135;
+            var _box_h = 145;
             var _box_x = (room_width - _box_w) / 2;
-            var _box_y = room_height - 180;
+            var _box_y = room_height - 188;
 
             // Background & border
             draw_set_alpha(0.92);
@@ -469,42 +477,49 @@ switch (state) {
 
             // Left icon container
             draw_set_color(make_colour_rgb(22, 28, 42));
-            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + 116, false);
+            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + _box_h - 18, false);
             draw_set_color(make_colour_rgb(55, 75, 110));
-            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + 116, true);
-            draw_talent_icon(talent_get_icon_type(_cur_t), _box_x + 66, _box_y + 67, 44, _unlocked ? c_lime : c_yellow);
+            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + _box_h - 18, true);
+            draw_talent_icon(talent_get_icon_type(_cur_t), _box_x + 66, _box_y + _box_h / 2, 44, _unlocked ? c_lime : c_yellow);
 
             // Header line: Title & Price/Status
             draw_set_halign(fa_left);
             draw_set_valign(fa_top);
             draw_set_color(c_yellow);
-            draw_text(_box_x + 130, _box_y + 20, _cur_t.label);
+            draw_text(_box_x + 130, _box_y + 18, _cur_t.label);
 
             draw_set_halign(fa_right);
             if (_unlocked) {
                 draw_set_color(c_lime);
-                draw_text(_box_x + _box_w - 24, _box_y + 20, "JA DESBLOQUEADO");
+                draw_text(_box_x + _box_w - 24, _box_y + 18, "JA DESBLOQUEADO");
             } else {
                 if (global.gold >= _cur_t.cost) {
                     draw_set_color(c_yellow);
-                    draw_text(_box_x + _box_w - 24, _box_y + 20, "PRECO: " + string(_cur_t.cost) + " OURO   [Z para Comprar]");
+                    draw_text(_box_x + _box_w - 24, _box_y + 18, "PRECO: " + string(_cur_t.cost) + " OURO   [Z para Comprar]");
                 } else {
                     draw_set_color(c_red);
-                    draw_text(_box_x + _box_w - 24, _box_y + 20, "PRECO: " + string(_cur_t.cost) + " OURO   (Ouro Insuficiente)");
+                    draw_text(_box_x + _box_w - 24, _box_y + 18, "PRECO: " + string(_cur_t.cost) + " OURO   (Ouro Insuficiente)");
                 }
             }
 
             // Divider line
             draw_set_color(make_colour_rgb(45, 60, 85));
-            draw_line(_box_x + 130, _box_y + 48, _box_x + _box_w - 24, _box_y + 48);
+            draw_line(_box_x + 130, _box_y + 44, _box_x + _box_w - 24, _box_y + 44);
 
-            // Descriptive effect only (sem apresentar valores numericos brutos)
+            // Descriptive effect only
+            var _shop_flavor = talent_get_desc_flavor(_cur_t);
+            var _sh_sep = 18;
+            var _sh_max_w = _box_w - 160;
+
             draw_set_halign(fa_left);
             draw_set_color(c_white);
-            draw_text_ext(_box_x + 130, _box_y + 58, talent_get_desc_flavor(_cur_t), 20, _box_w - 160);
+            draw_text_ext(_box_x + 130, _box_y + 52, _shop_flavor, _sh_sep, _sh_max_w);
+
+            var _sh_h = string_height_ext(_shop_flavor, _sh_sep, _sh_max_w);
+            var _meta_y = max(_box_y + 104, _box_y + 52 + _sh_h + 10);
 
             draw_set_color(c_ltgray);
-            draw_text(_box_x + 130, _box_y + 100, "Classe: " + labels[shop_tab_index] + "   |   Seu saldo: " + string(global.gold) + " ouro");
+            draw_text(_box_x + 130, _meta_y, "Classe: " + labels[shop_tab_index] + "   |   Seu saldo: " + string(global.gold) + " ouro");
         }
 
         // Footer instructions
