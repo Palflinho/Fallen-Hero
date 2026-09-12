@@ -218,4 +218,6 @@ if (sprite_walk != -1) {
         image_speed = _moving ? 1 : 0;
         if (!_moving) image_index = 0;
     }
+} else {
+    sprite_index = -1;
 }

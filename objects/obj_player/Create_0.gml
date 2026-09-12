@@ -23,8 +23,9 @@ defend_duration = 2.5;
 defend_cooldown_base = 4.0;
 defend_roll_speed = 0;
 
-sprite_walk = spr_knight_walk;
-sprite_attack = spr_knight_attack;
+sprite_walk = -1;
+sprite_attack = -1;
+sprite_index = -1;
 
 // Sub-archetype parameters for Knight
 paladin_aura_radius = 90;
@@ -38,8 +39,9 @@ parry_flash_timer = 0;
 
 switch (character_class) {
     case "knight":
-        sprite_walk = spr_knight_walk;
-        sprite_attack = spr_knight_attack;
+        sprite_walk = -1;
+        sprite_attack = -1;
+        sprite_index = -1;
 
         switch (element_affinity) {
             case "water":
