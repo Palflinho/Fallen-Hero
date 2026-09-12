@@ -58,30 +58,40 @@ var _port_x = _card_x + 10;
 var _port_y = _card_y + 10;
 var _port_size = 52;
 
-// Fundo do retrato
-draw_set_color(make_colour_rgb(18, 24, 38));
+// Fundo do quadro do herói
+draw_set_color(make_colour_rgb(16, 22, 34));
 draw_rectangle(_port_x, _port_y, _port_x + _port_size, _port_y + _port_size, false);
 
-// Desenho do Retrato do Herói
-var _port_spr = -1;
-if (target.character_class == "knight") _port_spr = asset_get_index("spr_portrait_knight");
-else if (target.character_class == "mage") _port_spr = asset_get_index("spr_portrait_mage");
-else if (target.character_class == "archer") _port_spr = asset_get_index("spr_portrait_archer");
-else if (target.character_class == "assassin") _port_spr = asset_get_index("spr_portrait_assassin");
+// Centro do quadro
+var _cx = _port_x + _port_size / 2;
+var _cy = _port_y + _port_size / 2;
+var _body_col = variable_instance_exists(target, "body_colour") ? target.body_colour : _elem_col;
 
-if (_port_spr != -1 && sprite_exists(_port_spr)) {
-    var _s = _port_size / 600;
-    draw_sprite_ext(_port_spr, 0, _port_x + _port_size / 2, _port_y + _port_size / 2, _s, _s, 0, c_white, 1);
-} else {
-    draw_set_halign(fa_center);
-    draw_set_valign(fa_middle);
-    draw_set_color(_elem_col);
-    draw_text(_port_x + _port_size / 2, _port_y + _port_size / 2, string_upper(string_char_at(target.character_class, 1)));
-    draw_set_halign(fa_left);
-    draw_set_valign(fa_top);
+// Insígnia da classe (bloco geométrico translúcido com contorno na cor do herói)
+draw_set_alpha(0.25);
+draw_set_color(_body_col);
+draw_rectangle(_cx - 16, _cy - 16, _cx + 16, _cy + 16, false);
+draw_set_alpha(1);
+draw_set_color(_body_col);
+draw_rectangle(_cx - 16, _cy - 16, _cx + 16, _cy + 16, true);
+
+// Símbolo representativo da classe (ícone vetorial procedural da arma/estilo)
+var _c_icon = "sword";
+if (target.character_class == "knight") {
+    _c_icon = (target.element_affinity == "earth") ? "shield" : "sword";
+} else if (target.character_class == "mage") {
+    _c_icon = "magic_def";
+} else if (target.character_class == "archer") {
+    _c_icon = "bow";
+} else if (target.character_class == "assassin") {
+    _c_icon = "dagger";
 }
 
-// Borda do retrato com cor elemental
+// Sombra de profundidade e ícone estilizado da classe
+draw_talent_icon(_c_icon, _cx + 1, _cy + 1, 28, c_black);
+draw_talent_icon(_c_icon, _cx, _cy, 28, _body_col);
+
+// Borda externa do quadro com cor elemental
 draw_set_color(_elem_col);
 draw_rectangle(_port_x, _port_y, _port_x + _port_size, _port_y + _port_size, true);
 
