@@ -28,8 +28,8 @@ element_labels = ["Neutro (Cavaleiro)", "Agua (Paladino)", "Fogo (Berserker)", "
 selected_element_index = 0;
 
 // Configurações visuais da grade de talentos
-talent_card_w = 136;
-talent_card_h = 96;
+talent_card_w = 152;
+talent_card_h = 104;
 talent_card_gap_x = 16;
 talent_card_gap_y = 14;
 talent_grid_cols = 6;
