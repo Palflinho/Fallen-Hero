@@ -39,3 +39,7 @@ talent_card_h = 104;
 talent_card_gap_x = 16;
 talent_card_gap_y = 14;
 talent_grid_cols = 6;
+talent_grid_scroll_row = 0;
+talent_grid_visible_rows = 3;
+shop_grid_scroll_row = 0;
+shop_grid_visible_rows = 3;

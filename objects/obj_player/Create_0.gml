@@ -235,6 +235,20 @@ synth_guardian_duration = 0;
 synth_guardian_def = 0;
 synth_guardian_taunt_shock = 0;
 
+// Variáveis de controle de combate para talentos do Cavaleiro
+attack_idle_timer = 0;
+hit_streak_count = 0;
+frenesi_stacks = 0;
+frenesi_timer = 0;
+flame_revenge_cooldown = 0;
+clean_kills_count = 0;
+dash_free_available = false;
+dance_speed_timer = 0;
+segundo_folego_cooldown = 0;
+paladin_barrier_active = 0;
+parry_flash_timer = 0;
+duelist_combo_count = 0;
+
 hp_max = 0;
 hp = 0;
 player_recompute_synthetics(id);

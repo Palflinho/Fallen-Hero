@@ -165,13 +165,30 @@ switch (state) {
             if (_cols <= 0) _cols = 1;
             var _total_grid_w = _cols * talent_card_w + (_cols - 1) * talent_card_gap_x;
             var _start_x = (room_width - _total_grid_w) / 2;
+            var _total_rows = ceil(_m / _cols);
+            var _start_vis_row = talent_grid_scroll_row;
+            var _end_vis_row = min(_total_rows, _start_vis_row + talent_grid_visible_rows);
 
-            for (var _i = 0; _i < _m; _i++) {
-                var _t = talent_select_list[_i];
-                var _row = _i div _cols;
-                var _col = _i mod _cols;
-                var _cx = _start_x + _col * (talent_card_w + talent_card_gap_x);
-                var _cy = _grid_start_y + _row * (talent_card_h + talent_card_gap_y);
+            if (_start_vis_row > 0) {
+                draw_set_color(c_yellow);
+                draw_set_halign(fa_center);
+                draw_set_valign(fa_bottom);
+                draw_text(room_width / 2, _grid_start_y - 2, "▲  (Mais talentos acima)  ▲");
+            }
+            if (_end_vis_row < _total_rows) {
+                draw_set_color(c_yellow);
+                draw_set_halign(fa_center);
+                draw_set_valign(fa_top);
+                draw_text(room_width / 2, _grid_start_y + talent_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, "▼  (Mais talentos abaixo - Role para ver)  ▼");
+            }
+
+            for (var _row = _start_vis_row; _row < _end_vis_row; _row++) {
+                for (var _col = 0; _col < _cols; _col++) {
+                    var _i = _row * _cols + _col;
+                    if (_i >= _m) break;
+                    var _t = talent_select_list[_i];
+                    var _cx = _start_x + _col * (talent_card_w + talent_card_gap_x);
+                    var _cy = _grid_start_y + (_row - _start_vis_row) * (talent_card_h + talent_card_gap_y);
 
                 var _is_cursor = (_i == talent_select_cursor);
                 var _is_picked = false;
@@ -351,16 +368,32 @@ switch (state) {
             if (_cols <= 0) _cols = 1;
             var _total_grid_w = _cols * talent_card_w + (_cols - 1) * talent_card_gap_x;
             var _start_x = (room_width - _total_grid_w) / 2;
+            var _total_s_rows = ceil(_tn / _cols);
+            var _start_vis_s_row = shop_grid_scroll_row;
+            var _end_vis_s_row = min(_total_s_rows, _start_vis_s_row + shop_grid_visible_rows);
 
-            for (var _i = 0; _i < _tn; _i++) {
-                var _t = _tab_talents[_i];
-                var _unlocked = talent_is_unlocked(_t.id);
-                var _is_cursor = (_i == shop_talent_index);
+            if (_start_vis_s_row > 0) {
+                draw_set_color(c_yellow);
+                draw_set_halign(fa_center);
+                draw_set_valign(fa_bottom);
+                draw_text(room_width / 2, _grid_shop_y - 2, "▲  (Mais talentos acima)  ▲");
+            }
+            if (_end_vis_s_row < _total_s_rows) {
+                draw_set_color(c_yellow);
+                draw_set_halign(fa_center);
+                draw_set_valign(fa_top);
+                draw_text(room_width / 2, _grid_shop_y + shop_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, "▼  (Mais talentos abaixo - Role para ver)  ▼");
+            }
 
-                var _row = _i div _cols;
-                var _col = _i mod _cols;
-                var _cx = _start_x + _col * (talent_card_w + talent_card_gap_x);
-                var _cy = _grid_shop_y + _row * (talent_card_h + talent_card_gap_y);
+            for (var _row = _start_vis_s_row; _row < _end_vis_s_row; _row++) {
+                for (var _col = 0; _col < _cols; _col++) {
+                    var _i = _row * _cols + _col;
+                    if (_i >= _tn) break;
+                    var _t = _tab_talents[_i];
+                    var _unlocked = talent_is_unlocked(_t.id);
+                    var _is_cursor = (_i == shop_talent_index);
+                    var _cx = _start_x + _col * (talent_card_w + talent_card_gap_x);
+                    var _cy = _grid_shop_y + (_row - _start_vis_s_row) * (talent_card_h + talent_card_gap_y);
 
                 // Card background
                 draw_set_alpha(0.85);

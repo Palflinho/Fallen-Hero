@@ -15,6 +15,14 @@ if (defend_cooldown_timer > 0) defend_cooldown_timer -= _dt;
 if (second_wind_cooldown_timer > 0) second_wind_cooldown_timer -= _dt;
 if (parry_flash_timer > 0) parry_flash_timer -= _dt;
 
+attack_idle_timer += _dt;
+if (dance_speed_timer > 0) dance_speed_timer -= _dt;
+if (segundo_folego_cooldown > 0) segundo_folego_cooldown -= _dt;
+if (frenesi_timer > 0) {
+    frenesi_timer -= _dt;
+    if (frenesi_timer <= 0) frenesi_stacks = 0;
+}
+
 if (poison_active) {
     poison_duration -= _dt;
     poison_tick_timer -= _dt;
@@ -49,12 +57,24 @@ input_v = _down - _up;
 switch (state) {
     case "idle":
     case "walk":
+        var _cur_speed = move_speed;
+        if (dance_speed_timer > 0) _cur_speed *= 1.25;
+
+        // 42 Fortaleza Viva: ganha defesa conforme proximidade de inimigos
+        if (character_class == "knight" && variable_instance_exists(id, "synth_guardiao_fortaleza_viva") && synth_guardiao_fortaleza_viva > 0) {
+            var _near = 0;
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, other.x, other.y) <= 90) _near++;
+            }
+            synth_guardian_def = _near * 3;
+        }
+
         var _desired_vx = 0;
         var _desired_vy = 0;
         if (input_h != 0 || input_v != 0) {
             var _len = point_distance(0, 0, input_h, input_v);
-            _desired_vx = (input_h / _len) * move_speed;
-            _desired_vy = (input_v / _len) * move_speed;
+            _desired_vx = (input_h / _len) * _cur_speed;
+            _desired_vy = (input_v / _len) * _cur_speed;
             facing_x = input_h / _len;
             facing_y = input_v / _len;
         }
@@ -76,7 +96,15 @@ switch (state) {
         if (attack_buffer_timer > 0 && attack_cooldown_timer <= 0) {
             attack_buffer_timer = 0;
             state = "attack";
-            attack_timer = attack_duration;
+
+            var _eff_atk_dur = attack_duration;
+            if (paladin_barrier_active > 0 && variable_instance_exists(id, "synth_paladino_julgamento_sereno") && synth_paladino_julgamento_sereno > 0) {
+                _eff_atk_dur *= 0.80; // +25% velocidade de ataque com barreira
+            }
+            if (frenesi_stacks > 0) {
+                _eff_atk_dur *= (1 / (1 + frenesi_stacks * 0.05));
+            }
+            attack_timer = _eff_atk_dur;
             attack_has_fired = false;
         } else if (_defend_pressed && defend_cooldown_timer <= 0) {
             state = "defend";
@@ -87,18 +115,36 @@ switch (state) {
 
             if (defend_mode == "paladin_aura") {
                 paladin_aura_tick_timer = 0;
-                if (synth_paladin_barrier > 0) {
-                    paladin_barrier_active = synth_paladin_barrier;
+                var _bar_cap = hp_max * 0.5;
+                if (variable_instance_exists(id, "synth_paladino_bastiao_liquido") && synth_paladino_bastiao_liquido > 0) {
+                    _bar_cap = hp_max * 0.75;
                 }
+                paladin_barrier_active = min(_bar_cap, paladin_barrier_active + 25 + synth_paladin_barrier);
             } else if (defend_mode == "berserk_fury") {
                 trigger_hitstop(0.04);
+                // 23 Cinzas do Sacrificio
+                if (variable_instance_exists(id, "synth_berserk_cinzas_sacrificio") && synth_berserk_cinzas_sacrificio > 0) {
+                    hp = max(1, hp - hp * 0.10);
+                }
             } else if (defend_mode == "parry") {
                 parry_flash_timer = 0.15;
             } else if (defend_mode == "guardian_aegis") {
                 trigger_hitstop(0.05);
-                // Provocar (Taunt) todos os inimigos da sala
                 with (obj_enemy_parent) {
                     agro = true;
+                    // 36 Provocacao Esmagadora
+                    if (variable_instance_exists(other, "synth_guardiao_provocacao_esmagadora") && other.synth_guardiao_provocacao_esmagadora > 0) {
+                        enemy_apply_slow(id, 0.7, 4.0);
+                    }
+                }
+                // 35 Muralha Sismica
+                if (variable_instance_exists(id, "synth_guardiao_muralha_sismica") && synth_guardiao_muralha_sismica > 0) {
+                    with (obj_enemy_parent) {
+                        if (point_distance(x, y, other.x, other.y) <= 120) {
+                            enemy_take_damage(id, 14, other.x, other.y, 200);
+                            enemy_apply_slow(id, 0.2, 1.0);
+                        }
+                    }
                 }
                 if (synth_guardian_taunt_shock > 0) {
                     with (obj_enemy_parent) {
@@ -144,12 +190,20 @@ switch (state) {
         if (defend_mode == "paladin_aura") {
             paladin_aura_tick_timer -= _dt;
             if (paladin_aura_tick_timer <= 0) {
-                paladin_aura_tick_timer = paladin_aura_tick_interval;
-                var _heal = 3 + synth_paladin_aura_heal;
-                hp = min(hp_max, hp + _heal);
+                paladin_aura_tick_timer = (variable_instance_exists(id, "synth_paladino_bencao_mare") && synth_paladino_bencao_mare > 0) ? 0.45 : paladin_aura_tick_interval;
+                var _heal = 3 + synth_paladin_aura_heal + synth_paladino_bencao_mare;
+                if (hp >= hp_max && variable_instance_exists(id, "synth_paladino_graca_abencoada") && synth_paladino_graca_abencoada > 0) {
+                    paladin_barrier_active = min(hp_max * 0.75, paladin_barrier_active + _heal * 0.5);
+                } else {
+                    hp = min(hp_max, hp + _heal);
+                }
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= other.paladin_aura_radius) {
-                        enemy_apply_slow(id, 0.7, 0.6);
+                        enemy_apply_slow(id, 0.6, 0.6);
+                        // 14 Correnteza Dilacerante
+                        if (variable_instance_exists(other, "synth_paladino_correnteza_dilacerante") && other.synth_paladino_correnteza_dilacerante > 0) {
+                            enemy_take_damage(id, other.synth_paladino_correnteza_dilacerante, other.x, other.y, 10);
+                        }
                     }
                 }
             }
@@ -159,7 +213,22 @@ switch (state) {
             }
         }
 
-        // Berserker: Fúria permite movimento livre e ataque contínuo
+        // Cavaleiro Padrao: Postura Firme & Muralha Movel
+        if (defend_mode == "block") {
+            var _block_spd_mult = 0.40;
+            if (variable_instance_exists(id, "synth_postura_firme") && synth_postura_firme > 0) {
+                _block_spd_mult = 0.70; // 50% menos desaceleracao!
+            }
+            if (variable_instance_exists(id, "synth_muralha_movel") && synth_muralha_movel > 0) {
+                _block_spd_mult *= 1.30;
+            }
+            if (input_h != 0 || input_v != 0) {
+                var _len = point_distance(0, 0, input_h, input_v);
+                fh_move_and_collide((input_h / _len) * move_speed * _block_spd_mult * _dt, (input_v / _len) * move_speed * _block_spd_mult * _dt);
+            }
+        }
+
+        // Berserker: Furia permite movimento livre e ataque continuo
         if (defend_mode == "berserk_fury") {
             hp = min(hp_max, hp + (8 + synth_hp_reg * 2) * _dt);
             if (input_h != 0 || input_v != 0) {
@@ -175,7 +244,7 @@ switch (state) {
             }
         }
 
-        // Guardião: Bloqueio pesado com movimento reduzido
+        // Guardiao: Bloqueio pesado com movimento reduzido
         if (defend_mode == "guardian_aegis") {
             if (input_h != 0 || input_v != 0) {
                 var _len = point_distance(0, 0, input_h, input_v);

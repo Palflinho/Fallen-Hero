@@ -13,69 +13,179 @@
 // Numbers here (per_rank, cost) are placeholders, easy to retune.
 function get_talent_defs() {
     return [
-        // ---- Cavaleiro (Knight) - Fundamentais ----
-        {id: "knight_def_fisica", character: "knight", label: "Def Fisica", synth_field: "synth_def_fisica", per_rank: 3, cost: 0,
-         desc_flavor: "Reforca a blindagem fisica do cavaleiro, reduzindo o impacto de ataques corporais diretos.",
-         desc_value: "+3 de Defesa Fisica por nivel de talento.", icon_type: "shield"},
-        {id: "knight_hp_max", character: "knight", label: "HP Maximo", synth_field: "synth_armor_hp", per_rank: 15, cost: 40,
-         desc_flavor: "Aumenta a constituicao fisica e tenacidade para resistir a confrontos prolongados.",
-         desc_value: "+15 de Vida Maxima por nivel de talento.", icon_type: "heart"},
-        {id: "knight_golpe_pesado", character: "knight", label: "Golpe Pesado", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0,
-         desc_flavor: "Imprime maior peso e firmeza nos golpes de espada cortando as defesas inimigas.",
-         desc_value: "+3 de Poder Fisico (Dano) por nivel de talento.", icon_type: "sword"},
-        {id: "knight_retaliacao", character: "knight", label: "Retaliacao", synth_field: "synth_thorns_dmg", per_rank: 5, cost: 0,
-         desc_flavor: "Armadura reativa que devolve parte do impacto recebido contra agressores proximos.",
-         desc_value: "+5 de Dano de Retaliacao ao sofrer golpes por nivel.", icon_type: "thorns"},
-        {id: "knight_folego_aco", character: "knight", label: "Folego de Aco", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0,
-         desc_flavor: "Concentracao marcial que regenera a vitalidade do guerreiro de forma ininterrupta.",
-         desc_value: "+1.5 de Regeneracao de Vida por segundo por nivel.", icon_type: "regen"},
-        {id: "knight_escudo_inabalavel", character: "knight", label: "Escudo Inabalavel", synth_field: "synth_block_reduction", per_rank: 0.08, cost: 50,
-         desc_flavor: "Aperfeicoa a postura de guarda com o escudo, absorvendo grande parte dos danos bloqueados.",
-         desc_value: "+8% de Reducao adicional de dano durante o Bloqueio.", icon_type: "block"},
+        // =========================================================================
+        // 1. FUNDAMENTAIS / MESTRIA COM ESCUDO E ESPADA (10 TALENTOS)
+        // =========================================================================
+        {id: "knight_postura_firme", character: "knight", affinity: "none", label: "Postura Firme", synth_field: "synth_postura_firme", per_rank: 0.50, cost: 0,
+         desc_flavor: "Firmeza marcial com o escudo erguido, permitindo avancar contra chuvas de golpes sem perder velocidade.",
+         desc_value: "+50% de velocidade de movimento enquanto defende com o escudo.", icon_type: "block"},
+        {id: "knight_lamina_afiada", character: "knight", affinity: "none", label: "Lamina Afiada", synth_field: "synth_lamina_afiada", per_rank: 1, cost: 0,
+         desc_flavor: "Paciencia e tecnica que acumulam poder na ponta da lamina quando o guerreiro aguarda o momento certo.",
+         desc_value: "O primeiro golpe apos 2s sem atacar tem 100% de chance de acerto critico.", icon_type: "sword"},
+        {id: "knight_golpe_pesado", character: "knight", affinity: "none", label: "Golpe Pesado", synth_field: "synth_golpe_pesado", per_rank: 1, cost: 0,
+         desc_flavor: "Impacto demolidor que projeta monstros violentamente para tras ao atingir pontos criticos.",
+         desc_value: "Acertos criticos aumentam a forca de repulsao em +80% e atordoam inimigos por 0.3s.", icon_type: "crit"},
+        {id: "knight_escudo_choque", character: "knight", affinity: "none", label: "Escudo de Choque", synth_field: "synth_escudo_choque", per_rank: 1, cost: 35,
+         desc_flavor: "O impacto absorvido pelo metal e canalizado em uma onda conica de ar que empurra agressores.",
+         desc_value: "Bloquear um golpe direto projeta uma onda conica de ar que empurra inimigos a frente.", icon_type: "shockwave"},
+        {id: "knight_segundo_folego", character: "knight", affinity: "none", label: "Segundo Folego", synth_field: "synth_segundo_folego", per_rank: 1, cost: 45,
+         desc_flavor: "Resiliencia heroica extrema que impede o guerreiro de sucumbir em momentos desesperadores.",
+         desc_value: "Ao cair para menos de 25% de vida, recupera instantaneamente 20% de HP (Recarga: 60s).", icon_type: "second_wind"},
+        {id: "knight_muralha_movel", character: "knight", affinity: "none", label: "Muralha Movel", synth_field: "synth_muralha_movel", per_rank: 0.30, cost: 40,
+         desc_flavor: "Carga decidida com o escudo a frente para fechar a distancia contra inimigos e arqueiros.",
+         desc_value: "Correr em direcao a um inimigo com o escudo erguido concede +30% de velocidade de movimento.", icon_type: "boot"},
+        {id: "knight_aco_temperado", character: "knight", affinity: "none", label: "Aco Temperado", synth_field: "synth_aco_temperado", per_rank: 1, cost: 50,
+         desc_flavor: "Reforcos forjados com ligas preciosas que endurecem a armadura proporcionalmente as riquezas da run.",
+         desc_value: "+1 de defesa fisica para cada 100 moedas de ouro acumuladas na run (maximo +8).", icon_type: "shield"},
+        {id: "knight_fio_carrasco", character: "knight", affinity: "none", label: "Fio do Carrasco", synth_field: "synth_fio_carrasco", per_rank: 0.40, cost: 50,
+         desc_flavor: "Cortes impiedosos desenhados para decapitar oponentes desestabilizados a beira da morte.",
+         desc_value: "Causa +40% de dano contra qualquer inimigo com menos de 30% de vida.", icon_type: "execute"},
+        {id: "knight_reflexo_blindado", character: "knight", affinity: "none", label: "Reflexo Blindado", synth_field: "synth_reflexo_blindado", per_rank: 0.40, cost: 55,
+         desc_flavor: "Angulacao perfeita do escudo capaz de defletir flechas e projeteis de volta aos agressores.",
+         desc_value: "Projeteis que atingem o escudo com bloqueio ativo tem 40% de chance de ricochetear de volta.", icon_type: "riposte"},
+        {id: "knight_vontade_indomavel", character: "knight", affinity: "none", label: "Vontade Indomavel", synth_field: "synth_vontade_indomavel", per_rank: 1, cost: 60,
+         desc_flavor: "Postura inabalavel que ignora terrenos escorregadios, ventanias e empurroes de chefes colossais.",
+         desc_value: "Torna o Cavaleiro imune a empurroes, knockback e desaceleracoes de armadilhas ou chefes.", icon_type: "bastion"},
 
-        // ---- Cavaleiro + Agua (Paladino) ----
-        {id: "knight_paladino_aura", character: "knight", label: "Aura Revigorante", synth_field: "synth_paladin_aura_heal", per_rank: 2, cost: 50,
-         desc_flavor: "Canaliza a benevolencia da agua na Aura de Sobrevida, curando ferimentos em pulsos.",
-         desc_value: "+2 de Cura adicional por pulso da Aura de Sobrevida.", icon_type: "holy"},
-        {id: "knight_paladino_sobrevida", character: "knight", label: "Bencao da Sobrevida", synth_field: "synth_paladin_barrier", per_rank: 25, cost: 60,
-         desc_flavor: "Ao ativar a postura sagrada, uma barreira luminosa absorve o proximo dano recebido.",
-         desc_value: "+25 de Barreira sagrada protetora ao ativar o especial.", icon_type: "barrier"},
-        {id: "knight_paladino_golpe_sagrado", character: "knight", label: "Golpe Sagrado", synth_field: "synth_paladin_heal_hit", per_rank: 2, cost: 70,
-         desc_flavor: "A lamina energizada purifica a carne, restaurando pontos de saude ao acertar inimigos.",
-         desc_value: "+2 de Vida recuperada a cada golpe desferido.", icon_type: "heal_hit"},
+        // =========================================================================
+        // 2. PALADINO (ELEMENTO AGUA / SAGRADO - 8 TALENTOS)
+        // =========================================================================
+        {id: "knight_paladino_bencao_mare", character: "knight", affinity: "water", label: "Bencao da Mare", synth_field: "synth_paladino_bencao_mare", per_rank: 4, cost: 50,
+         desc_flavor: "As aguas sagradas circulam em pulsos acelerados, revitalizando tecidos e curando feridas profundas.",
+         desc_value: "A Aura de Sobrevida pulsa 25% mais rapido e aumenta a regeneracao natural em +4 HP/s.", icon_type: "holy"},
+        {id: "knight_paladino_bastiao_liquido", character: "knight", affinity: "water", label: "Bastiao Liquido", synth_field: "synth_paladino_bastiao_liquido", per_rank: 0.50, cost: 60,
+         desc_flavor: "Uma pelicula aquosa translucida que dissipa disparos a distancia antes que toquem o corpo.",
+         desc_value: "Barreira de sobrevida ganha capacidade maxima de +50% do HP e absorve 100% do dano de projeteis.", icon_type: "barrier"},
+        {id: "knight_paladino_gota_purificadora", character: "knight", affinity: "water", label: "Gota Purificadora", synth_field: "synth_paladino_gota_purificadora", per_rank: 8, cost: 55,
+         desc_flavor: "Emanacoes puras limpam toxinas corporais instantaneamente quando o mal e purgado.",
+         desc_value: "Eliminar um inimigo remove instantaneamente venenos ou queimaduras e cura 8 HP.", icon_type: "regen"},
+        {id: "knight_paladino_correnteza_dilacerante", character: "knight", affinity: "water", label: "Correnteza Dilacerante", synth_field: "synth_paladino_correnteza_dilacerante", per_rank: 6, cost: 65,
+         desc_flavor: "A aura gira como um turbilhao tempestuoso, desacelerando passos inimigos e corroendo sua carne.",
+         desc_value: "Inimigos na aura sofrem -40% de velocidade e recebem dano magico continuo a cada 0.5s.", icon_type: "wind"},
+        {id: "knight_paladino_golpe_nascente", character: "knight", affinity: "water", label: "Golpe da Nascente", synth_field: "synth_paladino_golpe_nascente", per_rank: 5, cost: 70,
+         desc_flavor: "A cada ciclo de esgrima, a lamina faz brotar uma onda cortante de agua pristina que nutre o heroi.",
+         desc_value: "Cada 3º golpe de espada libera uma onda d'agua penetrante que cura o jogador em 5 HP.", icon_type: "heal_hit"},
+        {id: "knight_paladino_escudo_espelhado", character: "knight", affinity: "water", label: "Escudo Espelhado", synth_field: "synth_paladino_escudo_espelhado", per_rank: 1, cost: 65,
+         desc_flavor: "A quebra da barreira estilhaca o espelho dagua em um estrondo que atordoa agressores.",
+         desc_value: "Quando a barreira de sobrevida quebra por dano, explode cegando e empurrando num raio de 120px.", icon_type: "shockwave"},
+        {id: "knight_paladino_graca_abencoada", character: "knight", affinity: "water", label: "Graca Abencoada", synth_field: "synth_paladino_graca_abencoada", per_rank: 0.50, cost: 75,
+         desc_flavor: "A vitalidade excedente nunca e desperdicada, condensando-se em escudo de energia sagrada.",
+         desc_value: "Receber cura enquanto estiver com HP cheio converte 50% do valor em barreira de sobrevida.", icon_type: "barrier"},
+        {id: "knight_paladino_julgamento_sereno", character: "knight", affinity: "water", label: "Julgamento Sereno", synth_field: "synth_paladino_julgamento_sereno", per_rank: 0.25, cost: 80,
+         desc_flavor: "Sob o amparo da barreira luminosa, o cavaleiro manuseia a espada com serenidade e cadencia reluzente.",
+         desc_value: "Enquanto a barreira de sobrevida estiver ativa, a velocidade de ataque da espada aumenta em +25%.", icon_type: "haste"},
 
-        // ---- Cavaleiro + Fogo (Berserker) ----
-        {id: "knight_berserk_furia", character: "knight", label: "Furia Devastadora", synth_field: "synth_berserk_dmg_bonus", per_rank: 0.20, cost: 50,
-         desc_flavor: "Aumenta exponencialmente a potencia dos ataques devastadores durante a Furia Ardente.",
-         desc_value: "+20% de Dano adicional durante o especial Furia Ardente.", icon_type: "fury"},
-        {id: "knight_berserk_chamas", character: "knight", label: "Laminas Flamejantes", synth_field: "synth_berserk_burn", per_rank: 4, cost: 60,
-         desc_flavor: "Laminas incandescentes incendeiam os adversarios, causando queimaduras persistentes.",
-         desc_value: "+4 de Dano por segundo de Queimadura continua nos alvos.", icon_type: "burn"},
-        {id: "knight_berserk_sede_sangue", character: "knight", label: "Sede de Sangue", synth_field: "synth_berserk_lifesteal", per_rank: 0.03, cost: 70,
-         desc_flavor: "A agressividade desenfreada converte a dor infligida aos oponentes em saude propria.",
-         desc_value: "+3% de Roubo de Vida (Lifesteal) ao acertar golpes.", icon_type: "lifesteal"},
+        // =========================================================================
+        // 3. BERSERKER (ELEMENTO FOGO / FURIA - 8 TALENTOS)
+        // =========================================================================
+        {id: "knight_berserk_arco_incendiario", character: "knight", affinity: "fire", label: "Arco Incendiario", synth_field: "synth_berserk_arco_incendiario", per_rank: 0.40, cost: 55,
+         desc_flavor: "O calor abrasador alarga a silhueta da espada, deixando rastros incandescentes no chao da masmorra.",
+         desc_value: "Aumenta a area do corte da espada em +40% e queima o chao por 1.5s.", icon_type: "burn"},
+        {id: "knight_berserk_frenesi_ardente", character: "knight", affinity: "fire", label: "Frenesi Ardente", synth_field: "synth_berserk_frenesi_ardente", per_rank: 0.05, cost: 60,
+         desc_flavor: "A adrenalina e as brasas aceleram os musculos a cada contato cortante consecutivo com o ferro.",
+         desc_value: "Cada golpe consecutivo concede +5% de velocidade de ataque (acumula ate 6 vezes por 3s).", icon_type: "haste"},
+        {id: "knight_berserk_combustao_espontanea", character: "knight", affinity: "fire", label: "Combustao Espontanea", synth_field: "synth_berserk_combustao_espontanea", per_rank: 0.60, cost: 65,
+         desc_flavor: "Inimigos em chamas entram em ponto critico ao morrer, detonando pirotecnicamente entre aliados.",
+         desc_value: "Inimigos mortos sob efeito de Queimadura explodem causando 60% do dano do ataque em area.", icon_type: "fury"},
+        {id: "knight_berserk_sede_sangue", character: "knight", affinity: "fire", label: "Sede de Sangue", synth_field: "synth_berserk_sede_sangue", per_rank: 0.15, cost: 70,
+         desc_flavor: "A furia cega se alimenta da dor inimiga, restaurando a fibra muscular e mantendo o frenesi aceso.",
+         desc_value: "Golpes criticos recuperam 15% do dano causado como vida e prolongam a Furia Ardente em +0.5s.", icon_type: "lifesteal"},
+        {id: "knight_berserk_cinzas_sacrificio", character: "knight", affinity: "fire", label: "Cinzas do Sacrificio", synth_field: "synth_berserk_cinzas_sacrificio", per_rank: 1, cost: 75,
+         desc_flavor: "O berserker queima o proprio sangue em troca de um pico de destruicao piroclastica estarrecedor.",
+         desc_value: "Ativar Furia Ardente consome 10% do HP atual, mas dobra o bonus de dano de fogo nos primeiros 3s.", icon_type: "fireball"},
+        {id: "knight_berserk_lamina_brasa", character: "knight", affinity: "fire", label: "Lamina em Brasa", synth_field: "synth_berserk_lamina_brasa", per_rank: 0.50, cost: 70,
+         desc_flavor: "Temperatura vulcanica capaz de fundir escudos pesados e rachar as couracas rochosas dos golens.",
+         desc_value: "Inimigos com armadura perdem 50% da sua reducao de dano contra seus ataques de fogo.", icon_type: "sword"},
+        {id: "knight_berserk_vinganca_flamejante", character: "knight", affinity: "fire", label: "Vinganca Flamejante", synth_field: "synth_berserk_vinganca_flamejante", per_rank: 18, cost: 65,
+         desc_flavor: "Cada ferida sofrida rompe uma valvula de pressao, expelindo um anel de chamas ao redor do corpo.",
+         desc_value: "Sofrer dano fisico descarrega uma labareda ao redor do corpo que atinge todos num raio de 70px.", icon_type: "burn"},
+        {id: "knight_berserk_furia_imortal", character: "knight", affinity: "fire", label: "Furia Imortal", synth_field: "synth_berserk_furia_imortal", per_rank: 1, cost: 85,
+         desc_flavor: "A recusa obstinada em morrer enquanto o fogo da furia continuar crepitando no peito.",
+         desc_value: "Enquanto a habilidade Furia Ardente estiver ativa, o jogador nao pode ser derrotado (mantem 1 HP).", icon_type: "second_wind"},
 
-        // ---- Cavaleiro + Ar (Duelista) ----
-        {id: "knight_duelista_parry_cd", character: "knight", label: "Reflexo do Vento", synth_field: "synth_duelist_parry_bonus", per_rank: 1, cost: 50,
-         desc_flavor: "Agilidade refinada que reduz drasticamente o tempo de recarga da habilidade Aparar.",
-         desc_value: "-0.35s no Tempo de Recarga da habilidade de Aparar (Parry).", icon_type: "haste"},
-        {id: "knight_duelista_contra_ataque", character: "knight", label: "Riposte Letal", synth_field: "synth_duelist_counter_mult", per_rank: 0.40, cost: 60,
-         desc_flavor: "Ao aparar com sincronia perfeita, desfere um golpe de contra-ataque circular avassalador.",
-         desc_value: "+40% de Multiplicador de Dano no Contra-Ataque do Parry.", icon_type: "riposte"},
-        {id: "knight_duelista_combo_veloz", character: "knight", label: "Passo da Tempestade", synth_field: "synth_duelist_speed", per_rank: 0.08, cost: 70,
-         desc_flavor: "Aumenta a velocidade de movimento e a cadencia de golpes ao executar combos duplos.",
-         desc_value: "+8% de Velocidade de Movimento e ataque apos o combo.", icon_type: "wind"},
+        // =========================================================================
+        // 4. DUELISTA (ELEMENTO AR / VENTO - 8 TALENTOS)
+        // =========================================================================
+        {id: "knight_duelista_riposte_perfeito", character: "knight", affinity: "wind", label: "Riposte Perfeito", synth_field: "synth_duelista_riposte_perfeito", per_rank: 1.00, cost: 60,
+         desc_flavor: "Sincronismo milimetrico no aparo da lamina hostil abrindo brechas para um contra-golpe mortal.",
+         desc_value: "Acertar um Parry com menos de 0.1s de margem causa +100% de dano critico no contra-ataque.", icon_type: "riposte"},
+        {id: "knight_duelista_passo_eolico", character: "knight", affinity: "wind", label: "Passo Eolico", synth_field: "synth_duelista_passo_eolico", per_rank: 1, cost: 55,
+         desc_flavor: "Deslize etereo impulsionado pelo ricochete do bloqueio para reposicionar o heroi instantaneamente.",
+         desc_value: "Bloquear ou aparar um golpe permite realizar um dash instantaneo na direcao de mira sem custo.", icon_type: "wind"},
+        {id: "knight_duelista_combo_vendaval", character: "knight", affinity: "wind", label: "Combo Vendaval", synth_field: "synth_duelista_combo_vendaval", per_rank: 1, cost: 65,
+         desc_flavor: "O segundo floreio do combo corta o ar com tanta pressao que cria um bumerangue de vacuo voador.",
+         desc_value: "O segundo golpe do combo dispara uma rajada cortante de vento que atinge inimigos distantes.", icon_type: "wind"},
+        {id: "knight_duelista_danca_laminas", character: "knight", affinity: "wind", label: "Danca das Laminas", synth_field: "synth_duelista_danca_laminas", per_rank: 0.25, cost: 60,
+         desc_flavor: "Fluidez acrobata inebriante que converte cada baixa em aceleracao ritmica pelos corredores.",
+         desc_value: "Aumenta a velocidade de movimento base em +25% por 2s apos cada abate.", icon_type: "boot"},
+        {id: "knight_duelista_aparar_cadeia", character: "knight", affinity: "wind", label: "Aparar em Cadeia", synth_field: "synth_duelista_aparar_cadeia", per_rank: 1, cost: 75,
+         desc_flavor: "Dominio ritmico de esgrima que aproveita o balanco do bloqueio anterior para aparar o proximo.",
+         desc_value: "Aparar um golpe reseta imediatamente o tempo de recarga da habilidade de Parry.", icon_type: "riposte"},
+        {id: "knight_duelista_vacuo_cortante", character: "knight", affinity: "wind", label: "Vacuo Cortante", synth_field: "synth_duelista_vacuo_cortante", per_rank: 1, cost: 70,
+         desc_flavor: "Um vortice centripeto se forma no ponto de impacto puxando monstros desavisados para o centro.",
+         desc_value: "O contra-ataque do Parry puxa todos os inimigos proximos para o centro antes de explodir.", icon_type: "shockwave"},
+        {id: "knight_duelista_reflexos_celere", character: "knight", affinity: "wind", label: "Reflexos Celere", synth_field: "synth_duelista_reflexos_celere", per_rank: 0.15, cost: 75,
+         desc_flavor: "Instintos agucados que pressentem trajetorias de ataque, deixando apenas imagens residuais no ar.",
+         desc_value: "Concede +15% de chance de esquiva passiva permanente contra qualquer golpe.", icon_type: "dodge"},
+        {id: "knight_duelista_estocada_fulminante", character: "knight", affinity: "wind", label: "Estocada Fulminante", synth_field: "synth_duelista_estocada_fulminante", per_rank: 2.50, cost: 80,
+         desc_flavor: "Puncionamento cirurgico na espinha ou pontos cegos de adversarios desatentos.",
+         desc_value: "Se o golpe de uma sequencia atingir as costas do inimigo, causa 2.5x de dano.", icon_type: "sword"},
 
-        // ---- Cavaleiro + Terra (Guardiao) ----
-        {id: "knight_guardiao_bastiao", character: "knight", label: "Fortaleza de Rocha", synth_field: "synth_guardian_duration", per_rank: 1.0, cost: 50,
-         desc_flavor: "Estende a duracao da postura Bastiao da Rocha mantendo o bloqueio firme por mais tempo.",
-         desc_value: "+1.0s de Duracao na postura de Bloqueio Bastiao da Rocha.", icon_type: "bastion"},
-        {id: "knight_guardiao_casca_rocha", character: "knight", label: "Casca de Pedra", synth_field: "synth_guardian_def", per_rank: 4, cost: 60,
-         desc_flavor: "Endurece o corpo como granito concedendo armadura passiva impenetravel.",
-         desc_value: "+4 de Defesa adicional permanente por nivel.", icon_type: "rock"},
-        {id: "knight_guardiao_taunt_choque", character: "knight", label: "Onda Sismica", synth_field: "synth_guardian_taunt_shock", per_rank: 12, cost: 70,
-         desc_flavor: "A provocacao atrai a atencao de todos os inimigos da sala emitindo uma onda sismica.",
-         desc_value: "+12 de Dano sismico e 50% de Lentidao em area ao provocar.", icon_type: "shockwave"},
+        // =========================================================================
+        // 5. GUARDIAO (ELEMENTO TERRA / FORTALEZA - 8 TALENTOS)
+        // =========================================================================
+        {id: "knight_guardiao_muralha_sismica", character: "knight", affinity: "earth", label: "Muralha Sismica", synth_field: "synth_guardiao_muralha_sismica", per_rank: 1, cost: 60,
+         desc_flavor: "O impacto firme da postura faz brotar estalagmites macicas que estrangulam corredores e hordas.",
+         desc_value: "O Bastiao de Terra cria estalagmites no chao ao redor bloqueando passagens e inimigos.", icon_type: "bastion"},
+        {id: "knight_guardiao_provocacao_esmagadora", character: "knight", affinity: "earth", label: "Provocacao Esmagadora", synth_field: "synth_guardiao_provocacao_esmagadora", per_rank: 0.30, cost: 65,
+         desc_flavor: "Grito de desafio ensurdecedor que abala a coragem dos monstros, enfraquecendo seu poder ofensivo.",
+         desc_value: "Inimigos provocados pelo Guardiao tem seu dano reduzido em 30% contra o jogador por 4s.", icon_type: "shockwave"},
+        {id: "knight_guardiao_carapaca_granito", character: "knight", affinity: "earth", label: "Carapaca de Granito", synth_field: "synth_guardiao_carapaca_granito", per_rank: 12, cost: 70,
+         desc_flavor: "Camada densa de minerais sobre as placas de ferro tornando o guerreiro tao inamovivel quanto uma montanha.",
+         desc_value: "Concede +12 de defesa fisica e imunidade a qualquer tipo de knockback ou empurrao.", icon_type: "rock"},
+        {id: "knight_guardiao_retaliacao_sismica", character: "knight", affinity: "earth", label: "Retaliacao Sismica", synth_field: "synth_guardiao_retaliacao_sismica", per_rank: 0.50, cost: 70,
+         desc_flavor: "A vibracao sismica devolve o choque em fragmentos de pedra pontiagudos em todas as direcoes.",
+         desc_value: "Devolve 50% do dano de qualquer golpe recebido como dano de terra para todos ao redor.", icon_type: "thorns"},
+        {id: "knight_guardiao_fissura_telurica", character: "knight", affinity: "earth", label: "Fissura Telurica", synth_field: "synth_guardiao_fissura_telurica", per_rank: 1, cost: 75,
+         desc_flavor: "Golpe descendente monumental que abre uma fenda no solo rochoso da masmorra.",
+         desc_value: "Cada 4º golpe de espada faz rachar o chao em linha reta, atordoando o primeiro inimigo por 0.8s.", icon_type: "rock"},
+        {id: "knight_guardiao_bastiao_inabalavel", character: "knight", affinity: "earth", label: "Bastiao Inabalavel", synth_field: "synth_guardiao_bastiao_inabalavel", per_rank: 0.15, cost: 70,
+         desc_flavor: "A firmeza inquebravel do escudo ancora as forcas vitais na terra, cicatrizando o organismo.",
+         desc_value: "Bloquear ataques converte 15% do dano bloqueado em regeneracao de vida temporaria.", icon_type: "regen"},
+        {id: "knight_guardiao_peso_esmagador", character: "knight", affinity: "earth", label: "Peso Esmagador", synth_field: "synth_guardiao_peso_esmagador", per_rank: 25, cost: 75,
+         desc_flavor: "A inercia do escudo e descomunal: colisoes contra rochas e paredes esmagam ossos com facilidade.",
+         desc_value: "Empurrar um inimigo contra uma parede causa dano de esmagamento extra de 25 por rank.", icon_type: "shield"},
+        {id: "knight_guardiao_fortaleza_viva", character: "knight", affinity: "earth", label: "Fortaleza Viva", synth_field: "synth_guardiao_fortaleza_viva", per_rank: 3, cost: 80,
+         desc_flavor: "Quanto mais cercado e pressionado por hordas, mais impenetravel se torna a presenca do Guardiao.",
+         desc_value: "Para cada inimigo a menos de 90px de distancia, ganha +3 de defesa e +5% de reducao de dano.", icon_type: "shield"},
+
+        // =========================================================================
+        // 6. LENDARIOS / SINERGIAS ELEMENTAIS HIBRIDAS (8 TALENTOS)
+        // =========================================================================
+        {id: "knight_lendario_vapor_sagrado", character: "knight", affinity: "hybrid", label: "Vapor Sagrado", synth_field: "synth_lendario_vapor_sagrado", per_rank: 1, cost: 100,
+         desc_flavor: "Fusao dos misterios da agua e do fogo gerando nevoas misticas que cauterizam e saram.",
+         desc_value: "Ataques aplicam vapor escaldante: queimadura continua que tambem cura o jogador a cada tick.", icon_type: "holy"},
+        {id: "knight_lendario_tempestade_poeira", character: "knight", affinity: "hybrid", label: "Tempestade de Poeira", synth_field: "synth_lendario_tempestade_poeira", per_rank: 1, cost: 100,
+         desc_flavor: "A sinergia entre terra e ar levanta areia em torvelinho, desviando projeteis antes de alcancarem o alvo.",
+         desc_value: "O contra-ataque do Parry levanta uma tempestade de areia que cega projeteis inimigos por 3s.", icon_type: "wind"},
+        {id: "knight_lendario_gelo_fendido", character: "knight", affinity: "hybrid", label: "Gelo Fendido", synth_field: "synth_lendario_gelo_fendido", per_rank: 1, cost: 110,
+         desc_flavor: "A frieza da agua e a solidez da terra criam estacas cristalizadas que paralisam agressores.",
+         desc_value: "O impacto do escudo cria espinhos de gelo permanentes que congelam inimigos que pisam neles.", icon_type: "barrier"},
+        {id: "knight_lendario_tempestade_ignea", character: "knight", affinity: "hybrid", label: "Tempestade Ignea", synth_field: "synth_lendario_tempestade_ignea", per_rank: 1, cost: 110,
+         desc_flavor: "O sopro do vento alimenta o apetite do fogo criando torvelinhos flamejantes que cacam oponentes.",
+         desc_value: "O combo do Duelista dispara tornados de fogo que perseguem os alvos mais proximos.", icon_type: "fury"},
+        {id: "knight_lendario_avatar_elemental", character: "knight", affinity: "legendary", label: "Avatar Elemental", synth_field: "synth_lendario_avatar_elemental", per_rank: 1, cost: 120,
+         desc_flavor: "Harmonia perfeita entre os quatro elementos desencadeando ondas binarias devastadoras.",
+         desc_value: "+25% de dano de ataque fisico e magico e desencadeia explosoes combinadas elementais.", icon_type: "fireball"},
+        {id: "knight_lendario_cavaleiro_apocalipse", character: "knight", affinity: "legendary", label: "Cavaleiro do Apocalipse", synth_field: "synth_lendario_cavaleiro_apocalipse", per_rank: 1, cost: 130,
+         desc_flavor: "A maestria imaculada atrai a furia dos ceus, despencando cometas quando a sequencia de abates e perfeita.",
+         desc_value: "A cada 10 inimigos derrotados sem sofrer dano, o proximo golpe descarrega um meteoro no alvo.", icon_type: "fireball"},
+        {id: "knight_lendario_escudo_titanico", character: "knight", affinity: "legendary", label: "Escudo Titanico", synth_field: "synth_lendario_escudo_titanico", per_rank: 1, cost: 125,
+         desc_flavor: "O metal se expande como um portal de fortaleza capaz de criar uma trincheira intransponivel para hordas.",
+         desc_value: "O tamanho do escudo dobra, cobrindo 180° frontais e bloqueando passagens inteiras.", icon_type: "shield"},
+        {id: "knight_lendario_eco_ancestrais", character: "knight", affinity: "legendary", label: "Eco dos Ancestrais", synth_field: "synth_lendario_eco_ancestrais", per_rank: 1, cost: 140,
+         desc_flavor: "O sangue heroico desperta memorias de reis guerreiros antigos que espelham cada golpe desferido.",
+         desc_value: "Bloquear ou contra-atacar invoca o espirito translucido de um guerreiro que desfere um golpe gemeo.", icon_type: "sword"},
 
         // ---- Arqueiro (Archer) ----
         {id: "archer_pwr_fisica", character: "archer", label: "Power Fisico", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0,
@@ -205,6 +315,35 @@ function get_talents_for_character(_character) {
         if (_all[i].character == _character) array_push(_out, _all[i]);
     }
     return _out;
+}
+
+function knight_get_talents_for_affinity(_affinity) {
+    var _all = get_talents_for_character("knight");
+    var _out = [];
+    for (var i = 0; i < array_length(_all); i++) {
+        var _t = _all[i];
+        var _aff = variable_struct_exists(_t, "affinity") ? _t.affinity : "none";
+        if (_aff == "none" || _aff == "legendary" || _aff == "hybrid" || _aff == _affinity) {
+            array_push(_out, _t);
+        }
+    }
+    return _out;
+}
+
+function player_has_talent(_p, _id) {
+    if (_p == noone || !instance_exists(_p)) return false;
+    for (var i = 0; i < array_length(_p.talent_slot_ids); i++) {
+        if (_p.talent_slot_ids[i] == _id && _p.talent_slot_ranks[i] > 0) return true;
+    }
+    return false;
+}
+
+function player_get_talent_rank(_p, _id) {
+    if (_p == noone || !instance_exists(_p)) return 0;
+    for (var i = 0; i < array_length(_p.talent_slot_ids); i++) {
+        if (_p.talent_slot_ids[i] == _id) return _p.talent_slot_ranks[i];
+    }
+    return 0;
 }
 
 function get_general_talent_defs() {
@@ -337,25 +476,67 @@ function player_recompute_synthetics(_p) {
     _p.synth_gold_bonus = 0;
     _p.synth_second_wind = 0;
 
-    // Paladino
-    _p.synth_paladin_aura_heal = 0;
-    _p.synth_paladin_barrier = 0;
-    _p.synth_paladin_heal_hit = 0;
+    // 1. Fundamentais
+    _p.synth_postura_firme = 0;
+    _p.synth_lamina_afiada = 0;
+    _p.synth_golpe_pesado = 0;
+    _p.synth_escudo_choque = 0;
+    _p.synth_segundo_folego = 0;
+    _p.synth_muralha_movel = 0;
+    _p.synth_aco_temperado = 0;
+    _p.synth_fio_carrasco = 0;
+    _p.synth_reflexo_blindado = 0;
+    _p.synth_vontade_indomavel = 0;
 
-    // Berserker
-    _p.synth_berserk_dmg_bonus = 0;
-    _p.synth_berserk_burn = 0;
-    _p.synth_berserk_lifesteal = 0;
+    // 2. Paladino
+    _p.synth_paladino_bencao_mare = 0;
+    _p.synth_paladino_bastiao_liquido = 0;
+    _p.synth_paladino_gota_purificadora = 0;
+    _p.synth_paladino_correnteza_dilacerante = 0;
+    _p.synth_paladino_golpe_nascente = 0;
+    _p.synth_paladino_escudo_espelhado = 0;
+    _p.synth_paladino_graca_abencoada = 0;
+    _p.synth_paladino_julgamento_sereno = 0;
 
-    // Duelista
-    _p.synth_duelist_parry_bonus = 0;
-    _p.synth_duelist_counter_mult = 0;
-    _p.synth_duelist_speed = 0;
+    // 3. Berserker
+    _p.synth_berserk_arco_incendiario = 0;
+    _p.synth_berserk_frenesi_ardente = 0;
+    _p.synth_berserk_combustao_espontanea = 0;
+    _p.synth_berserk_sede_sangue = 0;
+    _p.synth_berserk_cinzas_sacrificio = 0;
+    _p.synth_berserk_lamina_brasa = 0;
+    _p.synth_berserk_vinganca_flamejante = 0;
+    _p.synth_berserk_furia_imortal = 0;
 
-    // Guardiao
-    _p.synth_guardian_duration = 0;
-    _p.synth_guardian_def = 0;
-    _p.synth_guardian_taunt_shock = 0;
+    // 4. Duelista
+    _p.synth_duelista_riposte_perfeito = 0;
+    _p.synth_duelista_passo_eolico = 0;
+    _p.synth_duelista_combo_vendaval = 0;
+    _p.synth_duelista_danca_laminas = 0;
+    _p.synth_duelista_aparar_cadeia = 0;
+    _p.synth_duelista_vacuo_cortante = 0;
+    _p.synth_duelista_reflexos_celere = 0;
+    _p.synth_duelista_estocada_fulminante = 0;
+
+    // 5. Guardiao
+    _p.synth_guardiao_muralha_sismica = 0;
+    _p.synth_guardiao_provocacao_esmagadora = 0;
+    _p.synth_guardiao_carapaca_granito = 0;
+    _p.synth_guardiao_retaliacao_sismica = 0;
+    _p.synth_guardiao_fissura_telurica = 0;
+    _p.synth_guardiao_bastiao_inabalavel = 0;
+    _p.synth_guardiao_peso_esmagador = 0;
+    _p.synth_guardiao_fortaleza_viva = 0;
+
+    // 6. Lendarios / Hibridos
+    _p.synth_lendario_vapor_sagrado = 0;
+    _p.synth_lendario_tempestade_poeira = 0;
+    _p.synth_lendario_gelo_fendido = 0;
+    _p.synth_lendario_tempestade_ignea = 0;
+    _p.synth_lendario_avatar_elemental = 0;
+    _p.synth_lendario_cavaleiro_apocalipse = 0;
+    _p.synth_lendario_escudo_titanico = 0;
+    _p.synth_lendario_eco_ancestrais = 0;
 
     for (var i = 0; i < array_length(_p.talent_slot_ids); i++) {
         var _id = _p.talent_slot_ids[i];
@@ -367,7 +548,18 @@ function player_recompute_synthetics(_p) {
         if (is_undefined(_def)) continue;
 
         var _field = _def.synth_field;
-        variable_instance_set(_p, _field, variable_instance_get(_p, _field) + _def.per_rank * _rank);
+        var _curr = variable_instance_exists(_p, _field) ? variable_instance_get(_p, _field) : 0;
+        variable_instance_set(_p, _field, _curr + _def.per_rank * _rank);
+    }
+
+    // Atributos derivados diretos
+    if (_p.synth_fio_carrasco > 0) _p.synth_execute_bonus += _p.synth_fio_carrasco;
+    if (_p.synth_duelista_reflexos_celere > 0) _p.synth_dodge += _p.synth_duelista_reflexos_celere;
+    if (_p.synth_guardiao_carapaca_granito > 0) _p.synth_def_fisica += _p.synth_guardiao_carapaca_granito;
+    if (_p.synth_paladino_bencao_mare > 0) _p.synth_hp_reg += _p.synth_paladino_bencao_mare;
+    if (_p.synth_aco_temperado > 0) {
+        var _gold = variable_global_exists("gold") ? global.gold : 0;
+        _p.synth_def_fisica += min(8, floor(_gold / 100) * _p.synth_aco_temperado);
     }
 }
 

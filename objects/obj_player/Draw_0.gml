@@ -73,11 +73,34 @@ if (sprite_walk != -1) {
 
 // Draw shield in front if blocking
 if (state == "defend" && defend_active && (defend_mode == "block" || defend_mode == "guardian_aegis")) {
-    draw_set_color((defend_mode == "guardian_aegis") ? c_orange : c_yellow);
-    draw_set_alpha(0.7);
-    var _sx = x + facing_x * (body_radius + 6);
-    var _sy = y + facing_y * (body_radius + 6);
-    draw_circle(_sx, _sy, 8, false);
+    var _is_titan = (variable_instance_exists(id, "synth_lendario_escudo_titanico") && synth_lendario_escudo_titanico > 0);
+    var _shield_r = _is_titan ? 16 : 8;
+    draw_set_color((defend_mode == "guardian_aegis") ? c_orange : (_is_titan ? c_aqua : c_yellow));
+    draw_set_alpha(0.75);
+    var _sx = x + facing_x * (body_radius + (_is_titan ? 10 : 6));
+    var _sy = y + facing_y * (body_radius + (_is_titan ? 10 : 6));
+    draw_circle(_sx, _sy, _shield_r, false);
+    draw_set_color(c_white);
+    draw_circle(_sx, _sy, _shield_r, true);
+    draw_set_alpha(1);
+}
+
+// 02 Lamina Afiada: Brilho prateado avisando que o golpe carregado esta pronto
+if (variable_instance_exists(id, "synth_lamina_afiada") && synth_lamina_afiada > 0 && attack_idle_timer >= 2.0) {
+    draw_set_color(c_white);
+    draw_set_alpha(0.6 + 0.3 * sin(current_time * 0.01));
+    var _tip_x = x + facing_x * (body_radius + 12);
+    var _tip_y = y + facing_y * (body_radius + 12);
+    draw_circle(_tip_x, _tip_y, 4, false);
+    draw_circle(_tip_x, _tip_y, 7, true);
+    draw_set_alpha(1);
+}
+
+// Paladino: Bolha aquosa protetora visivel ao redor do corpo
+if (paladin_barrier_active > 0) {
+    draw_set_alpha(0.35 + 0.15 * sin(current_time * 0.008));
+    draw_set_color(c_aqua);
+    draw_circle(x, y, body_radius + 5, true);
     draw_set_alpha(1);
 }
 

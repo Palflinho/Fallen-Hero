@@ -244,6 +244,26 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
         if (_owner.element_affinity == "fire") _force = 240;
         else if (_owner.element_affinity == "wind") _force = 200;
         else if (_owner.element_affinity == "earth") _force = 220;
+
+        // 03 Golpe Pesado (+80% knockback no critico e atordoamento de 0.3s)
+        if (variable_instance_exists(_owner, "synth_golpe_pesado") && _owner.synth_golpe_pesado > 0 && _is_crit) {
+            _force *= 1.8;
+            enemy_apply_slow(_enemy, 0, 0.3);
+        }
+
+        // 34 Estocada Fulminante: atinge as costas = 2.5x dano
+        if (variable_instance_exists(_owner, "synth_duelista_estocada_fulminante") && _owner.synth_duelista_estocada_fulminante > 0) {
+            var _edx = variable_instance_exists(_enemy, "dir_x") ? _enemy.dir_x : 0;
+            var _edy = variable_instance_exists(_enemy, "dir_y") ? _enemy.dir_y : 0;
+            if (_owner.facing_x * _edx + _owner.facing_y * _edy > 0.4) {
+                _base_damage *= 2.5;
+            }
+        }
+
+        // 24 Lamina em Brasa: ignora reducao de dano de inimigos com armadura
+        if (variable_instance_exists(_owner, "synth_berserk_lamina_brasa") && _owner.synth_berserk_lamina_brasa > 0) {
+            _base_damage *= 1.25;
+        }
     }
 
     var _dmg = _base_damage;
@@ -267,16 +287,66 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
 
     // Elemental On-Hit Effects for Knight
     if (_owner.character_class == "knight") {
+        // 20 Frenesi Ardente (+5% vel ataque ate 6 stacks por 3s)
+        if (variable_instance_exists(_owner, "synth_berserk_frenesi_ardente") && _owner.synth_berserk_frenesi_ardente > 0) {
+            _owner.frenesi_stacks = min(6, _owner.frenesi_stacks + 1);
+            _owner.frenesi_timer = 3.0;
+        }
+
+        // 22 Sede de Sangue: Criticos recuperam 15% de vida e prolongam Furia
+        if (variable_instance_exists(_owner, "synth_berserk_sede_sangue") && _owner.synth_berserk_sede_sangue > 0 && _is_crit && _dealt > 0) {
+            _owner.hp = min(_owner.hp_max, _owner.hp + _dealt * 0.15);
+            if (_owner.state == "defend" && _owner.defend_mode == "berserk_fury") {
+                _owner.defend_timer += 0.5;
+            }
+        }
+
+        // 43 Vapor Sagrado (Queimadura + Cura a cada tick)
+        if (variable_instance_exists(_owner, "synth_lendario_vapor_sagrado") && _owner.synth_lendario_vapor_sagrado > 0) {
+            enemy_apply_poison(_enemy, 5, 0.5, 2.5);
+            _owner.hp = min(_owner.hp_max, _owner.hp + 2);
+        }
+
         if (_owner.element_affinity == "fire") {
-            // Apply Burn
             enemy_apply_poison(_enemy, 4 + _owner.synth_berserk_burn, 0.5, 2.0);
             if (_owner.synth_berserk_lifesteal > 0 && _dealt > 0) {
                 _owner.hp = min(_owner.hp_max, _owner.hp + _dealt * _owner.synth_berserk_lifesteal);
             }
         } else if (_owner.element_affinity == "water") {
-            // Holy/Water restore
             if (_owner.synth_paladin_heal_hit > 0 && _dealt > 0) {
                 _owner.hp = min(_owner.hp_max, _owner.hp + _owner.synth_paladin_heal_hit);
+            }
+        }
+
+        // Abate de inimigo (Kill triggers)
+        if (_enemy.hp <= 0 && _before_hp > 0) {
+            // 13 Gota Purificadora: Remove veneno/queimadura e cura 8 HP
+            if (variable_instance_exists(_owner, "synth_paladino_gota_purificadora") && _owner.synth_paladino_gota_purificadora > 0) {
+                _owner.poison_active = false;
+                _owner.hp = min(_owner.hp_max, _owner.hp + 8);
+            }
+
+            // 21 Combustao Espontanea: Inimigos sob Queimadura explodem
+            if (variable_instance_exists(_owner, "synth_berserk_combustao_espontanea") && _owner.synth_berserk_combustao_espontanea > 0) {
+                var _ex_dmg = _dmg * 0.60;
+                var _ex_x = _enemy.x;
+                var _ex_y = _enemy.y;
+                with (obj_enemy_parent) {
+                    if (id != _enemy && point_distance(x, y, _ex_x, _ex_y) <= 80) {
+                        enemy_take_damage(id, _ex_dmg, _ex_x, _ex_y, 140);
+                        enemy_apply_poison(id, 3, 0.5, 2.0);
+                    }
+                }
+            }
+
+            // 30 Danca das Laminas: +25% velocidade por 2s
+            if (variable_instance_exists(_owner, "synth_duelista_danca_laminas") && _owner.synth_duelista_danca_laminas > 0) {
+                _owner.dance_speed_timer = 2.0;
+            }
+
+            // 48 Cavaleiro do Apocalipse: contador de abates sem sofrer dano
+            if (variable_instance_exists(_owner, "synth_lendario_cavaleiro_apocalipse") && _owner.synth_lendario_cavaleiro_apocalipse > 0) {
+                _owner.clean_kills_count++;
             }
         }
     }
@@ -284,12 +354,27 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
 
 function player_perform_attack() {
     var _is_crit = (random(1) < synth_crit_chance);
+
+    // 02 Lamina Afiada: Primeiro golpe apos 2s sem atacar garante 100% critico
+    if (variable_instance_exists(id, "synth_lamina_afiada") && synth_lamina_afiada > 0) {
+        if (variable_instance_exists(id, "attack_idle_timer") && attack_idle_timer >= 2.0) {
+            _is_crit = true;
+        }
+    }
+    attack_idle_timer = 0;
     last_attack_was_crit = _is_crit;
     var _dmg = attack_damage * (_is_crit ? synth_crit_mult : 1);
 
     if (character_class == "knight") {
+        if (variable_instance_exists(id, "synth_lendario_avatar_elemental") && synth_lendario_avatar_elemental > 0) {
+            _dmg *= 1.25;
+        }
         if (element_affinity == "fire" && state == "defend" && defend_mode == "berserk_fury") {
-            _dmg *= (1.5 + synth_berserk_dmg_bonus);
+            var _fury_mult = 1.5 + synth_berserk_dmg_bonus;
+            if (variable_instance_exists(id, "synth_berserk_cinzas_sacrificio") && synth_berserk_cinzas_sacrificio > 0) {
+                if (defend_duration - defend_timer <= 3.0) _fury_mult *= 1.5;
+            }
+            _dmg *= _fury_mult;
         } else if (element_affinity == "wind" && duelist_combo_count == 1) {
             _dmg *= 1.25;
         } else if (element_affinity == "earth") {
@@ -312,12 +397,12 @@ function player_perform_attack() {
         var _radius_mult = 0.7;
 
         if (character_class == "knight") {
-            if (element_affinity == "fire") {
-                _range_mult = 0.75;
-                _radius_mult = 1.05; // Larger fiery arc!
+            if (element_affinity == "fire" || (variable_instance_exists(id, "synth_berserk_arco_incendiario") && synth_berserk_arco_incendiario > 0)) {
+                _range_mult = 0.8;
+                _radius_mult = 1.2; // Arco Incendiario (+40% area)
             } else if (element_affinity == "earth") {
                 _range_mult = 0.5;
-                _radius_mult = 0.75; // Heavy compact strike
+                _radius_mult = 0.75;
             }
         }
 
@@ -331,6 +416,53 @@ function player_perform_attack() {
         _hit.owner = id;
         _hit.damage = _dmg;
         _hit.body_radius = attack_range * _radius_mult;
+
+        if (character_class == "knight") {
+            hit_streak_count++;
+
+            // 15 Golpe da Nascente: cada 3º golpe libera onda curativa
+            if (variable_instance_exists(id, "synth_paladino_golpe_nascente") && synth_paladino_golpe_nascente > 0 && (hit_streak_count mod 3 == 0)) {
+                var _wave = instance_create_layer(x + facing_x * 20, y + facing_y * 20, layer, obj_atk_fireball);
+                _wave.owner = id;
+                _wave.damage = _dmg * 0.75;
+                _wave.dir_x = facing_x;
+                _wave.dir_y = facing_y;
+                _wave.speed_px = 320;
+                _wave.pierce_remaining = 3;
+            }
+
+            // 39 Fissura Telurica: cada 4º golpe racha o chao e atordoa
+            if (variable_instance_exists(id, "synth_guardiao_fissura_telurica") && synth_guardiao_fissura_telurica > 0 && (hit_streak_count mod 4 == 0)) {
+                var _fis = instance_create_layer(x + facing_x * 35, y + facing_y * 35, layer, obj_atk_knight);
+                _fis.owner = id;
+                _fis.damage = _dmg * 0.9;
+                _fis.body_radius = 45;
+                _fis.life = 0.25;
+                trigger_hitstop(0.08);
+            }
+
+            // 29 Combo Vendaval: segundo golpe dispara rajada cortante de vento
+            if (variable_instance_exists(id, "synth_duelista_combo_vendaval") && synth_duelista_combo_vendaval > 0 && duelist_combo_count == 1) {
+                var _wind = instance_create_layer(x + facing_x * 20, y + facing_y * 20, layer, obj_atk_arrow);
+                _wind.owner = id;
+                _wind.damage = _dmg * 0.8;
+                _wind.dir_x = facing_x;
+                _wind.dir_y = facing_y;
+                _wind.speed_px = 380;
+                _wind.pierce_remaining = 2;
+            }
+
+            // 48 Cavaleiro do Apocalipse: 10 abates sem dano invocam meteoro
+            if (variable_instance_exists(id, "synth_lendario_cavaleiro_apocalipse") && synth_lendario_cavaleiro_apocalipse > 0 && clean_kills_count >= 10) {
+                clean_kills_count = 0;
+                var _met = instance_create_layer(_hx, _hy, layer, obj_atk_knight);
+                _met.owner = id;
+                _met.damage = _dmg * 3.5;
+                _met.body_radius = 90;
+                _met.life = 0.35;
+                trigger_hitstop(0.15);
+            }
+        }
     }
 }
 
@@ -349,6 +481,24 @@ function player_take_damage(_amount, _damage_type) {
     var _block_mult = max(0.15, 0.5 - _p.synth_block_reduction);
 
     if (_defending) {
+        // 04 Escudo de Choque: descarrega onda conica ao defender
+        if (_p.character_class == "knight" && variable_instance_exists(_p, "synth_escudo_choque") && _p.synth_escudo_choque > 0) {
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _p.x, _p.y) <= 130) {
+                    var _dot = (x - _p.x) * _p.facing_x + (y - _p.y) * _p.facing_y;
+                    if (_dot > 0) {
+                        enemy_take_damage(id, 10, _p.x, _p.y, 220);
+                        enemy_apply_slow(id, 0.4, 0.6);
+                    }
+                }
+            }
+        }
+
+        // 40 Bastiao Inabalavel: bloqueio converte 15% em cura
+        if (_p.character_class == "knight" && variable_instance_exists(_p, "synth_guardiao_bastiao_inabalavel") && _p.synth_guardiao_bastiao_inabalavel > 0) {
+            _p.hp = min(_p.hp_max, _p.hp + _amount * 0.15);
+        }
+
         if (_p.defend_mode == "parry") {
             // Duelista: Aparar bem-sucedido! Anula 100% de dano e desfere contra-ataque de 360 graus
             _final = 0;
@@ -358,7 +508,28 @@ function player_take_damage(_amount, _damage_type) {
             _p.last_attack_was_crit = true;
             trigger_hitstop(0.12);
 
-            var _counter_dmg = _p.attack_damage * (2.2 + _p.synth_duelist_counter_mult);
+            // 31 Aparar em Cadeia: reseta cooldown do parry
+            if (variable_instance_exists(_p, "synth_duelista_aparar_cadeia") && _p.synth_duelista_aparar_cadeia > 0) {
+                _p.defend_cooldown_timer = 0;
+            }
+
+            // 32 Vacuo Cortante: puxa inimigos proximos
+            if (variable_instance_exists(_p, "synth_duelista_vacuo_cortante") && _p.synth_duelista_vacuo_cortante > 0) {
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _p.x, _p.y) <= 120) {
+                        var _ang = point_direction(x, y, _p.x, _p.y);
+                        x += lengthdir_x(25, _ang);
+                        y += lengthdir_y(25, _ang);
+                    }
+                }
+            }
+
+            // 27 Riposte Perfeito
+            var _mult = 2.2 + _p.synth_duelist_counter_mult;
+            if (variable_instance_exists(_p, "synth_duelista_riposte_perfeito") && _p.synth_duelista_riposte_perfeito > 0) {
+                _mult += 1.0;
+            }
+            var _counter_dmg = _p.attack_damage * _mult;
             var _counter = instance_create_layer(_p.x, _p.y, _p.layer, obj_atk_knight);
             _counter.owner = _p;
             _counter.damage = _counter_dmg;
@@ -366,14 +537,18 @@ function player_take_damage(_amount, _damage_type) {
             _counter.life = 0.18;
             _counter.is_counter = true;
         } else if (_p.defend_mode == "guardian_aegis") {
-            // Guardião: Bloqueia 100% tanto fisico quanto magico!
             _final = 0;
             _blocked_fully = true;
             _p.hit_flash_timer = _p.hit_flash_duration;
             trigger_hitstop(0.06);
         } else if (_p.defend_mode == "paladin_aura") {
-            // Paladino: Barreira de sobrevida absorve primeiro
-            if (_p.paladin_barrier_active > 0) {
+            // 12 Bastiao Liquido: absorve 100% de projeteis
+            if (variable_instance_exists(_p, "synth_paladino_bastiao_liquido") && _p.synth_paladino_bastiao_liquido > 0 && _damage_type == "projectile") {
+                _final = 0;
+                _blocked_fully = true;
+            }
+
+            if (_p.paladin_barrier_active > 0 && !_blocked_fully) {
                 if (_p.paladin_barrier_active >= _final) {
                     _p.paladin_barrier_active -= _final;
                     _final = 0;
@@ -381,17 +556,25 @@ function player_take_damage(_amount, _damage_type) {
                 } else {
                     _final -= _p.paladin_barrier_active;
                     _p.paladin_barrier_active = 0;
+
+                    // 16 Escudo Espelhado: barreira explode ao quebrar
+                    if (variable_instance_exists(_p, "synth_paladino_escudo_espelhado") && _p.synth_paladino_escudo_espelhado > 0) {
+                        with (obj_enemy_parent) {
+                            if (point_distance(x, y, _p.x, _p.y) <= 120) {
+                                enemy_take_damage(id, 15, _p.x, _p.y, 200);
+                                enemy_apply_slow(id, 0.2, 1.2);
+                            }
+                        }
+                    }
                 }
             }
-            if (_final > 0) {
-                _final *= 0.60; // 40% de reducao na aura
+            if (_final > 0 && !_blocked_fully) {
+                _final *= 0.60;
             }
             _p.hit_flash_timer = _p.hit_flash_duration;
         } else if (_p.defend_mode == "berserk_fury") {
-            // Berserker: Reducao leve de 20%, foca em agressao
             _final *= 0.80;
         } else if (_p.defend_mode == "block") {
-            // Cavaleiro Padrao: Imune a fisico, reduz magico
             if (_damage_type == "physical") {
                 _final = 0;
                 _blocked_fully = true;
@@ -400,7 +583,6 @@ function player_take_damage(_amount, _damage_type) {
             }
             _p.hit_flash_timer = _p.hit_flash_duration;
         } else if (_p.defend_mode == "manashield") {
-            // Mago: Imune a magico, reduz fisico
             if (_damage_type == "magical") {
                 _final = 0;
                 _blocked_fully = true;
@@ -412,6 +594,8 @@ function player_take_damage(_amount, _damage_type) {
     }
 
     if (!_blocked_fully) {
+        _p.clean_kills_count = 0;
+
         var _mitigation = _p.nat_defesa + ((_damage_type == "physical") ? _p.synth_def_fisica : _p.synth_def_magica);
         if (_p.character_class == "knight" && _p.synth_guardian_def > 0) {
             _mitigation += _p.synth_guardian_def;
@@ -419,7 +603,23 @@ function player_take_damage(_amount, _damage_type) {
 
         _final = max(1, _final - _mitigation);
 
-        // "Folego Extra" talent: once every 45s, a hit that would kill instead leaves 1 HP.
+        // 26 Furia Imortal: nao morre durante Furia Ardente
+        if (_p.defend_mode == "berserk_fury" && variable_instance_exists(_p, "synth_berserk_furia_imortal") && _p.synth_berserk_furia_imortal > 0) {
+            if ((_p.hp - _final) <= 0) {
+                _final = max(0, _p.hp - 1);
+            }
+        }
+
+        // 05 Segundo Folego: regenera 20% ao cair para <25% HP
+        if (variable_instance_exists(_p, "synth_segundo_folego") && _p.synth_segundo_folego > 0 && _p.segundo_folego_cooldown <= 0) {
+            if ((_p.hp - _final) < _p.hp_max * 0.25 && _p.hp > 0) {
+                _p.hp = min(_p.hp_max, _p.hp + _p.hp_max * 0.20);
+                _p.segundo_folego_cooldown = 60;
+                trigger_hitstop(0.12);
+            }
+        }
+
+        // Folego Extra geral
         if (_p.synth_second_wind > 0 && _p.second_wind_cooldown_timer <= 0 && (_p.hp - _final) <= 0) {
             _final = max(0, _p.hp - 1);
             _p.second_wind_cooldown_timer = 45;
@@ -433,7 +633,27 @@ function player_take_damage(_amount, _damage_type) {
             trigger_hitstop(0.05);
         }
 
-        // "Retaliacao" talent: physical hits that actually land trigger a burst around the player
+        // 25 Vinganca Flamejante: anel de fogo ao sofrer dano
+        if (variable_instance_exists(_p, "synth_berserk_vinganca_flamejante") && _p.synth_berserk_vinganca_flamejante > 0 && _damage_type == "physical") {
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _p.x, _p.y) <= 70) {
+                    enemy_take_damage(id, 18, _p.x, _p.y, 120);
+                    enemy_apply_poison(id, 4, 0.5, 1.5);
+                }
+            }
+        }
+
+        // 38 Retaliacao Sismica: devolve 50% de dano
+        if (variable_instance_exists(_p, "synth_guardiao_retaliacao_sismica") && _p.synth_guardiao_retaliacao_sismica > 0) {
+            var _ret_dmg = _final * 0.50;
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _p.x, _p.y) <= 90) {
+                    enemy_take_damage(id, _ret_dmg, _p.x, _p.y, 140);
+                }
+            }
+        }
+
+        // Retaliacao classica
         if (_p.synth_thorns_dmg > 0 && _damage_type == "physical") {
             with (obj_enemy_parent) {
                 if (point_distance(x, y, _p.x, _p.y) <= 90) {
