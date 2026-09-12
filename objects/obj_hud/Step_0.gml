@@ -1,6 +1,8 @@
 // Ticks down regardless of any pause/UI state -- if this lived behind is_world_paused()
 // itself, hitstop would freeze permanently the moment it started.
 if (global.hitstop_timer > 0) global.hitstop_timer -= delta_time / 1000000;
+if (!variable_global_exists("screen_damage_flash")) global.screen_damage_flash = 0;
+if (global.screen_damage_flash > 0) global.screen_damage_flash -= delta_time / 1000000;
 
 var _player = instance_find(obj_player, 0);
 
@@ -49,6 +51,15 @@ if (game_over) {
 }
 
 if (!variable_global_exists("run_victory")) global.run_victory = false;
+
+if (global.run_victory) {
+    if (!variable_instance_exists(id, "victory_mastery_recorded")) {
+        victory_mastery_recorded = true;
+        if (_player != noone) {
+            mastery_unlock(_player.character_class, _player.element_affinity);
+        }
+    }
+}
 
 if (global.run_victory || level_complete) {
     if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C"))) {

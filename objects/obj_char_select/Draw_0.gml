@@ -131,8 +131,40 @@ switch (state) {
             }
 
             draw_set_color(c_white);
-            draw_text(_bx + box_w / 2, _y + box_h + 24, labels[_i]);
+            draw_text(_bx + box_w / 2, _y + box_h + 20, labels[_i]);
+
+            // Insignias de Maestria Elemental da classe
+            var _c_id = classes[_i];
+            var _badge_elems = ["water", "fire", "wind", "earth"];
+            var _badge_cols = [c_aqua, c_orange, make_colour_rgb(180, 240, 255), make_colour_rgb(170, 130, 80)];
+            var _badge_names = ["A", "F", "V", "T"]; // Água, Fogo, Vento, Terra
+
+            for (var _b = 0; _b < 4; _b++) {
+                var _be = _badge_elems[_b];
+                var _has_m = (variable_global_exists("meta_mastery") && is_struct(global.meta_mastery) && variable_struct_exists(global.meta_mastery, _c_id) && is_struct(global.meta_mastery[$ _c_id]) && variable_struct_exists(global.meta_mastery[$ _c_id], _be) && global.meta_mastery[$ _c_id][$ _be]);
+
+                var _bg_x = _bx + 16 + _b * 22;
+                var _bg_y = _y + box_h + 42;
+
+                if (_has_m) {
+                    draw_set_color(_badge_cols[_b]);
+                    draw_circle(_bg_x, _bg_y, 8, false);
+                    draw_set_color(c_black);
+                    draw_text(_bg_x, _bg_y, _badge_names[_b]);
+                } else {
+                    draw_set_color(c_dkgray);
+                    draw_circle(_bg_x, _bg_y, 8, true);
+                    draw_text(_bg_x, _bg_y, _badge_names[_b]);
+                }
+            }
         }
+
+        // Exibição do Bônus Geral de Maestria
+        var _mult = get_mastery_gold_multiplier();
+        var _bonus_pct = round((_mult - 1.0) * 100);
+        draw_set_halign(fa_center);
+        draw_set_color(_bonus_pct > 0 ? c_yellow : c_ltgray);
+        draw_text(room_width / 2, room_height - 95, "Insignias: [A]gua [F]ogo [V]ento [T]erra   |   Bonus de Maestria: +" + string(_bonus_pct) + "% Ouro Permanente");
         break;
 
     case "select_talents":

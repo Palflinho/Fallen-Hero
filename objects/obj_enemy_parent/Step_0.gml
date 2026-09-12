@@ -53,19 +53,46 @@ if (slow_active) {
     }
 }
 
+if (variable_instance_exists(id, "wind_exposed") && wind_exposed > 0) wind_exposed -= _dt;
+if (variable_instance_exists(id, "earth_fracture") && earth_fracture > 0) earth_fracture -= _dt;
+
 move_speed_effective = move_speed * (slow_active ? slow_multiplier : 1);
 
 if (hp <= 0) {
     player_gain_exp(exp_reward);
     player_gain_gold(gold_reward);
+
+    var _is_boss = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")));
+    if (_is_boss) trigger_hitstop(0.25);
+
     if (object_index == obj_boss) {
         element_unlock("water");
     } else if (object_index == obj_boss2) {
         element_unlock("fire");
+        // Após derrotar General Magma (Fim do Bioma Fogo), abre portal para Fase do Vento (Room5)
+        var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
+        _gate.trigger_mode = "clear_mobs";
+        _gate.target_room = asset_get_index("Room5");
+        _gate.reward_type = "heal";
+        _gate.gate_label = "Avanco: Ruinas dos Ventos (Fase 3 - Cura 40% HP)";
+        _gate.gate_colour = make_colour_rgb(180, 240, 255);
+    } else if (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) {
+        element_unlock("wind");
+        // Após derrotar General Zephyrus (Sala 6), abre portal para a Loja 2
+        var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
+        _gate.trigger_mode = "clear_mobs";
+        _gate.target_room = asset_get_index("room_shop");
+        _gate.reward_type = "gold";
+        _gate.reward_value = 100;
+        _gate.gate_label = "Descanso: O Mercador Arcano (Intermissao 2 - +100 Ouro)";
+        _gate.gate_colour = c_yellow;
+    } else if (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) {
+        element_unlock("earth");
+        // Derrota do Chefe Final Supremo (Titã Monólito): Vitória Suprema!
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
         _gate.trigger_mode = "clear_mobs";
         _gate.reward_type = "victory";
-        _gate.gate_label = "TRIUNFO: Concluir Expedicao (Vitoria)";
+        _gate.gate_label = "TRIUNFO SUPREMO: Concluir Expedicao (Vitoria)";
         _gate.gate_colour = c_yellow;
     }
 

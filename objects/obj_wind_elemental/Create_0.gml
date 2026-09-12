@@ -1,0 +1,22 @@
+event_inherited();
+
+body_colour = make_colour_rgb(180, 245, 255);
+hp_max = 32;
+hp = hp_max;
+move_speed = 78;
+contact_damage = 8;
+preferred_range = 160;
+attack_range = 240;
+attack_cooldown = 1.5;
+attack_cooldown_timer = 0;
+attack_windup = 0.28;
+attack_windup_timer = 0;
+projectile_damage = 9;
+projectile_speed = 300;
+state = "patrol";
+vision_range = 280;
+patrol_radius = 160;
+exp_reward = 30;
+gold_reward = 12;
+knockback_resistance = 0.15;
+anim_rot = 0;

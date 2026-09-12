@@ -271,10 +271,16 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
         _dmg *= (1 + _owner.synth_execute_bonus);
     }
 
-    // Choque Térmico (Sinergia Iwata: Fogo + Gelo/Água)
+    // Matriz de Reações Elementais dos 4 Elementos (Sinergia Iwata)
     var _is_fire_hit = (_owner.element_affinity == "fire" || (variable_instance_exists(_owner, "synth_berserk_lamina_brasa") && _owner.synth_berserk_lamina_brasa > 0) || (variable_instance_exists(_owner, "synth_piro_centelha_incandescente") && _owner.synth_piro_centelha_incandescente > 0) || (variable_instance_exists(_owner, "synth_archer_balist_flecha_incendiaria") && _owner.synth_archer_balist_flecha_incendiaria > 0));
     var _is_water_hit = (_owner.element_affinity == "water" || (variable_instance_exists(_owner, "synth_crio_geada_penetrante") && _owner.synth_crio_geada_penetrante > 0) || (variable_instance_exists(_owner, "synth_archer_glacial_flecha_estalactite") && _owner.synth_archer_glacial_flecha_estalactite > 0));
+    var _is_wind_hit = (_owner.element_affinity == "wind" || (variable_instance_exists(_owner, "synth_duelista_passo_eolico") && _owner.synth_duelista_passo_eolico > 0) || (variable_instance_exists(_owner, "synth_aero_arco_eletrico") && _owner.synth_aero_arco_eletrico > 0) || (variable_instance_exists(_owner, "synth_archer_vendaval_disparo_leque") && _owner.synth_archer_vendaval_disparo_leque > 0));
+    var _is_earth_hit = (_owner.element_affinity == "earth" || (variable_instance_exists(_owner, "synth_guardiao_fissura_telurica") && _owner.synth_guardiao_fissura_telurica > 0) || (variable_instance_exists(_owner, "synth_geo_projetil_rochoso") && _owner.synth_geo_projetil_rochoso > 0) || (variable_instance_exists(_owner, "synth_archer_terra_flecha_arpao") && _owner.synth_archer_terra_flecha_arpao > 0));
 
+    var _has_wind = variable_instance_exists(_enemy, "wind_exposed") && (_enemy.wind_exposed > 0);
+    var _has_earth = variable_instance_exists(_enemy, "earth_fracture") && (_enemy.earth_fracture > 0);
+
+    // 1. Choque Térmico (Fogo + Água)
     if ((_is_fire_hit && _enemy.slow_active) || (_is_water_hit && _enemy.poison_active)) {
         _dmg *= 1.50;
         _is_crit = true;
@@ -284,6 +290,60 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
         fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 10, "CHOQUE TERMICO", true, c_orange);
         _enemy.damage_reduction = min(1.0, _enemy.damage_reduction * 1.4);
     }
+    // 2. Tormenta Ígnea (Vento + Fogo)
+    else if ((_is_wind_hit && _enemy.poison_active) || (_is_fire_hit && _has_wind)) {
+        _dmg *= 1.30;
+        trigger_hitstop(0.08);
+        fx_spawn_sparks(_enemy.x, _enemy.y, c_yellow, 12);
+        fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 10, "TORMENTA IGNEA", true, c_yellow);
+        var _ex = _enemy.x;
+        var _ey = _enemy.y;
+        with (obj_enemy_parent) {
+            if (id != _enemy && point_distance(x, y, _ex, _ey) <= 100) {
+                enemy_take_damage(id, 18, _ex, _ey, 140);
+                enemy_apply_poison(id, 4, 0.4, 2.0);
+            }
+        }
+    }
+    // 3. Nevasca Congelante (Vento + Água)
+    else if ((_is_wind_hit && _enemy.slow_active) || (_is_water_hit && _has_wind)) {
+        _dmg *= 1.25;
+        _enemy.slow_active = true;
+        _enemy.slow_amount = 0.05;
+        _enemy.slow_timer = 2.0;
+        trigger_hitstop(0.08);
+        fx_spawn_sparks(_enemy.x, _enemy.y, c_aqua, 14);
+        fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 10, "NEVASCA", true, c_aqua);
+    }
+    // 4. Rocha Fundida (Terra + Fogo)
+    else if ((_is_earth_hit && _enemy.poison_active) || (_is_fire_hit && _has_earth)) {
+        _dmg *= 1.40;
+        _enemy.damage_reduction = min(1.0, _enemy.damage_reduction * 1.5);
+        trigger_hitstop(0.08);
+        fx_spawn_sparks(_enemy.x, _enemy.y, make_colour_rgb(255, 120, 20), 10);
+        fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 10, "ROCHA FUNDIDA", true, make_colour_rgb(255, 120, 20));
+    }
+    // 5. Lamaçal Telúrico (Terra + Água)
+    else if ((_is_earth_hit && _enemy.slow_active) || (_is_water_hit && _has_earth)) {
+        _enemy.slow_active = true;
+        _enemy.slow_amount = 0.0; // Enraizamento completo
+        _enemy.slow_timer = 2.0;
+        trigger_hitstop(0.08);
+        fx_spawn_sparks(_enemy.x, _enemy.y, make_colour_rgb(120, 170, 80), 10);
+        fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 10, "LAMACAL", true, make_colour_rgb(120, 170, 80));
+    }
+    // 6. Tempestade de Areia (Terra + Vento)
+    else if ((_is_earth_hit && _has_wind) || (_is_wind_hit && _has_earth)) {
+        _dmg *= 1.20;
+        _enemy.knockback_vx += random_range(-140, 140);
+        _enemy.knockback_vy += random_range(-140, 140);
+        trigger_hitstop(0.08);
+        fx_spawn_sparks(_enemy.x, _enemy.y, make_colour_rgb(230, 210, 140), 10);
+        fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 10, "AREIA CEGA", true, make_colour_rgb(230, 210, 140));
+    }
+
+    if (_is_wind_hit) _enemy.wind_exposed = 3.0;
+    if (_is_earth_hit) _enemy.earth_fracture = 3.0;
 
     var _before_hp = _enemy.hp;
     enemy_take_damage(_enemy, _dmg, _owner.x, _owner.y, _force, _is_crit);
@@ -881,7 +941,7 @@ function player_take_damage(_amount, _damage_type) {
     if (!_blocked_fully) {
         _p.clean_kills_count = 0;
 
-        var _mitigation = _p.nat_defesa + ((_damage_type == "physical") ? _p.synth_def_fisica : _p.synth_def_magica);
+        var _mitigation = _p.nat_defesa + ((_damage_type == "physical") ? _p.synth_def_fisica : _p.synth_def_magica) + (variable_global_exists("shop_boost_defesa") ? global.shop_boost_defesa : 0);
         if (_p.character_class == "knight" && _p.synth_guardian_def > 0) {
             _mitigation += _p.synth_guardian_def;
         }
@@ -935,6 +995,7 @@ function player_take_damage(_amount, _damage_type) {
         if (_final > 0) {
             _p.state = "hurt";
             trigger_hitstop(0.05);
+            global.screen_damage_flash = 0.35;
         }
 
         // Protecao Mana-Reativa (Mago): repele inimigos em 120px ao perder >= 15% HP

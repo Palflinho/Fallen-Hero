@@ -68,6 +68,10 @@ function save_checkpoint(_room_name) {
     ini_write_real("save", "rank2", global.save_talent_ranks[2]);
     ini_write_real("save", "pending", global.save_talent_pending);
     ini_write_real("save", "run_gold", variable_global_exists("run_gold_earned") ? global.run_gold_earned : 0);
+    ini_write_real("save", "shop_pwr", variable_global_exists("shop_boost_power") ? global.shop_boost_power : 0);
+    ini_write_real("save", "shop_def", variable_global_exists("shop_boost_defesa") ? global.shop_boost_defesa : 0);
+    ini_write_real("save", "shop_hp", variable_global_exists("shop_boost_hp") ? global.shop_boost_hp : 0);
+    ini_write_real("save", "shop_spd", variable_global_exists("shop_boost_speed") ? global.shop_boost_speed : 0);
     ini_close();
 }
 
@@ -100,6 +104,10 @@ function load_save_from_disk() {
     ];
     global.save_talent_pending = ini_read_real("save", "pending", 0);
     global.run_gold_earned = ini_read_real("save", "run_gold", 0);
+    global.shop_boost_power = ini_read_real("save", "shop_pwr", 0);
+    global.shop_boost_defesa = ini_read_real("save", "shop_def", 0);
+    global.shop_boost_hp = ini_read_real("save", "shop_hp", 0);
+    global.shop_boost_speed = ini_read_real("save", "shop_spd", 0);
     ini_close();
 
     global.has_save = true;
@@ -108,6 +116,10 @@ function load_save_from_disk() {
 
 function clear_save() {
     global.has_save = false;
+    global.shop_boost_power = 0;
+    global.shop_boost_defesa = 0;
+    global.shop_boost_hp = 0;
+    global.shop_boost_speed = 0;
     if (file_exists("save.ini")) {
         file_delete("save.ini");
     }
@@ -176,12 +188,17 @@ function get_save_summary() {
             break;
     }
 
-    var _room_label = "Fase 1 (Gelo)";
+    var _room_label = "Fase 1 (Arena Glacial)";
     switch (global.save_room) {
-        case "Room1": _room_label = "Fase 1 (Arena de Gelo)"; break;
-        case "Room2": _room_label = "Fase 1 (General do Gelo)"; break;
-        case "Room3": _room_label = "Fase 2 (Labirinto de Fogo)"; break;
+        case "Room1": _room_label = "Fase 1 (Arena Glacial)"; break;
+        case "Room2": _room_label = "Fase 1 (General Glacial)"; break;
+        case "Room3": _room_label = "Fase 2 (Forjas de Magma)"; break;
         case "Room4": _room_label = "Fase 2 (General Magma)"; break;
+        case "Room5": _room_label = "Fase 3 (Ruinas dos Ventos)"; break;
+        case "Room6": _room_label = "Fase 3 (General Zephyrus)"; break;
+        case "Room7": _room_label = "Fase 4 (Caverna de Granito)"; break;
+        case "Room8": _room_label = "Fase 4 (Tita Monolito)"; break;
+        case "room_shop": _room_label = "Intermissao (O Mercador Arcano)"; break;
         default: _room_label = global.save_room; break;
     }
 

@@ -921,6 +921,7 @@ function load_meta_from_disk() {
     global.meta_unlocked = {};
     global.gold = 0;
     global.meta_elements = {water: true, fire: true, wind: true, earth: true};
+    global.meta_mastery = {};
 
     if (!file_exists("meta.json")) return;
 
@@ -939,6 +940,9 @@ function load_meta_from_disk() {
         if (variable_struct_exists(_data, "elements") && is_struct(_data.elements)) {
             global.meta_elements = _data.elements;
         }
+        if (variable_struct_exists(_data, "mastery") && is_struct(_data.mastery)) {
+            global.meta_mastery = _data.mastery;
+        }
     }
 }
 
@@ -946,13 +950,40 @@ function save_meta() {
     var _data = {
         gold: global.gold,
         unlocked: global.meta_unlocked,
-        elements: variable_global_exists("meta_elements") ? global.meta_elements : {water: true, fire: true, wind: true, earth: true}
+        elements: variable_global_exists("meta_elements") ? global.meta_elements : {water: true, fire: true, wind: true, earth: true},
+        mastery: variable_global_exists("meta_mastery") ? global.meta_mastery : {}
     };
     var _str = json_stringify(_data);
     var _buf = buffer_create(string_byte_length(_str) + 1, buffer_fixed, 1);
     buffer_write(_buf, buffer_string, _str);
     buffer_save(_buf, "meta.json");
     buffer_delete(_buf);
+}
+
+function mastery_unlock(_class, _element) {
+    ensure_meta_loaded();
+    if (!variable_global_exists("meta_mastery") || !is_struct(global.meta_mastery)) global.meta_mastery = {};
+    if (!variable_struct_exists(global.meta_mastery, _class)) global.meta_mastery[$ _class] = {};
+    global.meta_mastery[$ _class][$ _element] = true;
+    save_meta();
+}
+
+function get_mastery_gold_multiplier() {
+    ensure_meta_loaded();
+    if (!variable_global_exists("meta_mastery") || !is_struct(global.meta_mastery)) return 1.0;
+    var _count = 0;
+    var _classes = variable_struct_get_names(global.meta_mastery);
+    for (var _c = 0; _c < array_length(_classes); _c++) {
+        var _cname = _classes[_c];
+        var _elems = global.meta_mastery[$ _cname];
+        if (is_struct(_elems)) {
+            var _enames = variable_struct_get_names(_elems);
+            for (var _e = 0; _e < array_length(_enames); _e++) {
+                if (_elems[$ _enames[_e]]) _count++;
+            }
+        }
+    }
+    return 1.0 + (_count * 0.05);
 }
 
 function talent_purchase(_id) {
@@ -1290,10 +1321,26 @@ function player_apply_talent_point(_p, _slot_index) {
 // ---- Chests: found during a run, grant one random general talent. The player picks
 // which of their 3 slots to put it in (discarding that slot's current rank), or skips.
 function roll_chest_talent() {
-    var _pool = get_general_talent_defs();
+    var _pool = [];
+    var _gens = get_general_talent_defs();
+    for (var _i = 0; _i < array_length(_gens); _i++) {
+        array_push(_pool, _gens[_i].id);
+    }
+
+    ensure_meta_loaded();
+    var _p_class = variable_global_exists("selected_character") ? global.selected_character : "knight";
+    var _class_defs = get_class_talent_defs(_p_class);
+
+    for (var _j = 0; _j < array_length(_class_defs); _j++) {
+        var _t = _class_defs[_j];
+        if (talent_is_unlocked(_t.id)) {
+            array_push(_pool, _t.id);
+        }
+    }
+
     if (array_length(_pool) == 0) return "";
     var _idx = irandom(array_length(_pool) - 1);
-    return _pool[_idx].id;
+    return _pool[_idx];
 }
 
 function open_chest_reward(_talent_id) {
@@ -1323,7 +1370,7 @@ function skip_chest_reward() {
 // (pause/attribute window/chest reward) AND the brief hit-stop freeze on impactful hits.
 // Every Step event that matters checks this instead of the individual flags directly.
 function is_world_paused() {
-    return global.paused || global.attr_window_open || global.chest_reward_open || (variable_global_exists("run_victory") && global.run_victory) || global.hitstop_timer > 0;
+    return global.paused || global.attr_window_open || global.chest_reward_open || (variable_global_exists("midrun_shop_open") && global.midrun_shop_open) || (variable_global_exists("run_victory") && global.run_victory) || global.hitstop_timer > 0;
 }
 
 function talent_get_desc_flavor(_t) {

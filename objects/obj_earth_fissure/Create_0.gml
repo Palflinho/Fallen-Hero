@@ -1,0 +1,10 @@
+base_size = 32;
+state = "dormant"; // "dormant" | "warning" | "active"
+time_dormant = 2.4;
+time_warning = 1.0;
+time_active = 1.2;
+timer = random_range(0.2, time_dormant);
+damage = 12;
+tick_timer = 0;
+dust_timer = 0;
+is_up = false;

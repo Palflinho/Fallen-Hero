@@ -7,6 +7,17 @@ draw_set_font(-1);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
+var _gw = display_get_gui_width();
+var _gh = display_get_gui_height();
+
+if (variable_global_exists("screen_damage_flash") && global.screen_damage_flash > 0) {
+    draw_set_alpha(clamp(global.screen_damage_flash * 0.9, 0, 0.32));
+    draw_set_color(c_red);
+    draw_rectangle(0, 0, _gw, _gh, false);
+    draw_set_alpha(1);
+    draw_set_color(c_white);
+}
+
 var _x = pad;
 var _y = pad + 16;
 
