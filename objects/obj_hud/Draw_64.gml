@@ -104,6 +104,14 @@ if (target.talent_pending_points > 0) {
     _y += 20;
 }
 
+if (variable_global_exists("dev_mode") && global.dev_mode) {
+    draw_set_halign(fa_right);
+    draw_set_valign(fa_top);
+    draw_set_color(c_aqua);
+    draw_text(display_get_gui_width() - 20, 20, "[MODO DEV ATIVO - F2]");
+    draw_set_halign(fa_left);
+}
+
 // Low HP red vignette
 if (target.hp / target.hp_max <= 0.3) {
     draw_set_alpha(0.25);
@@ -120,12 +128,18 @@ if (!boss_room) {
 if (boss_room) {
     var _boss = instance_find(obj_boss, 0);
     if (_boss == noone) _boss = instance_find(obj_boss2, 0);
+    if (_boss == noone && object_exists(asset_get_index("obj_boss3"))) _boss = instance_find(asset_get_index("obj_boss3"), 0);
+    if (_boss == noone && object_exists(asset_get_index("obj_boss4"))) _boss = instance_find(asset_get_index("obj_boss4"), 0);
     if (_boss != noone) {
         var _bw = 500;
         var _bh = 26;
         var _bx = display_get_gui_width() / 2 - _bw / 2;
         var _by = 24;
-        var _boss_name = (_boss.object_index == obj_boss2) ? "GENERAL MAGMA" : "GUARDIAO DAS AGUAS";
+        var _boss_name = "CHEFE";
+        if (_boss.object_index == obj_boss) _boss_name = "GENERAL GLACIAL (AGUA)";
+        else if (_boss.object_index == obj_boss2) _boss_name = "GENERAL MAGMA (FOGO)";
+        else if (object_exists(asset_get_index("obj_boss3")) && _boss.object_index == asset_get_index("obj_boss3")) _boss_name = "GENERAL ZEPHYRUS (VENTO)";
+        else if (object_exists(asset_get_index("obj_boss4")) && _boss.object_index == asset_get_index("obj_boss4")) _boss_name = "TITA MONOLITO (TERRA)";
 
         draw_set_color(c_black);
         draw_rectangle(_bx - 2, _by - 2, _bx + _bw + 2, _by + _bh + 2, false);

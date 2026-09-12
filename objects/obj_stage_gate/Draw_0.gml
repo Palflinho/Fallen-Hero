@@ -1,6 +1,8 @@
 var _ready = false;
 if (trigger_mode == "boss_dead") {
-    _ready = (instance_number(obj_boss) == 0 && instance_number(obj_boss2) == 0);
+    var _b3_clear = object_exists(asset_get_index("obj_boss3")) ? (instance_number(asset_get_index("obj_boss3")) == 0) : true;
+    var _b4_clear = object_exists(asset_get_index("obj_boss4")) ? (instance_number(asset_get_index("obj_boss4")) == 0) : true;
+    _ready = (instance_number(obj_boss) == 0 && instance_number(obj_boss2) == 0 && _b3_clear && _b4_clear);
 } else if (trigger_mode == "clear_mobs") {
     _ready = (instance_number(obj_enemy_parent) == 0);
 } else {

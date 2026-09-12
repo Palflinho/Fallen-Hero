@@ -719,6 +719,26 @@ function element_get_name(_elem) {
     }
 }
 
+function element_get_boss_name(_elem) {
+    switch (_elem) {
+        case "water": return "General Glacial (Sala 2)";
+        case "fire":  return "General Magma (Sala 4)";
+        case "wind":  return "General Zephyrus (Sala 6)";
+        case "earth": return "Tita Monolito (Sala 8)";
+        default:      return "";
+    }
+}
+
+function element_get_unlock_requirement(_elem) {
+    switch (_elem) {
+        case "water": return "Derrote o General Glacial (Chefe da Sala 2)";
+        case "fire":  return "Derrote o General Magma (Chefe da Sala 4)";
+        case "wind":  return "Derrote o General Zephyrus (Chefe da Sala 6)";
+        case "earth": return "Derrote o Tita Monolito (Chefe Supremo da Sala 8)";
+        default:      return "";
+    }
+}
+
 function class_get_archetype_name(_class, _elem) {
     switch (_class) {
         case "knight":
@@ -894,6 +914,7 @@ function ensure_meta_loaded() {
 }
 
 function talent_is_unlocked(_id) {
+    if (variable_global_exists("dev_mode") && global.dev_mode) return true;
     ensure_meta_loaded();
     var _def = get_talent_def_by_id(_id);
     if (is_undefined(_def)) return false;
@@ -903,16 +924,19 @@ function talent_is_unlocked(_id) {
 
 function element_is_unlocked(_elem) {
     if (_elem == "none") return true;
+    if (variable_global_exists("dev_mode") && global.dev_mode) return true;
     ensure_meta_loaded();
-    if (variable_global_exists("meta_elements") && variable_struct_exists(global.meta_elements, _elem)) {
-        return global.meta_elements[$ _elem];
+    if (variable_global_exists("meta_elements") && is_struct(global.meta_elements) && variable_struct_exists(global.meta_elements, _elem)) {
+        return global.meta_elements[$ _elem] == true;
     }
-    return true; // Default unlocked for testing & play
+    return false; // Bloqueado por padrão até derrotar o chefe correspondente
 }
 
 function element_unlock(_elem) {
     ensure_meta_loaded();
-    if (!variable_global_exists("meta_elements")) global.meta_elements = {};
+    if (!variable_global_exists("meta_elements") || !is_struct(global.meta_elements)) {
+        global.meta_elements = {water: false, fire: false, wind: false, earth: false};
+    }
     global.meta_elements[$ _elem] = true;
     save_meta();
 }
@@ -920,8 +944,9 @@ function element_unlock(_elem) {
 function load_meta_from_disk() {
     global.meta_unlocked = {};
     global.gold = 0;
-    global.meta_elements = {water: true, fire: true, wind: true, earth: true};
+    global.meta_elements = {water: false, fire: false, wind: false, earth: false};
     global.meta_mastery = {};
+    if (!variable_global_exists("dev_mode")) global.dev_mode = false;
 
     if (!file_exists("meta.json")) return;
 
@@ -939,9 +964,16 @@ function load_meta_from_disk() {
         }
         if (variable_struct_exists(_data, "elements") && is_struct(_data.elements)) {
             global.meta_elements = _data.elements;
+            if (!variable_struct_exists(global.meta_elements, "water")) global.meta_elements.water = false;
+            if (!variable_struct_exists(global.meta_elements, "fire")) global.meta_elements.fire = false;
+            if (!variable_struct_exists(global.meta_elements, "wind")) global.meta_elements.wind = false;
+            if (!variable_struct_exists(global.meta_elements, "earth")) global.meta_elements.earth = false;
         }
         if (variable_struct_exists(_data, "mastery") && is_struct(_data.mastery)) {
             global.meta_mastery = _data.mastery;
+        }
+        if (variable_struct_exists(_data, "dev_mode")) {
+            global.dev_mode = _data.dev_mode;
         }
     }
 }
@@ -950,8 +982,9 @@ function save_meta() {
     var _data = {
         gold: global.gold,
         unlocked: global.meta_unlocked,
-        elements: variable_global_exists("meta_elements") ? global.meta_elements : {water: true, fire: true, wind: true, earth: true},
-        mastery: variable_global_exists("meta_mastery") ? global.meta_mastery : {}
+        elements: variable_global_exists("meta_elements") ? global.meta_elements : {water: false, fire: false, wind: false, earth: false},
+        mastery: variable_global_exists("meta_mastery") ? global.meta_mastery : {},
+        dev_mode: variable_global_exists("dev_mode") ? global.dev_mode : false
     };
     var _str = json_stringify(_data);
     var _buf = buffer_create(string_byte_length(_str) + 1, buffer_fixed, 1);
@@ -991,7 +1024,10 @@ function talent_purchase(_id) {
     var _def = get_talent_def_by_id(_id);
     if (is_undefined(_def)) return false;
     if (_def.cost <= 0) return true;
-    if (variable_struct_exists(global.meta_unlocked, _id)) return true;
+    if (talent_is_unlocked(_id)) return true;
+
+    // Se o elemento estiver bloqueado na campanha normal, impede a compra
+    if (_def.affinity != "none" && !element_is_unlocked(_def.affinity)) return false;
 
     if (global.gold < _def.cost) return false;
 

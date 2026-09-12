@@ -1,3 +1,53 @@
+if (locked_warning_timer > 0) locked_warning_timer--;
+if (reset_notice_timer > 0) reset_notice_timer--;
+
+// Alternar Modo Dev com F1 ou F2
+if (keyboard_check_pressed(vk_f1) || keyboard_check_pressed(vk_f2)) {
+    global.dev_mode = !global.dev_mode;
+    save_meta();
+    if (state == "select_talents") {
+        var _character = classes[selected_index];
+        var _elem_current = elements[selected_element_index];
+        if (element_is_unlocked(_elem_current)) {
+            var _all = get_talents_for_character_and_affinity(_character, _elem_current);
+            var _unlocked = [];
+            for (var i = 0; i < array_length(_all); i++) {
+                if (talent_is_unlocked(_all[i].id)) array_push(_unlocked, _all[i]);
+            }
+            talent_select_list = _unlocked;
+        } else {
+            talent_select_list = [];
+        }
+        talent_select_cursor = 0;
+        talent_grid_scroll_row = 0;
+    }
+}
+
+// Resetar elementos da campanha para testes com F3
+if (keyboard_check_pressed(vk_f3)) {
+    global.meta_elements = {water: false, fire: false, wind: false, earth: false};
+    global.dev_mode = false;
+    save_meta();
+    reset_notice_timer = 120;
+    if (state == "select_talents") {
+        var _character = classes[selected_index];
+        var _elem_current = elements[selected_element_index];
+        if (element_is_unlocked(_elem_current)) {
+            var _all = get_talents_for_character_and_affinity(_character, _elem_current);
+            var _unlocked = [];
+            for (var i = 0; i < array_length(_all); i++) {
+                if (talent_is_unlocked(_all[i].id)) array_push(_unlocked, _all[i]);
+            }
+            talent_select_list = _unlocked;
+        } else {
+            talent_select_list = [];
+        }
+        talent_select_cursor = 0;
+        talent_grid_scroll_row = 0;
+        talent_selected_ids = [];
+    }
+}
+
 switch (state) {
     case "main_menu":
         var _opt_count = array_length(main_menu_options);
@@ -37,12 +87,17 @@ switch (state) {
 
         if (keyboard_check_pressed(ord("Z"))) {
             var _character = classes[selected_index];
-            var _all = get_talents_for_character_and_affinity(_character, elements[selected_element_index]);
-            var _unlocked = [];
-            for (var i = 0; i < array_length(_all); i++) {
-                if (talent_is_unlocked(_all[i].id)) array_push(_unlocked, _all[i]);
+            var _elem_current = elements[selected_element_index];
+            if (element_is_unlocked(_elem_current)) {
+                var _all = get_talents_for_character_and_affinity(_character, _elem_current);
+                var _unlocked = [];
+                for (var i = 0; i < array_length(_all); i++) {
+                    if (talent_is_unlocked(_all[i].id)) array_push(_unlocked, _all[i]);
+                }
+                talent_select_list = _unlocked;
+            } else {
+                talent_select_list = [];
             }
-            talent_select_list = _unlocked;
             talent_select_cursor = 0;
             talent_grid_scroll_row = 0;
             talent_selected_ids = [];
@@ -76,12 +131,17 @@ switch (state) {
         }
 
         if (_elem_changed) {
-            var _new_all = get_talents_for_character_and_affinity(classes[selected_index], elements[selected_element_index]);
-            var _new_unlocked = [];
-            for (var i = 0; i < array_length(_new_all); i++) {
-                if (talent_is_unlocked(_new_all[i].id)) array_push(_new_unlocked, _new_all[i]);
+            var _elem_current = elements[selected_element_index];
+            if (element_is_unlocked(_elem_current)) {
+                var _new_all = get_talents_for_character_and_affinity(classes[selected_index], _elem_current);
+                var _new_unlocked = [];
+                for (var i = 0; i < array_length(_new_all); i++) {
+                    if (talent_is_unlocked(_new_all[i].id)) array_push(_new_unlocked, _new_all[i]);
+                }
+                talent_select_list = _new_unlocked;
+            } else {
+                talent_select_list = [];
             }
-            talent_select_list = _new_unlocked;
             talent_select_cursor = 0;
             talent_grid_scroll_row = 0;
             _m = array_length(talent_select_list);
@@ -162,17 +222,22 @@ switch (state) {
         }
 
         if (keyboard_check_pressed(ord("Z"))) {
-            global.selected_character = classes[selected_index];
-            global.selected_element = elements[selected_element_index];
-            global.use_saved_stats = false;
+            var _elem_current = elements[selected_element_index];
+            if (!element_is_unlocked(_elem_current)) {
+                locked_warning_timer = 90;
+            } else {
+                global.selected_character = classes[selected_index];
+                global.selected_element = _elem_current;
+                global.use_saved_stats = false;
 
-            global.chosen_talent_ids = ["", "", ""];
-            for (var i = 0; i < array_length(talent_selected_ids); i++) {
-                global.chosen_talent_ids[i] = talent_selected_ids[i];
+                global.chosen_talent_ids = ["", "", ""];
+                for (var i = 0; i < array_length(talent_selected_ids); i++) {
+                    global.chosen_talent_ids[i] = talent_selected_ids[i];
+                }
+
+                save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
+                room_goto(Room1);
             }
-
-            save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
-            room_goto(Room1);
         }
 
         if (keyboard_check_pressed(ord("X"))) {
@@ -242,7 +307,12 @@ switch (state) {
             }
 
             if (keyboard_check_pressed(ord("Z"))) {
-                talent_purchase(_tab_talents[shop_talent_index].id);
+                var _cur_shop_t = _tab_talents[shop_talent_index];
+                if (_cur_shop_t.affinity != "none" && !element_is_unlocked(_cur_shop_t.affinity)) {
+                    locked_warning_timer = 60;
+                } else {
+                    talent_purchase(_cur_shop_t.id);
+                }
             }
         }
 

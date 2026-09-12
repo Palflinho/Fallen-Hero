@@ -116,4 +116,36 @@ if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T"))) {
 } else if (keyboard_check_pressed(vk_f1)) {
     global.char_select_direct = true;
     room_goto(room_char_select);
+} else if (keyboard_check_pressed(vk_f2)) {
+    global.dev_mode = !global.dev_mode;
+    save_meta();
+    var _px = (_player != noone ? _player.x : 200);
+    var _py = (_player != noone ? _player.y - 30 : 200);
+    if (global.dev_mode) {
+        array_push(global.combat_popups, {
+            x: _px,
+            y: _py,
+            text: "MODO DEV: ATIVADO",
+            colour: c_aqua,
+            is_crit: true,
+            life: 1.5,
+            life_max: 1.5,
+            vy: -30,
+            vx: 0,
+            scale: 1.2
+        });
+    } else {
+        array_push(global.combat_popups, {
+            x: _px,
+            y: _py,
+            text: "MODO DEV: DESATIVADO",
+            colour: c_yellow,
+            is_crit: false,
+            life: 1.5,
+            life_max: 1.5,
+            vy: -30,
+            vx: 0,
+            scale: 1.1
+        });
+    }
 }

@@ -64,6 +64,29 @@ function fx_spawn_reward_popup(_x, _y, _exp, _gold) {
     }
 }
 
+function fx_spawn_element_unlocked_popup(_x, _y, _elem) {
+    var _name = element_get_name(_elem);
+    var _col = c_white;
+    switch (_elem) {
+        case "water": _col = c_aqua; break;
+        case "fire":  _col = c_orange; break;
+        case "wind":  _col = make_colour_rgb(180, 240, 255); break;
+        case "earth": _col = make_colour_rgb(170, 130, 80); break;
+    }
+    array_push(global.combat_popups, {
+        x: _x,
+        y: _y - 45,
+        text: "ELEMENTO " + string_upper(_name) + " DESBLOQUEADO!",
+        colour: _col,
+        is_crit: true,
+        life: 2.2,
+        life_max: 2.2,
+        vy: -25,
+        vx: 0,
+        scale: 1.35
+    });
+}
+
 function fx_spawn_sparks(_x, _y, _colour, _count) {
     if (is_undefined(_colour)) _colour = c_yellow;
     if (is_undefined(_count)) _count = 5;
