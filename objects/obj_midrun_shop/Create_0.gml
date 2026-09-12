@@ -17,7 +17,7 @@ if (_t2_id == _t1_id || _t2_id == "") {
 
 var _t1_label = "Talento Arcano";
 var _t1_desc = "Aprimoramento de combate.";
-var _t1_struct = talent_get_def(_t1_id);
+var _t1_struct = get_talent_def_by_id(_t1_id);
 if (_t1_struct != undefined) {
     _t1_label = _t1_struct.label;
     _t1_desc = _t1_struct.desc_value;
@@ -25,7 +25,7 @@ if (_t1_struct != undefined) {
 
 var _t2_label = "Talento Arcano";
 var _t2_desc = "Aprimoramento de combate.";
-var _t2_struct = talent_get_def(_t2_id);
+var _t2_struct = get_talent_def_by_id(_t2_id);
 if (_t2_struct != undefined) {
     _t2_label = _t2_struct.label;
     _t2_desc = _t2_struct.desc_value;

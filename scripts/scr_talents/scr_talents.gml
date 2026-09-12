@@ -834,6 +834,14 @@ function get_talents_for_character(_character) {
     return _out;
 }
 
+function get_class_talent_defs(_character) {
+    return get_talents_for_character(_character);
+}
+
+function talent_get_def(_id) {
+    return get_talent_def_by_id(_id);
+}
+
 function get_talents_for_character_and_affinity(_character, _affinity) {
     var _all = get_talents_for_character(_character);
     var _out = [];
@@ -1365,7 +1373,7 @@ function roll_chest_talent() {
 
     ensure_meta_loaded();
     var _p_class = variable_global_exists("selected_character") ? global.selected_character : "knight";
-    var _class_defs = get_class_talent_defs(_p_class);
+    var _class_defs = get_talents_for_character(_p_class);
 
     for (var _j = 0; _j < array_length(_class_defs); _j++) {
         var _t = _class_defs[_j];
