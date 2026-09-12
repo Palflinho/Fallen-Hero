@@ -217,17 +217,92 @@ if (game_over) {
 
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
-} else if (level_complete) {
-    draw_set_alpha(0.6);
-    draw_set_color(c_black);
-    draw_rectangle(0, 0, display_get_gui_width(), display_get_gui_height(), false);
+} else if (level_complete || (variable_global_exists("run_victory") && global.run_victory)) {
+    var _gw = display_get_gui_width();
+    var _gh = display_get_gui_height();
+
+    draw_set_alpha(0.88);
+    draw_set_color(make_colour_rgb(10, 14, 24));
+    draw_rectangle(0, 0, _gw, _gh, false);
     draw_set_alpha(1);
 
-    draw_set_color(c_white);
+    var _box_w = 640;
+    var _box_h = 360;
+    var _bx = (_gw - _box_w) / 2;
+    var _by = (_gh - _box_h) / 2;
+
+    // Fundo do Modal
+    draw_set_color(make_colour_rgb(18, 26, 40));
+    draw_rectangle(_bx, _by, _bx + _box_w, _by + _box_h, false);
+
+    // Borda Dourada Triunfante
+    draw_set_color(c_yellow);
+    draw_rectangle(_bx, _by, _bx + _box_w, _by + _box_h, true);
+    draw_rectangle(_bx - 2, _by - 2, _bx + _box_w + 2, _by + _box_h + 2, true);
+
+    // Cabecalho de Vitoria
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
-    draw_text(display_get_gui_width() / 2, display_get_gui_height() / 2 - 20, "FASE CONCLUIDA!");
-    draw_text(display_get_gui_width() / 2, display_get_gui_height() / 2 + 20, "Aperte Z para escolher outro personagem");
+    var _pulse = 0.7 + 0.3 * abs(sin(current_time * 0.005));
+    draw_set_color(merge_colour(c_yellow, c_white, _pulse));
+    draw_text_transformed(_bx + _box_w / 2, _by + 36, "EXPEDICAO CONCLUIDA COM SUCESSO!", 1.35, 1.35, 0);
+
+    draw_set_color(make_colour_rgb(140, 210, 255));
+    draw_text(_bx + _box_w / 2, _by + 68, "As Forcas da Agua e do Fogo foram Dominadas!");
+
+    draw_set_color(make_colour_rgb(60, 85, 125));
+    draw_line(_bx + 30, _by + 92, _bx + _box_w - 30, _by + 92);
+
+    // Dados da Partida
+    var _sy = _by + 118;
+    draw_set_halign(fa_left);
+
+    var _p_class = (target != noone) ? target.character_class : "Heroi";
+    var _p_arch = (target != noone && variable_instance_exists(target, "archetype_name")) ? target.archetype_name : "Guerreiro";
+    var _p_lvl = (target != noone) ? target.level : 1;
+
+    draw_set_color(c_white);
+    draw_text(_bx + 50, _sy, "Heroi:");
+    draw_set_halign(fa_right);
+    draw_set_color(c_yellow);
+    draw_text(_bx + _box_w - 50, _sy, string_upper(_p_class) + " (" + _p_arch + ")");
+    _sy += 28;
+
+    draw_set_halign(fa_left);
+    draw_set_color(c_white);
+    draw_text(_bx + 50, _sy, "Nivel Final:");
+    draw_set_halign(fa_right);
+    draw_set_color(c_aqua);
+    draw_text(_bx + _box_w - 50, _sy, "Nivel " + string(_p_lvl));
+    _sy += 28;
+
+    draw_set_halign(fa_left);
+    draw_set_color(c_white);
+    draw_text(_bx + 50, _sy, "Ouro Resgatado:");
+    draw_set_halign(fa_right);
+    draw_set_color(c_yellow);
+    draw_text(_bx + _box_w - 50, _sy, "+" + string(global.gold) + " Ouro");
+    _sy += 28;
+
+    draw_set_halign(fa_left);
+    draw_set_color(c_white);
+    draw_text(_bx + 50, _sy, "Afinidades Desbloqueadas:");
+    draw_set_halign(fa_right);
+    draw_set_color(make_colour_rgb(100, 240, 160));
+    draw_text(_bx + _box_w - 50, _sy, "Agua e Fogo Desbloqueados!");
+    _sy += 38;
+
+    // Linha divisoria
+    draw_set_color(make_colour_rgb(60, 85, 125));
+    draw_line(_bx + 30, _sy, _bx + _box_w - 30, _sy);
+    _sy += 24;
+
+    // Botao de Retorno
+    draw_set_halign(fa_center);
+    var _b_pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
+    draw_set_color(merge_colour(c_yellow, c_white, _b_pulse));
+    draw_text(_bx + _box_w / 2, _sy, "[ESPACO / ENTER / Z] Retornar a Selecao de Personagens");
+
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 } else if (global.chest_reward_open) {

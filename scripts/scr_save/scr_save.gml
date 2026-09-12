@@ -144,9 +144,36 @@ function get_save_summary() {
                 default: _char_label = "Cavaleiro"; break;
             }
             break;
-        case "mage": _char_label = "Mago"; break;
-        case "archer": _char_label = "Arqueiro"; break;
-        case "assassin": _char_label = "Assassino"; break;
+        case "mage":
+            var _elem = variable_global_exists("save_element") ? global.save_element : "none";
+            switch (_elem) {
+                case "water": _char_label = "Mago (Criomante)"; break;
+                case "fire": _char_label = "Mago (Piromante)"; break;
+                case "wind": _char_label = "Mago (Aeromante)"; break;
+                case "earth": _char_label = "Mago (Geomante)"; break;
+                default: _char_label = "Mago (Arcano)"; break;
+            }
+            break;
+        case "archer":
+            var _elem = variable_global_exists("save_element") ? global.save_element : "none";
+            switch (_elem) {
+                case "water": _char_label = "Arqueiro (Cacador das Mares)"; break;
+                case "fire": _char_label = "Arqueiro (Balistico Infernal)"; break;
+                case "wind": _char_label = "Arqueiro (Mestre do Vendaval)"; break;
+                case "earth": _char_label = "Arqueiro (Balista da Terra)"; break;
+                default: _char_label = "Arqueiro"; break;
+            }
+            break;
+        case "assassin":
+            var _elem = variable_global_exists("save_element") ? global.save_element : "none";
+            switch (_elem) {
+                case "water": _char_label = "Assassino (Lamina Espectral)"; break;
+                case "fire": _char_label = "Assassino (Lamina Vulcanica)"; break;
+                case "wind": _char_label = "Assassino (Algoz do Tufao)"; break;
+                case "earth": _char_label = "Assassino (Veneno Tellurico)"; break;
+                default: _char_label = "Assassino"; break;
+            }
+            break;
     }
 
     var _room_label = "Fase 1 (Gelo)";

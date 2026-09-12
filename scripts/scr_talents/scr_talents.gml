@@ -1,4 +1,4 @@
-﻿// Shop talents per class -- cost 0 means unlocked from the start, cost > 0 must be bought
+// Shop talents per class -- cost 0 means unlocked from the start, cost > 0 must be bought
 // with gold in the shop before it can be picked at the pre-run talent-selection screen.
 //
 // General talents (character: "general") are never sold in a shop and never offered at
@@ -1323,7 +1323,7 @@ function skip_chest_reward() {
 // (pause/attribute window/chest reward) AND the brief hit-stop freeze on impactful hits.
 // Every Step event that matters checks this instead of the individual flags directly.
 function is_world_paused() {
-    return global.paused || global.attr_window_open || global.chest_reward_open || global.hitstop_timer > 0;
+    return global.paused || global.attr_window_open || global.chest_reward_open || (variable_global_exists("run_victory") && global.run_victory) || global.hitstop_timer > 0;
 }
 
 function talent_get_desc_flavor(_t) {

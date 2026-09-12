@@ -6,9 +6,14 @@ if (hit_flash_timer > 0) hit_flash_timer -= _dt;
 
 // Sakurai Polish: Knockback Physics with Wall Collisions
 if (abs(knockback_vx) > 1 || abs(knockback_vy) > 1) {
+    var _on_ice = fh_place_on_ice(x, y);
+    var _eff_friction = _on_ice ? 0.985 : knockback_friction;
     fh_move_and_collide(knockback_vx * _dt, knockback_vy * _dt);
-    knockback_vx *= power(knockback_friction, _dt * 60);
-    knockback_vy *= power(knockback_friction, _dt * 60);
+    knockback_vx *= power(_eff_friction, _dt * 60);
+    knockback_vy *= power(_eff_friction, _dt * 60);
+    if (_on_ice && random(1) < 0.25) {
+        fx_spawn_sparks(x, y + body_radius, make_colour_rgb(180, 235, 255), 1);
+    }
 } else {
     knockback_vx = 0;
     knockback_vy = 0;
@@ -57,6 +62,11 @@ if (hp <= 0) {
         element_unlock("water");
     } else if (object_index == obj_boss2) {
         element_unlock("fire");
+        var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
+        _gate.trigger_mode = "clear_mobs";
+        _gate.reward_type = "victory";
+        _gate.gate_label = "TRIUNFO: Concluir Expedicao (Vitoria)";
+        _gate.gate_colour = c_yellow;
     }
 
     // Sakurai Juice: tactile death burst and floating rewards

@@ -86,8 +86,14 @@ switch (state) {
         on_ice = fh_place_on_ice(x, y);
 
         if (on_ice) {
+            // Física de Gelo: +20% velocidade máxima, inércia fluida de patinação
+            _desired_vx *= 1.20;
+            _desired_vy *= 1.20;
             vx = lerp(vx, _desired_vx, 0.04);
             vy = lerp(vy, _desired_vy, 0.04);
+            if (point_distance(0, 0, vx, vy) > 20 && random(1) < 0.28) {
+                fx_spawn_sparks(x, y + body_radius - 2, make_colour_rgb(190, 240, 255), 1);
+            }
         } else {
             vx = _desired_vx;
             vy = _desired_vy;

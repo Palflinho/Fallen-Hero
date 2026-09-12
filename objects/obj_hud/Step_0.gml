@@ -48,9 +48,14 @@ if (game_over) {
     exit;
 }
 
-if (level_complete) {
-    if (keyboard_check_pressed(ord("Z"))) {
+if (!variable_global_exists("run_victory")) global.run_victory = false;
+
+if (global.run_victory || level_complete) {
+    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C"))) {
         clear_save();
+        global.run_victory = false;
+        level_complete = false;
+        global.char_select_direct = true;
         room_goto(room_char_select);
     }
     exit;

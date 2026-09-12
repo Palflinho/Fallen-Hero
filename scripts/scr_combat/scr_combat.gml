@@ -17,8 +17,7 @@ if (!variable_global_exists("combat_particles")) {
 
 function fx_spawn_damage_popup(_x, _y, _amount, _is_crit, _col) {
     if (is_undefined(_col)) _col = _is_crit ? c_yellow : c_white;
-    var _txt = string(round(_amount));
-    if (_is_crit) _txt += "!";
+    var _txt = is_string(_amount) ? _amount : (string(round(_amount)) + (_is_crit ? "!" : ""));
     var _popup = {
         x: _x + random_range(-6, 6),
         y: _y - 12 + random_range(-4, 4),
@@ -270,6 +269,20 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
     var _dmg = _base_damage;
     if (_owner.synth_execute_bonus > 0 && _enemy.hp_max > 0 && (_enemy.hp / _enemy.hp_max) <= 0.3) {
         _dmg *= (1 + _owner.synth_execute_bonus);
+    }
+
+    // Choque Térmico (Sinergia Iwata: Fogo + Gelo/Água)
+    var _is_fire_hit = (_owner.element_affinity == "fire" || (variable_instance_exists(_owner, "synth_berserk_lamina_brasa") && _owner.synth_berserk_lamina_brasa > 0) || (variable_instance_exists(_owner, "synth_piro_centelha_incandescente") && _owner.synth_piro_centelha_incandescente > 0) || (variable_instance_exists(_owner, "synth_archer_balist_flecha_incendiaria") && _owner.synth_archer_balist_flecha_incendiaria > 0));
+    var _is_water_hit = (_owner.element_affinity == "water" || (variable_instance_exists(_owner, "synth_crio_geada_penetrante") && _owner.synth_crio_geada_penetrante > 0) || (variable_instance_exists(_owner, "synth_archer_glacial_flecha_estalactite") && _owner.synth_archer_glacial_flecha_estalactite > 0));
+
+    if ((_is_fire_hit && _enemy.slow_active) || (_is_water_hit && _enemy.poison_active)) {
+        _dmg *= 1.50;
+        _is_crit = true;
+        trigger_hitstop(0.10);
+        fx_spawn_sparks(_enemy.x, _enemy.y, c_orange, 8);
+        fx_spawn_sparks(_enemy.x, _enemy.y, c_aqua, 8);
+        fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 10, "CHOQUE TERMICO", true, c_orange);
+        _enemy.damage_reduction = min(1.0, _enemy.damage_reduction * 1.4);
     }
 
     var _before_hp = _enemy.hp;

@@ -13,6 +13,7 @@ mob_clear_chest_spawned = false;
 global.paused = false;
 global.attr_window_open = false;
 global.chest_reward_open = false;
+global.run_victory = false;
 
 global.boss_buttons_pressed = 0;
 death_gold_earned = 0;
