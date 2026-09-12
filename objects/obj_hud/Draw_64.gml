@@ -1006,7 +1006,7 @@ if (game_over) {
 
     // Dimensoes dos dois paineis
     var _panel_gap = 16;
-    var _left_w = 360;
+    var _left_w = 380;
     var _right_w = _win_w - _left_w - _panel_gap - 40;
     var _col1_x = _win_x + 20;
     var _col2_x = _col1_x + _left_w + _panel_gap;
@@ -1054,6 +1054,8 @@ if (game_over) {
     _ly += 10;
 
     // Atributos Vitais de Combate (Nintendo Miyamoto: semiótica limpa)
+    var _val_x = _lx + 165;
+
     // 1. HP
     var _hp_val = string(max(0, round(target.hp))) + " / " + string(round(target.hp_max));
     if (variable_instance_exists(target, "paladin_barrier_active") && target.paladin_barrier_active > 0) {
@@ -1062,7 +1064,7 @@ if (game_over) {
     draw_set_color(make_colour_rgb(240, 80, 80));
     draw_text(_lx, _ly, "[HP] Vida:");
     draw_set_color(c_white);
-    draw_text(_lx + 130, _ly, _hp_val);
+    draw_text(_val_x, _ly, _hp_val);
     _ly += 22;
 
     // 2. Poder
@@ -1073,7 +1075,7 @@ if (game_over) {
     draw_set_color(make_colour_rgb(255, 170, 40));
     draw_text(_lx, _ly, "[PWR] Poder:");
     draw_set_color(c_white);
-    draw_text(_lx + 130, _ly, _pwr_str);
+    draw_text(_val_x, _ly, _pwr_str);
     _ly += 22;
 
     // 3. Defesa
@@ -1084,21 +1086,21 @@ if (game_over) {
     draw_set_color(make_colour_rgb(70, 160, 240));
     draw_text(_lx, _ly, "[DEF] Defesa:");
     draw_set_color(c_white);
-    draw_text(_lx + 130, _ly, _def_str);
+    draw_text(_val_x, _ly, _def_str);
     _ly += 22;
 
     // 4. Velocidade de Ataque
     draw_set_color(make_colour_rgb(230, 210, 80));
     draw_text(_lx, _ly, "[ATK] Cadencia:");
     draw_set_color(c_white);
-    draw_text(_lx + 130, _ly, string(round(target.nat_atk_spd * 100) / 100) + " golpes/s");
+    draw_text(_val_x, _ly, string(round(target.nat_atk_spd * 100) / 100) + " golpes/s");
     _ly += 22;
 
     // 5. Velocidade de Movimento
     draw_set_color(make_colour_rgb(80, 220, 130));
     draw_text(_lx, _ly, "[VEL] Movimento:");
     draw_set_color(c_white);
-    draw_text(_lx + 130, _ly, string(round(target.nat_move_spd)));
+    draw_text(_val_x, _ly, string(round(target.nat_move_spd)));
     _ly += 26;
 
     // Divisor
