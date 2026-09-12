@@ -86,14 +86,14 @@ if (hp <= 0) {
     } else if (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) {
         element_unlock("wind");
         fx_spawn_element_unlocked_popup(x, y, "wind");
-        // Após derrotar General Zephyrus (Sala 6), abre portal para a Loja 2
+        // Apos derrotar General Zephyrus (Sala 6), abre portal para Fase da Terra (Room7)
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
         _gate.trigger_mode = "clear_mobs";
-        _gate.target_room = asset_get_index("room_shop");
-        _gate.reward_type = "gold";
-        _gate.reward_value = 100;
-        _gate.gate_label = "Descanso: O Mercador Arcano (Intermissao 2 - +100 Ouro)";
-        _gate.gate_colour = c_yellow;
+        _gate.target_room = asset_get_index("Room7");
+        _gate.reward_type = "heal";
+        _gate.reward_value = 0;
+        _gate.gate_label = "Avanco: Santuario da Terra (Fase 4 - Cura 40% HP)";
+        _gate.gate_colour = make_colour_rgb(120, 220, 100);
     } else if (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) {
         element_unlock("earth");
         fx_spawn_element_unlocked_popup(x, y, "earth");

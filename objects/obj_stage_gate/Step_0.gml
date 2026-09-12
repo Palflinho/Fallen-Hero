@@ -47,48 +47,77 @@ if (_ready) {
             exit;
         }
 
-        // Roteamento inteligente do ciclo de 4 salas antes do boss
+        // Roteamento inteligente do ciclo de 7 etapas da fase
         if (!variable_global_exists("run_biome")) global.run_biome = "water";
         var _dest = target_room;
 
-        // Salas de Exploração (Sala 1) levam à Arena (Sala 2)
-        if (room == asset_get_index("Room1")) {
+        // Sala 1 (Exploracao 1) -> Sala 2 (room_exp2)
+        if (room == Room1) {
             global.run_biome = "water";
-            global.run_room_index = 2;
-            _dest = asset_get_index("room_arena");
-        } else if (room == asset_get_index("Room3")) {
+            global.run_room_step = 2;
+            _dest = asset_get_index("room_exp2");
+        } else if (room == Room3) {
             global.run_biome = "fire";
-            global.run_room_index = 2;
-            _dest = asset_get_index("room_arena");
-        } else if (room == asset_get_index("Room5")) {
+            global.run_room_step = 2;
+            _dest = asset_get_index("room_exp2");
+        } else if (room == Room5) {
             global.run_biome = "wind";
-            global.run_room_index = 2;
-            _dest = asset_get_index("room_arena");
-        } else if (room == asset_get_index("Room7")) {
+            global.run_room_step = 2;
+            _dest = asset_get_index("room_exp2");
+        } else if (room == Room7) {
             global.run_biome = "earth";
-            global.run_room_index = 2;
+            global.run_room_step = 2;
+            _dest = asset_get_index("room_exp2");
+        }
+        // Sala 2 (Exploracao 2) -> Sala 2.5 (room_arena)
+        else if (room == asset_get_index("room_exp2")) {
+            global.run_room_step = 2.5;
             _dest = asset_get_index("room_arena");
         }
-        // Arena (Sala 2) leva à Loja do Mercador (Sala 3)
+        // Sala 2.5 (Arena) -> Sala 3 (room_shop)
         else if (room == asset_get_index("room_arena")) {
-            global.run_room_index = 3;
+            global.run_room_step = 3;
             _dest = asset_get_index("room_shop");
         }
-        // Loja (Sala 3) leva ao Desafio Pré-Boss (Sala 4)
+        // Sala 3 (Mercado) -> Sala 4 (room_exp4)
         else if (room == asset_get_index("room_shop")) {
-            global.run_room_index = 4;
+            global.run_room_step = 4;
+            _dest = asset_get_index("room_exp4");
+        }
+        // Sala 4 (Exploracao 3) -> Sala 5 (room_preboss)
+        else if (room == asset_get_index("room_exp4")) {
+            global.run_room_step = 5;
             _dest = asset_get_index("room_preboss");
         }
-        // Pré-Boss (Sala 4) leva à Câmara do Chefe do bioma correspondente (Sala 5)
+        // Sala 5 (Pre-Chefe) -> Sala 6 (Chefe correspondente)
         else if (room == asset_get_index("room_preboss")) {
-            global.run_room_index = 5;
+            global.run_room_step = 6;
             if (global.run_biome == "water") _dest = asset_get_index("Room2");
             else if (global.run_biome == "fire") _dest = asset_get_index("Room4");
             else if (global.run_biome == "wind") _dest = asset_get_index("Room6");
             else if (global.run_biome == "earth") _dest = asset_get_index("Room8");
         }
+        // Sala 6 (Chefe da Fase) -> Proximo Bioma Sala 1 ou Vitoria
+        else if (room == Room2) {
+            global.run_biome = "fire";
+            global.run_room_step = 1;
+            _dest = asset_get_index("Room3");
+        } else if (room == Room4) {
+            global.run_biome = "wind";
+            global.run_room_step = 1;
+            _dest = asset_get_index("Room5");
+        } else if (room == Room6) {
+            global.run_biome = "earth";
+            global.run_room_step = 1;
+            _dest = asset_get_index("Room7");
+        } else if (room == Room8) {
+            global.run_victory = true;
+            global.paused = true;
+            exit;
+        }
 
         if (_dest != noone && room_exists(_dest)) {
+            global.boss_buttons_pressed = 0;
             save_checkpoint(room_get_name(_dest));
             room_goto(_dest);
         }

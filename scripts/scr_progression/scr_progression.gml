@@ -64,39 +64,44 @@ function player_gain_gold(_amount) {
 
 function run_update_current_room_state() {
     if (!variable_global_exists("run_biome")) global.run_biome = "water";
-    if (!variable_global_exists("run_room_index")) global.run_room_index = 1;
+    if (!variable_global_exists("run_room_step")) global.run_room_step = 1;
 
     if (room == Room1) {
         global.run_biome = "water";
-        global.run_room_index = 1;
+        global.run_room_step = 1;
     } else if (room == Room3) {
         global.run_biome = "fire";
-        global.run_room_index = 1;
+        global.run_room_step = 1;
     } else if (room == Room5) {
         global.run_biome = "wind";
-        global.run_room_index = 1;
+        global.run_room_step = 1;
     } else if (room == Room7) {
         global.run_biome = "earth";
-        global.run_room_index = 1;
+        global.run_room_step = 1;
+    } else if (room == asset_get_index("room_exp2")) {
+        global.run_room_step = 2;
     } else if (room == asset_get_index("room_arena")) {
-        global.run_room_index = 2;
+        global.run_room_step = 2.5;
     } else if (room == asset_get_index("room_shop")) {
-        global.run_room_index = 3;
+        global.run_room_step = 3;
+    } else if (room == asset_get_index("room_exp4")) {
+        global.run_room_step = 4;
     } else if (room == asset_get_index("room_preboss")) {
-        global.run_room_index = 4;
+        global.run_room_step = 5;
     } else if (room == Room2) {
         global.run_biome = "water";
-        global.run_room_index = 5;
+        global.run_room_step = 6;
     } else if (room == Room4) {
         global.run_biome = "fire";
-        global.run_room_index = 5;
+        global.run_room_step = 6;
     } else if (room == Room6) {
         global.run_biome = "wind";
-        global.run_room_index = 5;
+        global.run_room_step = 6;
     } else if (room == Room8) {
         global.run_biome = "earth";
-        global.run_room_index = 5;
+        global.run_room_step = 6;
     }
+    global.run_room_index = global.run_room_step;
 }
 
 function run_get_biome_name(_b) {
@@ -107,11 +112,13 @@ function run_get_biome_name(_b) {
     return "DESCONHECIDO";
 }
 
-function run_get_room_title(_idx) {
-    if (_idx == 1) return "Exploracao";
-    if (_idx == 2) return "Arena";
-    if (_idx == 3) return "Loja";
-    if (_idx == 4) return "Pre-Chefe";
-    if (_idx == 5) return "Chefe";
+function run_get_room_title(_step) {
+    if (_step == 1) return "Exploracao 1";
+    if (_step == 2) return "Exploracao 2";
+    if (_step == 2.5) return "Arena";
+    if (_step == 3) return "Mercado";
+    if (_step == 4) return "Exploracao 3";
+    if (_step == 5) return "Pre-Chefe";
+    if (_step == 6) return "Chefe";
     return "Sala";
 }

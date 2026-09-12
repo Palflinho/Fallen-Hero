@@ -121,7 +121,7 @@ if (target.hp / target.hp_max <= 0.3) {
 }
 
 draw_set_color(c_white);
-if (!boss_room) {
+if (!boss_room && instance_number(obj_boss_button) > 0) {
     draw_text(_x, _y + bar_gap, "Botoes: " + string(global.boss_buttons_pressed) + "/4");
 }
 
@@ -158,7 +158,7 @@ if (boss_room) {
 if (!game_over && !level_complete && !(variable_global_exists("run_victory") && global.run_victory) && !global.chest_reward_open && !global.paused && !global.attr_window_open && (!variable_global_exists("midrun_shop_open") || !global.midrun_shop_open)) {
     run_update_current_room_state();
     var _gw = display_get_gui_width();
-    var _map_w = 160;
+    var _map_w = 178;
     var _map_h = 100;
     var _map_x = _gw - _map_w - 20;
     var _map_y = 20;
@@ -185,8 +185,8 @@ if (!game_over && !level_complete && !(variable_global_exists("run_victory") && 
     draw_set_valign(fa_middle);
     draw_set_color(c_yellow);
     var _b_name = run_get_biome_name(global.run_biome);
-    var _r_title = run_get_room_title(global.run_room_index);
-    draw_text(_map_x + _map_w / 2, _map_y + 9, _b_name + ": " + string(global.run_room_index) + "/5 (" + _r_title + ")");
+    var _r_title = run_get_room_title(global.run_room_step);
+    draw_text(_map_x + _map_w / 2, _map_y + 9, _b_name + ": Sala " + string(global.run_room_step) + " (" + _r_title + ")");
     draw_set_valign(fa_top);
 
     // Area interna do radar
@@ -284,17 +284,20 @@ if (!game_over && !level_complete && !(variable_global_exists("run_victory") && 
         draw_line(_px, _py, _px + lengthdir_x(5, _p_dir), _py + lengthdir_y(5, _p_dir));
     }
 
-    // ================= TRILHA DE NOS (5 SALAS DO BIOMA) =================
+    // ================= TRILHA DE NOS (7 ETAPAS DO BIOMA) =================
     var _trail_y = _map_y + _map_h + 6;
-    var _node_w = 28;
-    var _node_h = 16;
+    var _step_keys = [1, 2, 2.5, 3, 4, 5, 6];
+    var _node_labels = ["1", "2", "2.5", "3", "4", "5", "6"];
+    var _node_count = array_length(_step_keys);
     var _node_gap = 4;
-    var _node_labels = ["Exp", "Arn", "Loj", "Pre", "Boss"];
+    var _node_w = 22;
+    var _node_h = 16;
 
-    for (var _n = 1; _n <= 5; _n++) {
-        var _nx = _map_x + (_n - 1) * (_node_w + _node_gap);
-        var _is_cur = (_n == global.run_room_index);
-        var _is_past = (_n < global.run_room_index);
+    for (var _n = 0; _n < _node_count; _n++) {
+        var _nx = _map_x + _n * (_node_w + _node_gap);
+        var _step_val = _step_keys[_n];
+        var _is_cur = (_step_val == global.run_room_step);
+        var _is_past = (_step_val < global.run_room_step);
 
         draw_set_alpha(0.85);
         if (_is_cur) {
@@ -321,7 +324,7 @@ if (!game_over && !level_complete && !(variable_global_exists("run_victory") && 
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(_is_cur ? c_yellow : (_is_past ? make_colour_rgb(140, 220, 160) : c_gray));
-        draw_text(_nx + _node_w / 2, _trail_y + _node_h / 2, _node_labels[_n - 1]);
+        draw_text(_nx + _node_w / 2, _trail_y + _node_h / 2, _node_labels[_n]);
         draw_set_valign(fa_top);
     }
     draw_set_halign(fa_left);
