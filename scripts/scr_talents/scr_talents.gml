@@ -14,67 +14,157 @@
 function get_talent_defs() {
     return [
         // ---- Cavaleiro (Knight) - Fundamentais ----
-        {id: "knight_def_fisica", character: "knight", label: "Def Fisica", synth_field: "synth_def_fisica", per_rank: 3, cost: 0},
-        {id: "knight_hp_max", character: "knight", label: "HP Maximo", synth_field: "synth_armor_hp", per_rank: 15, cost: 40},
-        {id: "knight_golpe_pesado", character: "knight", label: "Golpe Pesado", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
-        {id: "knight_retaliacao", character: "knight", label: "Retaliacao", synth_field: "synth_thorns_dmg", per_rank: 5, cost: 0},
-        {id: "knight_folego_aco", character: "knight", label: "Folego de Aco", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0},
-        {id: "knight_escudo_inabalavel", character: "knight", label: "Escudo Inabalavel", synth_field: "synth_block_reduction", per_rank: 0.08, cost: 50},
+        {id: "knight_def_fisica", character: "knight", label: "Def Fisica", synth_field: "synth_def_fisica", per_rank: 3, cost: 0,
+         desc_flavor: "Reforca a blindagem fisica do cavaleiro, reduzindo o impacto de ataques corporais diretos.",
+         desc_value: "+3 de Defesa Fisica por nivel de talento.", icon_type: "shield"},
+        {id: "knight_hp_max", character: "knight", label: "HP Maximo", synth_field: "synth_armor_hp", per_rank: 15, cost: 40,
+         desc_flavor: "Aumenta a constituicao fisica e tenacidade para resistir a confrontos prolongados.",
+         desc_value: "+15 de Vida Maxima por nivel de talento.", icon_type: "heart"},
+        {id: "knight_golpe_pesado", character: "knight", label: "Golpe Pesado", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0,
+         desc_flavor: "Imprime maior peso e firmeza nos golpes de espada cortando as defesas inimigas.",
+         desc_value: "+3 de Poder Fisico (Dano) por nivel de talento.", icon_type: "sword"},
+        {id: "knight_retaliacao", character: "knight", label: "Retaliacao", synth_field: "synth_thorns_dmg", per_rank: 5, cost: 0,
+         desc_flavor: "Armadura reativa que devolve parte do impacto recebido contra agressores proximos.",
+         desc_value: "+5 de Dano de Retaliacao ao sofrer golpes por nivel.", icon_type: "thorns"},
+        {id: "knight_folego_aco", character: "knight", label: "Folego de Aco", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0,
+         desc_flavor: "Concentracao marcial que regenera a vitalidade do guerreiro de forma ininterrupta.",
+         desc_value: "+1.5 de Regeneracao de Vida por segundo por nivel.", icon_type: "regen"},
+        {id: "knight_escudo_inabalavel", character: "knight", label: "Escudo Inabalavel", synth_field: "synth_block_reduction", per_rank: 0.08, cost: 50,
+         desc_flavor: "Aperfeicoa a postura de guarda com o escudo, absorvendo grande parte dos danos bloqueados.",
+         desc_value: "+8% de Reducao adicional de dano durante o Bloqueio.", icon_type: "block"},
 
         // ---- Cavaleiro + Agua (Paladino) ----
-        {id: "knight_paladino_aura", character: "knight", label: "Aura Revigorante", synth_field: "synth_paladin_aura_heal", per_rank: 2, cost: 50},
-        {id: "knight_paladino_sobrevida", character: "knight", label: "Bencao da Sobrevida", synth_field: "synth_paladin_barrier", per_rank: 25, cost: 60},
-        {id: "knight_paladino_golpe_sagrado", character: "knight", label: "Golpe Sagrado", synth_field: "synth_paladin_heal_hit", per_rank: 2, cost: 70},
+        {id: "knight_paladino_aura", character: "knight", label: "Aura Revigorante", synth_field: "synth_paladin_aura_heal", per_rank: 2, cost: 50,
+         desc_flavor: "Canaliza a benevolencia da agua na Aura de Sobrevida, curando ferimentos em pulsos.",
+         desc_value: "+2 de Cura adicional por pulso da Aura de Sobrevida.", icon_type: "holy"},
+        {id: "knight_paladino_sobrevida", character: "knight", label: "Bencao da Sobrevida", synth_field: "synth_paladin_barrier", per_rank: 25, cost: 60,
+         desc_flavor: "Ao ativar a postura sagrada, uma barreira luminosa absorve o proximo dano recebido.",
+         desc_value: "+25 de Barreira sagrada protetora ao ativar o especial.", icon_type: "barrier"},
+        {id: "knight_paladino_golpe_sagrado", character: "knight", label: "Golpe Sagrado", synth_field: "synth_paladin_heal_hit", per_rank: 2, cost: 70,
+         desc_flavor: "A lamina energizada purifica a carne, restaurando pontos de saude ao acertar inimigos.",
+         desc_value: "+2 de Vida recuperada a cada golpe desferido.", icon_type: "heal_hit"},
 
         // ---- Cavaleiro + Fogo (Berserker) ----
-        {id: "knight_berserk_furia", character: "knight", label: "Furia Devastadora", synth_field: "synth_berserk_dmg_bonus", per_rank: 0.20, cost: 50},
-        {id: "knight_berserk_chamas", character: "knight", label: "Laminas Flamejantes", synth_field: "synth_berserk_burn", per_rank: 4, cost: 60},
-        {id: "knight_berserk_sede_sangue", character: "knight", label: "Sede de Sangue", synth_field: "synth_berserk_lifesteal", per_rank: 0.03, cost: 70},
+        {id: "knight_berserk_furia", character: "knight", label: "Furia Devastadora", synth_field: "synth_berserk_dmg_bonus", per_rank: 0.20, cost: 50,
+         desc_flavor: "Aumenta exponencialmente a potencia dos ataques devastadores durante a Furia Ardente.",
+         desc_value: "+20% de Dano adicional durante o especial Furia Ardente.", icon_type: "fury"},
+        {id: "knight_berserk_chamas", character: "knight", label: "Laminas Flamejantes", synth_field: "synth_berserk_burn", per_rank: 4, cost: 60,
+         desc_flavor: "Laminas incandescentes incendeiam os adversarios, causando queimaduras persistentes.",
+         desc_value: "+4 de Dano por segundo de Queimadura continua nos alvos.", icon_type: "burn"},
+        {id: "knight_berserk_sede_sangue", character: "knight", label: "Sede de Sangue", synth_field: "synth_berserk_lifesteal", per_rank: 0.03, cost: 70,
+         desc_flavor: "A agressividade desenfreada converte a dor infligida aos oponentes em saude propria.",
+         desc_value: "+3% de Roubo de Vida (Lifesteal) ao acertar golpes.", icon_type: "lifesteal"},
 
         // ---- Cavaleiro + Ar (Duelista) ----
-        {id: "knight_duelista_parry_cd", character: "knight", label: "Reflexo do Vento", synth_field: "synth_duelist_parry_bonus", per_rank: 1, cost: 50},
-        {id: "knight_duelista_contra_ataque", character: "knight", label: "Riposte Letal", synth_field: "synth_duelist_counter_mult", per_rank: 0.40, cost: 60},
-        {id: "knight_duelista_combo_veloz", character: "knight", label: "Passo da Tempestade", synth_field: "synth_duelist_speed", per_rank: 0.08, cost: 70},
+        {id: "knight_duelista_parry_cd", character: "knight", label: "Reflexo do Vento", synth_field: "synth_duelist_parry_bonus", per_rank: 1, cost: 50,
+         desc_flavor: "Agilidade refinada que reduz drasticamente o tempo de recarga da habilidade Aparar.",
+         desc_value: "-0.35s no Tempo de Recarga da habilidade de Aparar (Parry).", icon_type: "haste"},
+        {id: "knight_duelista_contra_ataque", character: "knight", label: "Riposte Letal", synth_field: "synth_duelist_counter_mult", per_rank: 0.40, cost: 60,
+         desc_flavor: "Ao aparar com sincronia perfeita, desfere um golpe de contra-ataque circular avassalador.",
+         desc_value: "+40% de Multiplicador de Dano no Contra-Ataque do Parry.", icon_type: "riposte"},
+        {id: "knight_duelista_combo_veloz", character: "knight", label: "Passo da Tempestade", synth_field: "synth_duelist_speed", per_rank: 0.08, cost: 70,
+         desc_flavor: "Aumenta a velocidade de movimento e a cadencia de golpes ao executar combos duplos.",
+         desc_value: "+8% de Velocidade de Movimento e ataque apos o combo.", icon_type: "wind"},
 
         // ---- Cavaleiro + Terra (Guardiao) ----
-        {id: "knight_guardiao_bastiao", character: "knight", label: "Fortaleza de Rocha", synth_field: "synth_guardian_duration", per_rank: 1.0, cost: 50},
-        {id: "knight_guardiao_casca_rocha", character: "knight", label: "Casca de Pedra", synth_field: "synth_guardian_def", per_rank: 4, cost: 60},
-        {id: "knight_guardiao_taunt_choque", character: "knight", label: "Onda Sismica", synth_field: "synth_guardian_taunt_shock", per_rank: 12, cost: 70},
+        {id: "knight_guardiao_bastiao", character: "knight", label: "Fortaleza de Rocha", synth_field: "synth_guardian_duration", per_rank: 1.0, cost: 50,
+         desc_flavor: "Estende a duracao da postura Bastiao da Rocha mantendo o bloqueio firme por mais tempo.",
+         desc_value: "+1.0s de Duracao na postura de Bloqueio Bastiao da Rocha.", icon_type: "bastion"},
+        {id: "knight_guardiao_casca_rocha", character: "knight", label: "Casca de Pedra", synth_field: "synth_guardian_def", per_rank: 4, cost: 60,
+         desc_flavor: "Endurece o corpo como granito concedendo armadura passiva impenetravel.",
+         desc_value: "+4 de Defesa adicional permanente por nivel.", icon_type: "rock"},
+        {id: "knight_guardiao_taunt_choque", character: "knight", label: "Onda Sismica", synth_field: "synth_guardian_taunt_shock", per_rank: 12, cost: 70,
+         desc_flavor: "A provocacao atrai a atencao de todos os inimigos da sala emitindo uma onda sismica.",
+         desc_value: "+12 de Dano sismico e 50% de Lentidao em area ao provocar.", icon_type: "shockwave"},
 
         // ---- Arqueiro (Archer) ----
-        {id: "archer_pwr_fisica", character: "archer", label: "Power Fisico", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
-        {id: "archer_mira_precisa", character: "archer", label: "Mira Precisa", synth_field: "synth_crit_chance", per_rank: 0.03, cost: 0},
-        {id: "archer_fluxo_flechas", character: "archer", label: "Fluxo de Flechas", synth_field: "synth_atk_spd_bonus", per_rank: 0.05, cost: 0},
-        {id: "archer_passo_leve", character: "archer", label: "Passo Leve", synth_field: "synth_move_spd_bonus", per_rank: 3, cost: 0},
-        {id: "archer_flechas_perfurantes", character: "archer", label: "Flechas Perfurantes", synth_field: "synth_pierce_count", per_rank: 1, cost: 70},
-        {id: "archer_instinto_cacador", character: "archer", label: "Instinto Cacador", synth_field: "synth_execute_bonus", per_rank: 0.08, cost: 70},
+        {id: "archer_pwr_fisica", character: "archer", label: "Power Fisico", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0,
+         desc_flavor: "Fortalece a tensao do arco longo disparando projeteis de maior impacto.",
+         desc_value: "+3 de Poder Fisico (Dano das Flechas) por nivel.", icon_type: "bow"},
+        {id: "archer_mira_precisa", character: "archer", label: "Mira Precisa", synth_field: "synth_crit_chance", per_rank: 0.03, cost: 0,
+         desc_flavor: "Foco absoluto em pontos fracos aumentando a probabilidade de disparos criticos.",
+         desc_value: "+3% de Chance de Acerto Critico por nivel.", icon_type: "crit"},
+        {id: "archer_fluxo_flechas", character: "archer", label: "Fluxo de Flechas", synth_field: "synth_atk_spd_bonus", per_rank: 0.05, cost: 0,
+         desc_flavor: "Agilidade magistral ao sacar flechas da aljava acelerando a frequencia de disparo.",
+         desc_value: "+5% de Velocidade de Ataque por nivel.", icon_type: "arrow_speed"},
+        {id: "archer_passo_leve", character: "archer", label: "Passo Leve", synth_field: "synth_move_spd_bonus", per_rank: 3, cost: 0,
+         desc_flavor: "Passos ageis e silenciosos que concedem maior mobilidade para manter a distancia.",
+         desc_value: "+3 de Velocidade de Movimento permanente por nivel.", icon_type: "boot"},
+        {id: "archer_flechas_perfurantes", character: "archer", label: "Flechas Perfurantes", synth_field: "synth_pierce_count", per_rank: 1, cost: 70,
+         desc_flavor: "Pontas aerodinamicas especiais que atravessam inimigos atingindo fileiras traseiras.",
+         desc_value: "+1 Alvo perfurado por flecha disparada por nivel.", icon_type: "pierce"},
+        {id: "archer_instinto_cacador", character: "archer", label: "Instinto Cacador", synth_field: "synth_execute_bonus", per_rank: 0.08, cost: 70,
+         desc_flavor: "Instinto implacavel que multiplica o dano ao atingir adversarios severamente feridos.",
+         desc_value: "+8% de Dano de Execucao contra inimigos com pouca vida.", icon_type: "execute"},
 
         // ---- Mago (Mage) ----
-        {id: "mage_couraca_magica", character: "mage", label: "Couraca Magica", synth_field: "synth_def_magica", per_rank: 2, cost: 0},
-        {id: "mage_fluxo_arcano", character: "mage", label: "Fluxo Arcano", synth_field: "synth_cdr", per_rank: 0.03, cost: 0},
-        {id: "mage_vigor_arcano", character: "mage", label: "Vigor Arcano", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0},
-        {id: "mage_sobrecarga", character: "mage", label: "Sobrecarga", synth_field: "synth_pwr_magica", per_rank: 3, cost: 70},
-        {id: "mage_explosao_perfurante", character: "mage", label: "Explosao Perfurante", synth_field: "synth_pierce_count", per_rank: 1, cost: 70},
+        {id: "mage_couraca_magica", character: "mage", label: "Couraca Magica", synth_field: "synth_def_magica", per_rank: 2, cost: 0,
+         desc_flavor: "Aura de protecao mistica que dissipa feiticos hostis e ameniza impactos magicos.",
+         desc_value: "+2 de Defesa Magica por nivel de talento.", icon_type: "magic_def"},
+        {id: "mage_fluxo_arcano", character: "mage", label: "Fluxo Arcano", synth_field: "synth_cdr", per_rank: 0.03, cost: 0,
+         desc_flavor: "Circulacao de mana otimizada reduzindo os tempos de espera das magias.",
+         desc_value: "+3% de Reducao de Tempo de Recarga (CDR) por nivel.", icon_type: "cdr"},
+        {id: "mage_vigor_arcano", character: "mage", label: "Vigor Arcano", synth_field: "synth_hp_reg", per_rank: 1.5, cost: 0,
+         desc_flavor: "Energia elemental que sela feridas restaurando a saude do conjurador continuamente.",
+         desc_value: "+1.5 de Regeneracao de Vida por segundo por nivel.", icon_type: "regen"},
+        {id: "mage_sobrecarga", character: "mage", label: "Sobrecarga", synth_field: "synth_pwr_magica", per_rank: 3, cost: 70,
+         desc_flavor: "Densidade eterea ampliada em cada bola de fogo gerando explosoes devastadoras.",
+         desc_value: "+3 de Poder Magico (Dano) por nivel de talento.", icon_type: "fireball"},
+        {id: "mage_explosao_perfurante", character: "mage", label: "Explosao Perfurante", synth_field: "synth_pierce_count", per_rank: 1, cost: 70,
+         desc_flavor: "As labaredas atravessam os primeiros corpos atingindo grupos inteiros de monstros.",
+         desc_value: "+1 Inimigo perfurado por projetil magico por nivel.", icon_type: "pierce"},
 
         // ---- Assassino (Assassin) ----
-        {id: "assassin_move_spd", character: "assassin", label: "Velocidade de Movimento", synth_field: "synth_move_spd_bonus", per_rank: 5, cost: 50},
-        {id: "assassin_instinto_assassino", character: "assassin", label: "Instinto Assassino", synth_field: "synth_execute_bonus", per_rank: 0.08, cost: 0},
-        {id: "assassin_reflexos_sombrios", character: "assassin", label: "Reflexos Sombrios", synth_field: "synth_dodge", per_rank: 0.02, cost: 0},
-        {id: "assassin_laminas_envenenadas", character: "assassin", label: "Laminas Envenenadas", synth_field: "synth_poison_on_hit", per_rank: 1, cost: 0},
-        {id: "assassin_vampirismo_sombrio", character: "assassin", label: "Vampirismo Sombrio", synth_field: "synth_lifesteal", per_rank: 0.02, cost: 70},
-        {id: "assassin_sombra_mortal", character: "assassin", label: "Sombra Mortal", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 70},
+        {id: "assassin_move_spd", character: "assassin", label: "Passo Sombrio", synth_field: "synth_move_spd_bonus", per_rank: 5, cost: 50,
+         desc_flavor: "Deslocamento veloz nas sombras tornando o assassino um alvo escorregadio.",
+         desc_value: "+5 de Velocidade de Movimento permanente por nivel.", icon_type: "boot"},
+        {id: "assassin_instinto_assassino", character: "assassin", label: "Instinto Assassino", synth_field: "synth_execute_bonus", per_rank: 0.08, cost: 0,
+         desc_flavor: "Golpes certeiros em orgaos vitais que finalizam presas enfraquecidas rapidamente.",
+         desc_value: "+8% de Dano de Execucao contra inimigos com pouca vida.", icon_type: "execute"},
+        {id: "assassin_reflexos_sombrios", character: "assassin", label: "Reflexos Sombrios", synth_field: "synth_dodge", per_rank: 0.02, cost: 0,
+         desc_flavor: "Capacidade sobrenatural de esquivar de ataques sem sofrer nenhum dano.",
+         desc_value: "+2% de Chance de Esquiva total por nivel.", icon_type: "dodge"},
+        {id: "assassin_laminas_envenenadas", character: "assassin", label: "Laminas Envenenadas", synth_field: "synth_poison_on_hit", per_rank: 1, cost: 0,
+         desc_flavor: "Veneno corrosivo aplicado nas adagas que drena a vida do alvo com o tempo.",
+         desc_value: "+1 de Dano continuo de Veneno por golpe desferido.", icon_type: "poison"},
+        {id: "assassin_vampirismo_sombrio", character: "assassin", label: "Vampirismo Sombrio", synth_field: "synth_lifesteal", per_rank: 0.02, cost: 70,
+         desc_flavor: "Rito sombrio que suga a forca vital dos inimigos feridos para recompor o assassino.",
+         desc_value: "+2% de Roubo de Vida ao desferir dano fisico.", icon_type: "lifesteal"},
+        {id: "assassin_sombra_mortal", character: "assassin", label: "Sombra Mortal", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 70,
+         desc_flavor: "Afiacao meticulosa das laminas para cortes letais e penetracao implacavel.",
+         desc_value: "+3 de Poder Fisico (Dano) por nivel de talento.", icon_type: "dagger"},
 
         // ---- Talentos Gerais (Baús) ----
-        {id: "general_vigor", character: "general", label: "Vigor", synth_field: "synth_hp_reg", per_rank: 2, cost: 0},
-        {id: "general_fortuna", character: "general", label: "Fortuna", synth_field: "synth_gold_bonus", per_rank: 0.15, cost: 0},
-        {id: "general_reflexos", character: "general", label: "Reflexos", synth_field: "synth_dodge", per_rank: 0.025, cost: 0},
-        {id: "general_folego_extra", character: "general", label: "Folego Extra", synth_field: "synth_second_wind", per_rank: 1, cost: 0},
-        {id: "general_impeto", character: "general", label: "Impeto", synth_field: "synth_cdr", per_rank: 0.03, cost: 0},
-        {id: "general_presteza", character: "general", label: "Presteza", synth_field: "synth_atk_spd_bonus", per_rank: 0.08, cost: 0},
-        {id: "general_precisao", character: "general", label: "Precisao", synth_field: "synth_crit_chance", per_rank: 0.05, cost: 0},
-        {id: "general_essencia", character: "general", label: "Essencia Arcana", synth_field: "synth_pwr_magica", per_rank: 3, cost: 0},
-        {id: "general_aura", character: "general", label: "Aura Protetora", synth_field: "synth_def_magica", per_rank: 3, cost: 0},
-        {id: "general_forca", character: "general", label: "Forca Bruta", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0},
+        {id: "general_vigor", character: "general", label: "Vigor", synth_field: "synth_hp_reg", per_rank: 2, cost: 0,
+         desc_flavor: "Vitalidade organica que eleva a velocidade natural de recuperacao do corpo.",
+         desc_value: "+2 de Regeneracao de Vida por segundo por rank.", icon_type: "regen"},
+        {id: "general_fortuna", character: "general", label: "Fortuna", synth_field: "synth_gold_bonus", per_rank: 0.15, cost: 0,
+         desc_flavor: "Afinidade com riquezas que multiplica o ouro encontrado na jornada.",
+         desc_value: "+15% de Ouro recebido adicional por rank.", icon_type: "gold"},
+        {id: "general_reflexos", character: "general", label: "Reflexos", synth_field: "synth_dodge", per_rank: 0.025, cost: 0,
+         desc_flavor: "Instinto apurado permitindo esquivar de ataques repentinos.",
+         desc_value: "+2.5% de Chance de Esquiva total por rank.", icon_type: "dodge"},
+        {id: "general_folego_extra", character: "general", label: "Folego Extra", synth_field: "synth_second_wind", per_rank: 1, cost: 0,
+         desc_flavor: "Ao beirar a derrota, o heroi ganha uma sobrevida emergencial com vida restaurada.",
+         desc_value: "+1 Carga de Segundo Folego (ressuscita imediatamente ao cair).", icon_type: "second_wind"},
+        {id: "general_impeto", character: "general", label: "Impeto", synth_field: "synth_cdr", per_rank: 0.03, cost: 0,
+         desc_flavor: "Ritmo marcial intenso que resfria habilidades e especiais mais depressa.",
+         desc_value: "+3% de Reducao de Tempo de Recarga (CDR) por rank.", icon_type: "cdr"},
+        {id: "general_presteza", character: "general", label: "Presteza", synth_field: "synth_atk_spd_bonus", per_rank: 0.08, cost: 0,
+         desc_flavor: "Manuseio mais veloz de qualquer arma empunhada.",
+         desc_value: "+8% de Velocidade de Ataque por rank.", icon_type: "haste"},
+        {id: "general_precisao", character: "general", label: "Precisao", synth_field: "synth_crit_chance", per_rank: 0.05, cost: 0,
+         desc_flavor: "Olhar clinico para encontrar falhas na postura inimiga e acertar pontos vitais.",
+         desc_value: "+5% de Chance de Golpe Critico por rank.", icon_type: "crit"},
+        {id: "general_essencia", character: "general", label: "Essencia Arcana", synth_field: "synth_pwr_magica", per_rank: 3, cost: 0,
+         desc_flavor: "Canalizacao pura de forca arcana primordial ampliando magias.",
+         desc_value: "+3 de Poder Magico por rank.", icon_type: "fireball"},
+        {id: "general_aura", character: "general", label: "Aura Protetora", synth_field: "synth_def_magica", per_rank: 3, cost: 0,
+         desc_flavor: "Campo protetor etereo contra feiticos e elementos hostis.",
+         desc_value: "+3 de Defesa Magica por rank.", icon_type: "magic_def"},
+        {id: "general_forca", character: "general", label: "Forca Bruta", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0,
+         desc_flavor: "Aumento de musculatura e peso do impacto em combate direto.",
+         desc_value: "+3 de Poder Fisico por rank.", icon_type: "sword"},
     ];
 }
 
@@ -329,4 +419,191 @@ function skip_chest_reward() {
 // Every Step event that matters checks this instead of the individual flags directly.
 function is_world_paused() {
     return global.paused || global.attr_window_open || global.chest_reward_open || global.hitstop_timer > 0;
+}
+
+function talent_get_desc_flavor(_t) {
+    if (is_struct(_t) && variable_struct_exists(_t, "desc_flavor")) return _t.desc_flavor;
+    return "";
+}
+
+function talent_get_desc_value(_t) {
+    if (is_struct(_t) && variable_struct_exists(_t, "desc_value")) return _t.desc_value;
+    return "";
+}
+
+function talent_get_icon_type(_t) {
+    if (is_struct(_t) && variable_struct_exists(_t, "icon_type")) return _t.icon_type;
+    return "sword";
+}
+
+function draw_talent_icon(_icon_type, _x, _y, _size, _colour) {
+    var _half = _size * 0.5;
+    var _prev_col = draw_get_color();
+    draw_set_color(_colour);
+
+    switch (_icon_type) {
+        case "shield":
+        case "block":
+        case "magic_def":
+            var _top = _y - _half * 0.85;
+            var _bot = _y + _half * 0.85;
+            draw_line_width(_x - _half * 0.7, _top, _x + _half * 0.7, _top, 2);
+            draw_line_width(_x - _half * 0.7, _top, _x - _half * 0.7, _y, 2);
+            draw_line_width(_x + _half * 0.7, _top, _x + _half * 0.7, _y, 2);
+            draw_line_width(_x - _half * 0.7, _y, _x, _bot, 2);
+            draw_line_width(_x + _half * 0.7, _y, _x, _bot, 2);
+            if (_icon_type == "block") {
+                draw_circle(_x, _y - 2, _half * 0.3, false);
+            } else if (_icon_type == "magic_def") {
+                draw_circle(_x, _y - 2, _half * 0.35, true);
+            } else {
+                draw_line_width(_x, _top + 3, _x, _bot - 4, 2);
+            }
+            break;
+
+        case "sword":
+        case "riposte":
+            draw_line_width(_x, _y - _half * 0.85, _x, _y + _half * 0.45, 3);
+            draw_line_width(_x - _half * 0.5, _y + _half * 0.1, _x + _half * 0.5, _y + _half * 0.1, 2);
+            draw_line_width(_x, _y + _half * 0.1, _x, _y + _half * 0.75, 2);
+            draw_circle(_x, _y + _half * 0.8, 2, false);
+            if (_icon_type == "riposte") {
+                draw_line_width(_x - _half * 0.45, _y - _half * 0.45, _x + _half * 0.45, _y + _half * 0.45, 2);
+            }
+            break;
+
+        case "dagger":
+            draw_line_width(_x - _half * 0.5, _y + _half * 0.5, _x + _half * 0.5, _y - _half * 0.5, 3);
+            draw_line_width(_x - _half * 0.2, _y + _half * 0.4, _x - _half * 0.4, _y + _half * 0.2, 2);
+            draw_circle(_x - _half * 0.55, _y + _half * 0.55, 2, false);
+            break;
+
+        case "heart":
+        case "regen":
+        case "second_wind":
+            draw_line_width(_x, _y - _half * 0.65, _x, _y + _half * 0.65, 4);
+            draw_line_width(_x - _half * 0.65, _y, _x + _half * 0.65, _y, 4);
+            if (_icon_type == "regen") {
+                draw_circle(_x, _y, _half * 0.85, true);
+            } else if (_icon_type == "second_wind") {
+                draw_circle(_x, _y, _half * 0.9, true);
+                draw_circle(_x, _y, _half * 0.7, true);
+            }
+            break;
+
+        case "bow":
+        case "arrow_speed":
+        case "pierce":
+            draw_line_width(_x - _half * 0.6, _y + _half * 0.6, _x + _half * 0.6, _y - _half * 0.6, 2);
+            draw_line_width(_x + _half * 0.6, _y - _half * 0.6, _x + _half * 0.15, _y - _half * 0.6, 2);
+            draw_line_width(_x + _half * 0.6, _y - _half * 0.6, _x + _half * 0.6, _y - _half * 0.15, 2);
+            if (_icon_type == "bow") {
+                draw_line_width(_x - _half * 0.4, _y - _half * 0.4, _x - _half * 0.1, _y + _half * 0.5, 2);
+            } else if (_icon_type == "pierce") {
+                draw_line_width(_x, _y - _half * 0.5, _x, _y + _half * 0.5, 2);
+            }
+            break;
+
+        case "fury":
+        case "burn":
+        case "fireball":
+            draw_triangle(_x, _y - _half * 0.85, _x - _half * 0.55, _y + _half * 0.65, _x + _half * 0.55, _y + _half * 0.65, false);
+            draw_set_color(c_white);
+            draw_circle(_x, _y + _half * 0.25, _half * 0.25, false);
+            draw_set_color(_colour);
+            break;
+
+        case "holy":
+        case "heal_hit":
+        case "barrier":
+            draw_line_width(_x, _y - _half * 0.75, _x, _y + _half * 0.75, 3);
+            draw_line_width(_x - _half * 0.75, _y, _x + _half * 0.75, _y, 3);
+            draw_circle(_x, _y, _half * 0.45, true);
+            if (_icon_type == "barrier") {
+                draw_circle(_x, _y, _half * 0.85, true);
+            }
+            break;
+
+        case "wind":
+        case "haste":
+        case "boot":
+            draw_line_width(_x - _half * 0.7, _y - _half * 0.35, _x + _half * 0.5, _y - _half * 0.35, 2);
+            draw_line_width(_x - _half * 0.4, _y, _x + _half * 0.7, _y, 3);
+            draw_line_width(_x - _half * 0.6, _y + _half * 0.35, _x + _half * 0.35, _y + _half * 0.35, 2);
+            break;
+
+        case "bastion":
+        case "rock":
+        case "shockwave":
+            draw_rectangle(_x - _half * 0.6, _y - _half * 0.3, _x + _half * 0.6, _y + _half * 0.6, false);
+            draw_rectangle(_x - _half * 0.6, _y - _half * 0.7, _x - _half * 0.25, _y - _half * 0.3, false);
+            draw_rectangle(_x + _half * 0.25, _y - _half * 0.7, _x + _half * 0.6, _y - _half * 0.3, false);
+            if (_icon_type == "shockwave") {
+                draw_circle(_x, _y + _half * 0.6, _half * 0.85, true);
+            }
+            break;
+
+        case "crit":
+            draw_circle(_x, _y, _half * 0.45, true);
+            draw_line_width(_x, _y - _half * 0.8, _x, _y + _half * 0.8, 2);
+            draw_line_width(_x - _half * 0.8, _y, _x + _half * 0.8, _y, 2);
+            draw_circle(_x, _y, 2, false);
+            break;
+
+        case "execute":
+            draw_circle(_x, _y - 2, _half * 0.5, false);
+            draw_rectangle(_x - _half * 0.3, _y, _x + _half * 0.3, _y + _half * 0.55, false);
+            draw_set_color(c_black);
+            draw_circle(_x - 3, _y - 2, 2, false);
+            draw_circle(_x + 3, _y - 2, 2, false);
+            draw_set_color(_colour);
+            break;
+
+        case "dodge":
+            draw_line_width(_x - _half * 0.7, _y + _half * 0.45, _x, _y - _half * 0.65, 2);
+            draw_line_width(_x - _half * 0.35, _y + _half * 0.65, _x + _half * 0.35, _y - _half * 0.45, 2);
+            draw_line_width(_x, _y + _half * 0.75, _x + _half * 0.7, _y - _half * 0.25, 2);
+            break;
+
+        case "poison":
+            draw_circle(_x, _y + 2, _half * 0.5, false);
+            draw_triangle(_x, _y - _half * 0.75, _x - _half * 0.4, _y, _x + _half * 0.4, _y, false);
+            draw_set_color(c_black);
+            draw_circle(_x, _y + 2, 2, false);
+            draw_set_color(_colour);
+            break;
+
+        case "lifesteal":
+            draw_circle(_x, _y + 3, _half * 0.5, false);
+            draw_triangle(_x, _y - _half * 0.75, _x - _half * 0.45, _y + 2, _x + _half * 0.45, _y + 2, false);
+            break;
+
+        case "cdr":
+            draw_circle(_x, _y, _half * 0.65, true);
+            draw_line_width(_x, _y, _x, _y - _half * 0.45, 2);
+            draw_line_width(_x, _y, _x + _half * 0.35, _y, 2);
+            break;
+
+        case "gold":
+            draw_circle(_x, _y, _half * 0.75, false);
+            draw_set_color(c_black);
+            draw_circle(_x, _y, _half * 0.75, true);
+            draw_circle(_x, _y, _half * 0.5, true);
+            draw_set_color(_colour);
+            break;
+
+        case "thorns":
+            draw_circle(_x, _y, _half * 0.35, true);
+            draw_line_width(_x, _y - _half * 0.75, _x, _y - _half * 0.25, 2);
+            draw_line_width(_x, _y + _half * 0.25, _x, _y + _half * 0.75, 2);
+            draw_line_width(_x - _half * 0.75, _y, _x - _half * 0.25, _y, 2);
+            draw_line_width(_x + _half * 0.25, _y, _x + _half * 0.75, _y, 2);
+            break;
+
+        default:
+            draw_triangle(_x, _y - _half * 0.65, _x - _half * 0.65, _y + _half * 0.45, _x + _half * 0.65, _y + _half * 0.45, true);
+            break;
+    }
+
+    draw_set_color(_prev_col);
 }

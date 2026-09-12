@@ -34,17 +34,41 @@ switch (state) {
 
         if (classes[selected_index] == "knight") {
             var _el_n = array_length(elements);
-            if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(vk_left)) {
+            if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("A"))) {
                 selected_element_index = (selected_element_index - 1 + _el_n) mod _el_n;
             }
-            if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(vk_right)) {
+            if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("D"))) {
                 selected_element_index = (selected_element_index + 1) mod _el_n;
             }
         }
 
         if (_m > 0) {
-            if (keyboard_check_pressed(vk_down)) talent_select_cursor = (talent_select_cursor + 1) mod _m;
-            if (keyboard_check_pressed(vk_up)) talent_select_cursor = (talent_select_cursor - 1 + _m) mod _m;
+            var _cols = min(talent_grid_cols, _m);
+            if (_cols <= 0) _cols = 1;
+
+            if (keyboard_check_pressed(vk_right)) {
+                talent_select_cursor = (talent_select_cursor + 1) mod _m;
+            }
+            if (keyboard_check_pressed(vk_left)) {
+                talent_select_cursor = (talent_select_cursor - 1 + _m) mod _m;
+            }
+            if (keyboard_check_pressed(vk_down)) {
+                if (talent_select_cursor + _cols < _m) {
+                    talent_select_cursor += _cols;
+                } else {
+                    talent_select_cursor = talent_select_cursor mod _cols;
+                }
+            }
+            if (keyboard_check_pressed(vk_up)) {
+                if (talent_select_cursor - _cols >= 0) {
+                    talent_select_cursor -= _cols;
+                } else {
+                    var _total_rows = ceil(_m / _cols);
+                    var _target = (_total_rows - 1) * _cols + (talent_select_cursor mod _cols);
+                    if (_target >= _m) _target = _m - 1;
+                    talent_select_cursor = _target;
+                }
+            }
 
             if (keyboard_check_pressed(vk_space)) {
                 var _id = talent_select_list[talent_select_cursor].id;
@@ -84,20 +108,44 @@ switch (state) {
 
     case "shop":
         var _cn = array_length(classes);
-        if (keyboard_check_pressed(vk_right)) {
-            shop_tab_index = (shop_tab_index + 1) mod _cn;
+        if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("A"))) {
+            shop_tab_index = (shop_tab_index - 1 + _cn) mod _cn;
             shop_talent_index = 0;
         }
-        if (keyboard_check_pressed(vk_left)) {
-            shop_tab_index = (shop_tab_index - 1 + _cn) mod _cn;
+        if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("D"))) {
+            shop_tab_index = (shop_tab_index + 1) mod _cn;
             shop_talent_index = 0;
         }
 
         var _tab_talents = get_talents_for_character(classes[shop_tab_index]);
         var _tn = array_length(_tab_talents);
         if (_tn > 0) {
-            if (keyboard_check_pressed(vk_down)) shop_talent_index = (shop_talent_index + 1) mod _tn;
-            if (keyboard_check_pressed(vk_up)) shop_talent_index = (shop_talent_index - 1 + _tn) mod _tn;
+            var _cols = min(talent_grid_cols, _tn);
+            if (_cols <= 0) _cols = 1;
+
+            if (keyboard_check_pressed(vk_right)) {
+                shop_talent_index = (shop_talent_index + 1) mod _tn;
+            }
+            if (keyboard_check_pressed(vk_left)) {
+                shop_talent_index = (shop_talent_index - 1 + _tn) mod _tn;
+            }
+            if (keyboard_check_pressed(vk_down)) {
+                if (shop_talent_index + _cols < _tn) {
+                    shop_talent_index += _cols;
+                } else {
+                    shop_talent_index = shop_talent_index mod _cols;
+                }
+            }
+            if (keyboard_check_pressed(vk_up)) {
+                if (shop_talent_index - _cols >= 0) {
+                    shop_talent_index -= _cols;
+                } else {
+                    var _total_rows = ceil(_tn / _cols);
+                    var _target = (_total_rows - 1) * _cols + (shop_talent_index mod _cols);
+                    if (_target >= _tn) _target = _tn - 1;
+                    shop_talent_index = _target;
+                }
+            }
 
             if (keyboard_check_pressed(ord("Z"))) {
                 talent_purchase(_tab_talents[shop_talent_index].id);

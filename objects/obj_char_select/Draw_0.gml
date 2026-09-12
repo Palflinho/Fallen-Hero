@@ -43,72 +43,333 @@ switch (state) {
         break;
 
     case "select_talents":
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
         draw_set_color(c_white);
-        draw_text(room_width / 2, 50, "Talentos - " + labels[selected_index]);
+        draw_text(room_width / 2, 36, "Talentos - " + labels[selected_index]);
 
-        var _ly = 150;
+        var _grid_start_y = 95;
         if (classes[selected_index] == "knight") {
             var _elem_id = elements[selected_element_index];
             var _arch = knight_get_archetype_name(_elem_id);
             var _desc = knight_get_archetype_desc(_elem_id);
 
             draw_set_color(c_yellow);
-            draw_text(room_width / 2, 80, "< Q / E : Sintonia Elemental - " + element_labels[selected_element_index] + " >");
+            draw_text(room_width / 2, 66, "< Q / E : Sintonia Elemental - " + element_labels[selected_element_index] + " >");
             draw_set_color(c_aqua);
-            draw_text(room_width / 2, 105, _desc);
-            _ly = 145;
+            draw_text(room_width / 2, 88, _desc);
+            _grid_start_y = 126;
         }
-
-        draw_set_color(c_white);
-        draw_text(room_width / 2, room_height - 70, "Cima/baixo navega  -  Espaco marca (max 3)  -  Z confirma e comeca  -  X volta");
-        draw_text(room_width / 2, room_height - 40, string(array_length(talent_selected_ids)) + "/3 selecionados");
 
         var _m = array_length(talent_select_list);
         if (_m == 0) {
-            draw_text(room_width / 2, _ly + 30, "Nenhum talento desbloqueado ainda -- volte e aperte S pra abrir a loja.");
-        }
-        for (var _i = 0; _i < _m; _i++) {
-            var _t = talent_select_list[_i];
-            var _is_cursor = (_i == talent_select_cursor);
-            var _is_picked = false;
+            draw_set_color(c_white);
+            draw_text(room_width / 2, 260, "Nenhum talento desbloqueado ainda para esta classe.");
+            draw_set_color(c_yellow);
+            draw_text(room_width / 2, 290, "Volte com [X] e aperte [S] para abrir a Loja de Talentos.");
+        } else {
+            var _cols = min(talent_grid_cols, _m);
+            if (_cols <= 0) _cols = 1;
+            var _total_grid_w = _cols * talent_card_w + (_cols - 1) * talent_card_gap_x;
+            var _start_x = (room_width - _total_grid_w) / 2;
+
+            for (var _i = 0; _i < _m; _i++) {
+                var _t = talent_select_list[_i];
+                var _row = _i div _cols;
+                var _col = _i mod _cols;
+                var _cx = _start_x + _col * (talent_card_w + talent_card_gap_x);
+                var _cy = _grid_start_y + _row * (talent_card_h + talent_card_gap_y);
+
+                var _is_cursor = (_i == talent_select_cursor);
+                var _is_picked = false;
+                var _slot_idx = -1;
+                for (var j = 0; j < array_length(talent_selected_ids); j++) {
+                    if (talent_selected_ids[j] == _t.id) {
+                        _is_picked = true;
+                        _slot_idx = j;
+                        break;
+                    }
+                }
+
+                // Card background
+                draw_set_alpha(0.85);
+                draw_set_color(_is_cursor ? make_colour_rgb(32, 40, 60) : make_colour_rgb(18, 22, 32));
+                draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, false);
+                draw_set_alpha(1);
+
+                // Card border
+                if (_is_cursor) {
+                    draw_set_color(c_yellow);
+                    draw_rectangle(_cx - 2, _cy - 2, _cx + talent_card_w + 2, _cy + talent_card_h + 2, true);
+                    draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, true);
+                } else if (_is_picked) {
+                    draw_set_color(c_aqua);
+                    draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, true);
+                } else {
+                    draw_set_color(make_colour_rgb(55, 68, 90));
+                    draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, true);
+                }
+
+                // Icon
+                var _icon = talent_get_icon_type(_t);
+                var _icon_col = _is_cursor ? c_yellow : (_is_picked ? c_aqua : colours[selected_index]);
+                draw_talent_icon(_icon, _cx + talent_card_w / 2, _cy + 34, 26, _icon_col);
+
+                // Name
+                draw_set_halign(fa_center);
+                draw_set_valign(fa_middle);
+                draw_set_color(_is_cursor ? c_yellow : (_is_picked ? c_white : c_ltgray));
+                draw_text(_cx + talent_card_w / 2, _cy + 74, _t.label);
+
+                // Selection badge
+                if (_is_picked) {
+                    draw_set_color(c_aqua);
+                    draw_rectangle(_cx + talent_card_w - 22, _cy + 4, _cx + talent_card_w - 4, _cy + 22, false);
+                    draw_set_color(c_black);
+                    draw_text(_cx + talent_card_w - 13, _cy + 13, string(_slot_idx + 1));
+                }
+            }
+
+            // ---- Bottom Info Box (Caixa de Texto Embaixo) ----
+            var _cur_t = talent_select_list[talent_select_cursor];
+            var _cur_picked = false;
+            var _cur_slot = -1;
             for (var j = 0; j < array_length(talent_selected_ids); j++) {
-                if (talent_selected_ids[j] == _t.id) {
-                    _is_picked = true;
+                if (talent_selected_ids[j] == _cur_t.id) {
+                    _cur_picked = true;
+                    _cur_slot = j;
                     break;
                 }
             }
 
-            draw_set_color(_is_cursor ? c_yellow : c_white);
-            draw_text(room_width / 2, _ly + _i * 26, (_is_picked ? "[X] " : "[ ] ") + _t.label);
+            var _box_w = 980;
+            var _box_h = 135;
+            var _box_x = (room_width - _box_w) / 2;
+            var _box_y = room_height - 180;
+
+            // Background & border
+            draw_set_alpha(0.92);
+            draw_set_color(make_colour_rgb(12, 16, 26));
+            draw_rectangle(_box_x, _box_y, _box_x + _box_w, _box_y + _box_h, false);
+            draw_set_alpha(1);
+            draw_set_color(make_colour_rgb(70, 95, 135));
+            draw_rectangle(_box_x, _box_y, _box_x + _box_w, _box_y + _box_h, true);
+            draw_rectangle(_box_x - 1, _box_y - 1, _box_x + _box_w + 1, _box_y + _box_h + 1, true);
+
+            // Left icon container
+            draw_set_color(make_colour_rgb(22, 28, 42));
+            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + 116, false);
+            draw_set_color(make_colour_rgb(55, 75, 110));
+            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + 116, true);
+            draw_talent_icon(talent_get_icon_type(_cur_t), _box_x + 66, _box_y + 67, 44, c_yellow);
+
+            // Title and Status
+            draw_set_halign(fa_left);
+            draw_set_valign(fa_top);
+            draw_set_color(c_yellow);
+            draw_text(_box_x + 130, _box_y + 20, _cur_t.label);
+
+            draw_set_halign(fa_right);
+            if (_cur_picked) {
+                draw_set_color(c_aqua);
+                draw_text(_box_x + _box_w - 24, _box_y + 20, "SELECIONADO (Slot " + string(_cur_slot + 1) + "/3)");
+            } else if (array_length(talent_selected_ids) < 3) {
+                draw_set_color(c_white);
+                draw_text(_box_x + _box_w - 24, _box_y + 20, "[Espaco] para Selecionar  (" + string(array_length(talent_selected_ids)) + "/3)");
+            } else {
+                draw_set_color(c_gray);
+                draw_text(_box_x + _box_w - 24, _box_y + 20, "[Limite de 3 Atingido]");
+            }
+
+            // Divider line
+            draw_set_color(make_colour_rgb(45, 60, 85));
+            draw_line(_box_x + 130, _box_y + 48, _box_x + _box_w - 24, _box_y + 48);
+
+            // Description with numeric values (sem mostrar preco/ouro)
+            draw_set_halign(fa_left);
+            draw_set_color(c_white);
+            draw_text_ext(_box_x + 130, _box_y + 58, "Efeito: " + talent_get_desc_value(_cur_t), 20, _box_w - 160);
+
+            draw_set_color(c_ltgray);
+            draw_text_ext(_box_x + 130, _box_y + 86, talent_get_desc_flavor(_cur_t), 18, _box_w - 160);
         }
+
+        // Footer instructions
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
         draw_set_color(c_white);
+        draw_text(room_width / 2, room_height - 30, "Setas: Navegar na grade  -  Espaco: Marcar/Desmarcar (max 3)  -  Z: Iniciar Run  -  X: Voltar");
         break;
 
     case "shop":
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
         draw_set_color(c_white);
-        draw_text(room_width / 2, 80, "Loja de Talentos");
-        draw_text(room_width / 2, room_height - 60, "Esquerda/direita: personagem  -  cima/baixo: talento  -  Z compra  -  X volta");
+        draw_text(room_width / 2, 34, "Loja de Talentos");
 
+        // Tabs for classes
         var _n2 = array_length(classes);
-        var _tab_w = room_width / _n2;
+        var _tab_w = 170;
+        var _tab_gap = 16;
+        var _total_tabs_w = _n2 * _tab_w + (_n2 - 1) * _tab_gap;
+        var _start_tab_x = (room_width - _total_tabs_w) / 2;
+        var _tab_y = 60;
+
+        draw_set_color(c_yellow);
+        draw_set_halign(fa_right);
+        draw_text(_start_tab_x - 14, _tab_y + 16, "< Q");
+        draw_set_halign(fa_left);
+        draw_text(_start_tab_x + _total_tabs_w + 14, _tab_y + 16, "E >");
+        draw_set_halign(fa_center);
+
         for (var _i = 0; _i < _n2; _i++) {
-            var _tx = _tab_w * _i + _tab_w / 2;
-            draw_set_color((_i == shop_tab_index) ? colours[_i] : c_gray);
-            draw_text(_tx, 130, labels[_i]);
+            var _tx = _start_tab_x + _i * (_tab_w + _tab_gap);
+            var _is_cur_tab = (_i == shop_tab_index);
+
+            draw_set_alpha(0.8);
+            draw_set_color(_is_cur_tab ? make_colour_rgb(35, 45, 70) : make_colour_rgb(18, 22, 32));
+            draw_rectangle(_tx, _tab_y, _tx + _tab_w, _tab_y + 32, false);
+            draw_set_alpha(1);
+
+            draw_set_color(_is_cur_tab ? colours[_i] : make_colour_rgb(60, 70, 90));
+            draw_rectangle(_tx, _tab_y, _tx + _tab_w, _tab_y + 32, true);
+            if (_is_cur_tab) {
+                draw_rectangle(_tx - 1, _tab_y - 1, _tx + _tab_w + 1, _tab_y + 33, true);
+            }
+
+            draw_set_color(_is_cur_tab ? c_white : c_gray);
+            draw_text(_tx + _tab_w / 2, _tab_y + 16, labels[_i]);
         }
 
+        // Talent Cards Grid
         var _tab_talents = get_talents_for_character(classes[shop_tab_index]);
-        var _ty = 210;
-        for (var _i = 0; _i < array_length(_tab_talents); _i++) {
-            var _t = _tab_talents[_i];
-            var _unlocked = talent_is_unlocked(_t.id);
-            var _is_cursor = (_i == shop_talent_index);
+        var _tn = array_length(_tab_talents);
+        var _grid_shop_y = 110;
 
-            draw_set_color(_is_cursor ? c_yellow : (_unlocked ? c_lime : c_white));
-            var _status = _unlocked ? "Desbloqueado" : ("Custa " + string(_t.cost) + " ouro");
-            draw_text(room_width / 2, _ty + _i * 40, _t.label + "  -  " + _status);
+        if (_tn > 0) {
+            var _cols = min(talent_grid_cols, _tn);
+            if (_cols <= 0) _cols = 1;
+            var _total_grid_w = _cols * talent_card_w + (_cols - 1) * talent_card_gap_x;
+            var _start_x = (room_width - _total_grid_w) / 2;
+
+            for (var _i = 0; _i < _tn; _i++) {
+                var _t = _tab_talents[_i];
+                var _unlocked = talent_is_unlocked(_t.id);
+                var _is_cursor = (_i == shop_talent_index);
+
+                var _row = _i div _cols;
+                var _col = _i mod _cols;
+                var _cx = _start_x + _col * (talent_card_w + talent_card_gap_x);
+                var _cy = _grid_shop_y + _row * (talent_card_h + talent_card_gap_y);
+
+                // Card background
+                draw_set_alpha(0.85);
+                draw_set_color(_is_cursor ? make_colour_rgb(35, 45, 65) : make_colour_rgb(18, 22, 32));
+                draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, false);
+                draw_set_alpha(1);
+
+                // Card border
+                if (_is_cursor) {
+                    draw_set_color(c_yellow);
+                    draw_rectangle(_cx - 2, _cy - 2, _cx + talent_card_w + 2, _cy + talent_card_h + 2, true);
+                    draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, true);
+                } else if (_unlocked) {
+                    draw_set_color(make_colour_rgb(60, 140, 80));
+                    draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, true);
+                } else {
+                    draw_set_color(make_colour_rgb(55, 68, 90));
+                    draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, true);
+                }
+
+                // Icon
+                var _icon = talent_get_icon_type(_t);
+                var _icon_col = _is_cursor ? c_yellow : (_unlocked ? c_lime : c_ltgray);
+                draw_talent_icon(_icon, _cx + talent_card_w / 2, _cy + 34, 26, _icon_col);
+
+                // Name
+                draw_set_halign(fa_center);
+                draw_set_valign(fa_middle);
+                draw_set_color(_is_cursor ? c_yellow : (_unlocked ? c_white : c_ltgray));
+                draw_text(_cx + talent_card_w / 2, _cy + 74, _t.label);
+
+                // Status Badge in card
+                if (_unlocked) {
+                    draw_set_color(c_lime);
+                    draw_rectangle(_cx + talent_card_w - 22, _cy + 4, _cx + talent_card_w - 4, _cy + 22, false);
+                    draw_set_color(c_black);
+                    draw_text(_cx + talent_card_w - 13, _cy + 13, "V");
+                } else {
+                    draw_set_color(make_colour_rgb(45, 38, 20));
+                    draw_rectangle(_cx + talent_card_w - 42, _cy + 4, _cx + talent_card_w - 4, _cy + 20, false);
+                    draw_set_color(c_yellow);
+                    draw_rectangle(_cx + talent_card_w - 42, _cy + 4, _cx + talent_card_w - 4, _cy + 20, true);
+                    draw_text(_cx + talent_card_w - 23, _cy + 12, string(_t.cost) + "G");
+                }
+            }
+
+            // ---- Bottom Info Box for Shop ----
+            var _cur_t = _tab_talents[shop_talent_index];
+            var _unlocked = talent_is_unlocked(_cur_t.id);
+
+            var _box_w = 980;
+            var _box_h = 135;
+            var _box_x = (room_width - _box_w) / 2;
+            var _box_y = room_height - 180;
+
+            // Background & border
+            draw_set_alpha(0.92);
+            draw_set_color(make_colour_rgb(12, 16, 26));
+            draw_rectangle(_box_x, _box_y, _box_x + _box_w, _box_y + _box_h, false);
+            draw_set_alpha(1);
+            draw_set_color(make_colour_rgb(70, 95, 135));
+            draw_rectangle(_box_x, _box_y, _box_x + _box_w, _box_y + _box_h, true);
+            draw_rectangle(_box_x - 1, _box_y - 1, _box_x + _box_w + 1, _box_y + _box_h + 1, true);
+
+            // Left icon container
+            draw_set_color(make_colour_rgb(22, 28, 42));
+            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + 116, false);
+            draw_set_color(make_colour_rgb(55, 75, 110));
+            draw_rectangle(_box_x + 18, _box_y + 18, _box_x + 114, _box_y + 116, true);
+            draw_talent_icon(talent_get_icon_type(_cur_t), _box_x + 66, _box_y + 67, 44, _unlocked ? c_lime : c_yellow);
+
+            // Header line: Title & Price/Status
+            draw_set_halign(fa_left);
+            draw_set_valign(fa_top);
+            draw_set_color(c_yellow);
+            draw_text(_box_x + 130, _box_y + 20, _cur_t.label);
+
+            draw_set_halign(fa_right);
+            if (_unlocked) {
+                draw_set_color(c_lime);
+                draw_text(_box_x + _box_w - 24, _box_y + 20, "JA DESBLOQUEADO");
+            } else {
+                if (global.gold >= _cur_t.cost) {
+                    draw_set_color(c_yellow);
+                    draw_text(_box_x + _box_w - 24, _box_y + 20, "PRECO: " + string(_cur_t.cost) + " OURO   [Z para Comprar]");
+                } else {
+                    draw_set_color(c_red);
+                    draw_text(_box_x + _box_w - 24, _box_y + 20, "PRECO: " + string(_cur_t.cost) + " OURO   (Ouro Insuficiente)");
+                }
+            }
+
+            // Divider line
+            draw_set_color(make_colour_rgb(45, 60, 85));
+            draw_line(_box_x + 130, _box_y + 48, _box_x + _box_w - 24, _box_y + 48);
+
+            // Descriptive effect only (sem apresentar valores numericos brutos)
+            draw_set_halign(fa_left);
+            draw_set_color(c_white);
+            draw_text_ext(_box_x + 130, _box_y + 58, talent_get_desc_flavor(_cur_t), 20, _box_w - 160);
+
+            draw_set_color(c_ltgray);
+            draw_text(_box_x + 130, _box_y + 100, "Classe: " + labels[shop_tab_index] + "   |   Seu saldo: " + string(global.gold) + " ouro");
         }
+
+        // Footer instructions
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
         draw_set_color(c_white);
+        draw_text(room_width / 2, room_height - 30, "Setas: Navegar na grade  -  Q / E: Trocar Classe  -  Z: Comprar  -  X: Voltar");
         break;
 }
 
