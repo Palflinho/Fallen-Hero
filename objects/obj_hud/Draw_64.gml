@@ -154,6 +154,181 @@ if (boss_room) {
     }
 }
 
+// ================= MINIMAPA E TRILHA DE SALAS (CANTO SUPERIOR DIREITO) =================
+if (!game_over && !level_complete && !(variable_global_exists("run_victory") && global.run_victory) && !global.chest_reward_open && !global.paused && !global.attr_window_open && (!variable_global_exists("midrun_shop_open") || !global.midrun_shop_open)) {
+    run_update_current_room_state();
+    var _gw = display_get_gui_width();
+    var _map_w = 160;
+    var _map_h = 100;
+    var _map_x = _gw - _map_w - 20;
+    var _map_y = 20;
+
+    // Fundo do radar
+    draw_set_alpha(0.82);
+    draw_set_color(make_colour_rgb(12, 16, 26));
+    draw_rectangle(_map_x, _map_y, _map_x + _map_w, _map_y + _map_h, false);
+    draw_set_alpha(1);
+
+    // Borda do radar
+    draw_set_color(make_colour_rgb(50, 70, 100));
+    draw_rectangle(_map_x, _map_y, _map_x + _map_w, _map_y + _map_h, true);
+    draw_set_color(make_colour_rgb(26, 36, 54));
+    draw_rectangle(_map_x + 1, _map_y + 1, _map_x + _map_w - 1, _map_y + _map_h - 1, true);
+
+    // Barra de Titulo do Radar
+    draw_set_color(make_colour_rgb(20, 28, 44));
+    draw_rectangle(_map_x, _map_y, _map_x + _map_w, _map_y + 18, false);
+    draw_set_color(make_colour_rgb(50, 70, 100));
+    draw_line(_map_x, _map_y + 18, _map_x + _map_w, _map_y + 18);
+
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(c_yellow);
+    var _b_name = run_get_biome_name(global.run_biome);
+    var _r_title = run_get_room_title(global.run_room_index);
+    draw_text(_map_x + _map_w / 2, _map_y + 9, _b_name + ": " + string(global.run_room_index) + "/5 (" + _r_title + ")");
+    draw_set_valign(fa_top);
+
+    // Area interna do radar
+    var _inner_x = _map_x + 5;
+    var _inner_y = _map_y + 22;
+    var _inner_w = _map_w - 10;
+    var _inner_h = _map_h - 26;
+
+    var _scale_x = (room_width > 0) ? (_inner_w / room_width) : 1;
+    var _scale_y = (room_height > 0) ? (_inner_h / room_height) : 1;
+
+    // Paredes no radar
+    draw_set_color(make_colour_rgb(60, 75, 105));
+    with (obj_wall) {
+        var _wx = _inner_x + x * _scale_x;
+        var _wy = _inner_y + y * _scale_y;
+        var _ww = max(2, (sprite_width > 0 ? sprite_width : (base_size * image_xscale)) * _scale_x);
+        var _wh = max(2, (sprite_height > 0 ? sprite_height : (base_size * image_yscale)) * _scale_y);
+        draw_rectangle(_wx, _wy, _wx + _ww, _wy + _wh, false);
+    }
+
+    // Botoes e Portas no radar
+    with (obj_boss_button) {
+        var _bx = _inner_x + x * _scale_x;
+        var _by = _inner_y + y * _scale_y;
+        draw_set_color(pressed ? c_gray : c_orange);
+        draw_rectangle(_bx - 1, _by - 1, _bx + 1, _by + 1, false);
+    }
+    with (obj_boss_door) {
+        var _dx = _inner_x + x * _scale_x;
+        var _dy = _inner_y + y * _scale_y;
+        draw_set_color(c_red);
+        draw_rectangle(_dx - 1, _dy - 1, _dx + 4, _dy + 2, false);
+    }
+
+    // Baus no radar
+    draw_set_color(c_yellow);
+    with (obj_chest) {
+        var _cx = _inner_x + x * _scale_x;
+        var _cy = _inner_y + y * _scale_y;
+        draw_circle(_cx, _cy, 2, false);
+    }
+
+    // Mercador no radar
+    if (object_exists(asset_get_index("obj_midrun_shop"))) {
+        draw_set_color(c_yellow);
+        with (asset_get_index("obj_midrun_shop")) {
+            var _mx = _inner_x + x * _scale_x;
+            var _my = _inner_y + y * _scale_y;
+            draw_rectangle(_mx - 2, _my - 2, _mx + 2, _my + 2, false);
+        }
+    }
+
+    // Portal de Saida no radar
+    draw_set_color(make_colour_rgb(100, 220, 255));
+    with (obj_stage_gate) {
+        var _gx = _inner_x + x * _scale_x;
+        var _gy = _inner_y + y * _scale_y;
+        draw_circle(_gx, _gy, 3, false);
+    }
+    if (object_exists(asset_get_index("obj_stage_gate2"))) {
+        with (asset_get_index("obj_stage_gate2")) {
+            var _gx = _inner_x + x * _scale_x;
+            var _gy = _inner_y + y * _scale_y;
+            draw_circle(_gx, _gy, 3, false);
+        }
+    }
+
+    // Inimigos no radar
+    with (obj_enemy_parent) {
+        var _ex = _inner_x + x * _scale_x;
+        var _ey = _inner_y + y * _scale_y;
+        var _is_b = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")));
+        if (_is_b) {
+            draw_set_color(c_red);
+            draw_circle(_ex, _ey, 4, false);
+            draw_set_color(c_white);
+            draw_circle(_ex, _ey, 4, true);
+        } else {
+            draw_set_color(c_red);
+            draw_circle(_ex, _ey, 2, false);
+        }
+    }
+
+    // Jogador no radar
+    if (target != noone && instance_exists(target)) {
+        var _px = _inner_x + target.x * _scale_x;
+        var _py = _inner_y + target.y * _scale_y;
+        draw_set_color(c_lime);
+        draw_circle(_px, _py, 3, false);
+        draw_set_color(c_white);
+        draw_circle(_px, _py, 1, false);
+        var _p_dir = target.move_dir;
+        draw_set_color(c_yellow);
+        draw_line(_px, _py, _px + lengthdir_x(5, _p_dir), _py + lengthdir_y(5, _p_dir));
+    }
+
+    // ================= TRILHA DE NOS (5 SALAS DO BIOMA) =================
+    var _trail_y = _map_y + _map_h + 6;
+    var _node_w = 28;
+    var _node_h = 16;
+    var _node_gap = 4;
+    var _node_labels = ["Exp", "Arn", "Loj", "Pre", "Boss"];
+
+    for (var _n = 1; _n <= 5; _n++) {
+        var _nx = _map_x + (_n - 1) * (_node_w + _node_gap);
+        var _is_cur = (_n == global.run_room_index);
+        var _is_past = (_n < global.run_room_index);
+
+        draw_set_alpha(0.85);
+        if (_is_cur) {
+            var _p = 0.5 + 0.5 * sin(current_time * 0.008);
+            draw_set_color(merge_colour(make_colour_rgb(50, 40, 15), make_colour_rgb(90, 70, 20), _p));
+            draw_rectangle(_nx, _trail_y, _nx + _node_w, _trail_y + _node_h, false);
+            draw_set_alpha(1);
+            draw_set_color(merge_colour(c_yellow, c_white, _p));
+            draw_rectangle(_nx, _trail_y, _nx + _node_w, _trail_y + _node_h, true);
+        } else if (_is_past) {
+            draw_set_color(make_colour_rgb(18, 32, 24));
+            draw_rectangle(_nx, _trail_y, _nx + _node_w, _trail_y + _node_h, false);
+            draw_set_alpha(1);
+            draw_set_color(make_colour_rgb(60, 120, 80));
+            draw_rectangle(_nx, _trail_y, _nx + _node_w, _trail_y + _node_h, true);
+        } else {
+            draw_set_color(make_colour_rgb(16, 20, 28));
+            draw_rectangle(_nx, _trail_y, _nx + _node_w, _trail_y + _node_h, false);
+            draw_set_alpha(1);
+            draw_set_color(make_colour_rgb(45, 55, 75));
+            draw_rectangle(_nx, _trail_y, _nx + _node_w, _trail_y + _node_h, true);
+        }
+
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_set_color(_is_cur ? c_yellow : (_is_past ? make_colour_rgb(140, 220, 160) : c_gray));
+        draw_text(_nx + _node_w / 2, _trail_y + _node_h / 2, _node_labels[_n - 1]);
+        draw_set_valign(fa_top);
+    }
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_alpha(1);
+}
+
 if (game_over) {
     var _gw = display_get_gui_width();
     var _gh = display_get_gui_height();

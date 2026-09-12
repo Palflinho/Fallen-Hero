@@ -2,7 +2,12 @@ if (is_world_paused()) exit;
 
 var _dt = delta_time / 1000000;
 
-if (hit_flash_timer > 0) hit_flash_timer -= _dt;
+if (hit_flash_timer > 0) {
+    hit_flash_timer -= _dt;
+    has_spotted_player = true;
+    if (state == "patrol") state = "chase";
+}
+if (spider_alert_timer > 0) spider_alert_timer -= _dt;
 
 // Sakurai Polish: Knockback Physics with Wall Collisions
 if (abs(knockback_vx) > 1 || abs(knockback_vy) > 1) {

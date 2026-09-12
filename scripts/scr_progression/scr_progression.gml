@@ -61,3 +61,57 @@ function player_gain_gold(_amount) {
 
     save_meta();
 }
+
+function run_update_current_room_state() {
+    if (!variable_global_exists("run_biome")) global.run_biome = "water";
+    if (!variable_global_exists("run_room_index")) global.run_room_index = 1;
+
+    if (room == Room1) {
+        global.run_biome = "water";
+        global.run_room_index = 1;
+    } else if (room == Room3) {
+        global.run_biome = "fire";
+        global.run_room_index = 1;
+    } else if (room == Room5) {
+        global.run_biome = "wind";
+        global.run_room_index = 1;
+    } else if (room == Room7) {
+        global.run_biome = "earth";
+        global.run_room_index = 1;
+    } else if (room == asset_get_index("room_arena")) {
+        global.run_room_index = 2;
+    } else if (room == asset_get_index("room_shop")) {
+        global.run_room_index = 3;
+    } else if (room == asset_get_index("room_preboss")) {
+        global.run_room_index = 4;
+    } else if (room == Room2) {
+        global.run_biome = "water";
+        global.run_room_index = 5;
+    } else if (room == Room4) {
+        global.run_biome = "fire";
+        global.run_room_index = 5;
+    } else if (room == Room6) {
+        global.run_biome = "wind";
+        global.run_room_index = 5;
+    } else if (room == Room8) {
+        global.run_biome = "earth";
+        global.run_room_index = 5;
+    }
+}
+
+function run_get_biome_name(_b) {
+    if (_b == "water") return "AGUA";
+    if (_b == "fire") return "FOGO";
+    if (_b == "wind") return "VENTO";
+    if (_b == "earth") return "TERRA";
+    return "DESCONHECIDO";
+}
+
+function run_get_room_title(_idx) {
+    if (_idx == 1) return "Exploracao";
+    if (_idx == 2) return "Arena";
+    if (_idx == 3) return "Loja";
+    if (_idx == 4) return "Pre-Chefe";
+    if (_idx == 5) return "Chefe";
+    return "Sala";
+}

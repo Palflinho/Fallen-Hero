@@ -10,8 +10,9 @@ contact_damage = 12;
 damage_reduction = 0.35;
 knockback_resistance = 0.8;
 
-vision_range = 260;
-vision_angle = 360;
+vision_range = 220;
+vision_angle = 100;
+spider_sense_range = 75;
 patrol_radius = 120;
 
 preferred_range = 80;

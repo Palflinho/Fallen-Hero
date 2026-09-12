@@ -20,6 +20,20 @@ if (state == "magia_windup" && variable_instance_exists(id, "magia_radius")) {
     draw_set_alpha(1);
 }
 
+// 1.5. Cone de Visao Sutil em Patrulha (Facilita planejamento tatico do jogador)
+if (state == "patrol" && variable_instance_exists(id, "vision_range") && variable_instance_exists(id, "vision_angle") && variable_instance_exists(id, "facing_dir")) {
+    draw_set_alpha(0.04);
+    draw_set_color(c_yellow);
+    var _half_ang = vision_angle * 0.5;
+    var _steps = 8;
+    for (var _s = 0; _s < _steps; _s++) {
+        var _a1 = facing_dir - _half_ang + (_s / _steps) * vision_angle;
+        var _a2 = facing_dir - _half_ang + ((_s + 1) / _steps) * vision_angle;
+        draw_triangle(x, y, x + lengthdir_x(vision_range * 0.75, _a1), y + lengthdir_y(vision_range * 0.75, _a1), x + lengthdir_x(vision_range * 0.75, _a2), y + lengthdir_y(vision_range * 0.75, _a2), false);
+    }
+    draw_set_alpha(1);
+}
+
 // 2. Body Rendering with Sakurai Squash & Stretch Deformation
 if (sprite_index != -1) {
     var _blend = body_colour;
@@ -55,6 +69,25 @@ if (_is_telegraphing) {
     draw_set_valign(fa_middle);
     draw_set_color(c_white);
     draw_text_transformed(x, _ty, "!", 1.2, 1.2, 0);
+    draw_set_alpha(1);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+}
+
+// 3.5. Alerta de Sentido Aranha (Detecção por Flanco Lateral)
+if (variable_instance_exists(id, "spider_alert_timer") && spider_alert_timer > 0) {
+    var _sy = y - body_radius * scale_y - 18;
+    var _sp_ratio = spider_alert_timer / 0.6;
+    draw_set_alpha(_sp_ratio * 0.9);
+    draw_set_color(c_yellow);
+    var _rad_pulse = 9 + (1 - _sp_ratio) * 12;
+    draw_circle(x, _sy, _rad_pulse, true);
+    draw_circle(x, _sy, 7, false);
+    draw_set_color(c_black);
+    draw_set_font(-1);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_text(x, _sy, "!");
     draw_set_alpha(1);
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);

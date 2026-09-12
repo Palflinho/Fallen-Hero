@@ -18,6 +18,8 @@ projectile_damage = 12;
 projectile_speed = 200;
 state = "patrol";
 vision_range = 220;
+vision_angle = 90;
+spider_sense_range = 65;
 patrol_radius = 90;
 
 shield_interval = 4.5;

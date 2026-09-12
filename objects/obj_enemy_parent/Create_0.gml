@@ -56,3 +56,6 @@ vision_range = 180;
 vision_angle = 110;
 lost_sight_timer = 0;
 lost_sight_grace = 1.5;
+spider_sense_range = 65;
+spider_alert_timer = 0;
+has_spotted_player = false;

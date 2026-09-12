@@ -3,7 +3,9 @@ if (is_world_paused()) exit;
 var _dt = delta_time / 1000000;
 
 var _ready = false;
-if (trigger_mode == "boss_dead") {
+if (trigger_mode == "always_open" || room == asset_get_index("room_shop")) {
+    _ready = true;
+} else if (trigger_mode == "boss_dead") {
     var _b3_clear = object_exists(asset_get_index("obj_boss3")) ? (instance_number(asset_get_index("obj_boss3")) == 0) : true;
     var _b4_clear = object_exists(asset_get_index("obj_boss4")) ? (instance_number(asset_get_index("obj_boss4")) == 0) : true;
     _ready = (instance_number(obj_boss) == 0 && instance_number(obj_boss2) == 0 && _b3_clear && _b4_clear);
@@ -20,11 +22,6 @@ if (_ready) {
         var _ang = random(360);
         var _r = random_range(radius * 0.3, radius * 0.9);
         fx_spawn_sparks(x + lengthdir_x(_r, _ang), y + lengthdir_y(_r, _ang), gate_colour, 1);
-    }
-
-    // Se estiver na sala da loja, o destino aponta para shop_next_room
-    if (room == asset_get_index("room_shop") && variable_global_exists("shop_next_room") && global.shop_next_room != noone) {
-        target_room = global.shop_next_room;
     }
 
     var _player = instance_find(obj_player, 0);
@@ -50,12 +47,50 @@ if (_ready) {
             exit;
         }
 
-        if (target_room == asset_get_index("room_shop")) {
-            if (room == asset_get_index("Room3")) global.shop_next_room = asset_get_index("Room4");
-            else if (room == asset_get_index("Room6")) global.shop_next_room = asset_get_index("Room7");
+        // Roteamento inteligente do ciclo de 4 salas antes do boss
+        if (!variable_global_exists("run_biome")) global.run_biome = "water";
+        var _dest = target_room;
+
+        // Salas de Exploração (Sala 1) levam à Arena (Sala 2)
+        if (room == asset_get_index("Room1")) {
+            global.run_biome = "water";
+            global.run_room_index = 2;
+            _dest = asset_get_index("room_arena");
+        } else if (room == asset_get_index("Room3")) {
+            global.run_biome = "fire";
+            global.run_room_index = 2;
+            _dest = asset_get_index("room_arena");
+        } else if (room == asset_get_index("Room5")) {
+            global.run_biome = "wind";
+            global.run_room_index = 2;
+            _dest = asset_get_index("room_arena");
+        } else if (room == asset_get_index("Room7")) {
+            global.run_biome = "earth";
+            global.run_room_index = 2;
+            _dest = asset_get_index("room_arena");
+        }
+        // Arena (Sala 2) leva à Loja do Mercador (Sala 3)
+        else if (room == asset_get_index("room_arena")) {
+            global.run_room_index = 3;
+            _dest = asset_get_index("room_shop");
+        }
+        // Loja (Sala 3) leva ao Desafio Pré-Boss (Sala 4)
+        else if (room == asset_get_index("room_shop")) {
+            global.run_room_index = 4;
+            _dest = asset_get_index("room_preboss");
+        }
+        // Pré-Boss (Sala 4) leva à Câmara do Chefe do bioma correspondente (Sala 5)
+        else if (room == asset_get_index("room_preboss")) {
+            global.run_room_index = 5;
+            if (global.run_biome == "water") _dest = asset_get_index("Room2");
+            else if (global.run_biome == "fire") _dest = asset_get_index("Room4");
+            else if (global.run_biome == "wind") _dest = asset_get_index("Room6");
+            else if (global.run_biome == "earth") _dest = asset_get_index("Room8");
         }
 
-        save_checkpoint(room_get_name(target_room));
-        room_goto(target_room);
+        if (_dest != noone && room_exists(_dest)) {
+            save_checkpoint(room_get_name(_dest));
+            room_goto(_dest);
+        }
     }
 }

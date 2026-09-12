@@ -13,6 +13,8 @@ attack_windup = 0.45;
 attack_windup_timer = 0;
 state = "patrol";
 vision_range = 200;
+vision_angle = 90;
+spider_sense_range = 65;
 patrol_radius = 80;
 
 shield_interval = 4.5;
