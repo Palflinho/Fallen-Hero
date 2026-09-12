@@ -46,6 +46,7 @@
   "resourceVersion":"2.0",
   "roomSettings":{
     "Height":900,
+    "inheritRoomSettings":false,
     "persistent":false,
     "Width":1200,
   },
