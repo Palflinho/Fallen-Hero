@@ -49,22 +49,19 @@ if (global.chest_reward_open) {
     exit;
 }
 
-if (global.attr_window_open) {
-    if (keyboard_check_pressed(ord("T")) || keyboard_check_pressed(vk_escape)) {
+if (global.paused || global.attr_window_open) {
+    if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T"))) {
+        global.paused = false;
         global.attr_window_open = false;
     } else if (_player != noone) {
         if (keyboard_check_pressed(ord("1"))) player_apply_talent_point(_player, 0);
         if (keyboard_check_pressed(ord("2"))) player_apply_talent_point(_player, 1);
         if (keyboard_check_pressed(ord("3"))) player_apply_talent_point(_player, 2);
     }
-    exit;
-}
 
-if (global.paused) {
-    if (keyboard_check_pressed(vk_escape)) {
+    if (keyboard_check_pressed(ord("M"))) {
         global.paused = false;
-    } else if (keyboard_check_pressed(ord("M"))) {
-        global.paused = false;
+        global.attr_window_open = false;
         save_checkpoint(room_get_name(room));
         room_goto(room_char_select);
     } else if (keyboard_check_pressed(ord("Q"))) {
@@ -74,8 +71,7 @@ if (global.paused) {
     exit;
 }
 
-if (keyboard_check_pressed(vk_escape)) {
+if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T"))) {
     global.paused = true;
-} else if (keyboard_check_pressed(ord("T"))) {
     global.attr_window_open = true;
 }

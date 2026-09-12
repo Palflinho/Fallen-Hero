@@ -351,6 +351,16 @@ function get_general_talent_defs() {
 }
 
 function get_talent_def_by_id(_id) {
+    // Compatibilidade com saves e IDs legados anteriores
+    if (_id == "knight_paladino_golpe_sagrado") _id = "knight_paladino_golpe_nascente";
+    if (_id == "knight_berserk_furia") _id = "knight_berserk_frenesi_ardente";
+    if (_id == "knight_paladino_aura") _id = "knight_paladino_bencao_mare";
+    if (_id == "knight_guardian_provocacao") _id = "knight_guardiao_provocacao_esmagadora";
+    if (_id == "knight_duelist_riposte") _id = "knight_duelista_riposte_perfeito";
+    if (_id == "knight_fundamental_postura") _id = "knight_postura_firme";
+    if (_id == "knight_duelist_speed") _id = "knight_duelista_passo_eolico";
+    if (_id == "knight_guardian_fortaleza") _id = "knight_guardiao_fortaleza_viva";
+
     var _all = get_talent_defs();
     for (var i = 0; i < array_length(_all); i++) {
         if (_all[i].id == _id) return _all[i];
