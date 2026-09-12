@@ -220,6 +220,7 @@ function enemy_apply_slow(_inst, _multiplier, _duration) {
 function player_apply_poison(_dmg_per_tick, _tick_interval, _duration) {
     var _p = instance_find(obj_player, 0);
     if (_p == noone) return;
+    if (variable_instance_exists(_p, "synth_crio_coracao_geada") && _p.synth_crio_coracao_geada > 0) return;
     _p.poison_active = true;
     _p.poison_damage = _dmg_per_tick;
     _p.poison_tick_interval = _tick_interval;
@@ -349,6 +350,121 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
                 _owner.clean_kills_count++;
             }
         }
+    } else if (_owner.character_class == "mage") {
+        // Criomante / Agua
+        if (_owner.element_affinity == "water" || (variable_instance_exists(_owner, "synth_crio_geada_penetrante") && _owner.synth_crio_geada_penetrante > 0)) {
+            var _slow = (variable_instance_exists(_owner, "synth_crio_geada_penetrante") && _owner.synth_crio_geada_penetrante > 0) ? 0.30 : 0.20;
+            enemy_apply_slow(_enemy, _slow, 2.0);
+            if (variable_instance_exists(_owner, "synth_crio_pico_glacial") && _owner.synth_crio_pico_glacial > 0) {
+                enemy_apply_slow(_enemy, 0.0, 1.5);
+            }
+        }
+
+        // Piromante / Fogo
+        if (_owner.element_affinity == "fire" || (variable_instance_exists(_owner, "synth_piro_centelha_incandescente") && _owner.synth_piro_centelha_incandescente > 0)) {
+            enemy_apply_poison(_enemy, 4, 0.5, 3.0);
+        }
+
+        // Aeromante / Vento
+        if (_owner.element_affinity == "wind" || (variable_instance_exists(_owner, "synth_aero_arco_eletrico") && _owner.synth_aero_arco_eletrico > 0)) {
+            var _chain_dmg = _dmg * 0.40;
+            var _ex = _enemy.x;
+            var _ey = _enemy.y;
+            with (obj_enemy_parent) {
+                if (id != _enemy && point_distance(x, y, _ex, _ey) <= 90) {
+                    enemy_take_damage(id, _chain_dmg, _ex, _ey, 80);
+                    fx_spawn_sparks(x, y, c_yellow, 5);
+                    break;
+                }
+            }
+        }
+
+        // Geomante / Terra
+        if (_owner.element_affinity == "earth" || (variable_instance_exists(_owner, "synth_geo_projetil_rochoso") && _owner.synth_geo_projetil_rochoso > 0)) {
+            var _ang = point_direction(_owner.x, _owner.y, _enemy.x, _enemy.y);
+            _enemy.x += lengthdir_x(20, _ang);
+            _enemy.y += lengthdir_y(20, _ang);
+        }
+
+        // Abate de inimigo (Mage)
+        if (_enemy.hp <= 0 && _before_hp > 0) {
+            if (variable_instance_exists(_owner, "synth_mage_sifao_alma") && _owner.synth_mage_sifao_alma > 0) {
+                _owner.hp = min(_owner.hp_max, _owner.hp + 3);
+            }
+            if (variable_instance_exists(_owner, "synth_crio_orvalho_restaurador") && _owner.synth_crio_orvalho_restaurador > 0) {
+                _owner.hp = min(_owner.hp_max, _owner.hp + 8);
+            }
+            if (variable_instance_exists(_owner, "synth_piro_inferno_expansivo") && _owner.synth_piro_inferno_expansivo > 0) {
+                var _ex_x = _enemy.x;
+                var _ex_y = _enemy.y;
+                var _ex_dmg = _dmg * 0.50;
+                with (obj_enemy_parent) {
+                    if (id != _enemy && point_distance(x, y, _ex_x, _ex_y) <= 80) {
+                        enemy_take_damage(id, _ex_dmg, _ex_x, _ex_y, 120);
+                        enemy_apply_poison(id, 3, 0.5, 2.0);
+                    }
+                }
+            }
+        }
+    } else if (_owner.character_class == "archer") {
+        if (_is_crit && variable_instance_exists(_owner, "synth_archer_pontas_farpadas") && _owner.synth_archer_pontas_farpadas > 0) {
+            enemy_apply_poison(_enemy, _dmg * 0.20, 0.5, 2.0);
+        }
+        if (_owner.element_affinity == "water" || (variable_instance_exists(_owner, "synth_archer_glacial_flecha_estalactite") && _owner.synth_archer_glacial_flecha_estalactite > 0)) {
+            enemy_apply_slow(_enemy, 0.35, 2.0);
+        }
+        if (_owner.element_affinity == "fire" || (variable_instance_exists(_owner, "synth_archer_balist_flecha_incendiaria") && _owner.synth_archer_balist_flecha_incendiaria > 0)) {
+            enemy_apply_poison(_enemy, 4, 0.5, 3.0);
+        }
+        if (_owner.element_affinity == "earth" || (variable_instance_exists(_owner, "synth_archer_terra_tremores_impacto") && _owner.synth_archer_terra_tremores_impacto > 0)) {
+            enemy_apply_slow(_enemy, 0.30, 1.5);
+        }
+
+        // Abate de inimigo (Archer)
+        if (_enemy.hp <= 0 && _before_hp > 0) {
+            if (variable_instance_exists(_owner, "synth_archer_glacial_brisa_curativa") && _owner.synth_archer_glacial_brisa_curativa > 0) {
+                _owner.hp = min(_owner.hp_max, _owner.hp + 4);
+            }
+            if (variable_instance_exists(_owner, "synth_archer_saraivada_eterna") && _owner.synth_archer_saraivada_eterna > 0) {
+                _owner.defend_cooldown_timer = 0;
+            }
+        }
+    } else if (_owner.character_class == "assassin") {
+        var _is_backstab = false;
+        var _dot = (_enemy.x - _owner.x) * _enemy.facing_x + (_enemy.y - _owner.y) * _enemy.facing_y;
+        if (_dot > 0) {
+            _is_backstab = true;
+            if (variable_instance_exists(_owner, "synth_assassin_golpe_jugular") && _owner.synth_assassin_golpe_jugular > 0) {
+                _dealt *= 1.75;
+            }
+            if (variable_instance_exists(_owner, "synth_assassin_espect_gota_hemofagica") && _owner.synth_assassin_espect_gota_hemofagica > 0) {
+                _owner.hp = min(_owner.hp_max, _owner.hp + 4);
+            }
+            if (variable_instance_exists(_owner, "synth_assassin_obsid_fratura_ossea") && _owner.synth_assassin_obsid_fratura_ossea > 0) {
+                enemy_apply_slow(_enemy, 0.4, 2.0);
+            }
+        }
+
+        if (_is_crit && variable_instance_exists(_owner, "synth_assassin_adaga_envenenada") && _owner.synth_assassin_adaga_envenenada > 0) {
+            enemy_apply_poison(_enemy, 4, 0.5, 4.0);
+        }
+        if (_owner.element_affinity == "fire" || (variable_instance_exists(_owner, "synth_assassin_vulcan_corte_incandescente") && _owner.synth_assassin_vulcan_corte_incandescente > 0)) {
+            enemy_apply_poison(_enemy, 4, 0.5, 3.0);
+        }
+        if (_owner.element_affinity == "water" || (variable_instance_exists(_owner, "synth_assassin_espect_adaga_criogenica") && _owner.synth_assassin_espect_adaga_criogenica > 0)) {
+            enemy_apply_slow(_enemy, 0.40, 2.0);
+        }
+
+        // Abate de inimigo (Assassin)
+        if (_enemy.hp <= 0 && _before_hp > 0) {
+            if (variable_instance_exists(_owner, "synth_assassin_frenesi_sangue") && _owner.synth_assassin_frenesi_sangue > 0) {
+                _owner.dance_speed_timer = 3.0;
+            }
+            if (variable_instance_exists(_owner, "synth_assassin_ceifador_cosmico") && _owner.synth_assassin_ceifador_cosmico > 0) {
+                _owner.hp = min(_owner.hp_max, _owner.hp + _owner.hp_max * 0.10);
+                _owner.invuln_timer = 1.0;
+            }
+        }
     }
 }
 
@@ -361,6 +477,34 @@ function player_perform_attack() {
             _is_crit = true;
         }
     }
+
+    // Archer: 09 Tiro Concentrado (1.5s parado garante 100% critico)
+    if (character_class == "archer" && variable_instance_exists(id, "synth_archer_tiro_concentrado") && synth_archer_tiro_concentrado > 0) {
+        if (variable_instance_exists(id, "archer_stationary_timer") && archer_stationary_timer >= 1.5) {
+            _is_crit = true;
+        }
+    }
+
+    // Assassin: 05 Saque Rapido Letal (100% critico nos primeiros 2s de combate)
+    if (character_class == "assassin" && variable_instance_exists(id, "synth_assassin_saque_rapido_letal") && synth_assassin_saque_rapido_letal > 0) {
+        if (variable_instance_exists(id, "assassin_entered_room_timer") && assassin_entered_room_timer > 0) {
+            _is_crit = true;
+        }
+    }
+
+    // Assassin: golpe vindo de invisibilidade garante critico com multiplicador elevado
+    if (character_class == "assassin" && invisible) {
+        _is_crit = true;
+        invisible = false;
+        if (variable_instance_exists(id, "synth_assassin_emboscada_perfeita") && synth_assassin_emboscada_perfeita > 0) {
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, other.x, other.y) <= other.attack_range * 2.5) {
+                    enemy_apply_slow(id, 0.0, 1.5);
+                }
+            }
+        }
+    }
+
     attack_idle_timer = 0;
     last_attack_was_crit = _is_crit;
     var _dmg = attack_damage * (_is_crit ? synth_crit_mult : 1);
@@ -380,18 +524,86 @@ function player_perform_attack() {
         } else if (element_affinity == "earth") {
             _dmg *= 1.15;
         }
+    } else if (character_class == "mage") {
+        if (variable_instance_exists(id, "synth_mage_mente_cristalina") && synth_mage_mente_cristalina > 0 && attack_idle_timer >= 4.0) {
+            _dmg *= (1 + synth_mage_mente_cristalina);
+        }
+        if (variable_instance_exists(id, "synth_mage_avatar_arcano") && synth_mage_avatar_arcano > 0) {
+            _dmg *= 1.30;
+        }
+    } else if (character_class == "archer") {
+        if (variable_instance_exists(id, "earth_anchored") && earth_anchored) {
+            _dmg *= 1.60;
+        }
+    } else if (character_class == "assassin") {
+        if (variable_instance_exists(id, "synth_assassin_sombra_suprema") && synth_assassin_sombra_suprema > 0 && invisible) {
+            _dmg *= 1.50;
+        }
     }
 
     if (attack_is_ranged) {
-        var _sx = x + facing_x * 14;
-        var _sy = y + facing_y * 14;
-        var _p = instance_create_layer(_sx, _sy, layer, attack_object);
-        _p.owner = id;
-        _p.damage = _dmg;
-        _p.dir_x = facing_x;
-        _p.dir_y = facing_y;
-        _p.speed_px = projectile_speed;
-        _p.pierce_remaining = synth_pierce_count;
+        var _eff_pierce = synth_pierce_count;
+        if (character_class == "archer" && variable_instance_exists(id, "earth_anchored") && earth_anchored) {
+            _eff_pierce += 99;
+        }
+
+        if (character_class == "archer" && variable_instance_exists(id, "synth_archer_venda_disparo_leque") && synth_archer_venda_disparo_leque > 0) {
+            for (var _fi = -1; _fi <= 1; _fi++) {
+                var _ang = point_direction(0, 0, facing_x, facing_y) + _fi * 18;
+                var _p = instance_create_layer(x + facing_x * 14, y + facing_y * 14, layer, attack_object);
+                _p.owner = id;
+                _p.damage = _dmg * 0.40;
+                _p.dir_x = lengthdir_x(1, _ang);
+                _p.dir_y = lengthdir_y(1, _ang);
+                _p.speed_px = projectile_speed;
+                _p.pierce_remaining = _eff_pierce;
+            }
+        } else {
+            var _sx = x + facing_x * 14;
+            var _sy = y + facing_y * 14;
+            var _p = instance_create_layer(_sx, _sy, layer, attack_object);
+            _p.owner = id;
+            _p.damage = _dmg;
+            _p.dir_x = facing_x;
+            _p.dir_y = facing_y;
+            var _spd = projectile_speed;
+            if (variable_instance_exists(id, "synth_archer_venda_tiro_supersonico") && synth_archer_venda_tiro_supersonico > 0) _spd *= 1.6;
+            if (variable_instance_exists(id, "synth_mage_fluxo_conduzido") && synth_mage_fluxo_conduzido > 0) _spd *= 1.25;
+            _p.speed_px = _spd;
+            _p.pierce_remaining = _eff_pierce;
+
+            // Mage Eco Magico
+            if (character_class == "mage" && variable_instance_exists(id, "synth_mage_eco_magico") && synth_mage_eco_magico > 0) {
+                mage_consecutive_hits++;
+                if (mage_consecutive_hits mod 4 == 0) {
+                    var _rep = instance_create_layer(_sx, _sy, layer, attack_object);
+                    _rep.owner = id;
+                    _rep.damage = _dmg * 0.50;
+                    _rep.dir_x = facing_x;
+                    _rep.dir_y = facing_y;
+                    _rep.speed_px = _spd * 1.1;
+                    _rep.pierce_remaining = 0;
+                }
+            }
+
+            // Archer Chuva Torrencial
+            if (character_class == "archer" && variable_instance_exists(id, "synth_archer_glacial_chuva_torrencial") && synth_archer_glacial_chuva_torrencial > 0) {
+                archer_shot_counter++;
+                if (archer_shot_counter mod 5 == 0) {
+                    for (var _ci = -2; _ci <= 2; _ci++) {
+                        if (_ci == 0) continue;
+                        var _cang = point_direction(0, 0, facing_x, facing_y) + _ci * 12;
+                        var _cp = instance_create_layer(_sx, _sy, layer, attack_object);
+                        _cp.owner = id;
+                        _cp.damage = _dmg * 0.35;
+                        _cp.dir_x = lengthdir_x(1, _cang);
+                        _cp.dir_y = lengthdir_y(1, _cang);
+                        _cp.speed_px = _spd * 0.95;
+                        _cp.pierce_remaining = 0;
+                    }
+                }
+            }
+        }
     } else {
         var _range_mult = 0.6;
         var _radius_mult = 0.7;
@@ -403,6 +615,11 @@ function player_perform_attack() {
             } else if (element_affinity == "earth") {
                 _range_mult = 0.5;
                 _radius_mult = 0.75;
+            }
+        } else if (character_class == "assassin") {
+            if (variable_instance_exists(id, "synth_assassin_tufao_lamina_vacuo") && synth_assassin_tufao_lamina_vacuo > 0) {
+                _range_mult = 1.2;
+                _radius_mult = 1.0;
             }
         }
 
@@ -417,10 +634,18 @@ function player_perform_attack() {
         _hit.damage = _dmg;
         _hit.body_radius = attack_range * _radius_mult;
 
+        // Assassin: Laminas Gemeas (segundo corte imediato)
+        if (character_class == "assassin" && variable_instance_exists(id, "synth_assassin_laminas_gemeas") && synth_assassin_laminas_gemeas > 0) {
+            var _hit2 = instance_create_layer(_hx + facing_x * 4, _hy + facing_y * 4, layer, attack_object);
+            _hit2.owner = id;
+            _hit2.damage = _dmg * 0.60;
+            _hit2.body_radius = attack_range * _radius_mult * 0.9;
+        }
+
         if (character_class == "knight") {
             hit_streak_count++;
 
-            // 15 Golpe da Nascente: cada 3º golpe libera onda curativa
+            // 15 Golpe da Nascente: cada 3o golpe libera onda curativa
             if (variable_instance_exists(id, "synth_paladino_golpe_nascente") && synth_paladino_golpe_nascente > 0 && (hit_streak_count mod 3 == 0)) {
                 var _wave = instance_create_layer(x + facing_x * 20, y + facing_y * 20, layer, obj_atk_fireball);
                 _wave.owner = id;
@@ -431,7 +656,7 @@ function player_perform_attack() {
                 _wave.pierce_remaining = 3;
             }
 
-            // 39 Fissura Telurica: cada 4º golpe racha o chao e atordoa
+            // 39 Fissura Telurica: cada 4o golpe racha o chao e atordoa
             if (variable_instance_exists(id, "synth_guardiao_fissura_telurica") && synth_guardiao_fissura_telurica > 0 && (hit_streak_count mod 4 == 0)) {
                 var _fis = instance_create_layer(x + facing_x * 35, y + facing_y * 35, layer, obj_atk_knight);
                 _fis.owner = id;
@@ -472,6 +697,14 @@ function player_take_damage(_amount, _damage_type) {
     var _p = instance_find(obj_player, 0);
     if (_p == noone) return;
     if (_p.invuln_timer > 0) return;
+
+    // Nevoa Ilusoria (Assassino): esquiva garantida a cada 20s ao sofrer dano
+    if (_p.character_class == "assassin" && variable_instance_exists(_p, "synth_assassin_espect_nevoa_ilusoria") && _p.synth_assassin_espect_nevoa_ilusoria > 0 && variable_instance_exists(_p, "assassin_free_evade_cooldown") && _p.assassin_free_evade_cooldown <= 0) {
+        _p.assassin_free_evade_cooldown = 20;
+        _p.invuln_timer = 0.5;
+        fx_spawn_sparks(_p.x, _p.y, c_aqua, 10);
+        return;
+    }
 
     if (random(1) < _p.synth_dodge) return;
 
@@ -574,6 +807,34 @@ function player_take_damage(_amount, _damage_type) {
             _p.hit_flash_timer = _p.hit_flash_duration;
         } else if (_p.defend_mode == "berserk_fury") {
             _final *= 0.80;
+        } else if (_p.defend_mode == "cryo_prison") {
+            _final = 0;
+            _blocked_fully = true;
+            if (variable_instance_exists(_p, "cryo_prison_absorb")) _p.cryo_prison_absorb += _amount;
+            _p.hp = min(_p.hp_max, _p.hp + _amount * 0.25);
+            _p.hit_flash_timer = _p.hit_flash_duration;
+        } else if (_p.defend_mode == "spectral_mist") {
+            _final = 0;
+            _blocked_fully = true;
+        } else if (_p.defend_mode == "obsidian_skin") {
+            _final *= 0.20;
+            if (_damage_type == "physical") {
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _p.x, _p.y) <= 80) {
+                        enemy_take_damage(id, _amount * 0.50, _p.x, _p.y, 160);
+                    }
+                }
+            }
+            _p.hit_flash_timer = _p.hit_flash_duration;
+        } else if (_p.defend_mode == "earth_anchor") {
+            _final *= 0.35;
+            _p.hit_flash_timer = _p.hit_flash_duration;
+        } else if (_p.defend_mode == "ash_bomb" || _p.defend_mode == "shadowstep") {
+            _final = 0;
+            _blocked_fully = true;
+        } else if (_p.defend_mode == "roll" || _p.defend_mode == "mist_roll" || _p.defend_mode == "cyclone_roll" || _p.defend_mode == "fire_recoil") {
+            _final = 0;
+            _blocked_fully = true;
         } else if (_p.defend_mode == "block") {
             if (_damage_type == "physical") {
                 _final = 0;
@@ -583,11 +844,22 @@ function player_take_damage(_amount, _damage_type) {
             }
             _p.hit_flash_timer = _p.hit_flash_duration;
         } else if (_p.defend_mode == "manashield") {
+            var _ms_mult = _block_mult;
+            if (variable_instance_exists(_p, "synth_mage_ressonancia_foco") && _p.synth_mage_ressonancia_foco > 0) {
+                _ms_mult *= 0.75;
+            }
             if (_damage_type == "magical") {
                 _final = 0;
                 _blocked_fully = true;
             } else {
-                _final *= _block_mult;
+                _final *= _ms_mult;
+            }
+            if (variable_instance_exists(_p, "synth_crio_armadura_gelo_negro") && _p.synth_crio_armadura_gelo_negro > 0) {
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _p.x, _p.y) <= 70) {
+                        enemy_apply_slow(id, 0.1, 1.5);
+                    }
+                }
             }
             _p.hit_flash_timer = _p.hit_flash_duration;
         }
@@ -619,6 +891,25 @@ function player_take_damage(_amount, _damage_type) {
             }
         }
 
+        // Fenix Imortal (Mago Piromante): reviver com 35% de HP (1x por run)
+        if (_p.character_class == "mage" && variable_instance_exists(_p, "synth_piro_fenix_imortal") && _p.synth_piro_fenix_imortal > 0 && variable_instance_exists(_p, "mage_fenix_used") && !_p.mage_fenix_used) {
+            if ((_p.hp - _final) <= 0) {
+                _p.mage_fenix_used = true;
+                _final = 0;
+                _p.hp = min(_p.hp_max, _p.hp_max * 0.35);
+                _p.invuln_timer = 1.5;
+                trigger_hitstop(0.20);
+                fx_spawn_sparks(_p.x, _p.y, c_orange, 25);
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _p.x, _p.y) <= 180) {
+                        enemy_take_damage(id, 45, _p.x, _p.y, 250, true);
+                        enemy_apply_poison(id, 6, 0.4, 3.0);
+                    }
+                }
+                return;
+            }
+        }
+
         // Folego Extra geral
         if (_p.synth_second_wind > 0 && _p.second_wind_cooldown_timer <= 0 && (_p.hp - _final) <= 0) {
             _final = max(0, _p.hp - 1);
@@ -631,6 +922,38 @@ function player_take_damage(_amount, _damage_type) {
         if (_final > 0) {
             _p.state = "hurt";
             trigger_hitstop(0.05);
+        }
+
+        // Protecao Mana-Reativa (Mago): repele inimigos em 120px ao perder >= 15% HP
+        if (_p.character_class == "mage" && variable_instance_exists(_p, "synth_mage_protecao_mana_reativa") && _p.synth_mage_protecao_mana_reativa > 0) {
+            if (_final >= _p.hp_max * 0.15) {
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _p.x, _p.y) <= 120) {
+                        var _kdir = point_direction(_p.x, _p.y, x, y);
+                        if (variable_instance_exists(id, "knockback_vx")) {
+                            knockback_vx += lengthdir_x(260, _kdir);
+                            knockback_vy += lengthdir_y(260, _kdir);
+                        }
+                    }
+                }
+                trigger_hitstop(0.08);
+                fx_spawn_sparks(_p.x, _p.y, c_fuchsia, 12);
+            }
+        }
+
+        // Recuo de Emergencia (Arqueiro): repele agressor 90px ao sofrer dano fisico
+        if (_p.character_class == "archer" && variable_instance_exists(_p, "synth_archer_recuo_emergencia") && _p.synth_archer_recuo_emergencia > 0 && _damage_type == "physical" && variable_instance_exists(_p, "archer_recuo_cooldown") && _p.archer_recuo_cooldown <= 0) {
+            _p.archer_recuo_cooldown = 8.0;
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _p.x, _p.y) <= 90) {
+                    var _kdir = point_direction(_p.x, _p.y, x, y);
+                    if (variable_instance_exists(id, "knockback_vx")) {
+                        knockback_vx += lengthdir_x(240, _kdir);
+                        knockback_vy += lengthdir_y(240, _kdir);
+                    }
+                }
+            }
+            fx_spawn_sparks(_p.x, _p.y, c_lime, 8);
         }
 
         // 25 Vinganca Flamejante: anel de fogo ao sofrer dano

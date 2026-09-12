@@ -37,7 +37,7 @@ switch (state) {
 
         if (keyboard_check_pressed(ord("Z"))) {
             var _character = classes[selected_index];
-            var _all = (_character == "knight") ? knight_get_talents_for_affinity(elements[selected_element_index]) : get_talents_for_character(_character);
+            var _all = get_talents_for_character_and_affinity(_character, elements[selected_element_index]);
             var _unlocked = [];
             for (var i = 0; i < array_length(_all); i++) {
                 if (talent_is_unlocked(_all[i].id)) array_push(_unlocked, _all[i]);
@@ -64,40 +64,38 @@ switch (state) {
     case "select_talents":
         var _m = array_length(talent_select_list);
 
-        if (classes[selected_index] == "knight") {
-            var _el_n = array_length(elements);
-            var _elem_changed = false;
-            if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("A"))) {
-                selected_element_index = (selected_element_index - 1 + _el_n) mod _el_n;
-                _elem_changed = true;
-            }
-            if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("D"))) {
-                selected_element_index = (selected_element_index + 1) mod _el_n;
-                _elem_changed = true;
-            }
+        var _el_n = array_length(elements);
+        var _elem_changed = false;
+        if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("A"))) {
+            selected_element_index = (selected_element_index - 1 + _el_n) mod _el_n;
+            _elem_changed = true;
+        }
+        if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("D"))) {
+            selected_element_index = (selected_element_index + 1) mod _el_n;
+            _elem_changed = true;
+        }
 
-            if (_elem_changed) {
-                var _new_all = knight_get_talents_for_affinity(elements[selected_element_index]);
-                var _new_unlocked = [];
-                for (var i = 0; i < array_length(_new_all); i++) {
-                    if (talent_is_unlocked(_new_all[i].id)) array_push(_new_unlocked, _new_all[i]);
-                }
-                talent_select_list = _new_unlocked;
-                talent_select_cursor = 0;
-                talent_grid_scroll_row = 0;
-                _m = array_length(talent_select_list);
+        if (_elem_changed) {
+            var _new_all = get_talents_for_character_and_affinity(classes[selected_index], elements[selected_element_index]);
+            var _new_unlocked = [];
+            for (var i = 0; i < array_length(_new_all); i++) {
+                if (talent_is_unlocked(_new_all[i].id)) array_push(_new_unlocked, _new_all[i]);
+            }
+            talent_select_list = _new_unlocked;
+            talent_select_cursor = 0;
+            talent_grid_scroll_row = 0;
+            _m = array_length(talent_select_list);
 
-                var _valid_ids = [];
-                for (var j = 0; j < array_length(talent_selected_ids); j++) {
-                    for (var k = 0; k < _m; k++) {
-                        if (talent_select_list[k].id == talent_selected_ids[j]) {
-                            array_push(_valid_ids, talent_selected_ids[j]);
-                            break;
-                        }
+            var _valid_ids = [];
+            for (var j = 0; j < array_length(talent_selected_ids); j++) {
+                for (var k = 0; k < _m; k++) {
+                    if (talent_select_list[k].id == talent_selected_ids[j]) {
+                        array_push(_valid_ids, talent_selected_ids[j]);
+                        break;
                     }
                 }
-                talent_selected_ids = _valid_ids;
             }
+            talent_selected_ids = _valid_ids;
         }
 
         if (_m > 0) {
@@ -165,7 +163,7 @@ switch (state) {
 
         if (keyboard_check_pressed(ord("Z"))) {
             global.selected_character = classes[selected_index];
-            global.selected_element = (classes[selected_index] == "knight") ? elements[selected_element_index] : "none";
+            global.selected_element = elements[selected_element_index];
             global.use_saved_stats = false;
 
             global.chosen_talent_ids = ["", "", ""];

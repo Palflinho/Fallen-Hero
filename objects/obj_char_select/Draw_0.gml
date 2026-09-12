@@ -141,18 +141,15 @@ switch (state) {
         draw_set_color(c_white);
         draw_text(room_width / 2, 36, "Talentos - " + labels[selected_index]);
 
-        var _grid_start_y = 95;
-        if (classes[selected_index] == "knight") {
-            var _elem_id = elements[selected_element_index];
-            var _arch = knight_get_archetype_name(_elem_id);
-            var _desc = knight_get_archetype_desc(_elem_id);
+        var _elem_id = elements[selected_element_index];
+        var _arch = class_get_archetype_name(classes[selected_index], _elem_id);
+        var _desc = class_get_archetype_desc(classes[selected_index], _elem_id);
 
-            draw_set_color(c_yellow);
-            draw_text(room_width / 2, 66, "< Q / E : Sintonia Elemental - " + element_labels[selected_element_index] + " >");
-            draw_set_color(c_aqua);
-            draw_text(room_width / 2, 88, _desc);
-            _grid_start_y = 126;
-        }
+        draw_set_color(c_yellow);
+        draw_text(room_width / 2, 66, "< Q / E : Sintonia Elemental - " + element_get_name(_elem_id) + " (" + _arch + ") >");
+        draw_set_color(c_aqua);
+        draw_text(room_width / 2, 88, _desc);
+        var _grid_start_y = 126;
 
         var _m = array_length(talent_select_list);
         if (_m == 0) {

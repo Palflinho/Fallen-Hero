@@ -101,20 +101,60 @@ switch (character_class) {
         nat_atk_spd_base = 1 / 0.9;
         nat_move_spd_base = 160;
         nat_hp_base = 70;
-        body_colour = c_fuchsia;
-
         attack_duration = 0.18;
         attack_object = obj_atk_fireball;
         attack_is_ranged = true;
         attack_damage_type = "magical";
         projectile_speed = 260;
-
-        defend_mode = "manashield";
-        defend_duration = 2.0;
-        defend_cooldown_base = 5.0;
-
         sprite_walk = -1;
         sprite_attack = -1;
+
+        switch (element_affinity) {
+            case "water":
+                archetype_name = "Criomante";
+                body_colour = make_colour_rgb(100, 180, 255);
+                defend_mode = "cryo_prison";
+                defend_duration = 2.5;
+                defend_cooldown_base = 5.0;
+                break;
+
+            case "fire":
+                archetype_name = "Piromante";
+                body_colour = make_colour_rgb(255, 90, 40);
+                defend_mode = "pyro_blast";
+                defend_duration = 0.4;
+                defend_cooldown_base = 4.5;
+                attack_duration = 0.16;
+                break;
+
+            case "wind":
+                archetype_name = "Aeromante";
+                body_colour = make_colour_rgb(180, 220, 255);
+                nat_move_spd_base = 185;
+                nat_atk_spd_base = 1 / 0.75;
+                defend_mode = "voltaic_blink";
+                defend_duration = 0.2;
+                defend_cooldown_base = 3.2;
+                break;
+
+            case "earth":
+                archetype_name = "Geomante";
+                body_colour = make_colour_rgb(190, 150, 90);
+                nat_defesa_base = 7;
+                nat_hp_base = 90;
+                defend_mode = "basalt_pillar";
+                defend_duration = 3.0;
+                defend_cooldown_base = 5.5;
+                break;
+
+            default:
+                archetype_name = "Arcano";
+                body_colour = c_fuchsia;
+                defend_mode = "manashield";
+                defend_duration = 2.0;
+                defend_cooldown_base = 5.0;
+                break;
+        }
         break;
 
     case "archer":
@@ -123,21 +163,63 @@ switch (character_class) {
         nat_atk_spd_base = 1 / 0.35;
         nat_move_spd_base = 200;
         nat_hp_base = 80;
-        body_colour = c_lime;
-
         attack_duration = 0.12;
         attack_object = obj_atk_arrow;
         attack_is_ranged = true;
         attack_damage_type = "physical";
         projectile_speed = 420;
-
-        defend_mode = "roll";
-        defend_duration = 0.25;
-        defend_cooldown_base = 3.0;
-        defend_roll_speed = 320;
-
         sprite_walk = -1;
         sprite_attack = -1;
+
+        switch (element_affinity) {
+            case "water":
+                archetype_name = "Cacador das Mares";
+                body_colour = make_colour_rgb(80, 200, 200);
+                defend_mode = "mist_roll";
+                defend_duration = 0.30;
+                defend_roll_speed = 340;
+                defend_cooldown_base = 3.0;
+                break;
+
+            case "fire":
+                archetype_name = "Balistico Infernal";
+                body_colour = make_colour_rgb(240, 110, 40);
+                defend_mode = "fire_recoil";
+                defend_duration = 0.25;
+                defend_roll_speed = -280;
+                defend_cooldown_base = 3.5;
+                break;
+
+            case "wind":
+                archetype_name = "Mestre do Vendaval";
+                body_colour = make_colour_rgb(160, 255, 120);
+                nat_atk_spd_base = 1 / 0.28;
+                defend_mode = "cyclone_roll";
+                defend_duration = 0.25;
+                defend_roll_speed = 360;
+                defend_cooldown_base = 2.8;
+                break;
+
+            case "earth":
+                archetype_name = "Balista da Terra";
+                body_colour = make_colour_rgb(140, 170, 70);
+                nat_power_base = 14;
+                nat_move_spd_base = 180;
+                defend_mode = "earth_anchor";
+                defend_duration = 3.0;
+                defend_roll_speed = 0;
+                defend_cooldown_base = 5.0;
+                break;
+
+            default:
+                archetype_name = "Arqueiro";
+                body_colour = c_lime;
+                defend_mode = "roll";
+                defend_duration = 0.25;
+                defend_roll_speed = 320;
+                defend_cooldown_base = 3.0;
+                break;
+        }
         break;
 
     case "assassin":
@@ -146,20 +228,59 @@ switch (character_class) {
         nat_atk_spd_base = 1 / 0.15;
         nat_move_spd_base = 190;
         nat_hp_base = 60;
-        body_colour = c_gray;
         attack_range = 16;
-
-        attack_duration = 0.1;
+        attack_duration = 0.10;
         attack_object = obj_atk_dagger;
         attack_is_ranged = false;
         attack_damage_type = "physical";
-
-        defend_mode = "invisible";
-        defend_duration = 3.0;
-        defend_cooldown_base = 6.0;
-
         sprite_walk = -1;
         sprite_attack = -1;
+
+        switch (element_affinity) {
+            case "water":
+                archetype_name = "Lamina Espectral";
+                body_colour = make_colour_rgb(90, 160, 220);
+                defend_mode = "spectral_mist";
+                defend_duration = 2.5;
+                defend_cooldown_base = 5.0;
+                break;
+
+            case "fire":
+                archetype_name = "Lamina Vulcanica";
+                body_colour = make_colour_rgb(220, 70, 50);
+                defend_mode = "ash_bomb";
+                defend_duration = 1.0;
+                defend_cooldown_base = 4.5;
+                break;
+
+            case "wind":
+                archetype_name = "Algoz do Tufao";
+                body_colour = make_colour_rgb(200, 200, 255);
+                nat_move_spd_base = 215;
+                nat_atk_spd_base = 1 / 0.12;
+                defend_mode = "shadowstep";
+                defend_duration = 0.2;
+                defend_cooldown_base = 3.5;
+                break;
+
+            case "earth":
+                archetype_name = "Carrasco de Obsidiana";
+                body_colour = make_colour_rgb(80, 80, 95);
+                nat_defesa_base = 8;
+                nat_hp_base = 80;
+                defend_mode = "obsidian_skin";
+                defend_duration = 2.5;
+                defend_cooldown_base = 5.5;
+                break;
+
+            default:
+                archetype_name = "Assassino";
+                body_colour = c_gray;
+                defend_mode = "invisible";
+                defend_duration = 3.0;
+                defend_cooldown_base = 6.0;
+                break;
+        }
         break;
 }
 
@@ -248,6 +369,24 @@ segundo_folego_cooldown = 0;
 paladin_barrier_active = 0;
 parry_flash_timer = 0;
 duelist_combo_count = 0;
+
+// Variáveis de controle de combate para talentos do Mago
+mage_consecutive_hits = 0;
+mage_static_charge = 0;
+mage_fenix_used = false;
+cryo_prison_absorb = 0;
+
+// Variáveis de controle de combate para talentos do Arqueiro
+archer_stationary_timer = 0;
+archer_shot_counter = 0;
+archer_anchor_active = false;
+archer_recuo_cooldown = 0;
+
+// Variáveis de controle de combate para talentos do Assassino
+assassin_combo_counter = 0;
+assassin_smoke_timer = 0;
+assassin_entered_room_timer = 2.0;
+assassin_free_evade_cooldown = 0;
 
 hp_max = 0;
 hp = 0;
