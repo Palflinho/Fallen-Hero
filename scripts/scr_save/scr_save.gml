@@ -115,6 +115,7 @@ function goto_checkpoint() {
     global.selected_character = global.save_character;
     global.selected_element = variable_global_exists("save_element") ? global.save_element : "none";
     global.use_saved_stats = global.save_has_stats;
+    global.chosen_talent_ids = global.save_talent_ids;
 
     var _target = asset_get_index(global.save_room);
     if (_target != -1) {
@@ -122,4 +123,37 @@ function goto_checkpoint() {
     } else {
         room_goto(Room1);
     }
+}
+
+function get_save_summary() {
+    if (!variable_global_exists("has_save") || !global.has_save) return "";
+
+    var _char_label = "Cavaleiro";
+    switch (global.save_character) {
+        case "knight":
+            var _elem = variable_global_exists("save_element") ? global.save_element : "none";
+            switch (_elem) {
+                case "water": _char_label = "Cavaleiro (Paladino)"; break;
+                case "fire": _char_label = "Cavaleiro (Berserker)"; break;
+                case "wind": _char_label = "Cavaleiro (Duelista)"; break;
+                case "earth": _char_label = "Cavaleiro (Guardiao)"; break;
+                default: _char_label = "Cavaleiro"; break;
+            }
+            break;
+        case "mage": _char_label = "Mago"; break;
+        case "archer": _char_label = "Arqueiro"; break;
+        case "assassin": _char_label = "Assassino"; break;
+    }
+
+    var _room_label = "Fase 1 (Gelo)";
+    switch (global.save_room) {
+        case "Room1": _room_label = "Fase 1 (Arena de Gelo)"; break;
+        case "Room2": _room_label = "Fase 1 (General do Gelo)"; break;
+        case "Room3": _room_label = "Fase 2 (Labirinto de Fogo)"; break;
+        case "Room4": _room_label = "Fase 2 (General Magma)"; break;
+        default: _room_label = global.save_room; break;
+    }
+
+    var _lvl = variable_global_exists("save_level") ? string(global.save_level) : "1";
+    return _char_label + "   -   Nivel " + _lvl + "   -   " + _room_label;
 }

@@ -14,7 +14,13 @@ box_w = 180;
 box_h = 220;
 box_gap = 40;
 
-state = "select"; // select | shop | select_talents
+state = "main_menu"; // main_menu | select | shop | select_talents
+
+main_menu_options = ["Novo Jogo", "Continuar", "Sair"];
+main_menu_cursor = global.has_save ? 1 : 0;
+main_menu_btn_w = 340;
+main_menu_btn_h = 54;
+main_menu_btn_gap = 18;
 
 shop_tab_index = 0;
 shop_talent_index = 0;

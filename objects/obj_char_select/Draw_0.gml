@@ -1,14 +1,113 @@
-draw_set_font(-1);
-draw_set_halign(fa_right);
-draw_set_valign(fa_top);
-draw_set_color(c_yellow);
-draw_text(room_width - 20, 20, "Ouro: " + string(global.gold));
-draw_set_color(c_white);
+if (state != "main_menu") {
+    draw_set_font(-1);
+    draw_set_halign(fa_right);
+    draw_set_valign(fa_top);
+    draw_set_color(c_yellow);
+    draw_text(room_width - 20, 20, "Ouro: " + string(global.gold));
+    draw_set_color(c_white);
+}
 
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 
 switch (state) {
+    case "main_menu":
+        var _title_x = room_width / 2;
+        var _title_y = 140;
+
+        // Titulo com sombra
+        draw_set_color(make_colour_rgb(15, 22, 35));
+        draw_text_transformed(_title_x + 3, _title_y + 3, "FALLEN HERO", 3, 3, 0);
+
+        draw_set_color(c_yellow);
+        draw_text_transformed(_title_x, _title_y, "FALLEN HERO", 3, 3, 0);
+
+        draw_set_color(make_colour_rgb(130, 180, 230));
+        draw_text_transformed(_title_x, _title_y + 48, "As Cronicas dos Elementos", 1.2, 1.2, 0);
+
+        // Botoes do menu principal
+        var _menu_start_x = (room_width - main_menu_btn_w) / 2;
+        var _menu_start_y = 250;
+
+        for (var _i = 0; _i < array_length(main_menu_options); _i++) {
+            var _bx = _menu_start_x;
+            var _by = _menu_start_y + _i * (main_menu_btn_h + main_menu_btn_gap);
+            var _is_cur = (main_menu_cursor == _i);
+            var _is_continue = (_i == 1);
+            var _has_save = global.has_save;
+
+            // Fundo do botao
+            draw_set_alpha(0.9);
+            if (_is_cur) {
+                draw_set_color(make_colour_rgb(34, 48, 76));
+            } else {
+                draw_set_color(make_colour_rgb(16, 20, 30));
+            }
+            draw_rectangle(_bx, _by, _bx + main_menu_btn_w, _by + main_menu_btn_h, false);
+            draw_set_alpha(1);
+
+            // Borda do botao
+            if (_is_cur) {
+                draw_set_color(c_yellow);
+                draw_rectangle(_bx - 2, _by - 2, _bx + main_menu_btn_w + 2, _by + main_menu_btn_h + 2, true);
+                draw_rectangle(_bx, _by, _bx + main_menu_btn_w, _by + main_menu_btn_h, true);
+            } else {
+                draw_set_color(make_colour_rgb(55, 70, 95));
+                draw_rectangle(_bx, _by, _bx + main_menu_btn_w, _by + main_menu_btn_h, true);
+            }
+
+            // Texto do botao
+            var _label = main_menu_options[_i];
+            if (_is_continue && !_has_save) {
+                _label = "Continuar  (Sem Save)";
+                draw_set_color(c_dkgray);
+            } else if (_is_cur) {
+                draw_set_color(c_yellow);
+            } else {
+                draw_set_color(c_white);
+            }
+
+            draw_set_halign(fa_center);
+            draw_set_valign(fa_middle);
+            draw_text_transformed(_bx + main_menu_btn_w / 2, _by + main_menu_btn_h / 2, _label, 1.2, 1.2, 0);
+
+            // Indicador de cursor
+            if (_is_cur) {
+                draw_text_transformed(_bx + 28, _by + main_menu_btn_h / 2, ">", 1.3, 1.3, 0);
+            }
+        }
+
+        // Painel de resumo do save
+        if (global.has_save) {
+            var _box_w = 660;
+            var _box_h = 76;
+            var _box_x = (room_width - _box_w) / 2;
+            var _box_y = 485;
+
+            draw_set_alpha(0.88);
+            draw_set_color(make_colour_rgb(12, 16, 26));
+            draw_rectangle(_box_x, _box_y, _box_x + _box_w, _box_y + _box_h, false);
+            draw_set_alpha(1);
+
+            draw_set_color((main_menu_cursor == 1) ? c_yellow : make_colour_rgb(60, 85, 120));
+            draw_rectangle(_box_x, _box_y, _box_x + _box_w, _box_y + _box_h, true);
+
+            draw_set_halign(fa_center);
+            draw_set_valign(fa_top);
+            draw_set_color(c_aqua);
+            draw_text(_box_x + _box_w / 2, _box_y + 14, "PROGRESSO SALVO DISPONIVEL");
+
+            draw_set_color(c_white);
+            draw_text(_box_x + _box_w / 2, _box_y + 42, get_save_summary());
+        }
+
+        // Rodape de instrucoes
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_set_color(make_colour_rgb(160, 170, 185));
+        draw_text(room_width / 2, room_height - 45, "W / S ou Setas: Navegar   |   Z / Enter / Espaco: Confirmar");
+        break;
+
     case "select":
         var _n = array_length(classes);
         var _total_w = _n * box_w + (_n - 1) * box_gap;
@@ -17,13 +116,7 @@ switch (state) {
 
         draw_set_color(c_white);
         draw_text(room_width / 2, 80, "Escolha seu Heroi");
-        draw_text(room_width / 2, room_height - 60, "Setas para mover  -  Z confirma  -  S abre a loja");
-
-        if (global.has_save) {
-            draw_set_color(c_yellow);
-            draw_text(room_width / 2, 110, "C - Continuar (" + global.save_character + " - " + global.save_room + ")");
-            draw_set_color(c_white);
-        }
+        draw_text(room_width / 2, room_height - 60, "Setas: Mover  -  Z: Confirmar  -  S: Loja  -  X / Esc: Voltar ao Menu");
 
         for (var _i = 0; _i < _n; _i++) {
             var _bx = _start_x + _i * (box_w + box_gap);

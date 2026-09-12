@@ -65,8 +65,10 @@ if (global.paused) {
         global.paused = false;
     } else if (keyboard_check_pressed(ord("M"))) {
         global.paused = false;
+        save_checkpoint(room_get_name(room));
         room_goto(room_char_select);
     } else if (keyboard_check_pressed(ord("Q"))) {
+        save_checkpoint(room_get_name(room));
         game_end();
     }
     exit;

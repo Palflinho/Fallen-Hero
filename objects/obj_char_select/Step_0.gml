@@ -1,4 +1,34 @@
 switch (state) {
+    case "main_menu":
+        var _opt_count = array_length(main_menu_options);
+        if (keyboard_check_pressed(vk_up) || keyboard_check_pressed(ord("W"))) {
+            main_menu_cursor = (main_menu_cursor - 1 + _opt_count) mod _opt_count;
+        }
+        if (keyboard_check_pressed(vk_down) || keyboard_check_pressed(ord("S"))) {
+            main_menu_cursor = (main_menu_cursor + 1) mod _opt_count;
+        }
+
+        if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space)) {
+            switch (main_menu_cursor) {
+                case 0: // Novo Jogo
+                    state = "select";
+                    break;
+                case 1: // Continuar
+                    if (global.has_save) {
+                        goto_checkpoint();
+                    }
+                    break;
+                case 2: // Sair
+                    game_end();
+                    break;
+            }
+        }
+
+        if (global.has_save && keyboard_check_pressed(ord("C"))) {
+            goto_checkpoint();
+        }
+        break;
+
     case "select":
         var _n = array_length(classes);
 
@@ -18,14 +48,14 @@ switch (state) {
             state = "select_talents";
         }
 
-        if (global.has_save && keyboard_check_pressed(ord("C"))) {
-            goto_checkpoint();
-        }
-
         if (keyboard_check_pressed(ord("S"))) {
             shop_tab_index = selected_index;
             shop_talent_index = 0;
             state = "shop";
+        }
+
+        if (keyboard_check_pressed(ord("X")) || keyboard_check_pressed(vk_escape)) {
+            state = "main_menu";
         }
         break;
 

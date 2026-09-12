@@ -262,8 +262,8 @@ if (game_over) {
     var _cy2 = display_get_gui_height() / 2;
     draw_text(_cx2, _cy2 - 50, "PAUSADO");
     draw_text(_cx2, _cy2 - 10, "ESC - Continuar");
-    draw_text(_cx2, _cy2 + 20, "M - Menu Principal");
-    draw_text(_cx2, _cy2 + 50, "Q - Sair do Jogo");
+    draw_text(_cx2, _cy2 + 20, "M - Menu Principal (Salva)");
+    draw_text(_cx2, _cy2 + 50, "Q - Sair do Jogo (Salva)");
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 }
