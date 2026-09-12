@@ -30,6 +30,8 @@ function save_checkpoint_fresh(_character, _room_name, _element) {
     ini_write_real("save", "rank1", 0);
     ini_write_real("save", "rank2", 0);
     ini_write_real("save", "pending", 0);
+    global.run_gold_earned = 0;
+    ini_write_real("save", "run_gold", 0);
     ini_close();
 }
 
@@ -65,6 +67,7 @@ function save_checkpoint(_room_name) {
     ini_write_real("save", "rank1", global.save_talent_ranks[1]);
     ini_write_real("save", "rank2", global.save_talent_ranks[2]);
     ini_write_real("save", "pending", global.save_talent_pending);
+    ini_write_real("save", "run_gold", variable_global_exists("run_gold_earned") ? global.run_gold_earned : 0);
     ini_close();
 }
 
@@ -96,6 +99,7 @@ function load_save_from_disk() {
         ini_read_real("save", "rank2", 0),
     ];
     global.save_talent_pending = ini_read_real("save", "pending", 0);
+    global.run_gold_earned = ini_read_real("save", "run_gold", 0);
     ini_close();
 
     global.has_save = true;

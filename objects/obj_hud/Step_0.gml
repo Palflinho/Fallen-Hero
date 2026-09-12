@@ -20,13 +20,30 @@ if (!game_over && _player != noone && _player.state == "dead") {
     global.paused = false;
     global.attr_window_open = false;
     global.chest_reward_open = false;
+
+    // Mantem 60% do ouro ganho na partida
+    if (!variable_global_exists("run_gold_earned")) global.run_gold_earned = 0;
+    death_gold_earned = global.run_gold_earned;
+    death_gold_kept = round(death_gold_earned * 0.60);
+    death_gold_lost = death_gold_earned - death_gold_kept;
+
+    ensure_meta_loaded();
+    global.gold = max(0, global.gold - death_gold_lost);
+    save_meta();
+
+    global.run_gold_earned = 0;
+    clear_save();
 }
 
 if (game_over) {
-    if (keyboard_check_pressed(ord("R"))) {
-        goto_checkpoint();
-    } else if (keyboard_check_pressed(ord("M"))) {
+    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C"))) {
+        global.char_select_direct = true;
         room_goto(room_char_select);
+    } else if (keyboard_check_pressed(ord("M"))) {
+        global.char_select_direct = false;
+        room_goto(room_char_select);
+    } else if (keyboard_check_pressed(ord("R"))) {
+        goto_checkpoint();
     }
     exit;
 }
@@ -59,7 +76,13 @@ if (global.paused || global.attr_window_open) {
         if (keyboard_check_pressed(ord("3"))) player_apply_talent_point(_player, 2);
     }
 
-    if (keyboard_check_pressed(ord("M"))) {
+    if (keyboard_check_pressed(ord("C"))) {
+        global.paused = false;
+        global.attr_window_open = false;
+        global.char_select_direct = true;
+        save_checkpoint(room_get_name(room));
+        room_goto(room_char_select);
+    } else if (keyboard_check_pressed(ord("M"))) {
         global.paused = false;
         global.attr_window_open = false;
         save_checkpoint(room_get_name(room));
@@ -74,4 +97,7 @@ if (global.paused || global.attr_window_open) {
 if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T"))) {
     global.paused = true;
     global.attr_window_open = true;
+} else if (keyboard_check_pressed(vk_f1)) {
+    global.char_select_direct = true;
+    room_goto(room_char_select);
 }

@@ -15,3 +15,6 @@ global.attr_window_open = false;
 global.chest_reward_open = false;
 
 global.boss_buttons_pressed = 0;
+death_gold_earned = 0;
+death_gold_kept = 0;
+death_gold_lost = 0;

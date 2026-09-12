@@ -130,18 +130,91 @@ if (boss_room) {
 }
 
 if (game_over) {
-    draw_set_alpha(0.75);
-    draw_set_color(c_black);
-    draw_rectangle(0, 0, display_get_gui_width(), display_get_gui_height(), false);
+    var _gw = display_get_gui_width();
+    var _gh = display_get_gui_height();
+
+    // Fundo escurecido com tom avermelhado
+    draw_set_alpha(0.88);
+    draw_set_color(make_colour_rgb(18, 10, 14));
+    draw_rectangle(0, 0, _gw, _gh, false);
     draw_set_alpha(1);
 
+    var _box_w = min(680, _gw - 40);
+    var _box_h = 360;
+    var _bx = (_gw - _box_w) / 2;
+    var _by = (_gh - _box_h) / 2;
+
+    // Janela de Game Over
+    draw_set_alpha(0.95);
+    draw_set_color(make_colour_rgb(22, 16, 20));
+    draw_rectangle(_bx, _by, _bx + _box_w, _by + _box_h, false);
+    draw_set_alpha(1);
+
+    draw_set_color(make_colour_rgb(140, 45, 55));
+    draw_rectangle(_bx, _by, _bx + _box_w, _by + _box_h, true);
+    draw_rectangle(_bx - 1, _by - 1, _bx + _box_w + 1, _by + _box_h + 1, true);
+
+    // Titulo
     draw_set_halign(fa_center);
-    draw_set_valign(fa_middle);
-    draw_set_color(c_red);
-    draw_text(display_get_gui_width() / 2, display_get_gui_height() / 2 - 30, "VOCE MORREU");
+    draw_set_valign(fa_top);
+    draw_set_color(make_colour_rgb(255, 75, 75));
+    draw_text(_bx + _box_w / 2, _by + 24, "VOCE FOI DERROTADO");
+
+    draw_set_color(c_ltgray);
+    draw_text(_bx + _box_w / 2, _by + 52, "Sua jornada nesta masmorra chegou ao fim.");
+
+    // Divisor
+    draw_set_color(make_colour_rgb(70, 30, 40));
+    draw_line(_bx + 30, _by + 80, _bx + _box_w - 30, _by + 80);
+
+    // Extrato de Ouro da Partida (60% retido)
+    var _ry = _by + 98;
+    draw_set_halign(fa_left);
+
     draw_set_color(c_white);
-    draw_text(display_get_gui_width() / 2, display_get_gui_height() / 2 + 10, "R - Tentar novamente (ultimo checkpoint)");
-    draw_text(display_get_gui_width() / 2, display_get_gui_height() / 2 + 40, "M - Menu Principal");
+    draw_text(_bx + 50, _ry, "Ouro obtido nesta partida:");
+    draw_set_halign(fa_right);
+    draw_set_color(c_yellow);
+    draw_text(_bx + _box_w - 50, _ry, "+" + string(death_gold_earned) + " Ouro");
+    _ry += 30;
+
+    draw_set_halign(fa_left);
+    draw_set_color(make_colour_rgb(240, 95, 95));
+    draw_text(_bx + 50, _ry, "Penalidade por Morte (40%):");
+    draw_set_halign(fa_right);
+    draw_text(_bx + _box_w - 50, _ry, "-" + string(death_gold_lost) + " Ouro");
+    _ry += 30;
+
+    draw_set_halign(fa_left);
+    draw_set_color(make_colour_rgb(80, 220, 120));
+    draw_text(_bx + 50, _ry, "Ouro resgatado ao cofre (60%):");
+    draw_set_halign(fa_right);
+    draw_text(_bx + _box_w - 50, _ry, "+" + string(death_gold_kept) + " Ouro");
+    _ry += 34;
+
+    // Divisor
+    draw_set_color(make_colour_rgb(70, 30, 40));
+    draw_line(_bx + 30, _ry, _bx + _box_w - 30, _ry);
+    _ry += 16;
+
+    draw_set_halign(fa_left);
+    draw_set_color(c_white);
+    draw_text(_bx + 50, _ry, "Saldo Atual no Cofre:");
+    draw_set_halign(fa_right);
+    draw_set_color(c_yellow);
+    draw_text(_bx + _box_w - 50, _ry, string(global.gold) + " Ouro");
+    _ry += 40;
+
+    // Botoes de Acao
+    draw_set_halign(fa_center);
+    var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.006));
+    draw_set_color(merge_colour(c_yellow, c_white, _pulse));
+    draw_text(_bx + _box_w / 2, _ry, "[ESPACO / ENTER / Z] Voltar para Selecao de Personagem");
+    _ry += 26;
+
+    draw_set_color(c_ltgray);
+    draw_text(_bx + _box_w / 2, _ry, "[R] Tentar Novamente (Teste)   -   [M] Menu Principal");
+
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 } else if (level_complete) {
@@ -527,7 +600,7 @@ if (game_over) {
     var _f_center_y = _footer_y + 20;
 
     draw_set_color(c_white);
-    draw_text(_win_x + _win_w / 2, _f_center_y, "[ESC / T] Retomar Jogo    -    [M] Salvar e Menu Principal    -    [Q] Salvar e Sair");
+    draw_text(_win_x + _win_w / 2, _f_center_y, "[ESC / T] Retomar   -   [C] Selecao de Heroi (Teste)   -   [M] Menu Principal   -   [Q] Sair");
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 }

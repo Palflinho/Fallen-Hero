@@ -459,7 +459,10 @@ function player_gain_gold(_amount) {
     ensure_meta_loaded();
     var _p = instance_find(obj_player, 0);
     var _mult = (_p != noone) ? (1 + _p.synth_gold_bonus) : 1;
-    global.gold += round(_amount * _mult);
+    var _gained = round(_amount * _mult);
+    if (!variable_global_exists("run_gold_earned")) global.run_gold_earned = 0;
+    global.run_gold_earned += _gained;
+    global.gold += _gained;
     save_meta();
 }
 

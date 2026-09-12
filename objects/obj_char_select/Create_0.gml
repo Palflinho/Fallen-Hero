@@ -14,7 +14,12 @@ box_w = 180;
 box_h = 220;
 box_gap = 40;
 
-state = "main_menu"; // main_menu | select | shop | select_talents
+if (variable_global_exists("char_select_direct") && global.char_select_direct) {
+    state = "select";
+    global.char_select_direct = false;
+} else {
+    state = "main_menu"; // main_menu | select | shop | select_talents
+}
 
 main_menu_options = ["Novo Jogo", "Continuar", "Sair"];
 main_menu_cursor = global.has_save ? 1 : 0;
