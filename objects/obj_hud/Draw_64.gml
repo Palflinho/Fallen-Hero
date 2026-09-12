@@ -278,8 +278,9 @@ if (!game_over && !level_complete && !(variable_global_exists("run_victory") && 
         draw_set_color(c_lime);
         draw_circle(_px, _py, 3, false);
         draw_set_color(c_white);
-        draw_circle(_px, _py, 1, false);
-        var _p_dir = target.move_dir;
+        var _fx = variable_instance_exists(target, "facing_x") ? target.facing_x : 0;
+        var _fy = variable_instance_exists(target, "facing_y") ? target.facing_y : 1;
+        var _p_dir = (variable_instance_exists(target, "move_dir")) ? target.move_dir : point_direction(0, 0, _fx, _fy);
         draw_set_color(c_yellow);
         draw_line(_px, _py, _px + lengthdir_x(5, _p_dir), _py + lengthdir_y(5, _p_dir));
     }

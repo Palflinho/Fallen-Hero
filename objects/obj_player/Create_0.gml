@@ -396,6 +396,7 @@ hp = hp_max;
 
 facing_x = 0;
 facing_y = 1;
+move_dir = 270;
 input_h = 0;
 input_v = 0;
 

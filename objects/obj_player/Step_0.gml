@@ -81,6 +81,7 @@ switch (state) {
             _desired_vy = (input_v / _len) * _cur_speed;
             facing_x = input_h / _len;
             facing_y = input_v / _len;
+            move_dir = point_direction(0, 0, facing_x, facing_y);
         }
 
         on_ice = fh_place_on_ice(x, y);
@@ -376,6 +377,7 @@ switch (state) {
                 var _len = point_distance(0, 0, input_h, input_v);
                 facing_x = input_h / _len;
                 facing_y = input_v / _len;
+                move_dir = point_direction(0, 0, facing_x, facing_y);
                 fh_move_and_collide((input_h / _len) * move_speed * 1.15 * _dt, (input_v / _len) * move_speed * 1.15 * _dt);
             }
             if (attack_buffer_timer > 0 && attack_cooldown_timer <= 0) {
