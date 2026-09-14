@@ -1,7 +1,7 @@
 event_inherited();
 
 body_colour = c_blue;
-hp_max = 26;
+hp_max = 52;
 hp = hp_max;
 move_speed = 40;
 contact_damage = 5;
@@ -20,7 +20,7 @@ vision_angle = 100;
 spider_sense_range = 75;
 patrol_radius = 120;
 exp_reward = 25;
-gold_reward = 8;
+gold_reward = 2;
 knockback_resistance = 0.15;
 is_rare_mob = true;
 rare_chest_drop_chance = 0.20;

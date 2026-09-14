@@ -36,12 +36,16 @@ switch (arena_state) {
                 spawn_timer = 0.35;
                 var _item = spawn_queue[0];
                 array_delete(spawn_queue, 0, 1);
-                var _e = instance_create_layer(_item.x, _item.y, layer, _item.obj);
+                var _sp = fh_find_free_spawn_pos(_item.x, _item.y, 28);
+                var _e = instance_create_layer(_sp.x, _sp.y, layer, _item.obj);
                 if (_e != noone) {
                     _e.has_spotted_player = true;
                     _e.state = "chase";
+                    if (variable_struct_exists(_item, "greater") && _item.greater) {
+                        _e.is_greater_variant = true;
+                    }
                 }
-                fx_spawn_sparks(_item.x, _item.y, theme_colour, 12);
+                fx_spawn_sparks(_sp.x, _sp.y, theme_colour, 12);
             }
         } else {
             // Verifica se a onda foi totalmente derrotada

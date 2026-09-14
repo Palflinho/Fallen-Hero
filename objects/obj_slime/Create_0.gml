@@ -1,7 +1,7 @@
 event_inherited();
 
 body_colour = c_lime;
-hp_max = 24;
+hp_max = 48;
 hp = hp_max;
 move_speed = 50;
 contact_damage = 8;
@@ -16,5 +16,5 @@ vision_angle = 90;
 spider_sense_range = 55;
 patrol_radius = 100;
 exp_reward = 15;
-gold_reward = 5;
+gold_reward = 1;
 knockback_resistance = 0.0;

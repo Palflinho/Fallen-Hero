@@ -1,7 +1,7 @@
 event_inherited();
 
 body_colour = c_aqua;
-hp_max = 22;
+hp_max = 44;
 hp = hp_max;
 move_speed = 55;
 contact_damage = 6;
@@ -19,5 +19,5 @@ vision_angle = 110;
 spider_sense_range = 80;
 patrol_radius = 130;
 exp_reward = 20;
-gold_reward = 7;
+gold_reward = 1;
 knockback_resistance = 0.25;

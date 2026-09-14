@@ -1,13 +1,20 @@
-if (!variable_global_exists("paused")) global.paused = false;
-if (!variable_global_exists("attr_window_open")) global.attr_window_open = false;
-if (!variable_global_exists("chest_reward_open")) global.chest_reward_open = false;
-if (!variable_global_exists("hitstop_timer")) global.hitstop_timer = 0;
+global.paused = false;
+global.attr_window_open = false;
+global.chest_reward_open = false;
+global.midrun_shop_open = false;
+global.run_victory = false;
+global.hitstop_timer = 0;
+global.run_playtime = 0;
 if (!variable_global_exists("dev_mode")) global.dev_mode = false;
+if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+
 load_save_from_disk();
 load_meta_from_disk();
 
 locked_warning_timer = 0;
 reset_notice_timer = 0;
+save_notice_timer = 0;
+save_notice_text = "";
 
 classes = ["knight", "mage", "archer", "assassin"];
 labels = ["Cavaleiro", "Mago", "Arqueiro", "Assassino"];
@@ -22,14 +29,22 @@ if (variable_global_exists("char_select_direct") && global.char_select_direct) {
     state = "select";
     global.char_select_direct = false;
 } else {
-    state = "main_menu"; // main_menu | select | shop | select_talents
+    state = "main_menu"; // main_menu | save_slots | select | shop | select_talents
 }
 
 main_menu_options = ["Novo Jogo", "Continuar", "Sair"];
-main_menu_cursor = global.has_save ? 1 : 0;
+main_menu_cursor = any_save_slot_exists() ? 1 : 0;
 main_menu_btn_w = 340;
 main_menu_btn_h = 54;
 main_menu_btn_gap = 18;
+
+// Parâmetros da tela dedicada de Save Slots (Segunda Tela)
+save_slot_action = "new_game"; // "new_game" | "continue"
+save_slot_cursor = 0; // 0, 1, 2 correspondentes a Slot 1, 2, 3
+save_slot_delete_confirm = -1;
+save_card_w = 260;
+save_card_h = 340;
+save_card_gap = 36;
 
 shop_tab_index = 0;
 shop_talent_index = 0;

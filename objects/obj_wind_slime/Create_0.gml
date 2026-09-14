@@ -1,0 +1,20 @@
+event_inherited();
+
+body_colour = make_colour_rgb(190, 245, 255);
+hp_max = 46;
+hp = hp_max;
+move_speed = 72;
+contact_damage = 9;
+attack_range = 36;
+attack_cooldown = 0.8;
+attack_cooldown_timer = 0;
+attack_windup = 0.18;
+attack_windup_timer = 0;
+state = "patrol";
+vision_range = 180;
+vision_angle = 100;
+spider_sense_range = 70;
+patrol_radius = 120;
+exp_reward = 25;
+gold_reward = 1;
+knockback_resistance = 0.05;

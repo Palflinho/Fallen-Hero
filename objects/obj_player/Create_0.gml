@@ -96,7 +96,7 @@ switch (character_class) {
         break;
 
     case "mage":
-        nat_power_base = 18;
+        nat_power_base = 14;
         nat_defesa_base = 3;
         nat_atk_spd_base = 1 / 0.9;
         nat_move_spd_base = 160;
@@ -158,9 +158,9 @@ switch (character_class) {
         break;
 
     case "archer":
-        nat_power_base = 10;
+        nat_power_base = 8;
         nat_defesa_base = 4;
-        nat_atk_spd_base = 1 / 0.35;
+        nat_atk_spd_base = 1 / 0.38;
         nat_move_spd_base = 200;
         nat_hp_base = 80;
         attack_duration = 0.12;
@@ -193,7 +193,7 @@ switch (character_class) {
             case "wind":
                 archetype_name = "Mestre do Vendaval";
                 body_colour = make_colour_rgb(160, 255, 120);
-                nat_atk_spd_base = 1 / 0.28;
+                nat_atk_spd_base = 1 / 0.32;
                 defend_mode = "cyclone_roll";
                 defend_duration = 0.25;
                 defend_roll_speed = 360;
@@ -203,7 +203,8 @@ switch (character_class) {
             case "earth":
                 archetype_name = "Balista da Terra";
                 body_colour = make_colour_rgb(140, 170, 70);
-                nat_power_base = 14;
+                nat_power_base = 11;
+                nat_atk_spd_base = 1 / 0.45;
                 nat_move_spd_base = 180;
                 defend_mode = "earth_anchor";
                 defend_duration = 3.0;
@@ -284,17 +285,18 @@ switch (character_class) {
         break;
 }
 
-// Flat per-level growth -- identical across classes; differentiation lives in the bases above.
-nat_power_growth = 2;
+// Flat per-level growth -- differentiation lives in the bases and archetype scalings.
+nat_power_growth = (character_class == "mage") ? 1.5 : 2;
 nat_defesa_growth = 1.5;
 nat_atk_spd_growth = 0.05;
 nat_move_spd_growth = 3;
 nat_hp_growth = 12;
+attack_duration_current = attack_duration;
 
 // ---- Level / EXP ----
 level = 1;
 xp = 0;
-xp_to_next = 40;
+xp_to_next = 30;
 
 // ---- Talents chosen for this run (picked at the char-select talent screen, or restored
 // from a checkpoint). Up to 3 slots; ranks grow in-run from level-up points.
@@ -302,7 +304,13 @@ talent_slot_ids = ["", "", ""];
 talent_slot_ranks = [0, 0, 0];
 talent_pending_points = 0;
 
-if (variable_global_exists("use_saved_stats") && global.use_saved_stats) {
+if (variable_global_exists("inrun_saved_stats") && global.inrun_saved_stats) {
+    level = global.inrun_level;
+    xp = global.inrun_xp;
+    talent_slot_ids = global.inrun_talent_slot_ids;
+    talent_slot_ranks = global.inrun_talent_slot_ranks;
+    talent_pending_points = global.inrun_talent_pending;
+} else if (variable_global_exists("use_saved_stats") && global.use_saved_stats) {
     level = global.save_level;
     xp = global.save_xp;
     talent_slot_ids = global.save_talent_ids;
@@ -393,6 +401,9 @@ hp = 0;
 player_recompute_synthetics(id);
 player_recompute_attributes(id);
 hp = hp_max;
+if (variable_global_exists("inrun_saved_stats") && global.inrun_saved_stats && variable_global_exists("inrun_hp")) {
+    hp = clamp(global.inrun_hp, 1, hp_max);
+}
 
 facing_x = 0;
 facing_y = 1;
@@ -433,3 +444,7 @@ poison_damage = 0;
 poison_tick_interval = 0;
 poison_tick_timer = 0;
 poison_duration = 0;
+
+slow_active = false;
+slow_multiplier = 1;
+slow_duration = 0;

@@ -1,42 +1,45 @@
 event_inherited();
 
-// Unlike the Ice Golem (melee, slime-style per the GDD), the Fire Golem fights at medium
-// range like the elemental -- it's the elemental's kiting pattern with golem-tier stats.
+// Mini-Chefe Guardião de Magma (Quadrado Grande Exclusivo da Sala Pré-Boss)
 body_colour = c_maroon;
-body_radius = 24;
-hp_max = 110;
+body_radius = 32;
+hp_max = 240;
 hp = hp_max;
-move_speed = 34;
+move_speed = 36;
 contact_damage = 20;
-preferred_range = 200;
-attack_range = 260;
-attack_cooldown = 1.6;
-attack_cooldown_timer = 0;
-attack_windup = 0.4;
-attack_windup_timer = 0;
-projectile_damage = 12;
-projectile_speed = 200;
-state = "patrol";
-vision_range = 220;
-vision_angle = 90;
-spider_sense_range = 65;
-patrol_radius = 90;
 
-shield_interval = 4.5;
-shield_timer = shield_interval;
-shield_duration = 1.3;
-shield_active_timer = 0;
+damage_reduction = 0.35;
+knockback_resistance = 0.90;
 
-// Magia -- once the fight has gone on long enough, a self-centered fire burst.
-magia_interval = 15;
-magia_timer = magia_interval;
-magia_telegraph = 0.7;
-magia_windup_timer = 0;
-magia_radius = 110;
-magia_damage = 18;
+vision_range = 9999;
+vision_angle = 360;
+patrol_radius = 0;
+state = "chase";
 
-exp_reward = 45;
-gold_reward = 14;
-knockback_resistance = 0.75;
-is_rare_mob = true;
-rare_chest_drop_chance = 0.25;
+attack_cooldown_timer = 1.0;
+attack_cooldown = 2.2;
+combo_count = 0;
+
+// Golpe 1: Erupção Magmática (2 erupções sob o jogador)
+erupcao_timer = 0;
+erupcao_telegraph = 0.8;
+erupcao_targets_x = [0, 0];
+erupcao_targets_y = [0, 0];
+erupcao_radius = 50;
+erupcao_damage = 18;
+
+// Golpe 2: Carga Ígnea (Investida do General Magma)
+charge_windup = 0.45;
+charge_windup_timer = 0;
+charge_timer = 0;
+charge_vx = 0;
+charge_vy = 0;
+charge_damage = 24;
+
+// Janela de Vulnerabilidade: Superaquecimento
+vulnerable = false;
+vulnerable_timer = 0;
+vulnerable_duration = 3.0;
+
+exp_reward = 150;
+gold_reward = 10;

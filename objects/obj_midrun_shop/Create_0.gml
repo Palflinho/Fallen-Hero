@@ -37,7 +37,7 @@ items = [
         name: "Frasco de Vida Menor",
         category: "Vitalidade",
         desc: "Restaura 35% da sua Vida Maxima imediatamente.",
-        cost: 35,
+        cost: 55,
         type: "heal",
         amount: 0.35,
         purchased: false,
@@ -48,7 +48,7 @@ items = [
         name: "Elixir da Vitalidade Plena",
         category: "Vitalidade",
         desc: "Restaura 80% da sua Vida Maxima imediatamente.",
-        cost: 70,
+        cost: 115,
         type: "heal",
         amount: 0.80,
         purchased: false,
@@ -59,7 +59,7 @@ items = [
         name: _t1_label,
         category: "Talentos da Run",
         desc: _t1_desc,
-        cost: 60,
+        cost: 95,
         type: "talent",
         talent_id: _t1_id,
         purchased: false,
@@ -70,54 +70,83 @@ items = [
         name: _t2_label,
         category: "Talentos da Run",
         desc: _t2_desc,
-        cost: 60,
+        cost: 95,
         type: "talent",
         talent_id: _t2_id,
         purchased: false,
         icon_col: make_colour_rgb(180, 140, 255)
-    },
-    // 4: Forca
+    }
+];
+
+// Chance de compra de pontos de talento na loja (entra no lugar de um talento)
+// Quantidade varia de 2 a 5 pontos, custo minimo 100 e maximo 250
+if (random(1) < 0.50) {
+    var _pts = irandom_range(2, 5);
+    var _pts_cost = round(lerp(100, 250, (_pts - 2) / 3));
+    items[3] = {
+        name: "Tomo de Talentos (+" + string(_pts) + " Pts)",
+        category: "Pontos de Talento",
+        desc: "Concede imediatamente +" + string(_pts) + " Ponto(s) de Talento para evoluir seus slots de talento.",
+        cost: _pts_cost,
+        type: "talent_points",
+        amount: _pts,
+        purchased: false,
+        icon_col: c_yellow
+    };
+}
+
+var _all_blessings = [
     {
         name: "Bencao da Forca",
         category: "Atributos",
         desc: "Concede +3 de Poder de Ataque permanente nesta run.",
-        cost: 45,
+        cost: 75,
         type: "stat_power",
         amount: 3,
         purchased: false,
         icon_col: c_orange
     },
-    // 5: Couraça
     {
         name: "Bencao da Couraca",
         category: "Atributos",
         desc: "Concede +3 de Defesa (mitigacao direta) permanente nesta run.",
-        cost: 45,
+        cost: 75,
         type: "stat_def",
         amount: 3,
         purchased: false,
         icon_col: make_colour_rgb(100, 180, 255)
     },
-    // 6: Vitalidade Max
     {
         name: "Bencao da Vitalidade",
         category: "Atributos",
         desc: "Concede +25 de Vida Maxima permanente nesta run.",
-        cost: 40,
+        cost: 65,
         type: "stat_hp",
         amount: 25,
         purchased: false,
         icon_col: c_red
     },
-    // 7: Agilidade
     {
         name: "Bencao da Agilidade",
         category: "Atributos",
         desc: "Concede +15 de Velocidade de Movimento permanente nesta run.",
-        cost: 40,
+        cost: 65,
         type: "stat_speed",
         amount: 15,
         purchased: false,
         icon_col: c_yellow
     }
 ];
+
+// Embaralha e seleciona 1 ou 2 atributos por loja (com limite estrito de 1 compra)
+var _indices = [0, 1, 2, 3];
+for (var _i = 3; _i > 0; _i--) {
+    var _j = irandom(_i);
+    var _temp = _indices[_i];
+    _indices[_i] = _indices[_j];
+    _indices[_j] = _temp;
+}
+var _num_blessings = choose(1, 2);
+for (var _b = 0; _b < _num_blessings; _b++) {
+    array_push(items, _all_blessings[_indices[_b]]);
+}

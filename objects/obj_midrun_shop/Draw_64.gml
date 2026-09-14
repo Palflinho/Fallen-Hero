@@ -31,7 +31,17 @@ draw_text_transformed(_bx + _box_w / 2, _by + 16, "MERCADOR ARCANO - BAZAR DA EX
 
 draw_set_halign(fa_right);
 draw_set_color(c_yellow);
-draw_text(_bx + _box_w - 30, _by + 20, "Ouro: " + string(global.gold) + " Ouro");
+draw_text(_bx + _box_w - 55, _by + 20, "Ouro: " + string(global.gold));
+
+// Botão de fechar [X]
+draw_set_color(make_colour_rgb(36, 48, 72));
+draw_rectangle(_bx + _box_w - 44, _by + 14, _bx + _box_w - 14, _by + 38, false);
+draw_set_color(c_yellow);
+draw_rectangle(_bx + _box_w - 44, _by + 14, _bx + _box_w - 14, _by + 38, true);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+draw_set_color(c_white);
+draw_text(_bx + _box_w - 29, _by + 26, "X");
 
 draw_set_halign(fa_left);
 draw_set_color(make_colour_rgb(60, 85, 125));
@@ -121,11 +131,34 @@ if (message_timer > 0) {
 }
 
 // Rodapé de Controles
+var _btn_m_y = _by + _box_h - 38;
+
+var _is_mob = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
+
+// Botão Voltar / Fechar
+draw_set_color(make_colour_rgb(26, 36, 56));
+draw_rectangle(_bx + 30, _btn_m_y, _bx + 160, _btn_m_y + 30, false);
+draw_set_color(make_colour_rgb(70, 95, 135));
+draw_rectangle(_bx + 30, _btn_m_y, _bx + 160, _btn_m_y + 30, true);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
+draw_set_color(c_ltgray);
+draw_text(_bx + 95, _btn_m_y + 15, _is_mob ? "Fechar" : "[ESC] Fechar");
+
+// Botão Comprar Item
+draw_set_color(make_colour_rgb(32, 54, 86));
+draw_rectangle(_bx + _box_w - 190, _btn_m_y, _bx + _box_w - 30, _btn_m_y + 30, false);
+draw_set_color(c_yellow);
+draw_rectangle(_bx + _box_w - 190, _btn_m_y, _bx + _box_w - 30, _btn_m_y + 30, true);
+draw_set_color(c_white);
+draw_text(_bx + _box_w - 110, _btn_m_y + 15, _is_mob ? "Comprar Item" : "[Z] Comprar Item");
+
+draw_set_halign(fa_center);
 draw_set_color(make_colour_rgb(180, 200, 225));
-draw_text(_bx + _box_w / 2, _by + _box_h - 25, "[W / S / A / D] Navegar    [ESPACO / Z / ENTER] Comprar    [ESC / C] Sair da Loja");
+var _hint = _is_mob ? "Toque nos itens para selecionar e comprar" : "Clique ou use Setas/Enter para comprar";
+draw_text(_bx + _box_w / 2, _btn_m_y + 15, _hint);
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 draw_set_color(c_white);
+

@@ -1,153 +1,40 @@
-// Checkpoint granularity is room-level: leaving char select checkpoints "Room1" (level 1,
-// no EXP yet), and passing the boss gate checkpoints "Room2" together with the player's
-// current level/EXP/talent ranks -- natural attributes are derived from level, so that's
-// all that needs to persist for those; synthetic attributes are re-derived from the
-// talent slots + their ranks each time via player_recompute_synthetics.
+// =========================================================================
+// SISTEMA DE SALVAMENTO MULTI-SLOT (3 SLOTS) & REGRAS ROGUELITE
+// =========================================================================
+// Pilares aplicados:
+// 1. Miyamoto: Semiótica clara, 3 slots visuais distintos com feedback tátil.
+// 2. Sakurai: O salvamento existe exclusivamente na Seleção de Personagens.
+//             Runs são expedições autocontidas (sem mid-run checkpoints).
+// 3. Iwata: Zero vazamento de texto, auto-escala protetora, e reset profundo
+//           garantindo que "Novo Jogo" comece sempre do zero absoluto.
 
-function save_checkpoint_fresh(_character, _room_name, _element) {
-    if (is_undefined(_element)) {
-        _element = variable_global_exists("selected_element") ? global.selected_element : "none";
+if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+
+function format_playtime(_sec) {
+    var _total_sec = floor(max(0, _sec));
+    var _hrs = floor(_total_sec / 3600);
+    var _mins = floor((_total_sec mod 3600) / 60);
+    var _rem_sec = _total_sec mod 60;
+
+    var _str_mins = (_mins < 10) ? ("0" + string(_mins)) : string(_mins);
+    var _str_secs = (_rem_sec < 10) ? ("0" + string(_rem_sec)) : string(_rem_sec);
+
+    if (_hrs > 0) {
+        var _str_hrs = (_hrs < 10) ? ("0" + string(_hrs)) : string(_hrs);
+        return _str_hrs + ":" + _str_mins + ":" + _str_secs;
     }
-    global.save_character = _character;
-    global.save_room = _room_name;
-    global.save_element = _element;
-    global.save_has_stats = false;
-    global.has_save = true;
-
-    global.save_talent_ids = variable_global_exists("chosen_talent_ids") ? global.chosen_talent_ids : ["", "", ""];
-    global.save_talent_ranks = [0, 0, 0];
-    global.save_talent_pending = 0;
-
-    ini_open("save.ini");
-    ini_write_string("save", "character", _character);
-    ini_write_string("save", "room", _room_name);
-    ini_write_string("save", "element", _element);
-    ini_write_real("save", "has_stats", 0);
-    ini_write_string("save", "talent0", global.save_talent_ids[0]);
-    ini_write_string("save", "talent1", global.save_talent_ids[1]);
-    ini_write_string("save", "talent2", global.save_talent_ids[2]);
-    ini_write_real("save", "rank0", 0);
-    ini_write_real("save", "rank1", 0);
-    ini_write_real("save", "rank2", 0);
-    ini_write_real("save", "pending", 0);
-    global.run_gold_earned = 0;
-    ini_write_real("save", "run_gold", 0);
-    ini_close();
+    return _str_mins + ":" + _str_secs;
 }
 
-function save_checkpoint(_room_name) {
-    var _p = instance_find(obj_player, 0);
-    if (_p == noone) return;
-
-    global.save_character = _p.character_class;
-    global.save_room = _room_name;
-    global.save_element = variable_instance_exists(_p, "element_affinity") ? _p.element_affinity : "none";
-    global.save_has_stats = true;
-    global.has_save = true;
-
-    global.save_level = _p.level;
-    global.save_xp = _p.xp;
-    global.save_talent_ids = _p.talent_slot_ids;
-    global.save_talent_ranks = _p.talent_slot_ranks;
-    global.save_talent_pending = _p.talent_pending_points;
-
-    global.use_saved_stats = true;
-
-    ini_open("save.ini");
-    ini_write_string("save", "character", global.save_character);
-    ini_write_string("save", "room", global.save_room);
-    ini_write_string("save", "element", global.save_element);
-    ini_write_real("save", "has_stats", 1);
-    ini_write_real("save", "level", global.save_level);
-    ini_write_real("save", "xp", global.save_xp);
-    ini_write_string("save", "talent0", global.save_talent_ids[0]);
-    ini_write_string("save", "talent1", global.save_talent_ids[1]);
-    ini_write_string("save", "talent2", global.save_talent_ids[2]);
-    ini_write_real("save", "rank0", global.save_talent_ranks[0]);
-    ini_write_real("save", "rank1", global.save_talent_ranks[1]);
-    ini_write_real("save", "rank2", global.save_talent_ranks[2]);
-    ini_write_real("save", "pending", global.save_talent_pending);
-    ini_write_real("save", "run_gold", variable_global_exists("run_gold_earned") ? global.run_gold_earned : 0);
-    ini_write_real("save", "shop_pwr", variable_global_exists("shop_boost_power") ? global.shop_boost_power : 0);
-    ini_write_real("save", "shop_def", variable_global_exists("shop_boost_defesa") ? global.shop_boost_defesa : 0);
-    ini_write_real("save", "shop_hp", variable_global_exists("shop_boost_hp") ? global.shop_boost_hp : 0);
-    ini_write_real("save", "shop_spd", variable_global_exists("shop_boost_speed") ? global.shop_boost_speed : 0);
-    ini_close();
+function save_slot_section(_slot) {
+    var _s = clamp(_slot, 1, 3);
+    return "slot" + string(_s);
 }
 
-function load_save_from_disk() {
-    global.has_save = false;
-    if (!file_exists("save.ini")) return false;
-
-    ini_open("save.ini");
-    var _character = ini_read_string("save", "character", "");
-    if (_character == "") {
-        ini_close();
-        return false;
-    }
-
-    global.save_character = _character;
-    global.save_room = ini_read_string("save", "room", "Room1");
-    global.save_element = ini_read_string("save", "element", "none");
-    global.save_has_stats = (ini_read_real("save", "has_stats", 0) >= 1);
-    global.save_level = ini_read_real("save", "level", 1);
-    global.save_xp = ini_read_real("save", "xp", 0);
-    global.save_talent_ids = [
-        ini_read_string("save", "talent0", ""),
-        ini_read_string("save", "talent1", ""),
-        ini_read_string("save", "talent2", ""),
-    ];
-    global.save_talent_ranks = [
-        ini_read_real("save", "rank0", 0),
-        ini_read_real("save", "rank1", 0),
-        ini_read_real("save", "rank2", 0),
-    ];
-    global.save_talent_pending = ini_read_real("save", "pending", 0);
-    global.run_gold_earned = ini_read_real("save", "run_gold", 0);
-    global.shop_boost_power = ini_read_real("save", "shop_pwr", 0);
-    global.shop_boost_defesa = ini_read_real("save", "shop_def", 0);
-    global.shop_boost_hp = ini_read_real("save", "shop_hp", 0);
-    global.shop_boost_speed = ini_read_real("save", "shop_spd", 0);
-    ini_close();
-
-    global.has_save = true;
-    return true;
-}
-
-function clear_save() {
-    global.has_save = false;
-    global.shop_boost_power = 0;
-    global.shop_boost_defesa = 0;
-    global.shop_boost_hp = 0;
-    global.shop_boost_speed = 0;
-    if (file_exists("save.ini")) {
-        file_delete("save.ini");
-    }
-}
-
-function goto_checkpoint() {
-    if (!global.has_save) return;
-
-    global.selected_character = global.save_character;
-    global.selected_element = variable_global_exists("save_element") ? global.save_element : "none";
-    global.use_saved_stats = global.save_has_stats;
-    global.chosen_talent_ids = global.save_talent_ids;
-
-    var _target = asset_get_index(global.save_room);
-    if (_target != -1) {
-        room_goto(_target);
-    } else {
-        room_goto(Room1);
-    }
-}
-
-function get_save_summary() {
-    if (!variable_global_exists("has_save") || !global.has_save) return "";
-
+function get_hero_archetype_label(_char, _elem) {
     var _char_label = "Cavaleiro";
-    switch (global.save_character) {
+    switch (_char) {
         case "knight":
-            var _elem = variable_global_exists("save_element") ? global.save_element : "none";
             switch (_elem) {
                 case "water": _char_label = "Cavaleiro (Paladino)"; break;
                 case "fire": _char_label = "Cavaleiro (Berserker)"; break;
@@ -157,7 +44,6 @@ function get_save_summary() {
             }
             break;
         case "mage":
-            var _elem = variable_global_exists("save_element") ? global.save_element : "none";
             switch (_elem) {
                 case "water": _char_label = "Mago (Criomante)"; break;
                 case "fire": _char_label = "Mago (Piromante)"; break;
@@ -167,7 +53,6 @@ function get_save_summary() {
             }
             break;
         case "archer":
-            var _elem = variable_global_exists("save_element") ? global.save_element : "none";
             switch (_elem) {
                 case "water": _char_label = "Arqueiro (Cacador das Mares)"; break;
                 case "fire": _char_label = "Arqueiro (Balistico Infernal)"; break;
@@ -177,7 +62,6 @@ function get_save_summary() {
             }
             break;
         case "assassin":
-            var _elem = variable_global_exists("save_element") ? global.save_element : "none";
             switch (_elem) {
                 case "water": _char_label = "Assassino (Lamina Espectral)"; break;
                 case "fire": _char_label = "Assassino (Lamina Vulcanica)"; break;
@@ -186,22 +70,306 @@ function get_save_summary() {
                 default: _char_label = "Assassino"; break;
             }
             break;
+        default:
+            _char_label = "Heroi";
+            break;
+    }
+    return _char_label;
+}
+
+function save_slot_exists(_slot) {
+    if (!file_exists("save.ini")) return false;
+
+    var _sec = save_slot_section(_slot);
+    ini_open("save.ini");
+    var _occ = (ini_read_real(_sec, "occupied", 0) >= 1);
+    var _char = ini_read_string(_sec, "character", "");
+
+    // Retrocompatibilidade: importa save antigo do bloco [save] para o [slot1] uma unica vez
+    if (!_occ && _char == "" && _slot == 1 && ini_section_exists("save")) {
+        var _legacy_char = ini_read_string("save", "character", "");
+        if (_legacy_char != "") {
+            _occ = true;
+            _char = _legacy_char;
+            ini_write_real("slot1", "occupied", 1);
+            ini_write_string("slot1", "character", _legacy_char);
+            ini_write_string("slot1", "element", ini_read_string("save", "element", "none"));
+            ini_write_string("slot1", "room", "Room1");
+            ini_write_real("slot1", "level", ini_read_real("save", "level", 1));
+            ini_write_real("slot1", "xp", ini_read_real("save", "xp", 0));
+            ini_write_real("slot1", "playtime", ini_read_real("save", "playtime", 0));
+            ini_write_string("slot1", "talent0", ini_read_string("save", "talent0", ""));
+            ini_write_string("slot1", "talent1", ini_read_string("save", "talent1", ""));
+            ini_write_string("slot1", "talent2", ini_read_string("save", "talent2", ""));
+            ini_section_delete("save");
+        }
+    }
+    ini_close();
+
+    return (_occ || _char != "");
+}
+
+function any_save_slot_exists() {
+    return save_slot_exists(1) || save_slot_exists(2) || save_slot_exists(3);
+}
+
+function save_slot_get_info(_slot) {
+    var _res = {
+        slot: _slot,
+        occupied: false,
+        character: "",
+        element: "none",
+        level: 1,
+        xp: 0,
+        playtime: 0,
+        talent_ids: ["", "", ""],
+        hero_label: "[ SLOT VAZIO ]",
+        progress_label: "Disponivel para Nova Jornada"
+    };
+
+    if (!file_exists("save.ini")) return _res;
+
+    var _sec = save_slot_section(_slot);
+    ini_open("save.ini");
+    var _occ = (ini_read_real(_sec, "occupied", 0) >= 1);
+    var _char = ini_read_string(_sec, "character", "");
+
+    // Retrocompatibilidade slot 1
+    if (!_occ && _char == "" && _slot == 1) {
+        _char = ini_read_string("save", "character", "");
+        if (_char != "") _occ = true;
     }
 
-    var _room_label = "Fase 1 (Arena Glacial)";
-    switch (global.save_room) {
-        case "Room1": _room_label = "Fase 1 (Arena Glacial)"; break;
-        case "Room2": _room_label = "Fase 1 (General Glacial)"; break;
-        case "Room3": _room_label = "Fase 2 (Forjas de Magma)"; break;
-        case "Room4": _room_label = "Fase 2 (General Magma)"; break;
-        case "Room5": _room_label = "Fase 3 (Ruinas dos Ventos)"; break;
-        case "Room6": _room_label = "Fase 3 (General Zephyrus)"; break;
-        case "Room7": _room_label = "Fase 4 (Caverna de Granito)"; break;
-        case "Room8": _room_label = "Fase 4 (Tita Monolito)"; break;
-        case "room_shop": _room_label = "Intermissao (O Mercador Arcano)"; break;
-        default: _room_label = global.save_room; break;
+    if (!_occ && _char == "") {
+        ini_close();
+        return _res;
     }
 
-    var _lvl = variable_global_exists("save_level") ? string(global.save_level) : "1";
-    return _char_label + "   -   Nivel " + _lvl + "   -   " + _room_label;
+    var _elem = ini_read_string(_sec, "element", "none");
+    var _lvl = ini_read_real(_sec, "level", 1);
+    var _xp = ini_read_real(_sec, "xp", 0);
+    var _time = ini_read_real(_sec, "playtime", 0);
+    var _t0 = ini_read_string(_sec, "talent0", "");
+    var _t1 = ini_read_string(_sec, "talent1", "");
+    var _t2 = ini_read_string(_sec, "talent2", "");
+    ini_close();
+
+    _res.occupied = true;
+    _res.character = _char;
+    _res.element = _elem;
+    _res.level = _lvl;
+    _res.xp = _xp;
+    _res.playtime = _time;
+    _res.talent_ids = [_t0, _t1, _t2];
+    _res.hero_label = get_hero_archetype_label(_char, _elem);
+    _res.progress_label = "Nivel " + string(_lvl) + "   *   Tempo: " + format_playtime(_time);
+
+    return _res;
+}
+
+function save_slot_load(_slot) {
+    if (!save_slot_exists(_slot)) return false;
+
+    var _sec = save_slot_section(_slot);
+    ini_open("save.ini");
+    var _character = ini_read_string(_sec, "character", "");
+    if (_character == "" && _slot == 1) {
+        _character = ini_read_string("save", "character", "knight");
+    }
+
+    global.current_save_slot = _slot;
+    global.save_character = _character;
+    global.save_element = ini_read_string(_sec, "element", "none");
+    global.save_room = "Room1"; // Expedições sempre se iniciam na Room1
+    global.save_has_stats = false;
+    global.use_saved_stats = false;
+    global.save_level = ini_read_real(_sec, "level", 1);
+    global.save_xp = ini_read_real(_sec, "xp", 0);
+    global.save_talent_ids = [
+        ini_read_string(_sec, "talent0", ""),
+        ini_read_string(_sec, "talent1", ""),
+        ini_read_string(_sec, "talent2", "")
+    ];
+    global.save_talent_ranks = [0, 0, 0];
+    global.save_talent_pending = 0;
+    global.run_gold_earned = 0;
+    global.shop_boost_power = 0;
+    global.shop_boost_defesa = 0;
+    global.shop_boost_hp = 0;
+    global.shop_boost_speed = 0;
+    global.run_playtime = ini_read_real(_sec, "playtime", 0);
+    ini_close();
+
+    // Carrega meta-progresso exclusivo deste slot (ouro, elementos, talentos de loja)
+    load_meta_from_disk();
+
+    global.selected_character = global.save_character;
+    global.selected_element = global.save_element;
+    global.chosen_talent_ids = global.save_talent_ids;
+    global.has_save = true;
+
+    return true;
+}
+
+function save_slot_delete(_slot) {
+    var _s = clamp(_slot, 1, 3);
+    if (file_exists("save.ini")) {
+        var _sec = save_slot_section(_s);
+        ini_open("save.ini");
+        ini_section_delete(_sec);
+        if (_s == 1 && ini_section_exists("save")) {
+            ini_section_delete("save");
+        }
+        ini_close();
+    }
+
+    // Apaga a meta progressao vinculada a este slot
+    meta_slot_delete(_s);
+
+    if (!any_save_slot_exists()) {
+        global.has_save = false;
+    }
+}
+
+function save_slot_init_new_game(_slot) {
+    var _s = clamp(_slot, 1, 3);
+    global.current_save_slot = _s;
+
+    // Reset profundo de variáveis de run
+    global.has_save = false;
+    global.use_saved_stats = false;
+    global.save_has_stats = false;
+    global.save_character = "";
+    global.save_element = "none";
+    global.save_level = 1;
+    global.save_xp = 0;
+    global.save_room = "Room1";
+    global.run_playtime = 0;
+    global.run_gold_earned = 0;
+    global.shop_boost_power = 0;
+    global.shop_boost_defesa = 0;
+    global.shop_boost_hp = 0;
+    global.shop_boost_speed = 0;
+    global.run_biome = "water";
+    global.run_room_step = 1;
+    global.boss_buttons_pressed = 0;
+    global.chosen_talent_ids = ["", "", ""];
+    global.save_talent_ranks = [0, 0, 0];
+    global.save_talent_pending = 0;
+
+    // Limpa tanto o save.ini quanto o meta.json deste slot
+    save_slot_delete(_s);
+    save_meta();
+}
+
+function save_slot_save_character_select(_slot, _character, _element, _talent_ids) {
+    var _s = clamp(_slot, 1, 3);
+    if (is_undefined(_element) || _element == "") _element = "none";
+    if (is_undefined(_talent_ids) || !is_array(_talent_ids)) _talent_ids = ["", "", ""];
+
+    var _t0 = (array_length(_talent_ids) > 0) ? _talent_ids[0] : "";
+    var _t1 = (array_length(_talent_ids) > 1) ? _talent_ids[1] : "";
+    var _t2 = (array_length(_talent_ids) > 2) ? _talent_ids[2] : "";
+
+    var _sec = save_slot_section(_s);
+    ini_open("save.ini");
+    ini_write_real(_sec, "occupied", 1);
+    ini_write_string(_sec, "character", _character);
+    ini_write_string(_sec, "element", _element);
+    ini_write_string(_sec, "room", "Room1");
+    ini_write_real(_sec, "level", 1);
+    ini_write_real(_sec, "xp", 0);
+    ini_write_real(_sec, "has_stats", 0);
+    ini_write_string(_sec, "talent0", _t0);
+    ini_write_string(_sec, "talent1", _t1);
+    ini_write_string(_sec, "talent2", _t2);
+    ini_write_real(_sec, "rank0", 0);
+    ini_write_real(_sec, "rank1", 0);
+    ini_write_real(_sec, "rank2", 0);
+    ini_write_real(_sec, "pending", 0);
+    ini_write_real(_sec, "run_gold", 0);
+    ini_write_real(_sec, "playtime", variable_global_exists("run_playtime") ? global.run_playtime : 0);
+    ini_close();
+
+    global.current_save_slot = _s;
+    global.save_character = _character;
+    global.save_element = _element;
+    global.save_room = "Room1";
+    global.save_has_stats = false;
+    global.use_saved_stats = false;
+    global.chosen_talent_ids = [_t0, _t1, _t2];
+    global.has_save = true;
+}
+
+// Checkpoint no-op durante a run (Sakurai roguelite rule: sem saves intermediários)
+function save_checkpoint(_room_name) {
+    return;
+}
+
+function save_checkpoint_fresh(_character, _room_name, _element) {
+    if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+    var _talents = variable_global_exists("chosen_talent_ids") ? global.chosen_talent_ids : ["", "", ""];
+    save_slot_save_character_select(global.current_save_slot, _character, _element, _talents);
+}
+
+function load_save_from_disk() {
+    global.has_save = false;
+    if (!file_exists("save.ini")) return false;
+
+    if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+
+    // Se o slot atual existir, carrega ele
+    if (save_slot_exists(global.current_save_slot)) {
+        return save_slot_load(global.current_save_slot);
+    }
+
+    // Caso contrário, busca o primeiro slot existente
+    for (var _i = 1; _i <= 3; _i++) {
+        if (save_slot_exists(_i)) {
+            return save_slot_load(_i);
+        }
+    }
+
+    return false;
+}
+
+function clear_save() {
+    if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+    save_slot_init_new_game(global.current_save_slot);
+}
+
+function goto_checkpoint() {
+    if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+    if (!save_slot_exists(global.current_save_slot)) {
+        if (!load_save_from_disk()) return;
+    } else {
+        save_slot_load(global.current_save_slot);
+    }
+
+    global.selected_character = global.save_character;
+    global.selected_element = variable_global_exists("save_element") ? global.save_element : "none";
+    global.use_saved_stats = false;
+    global.chosen_talent_ids = global.save_talent_ids;
+    room_goto(Room1);
+}
+
+function get_save_hero_label() {
+    if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+    var _info = save_slot_get_info(global.current_save_slot);
+    if (!_info.occupied) return "";
+    return _info.hero_label + "   *   Nivel " + string(_info.level);
+}
+
+function get_save_progress_label() {
+    if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+    var _info = save_slot_get_info(global.current_save_slot);
+    if (!_info.occupied) return "";
+    return "Fase de Preparacao   *   Tempo: " + format_playtime(_info.playtime);
+}
+
+function get_save_summary() {
+    if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
+    var _info = save_slot_get_info(global.current_save_slot);
+    if (!_info.occupied) return "";
+    return _info.hero_label + "   -   " + _info.progress_label;
 }

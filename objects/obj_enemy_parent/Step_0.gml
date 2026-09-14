@@ -1,6 +1,18 @@
 if (is_world_paused()) exit;
 
+if (!stats_scaled) enemy_ensure_scaling(id);
+
 var _dt = delta_time / 1000000;
+
+facing_x = lengthdir_x(1, facing_dir);
+facing_y = lengthdir_y(1, facing_dir);
+
+// Histerese para orientação visual horizontal (elimina oscilação em paredes verticais)
+if (facing_dir > 105 && facing_dir < 255) {
+    facing_h = -1;
+} else if (facing_dir < 75 || facing_dir > 285) {
+    facing_h = 1;
+}
 
 if (hit_flash_timer > 0) {
     hit_flash_timer -= _dt;
@@ -24,9 +36,11 @@ if (abs(knockback_vx) > 1 || abs(knockback_vy) > 1) {
     knockback_vy = 0;
 }
 
-// Sakurai Polish: Squash & Stretch recovery back to 1.0
-scale_x = lerp(scale_x, 1.0, squash_recovery);
-scale_y = lerp(scale_y, 1.0, squash_recovery);
+// Sakurai Polish: Squash & Stretch com pulso suave de respiração viva
+var _seed = variable_instance_exists(id, "anim_seed") ? anim_seed : (x * 13 + y * 17);
+var _breath = (state == "patrol" || state == "idle") ? (0.04 * sin((current_time + _seed * 60) * 0.005)) : 0;
+scale_x = lerp(scale_x, 1.0 + _breath, squash_recovery);
+scale_y = lerp(scale_y, 1.0 - _breath, squash_recovery);
 
 // Dynamic Combat Health Bar: Timer & Lagging yellow damage bar
 if (hp_bar_timer > 0) hp_bar_timer -= _dt;
@@ -60,6 +74,7 @@ if (slow_active) {
 
 if (variable_instance_exists(id, "wind_exposed") && wind_exposed > 0) wind_exposed -= _dt;
 if (variable_instance_exists(id, "earth_fracture") && earth_fracture > 0) earth_fracture -= _dt;
+if (variable_instance_exists(id, "spectral_mark") && spectral_mark > 0) spectral_mark -= _dt;
 
 move_speed_effective = move_speed * (slow_active ? slow_multiplier : 1);
 
@@ -80,11 +95,13 @@ if (hp <= 0) {
     var _is_boss = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")));
     if (_is_boss) trigger_hitstop(0.25);
 
+    var _killer_class = (instance_exists(obj_player) ? obj_player.character_class : (variable_global_exists("selected_character") ? global.selected_character : "knight"));
+
     if (object_index == obj_boss) {
-        element_unlock("water");
+        element_unlock("water", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "water");
     } else if (object_index == obj_boss2) {
-        element_unlock("fire");
+        element_unlock("fire", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "fire");
         // Após derrotar General Magma (Fim do Bioma Fogo), abre portal para Fase do Vento (Room5)
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
@@ -94,7 +111,7 @@ if (hp <= 0) {
         _gate.gate_label = "Avanco: Ruinas dos Ventos (Fase 3 - Cura 40% HP)";
         _gate.gate_colour = make_colour_rgb(180, 240, 255);
     } else if (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) {
-        element_unlock("wind");
+        element_unlock("wind", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "wind");
         // Apos derrotar General Zephyrus (Sala 6), abre portal para Fase da Terra (Room7)
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
@@ -105,7 +122,8 @@ if (hp <= 0) {
         _gate.gate_label = "Avanco: Santuario da Terra (Fase 4 - Cura 40% HP)";
         _gate.gate_colour = make_colour_rgb(120, 220, 100);
     } else if (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) {
-        element_unlock("earth");
+        element_unlock("earth", _killer_class);
+        mastery_unlock(_killer_class, "earth");
         fx_spawn_element_unlocked_popup(x, y, "earth");
         // Derrota do Chefe Final Supremo (Titã Monólito): Vitória Suprema!
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);

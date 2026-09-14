@@ -7,7 +7,9 @@ var _player = instance_find(obj_player, 0);
 if (!global.midrun_shop_open) {
     if (_player != noone && point_distance(x, y, _player.x, _player.y) <= interact_radius) {
         prompt_active = true;
-        if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z"))) {
+        var _touch_open = touch_room_clicked(x - 50, y - 60, x + 50, y + 40)
+            || (variable_global_exists("touch_attack_pressed") && global.touch_attack_pressed);
+        if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || _touch_open) {
             global.midrun_shop_open = true;
             selected_index = 0;
             message_text = "";
@@ -20,6 +22,45 @@ if (!global.midrun_shop_open) {
 
 // Loja aberta
 var _len = array_length(items);
+var _gw = display_get_gui_width();
+var _gh = display_get_gui_height();
+var _box_w = 740;
+var _box_h = 460;
+var _bx = (_gw - _box_w) / 2;
+var _by = (_gh - _box_h) / 2;
+var _col_w = (_box_w - 70) / 2;
+var _item_h = 48;
+var _start_y = _by + 60;
+
+var _touch_buy = false;
+
+// Toque direto nos itens da loja
+for (var _i = 0; _i < _len; _i++) {
+    var _col = (_i >= 4) ? 1 : 0;
+    var _row = (_i >= 4) ? (_i - 4) : _i;
+    var _ix = _bx + 30 + _col * (_col_w + 10);
+    var _iy = _start_y + _row * (_item_h + 8);
+
+    if (touch_gui_clicked(_ix, _iy, _ix + _col_w, _iy + _item_h)) {
+        if (selected_index == _i) {
+            _touch_buy = true;
+        } else {
+            selected_index = _i;
+        }
+    }
+}
+
+// Botão de fechar [X] no topo ou toque fora da loja
+if (touch_gui_clicked(_bx + _box_w - 44, _by + 10, _bx + _box_w - 12, _by + 40)
+    || touch_gui_clicked(_bx + 30, _by + _box_h - 40, _bx + 160, _by + _box_h - 10)) {
+    global.midrun_shop_open = false;
+    exit;
+}
+
+// Botão [ Comprar ] no rodapé
+if (touch_gui_clicked(_bx + _box_w - 190, _by + _box_h - 40, _bx + _box_w - 30, _by + _box_h - 10)) {
+    _touch_buy = true;
+}
 
 if (keyboard_check_pressed(vk_up) || keyboard_check_pressed(ord("W"))) {
     selected_index = (selected_index - 1 + _len) % _len;
@@ -36,7 +77,7 @@ if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("C"))) {
     exit;
 }
 
-if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z"))) {
+if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || _touch_buy) {
     var _it = items[selected_index];
 
     if (_it.purchased) {
@@ -68,8 +109,19 @@ if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyb
                 global.midrun_shop_open = false;
                 exit;
             }
+        } else if (_it.type == "talent_points") {
+            _it.purchased = true;
+            if (_player != noone) {
+                _player.talent_pending_points += _it.amount;
+                fx_spawn_sparks(_player.x, _player.y, c_yellow, 20);
+                fx_spawn_damage_popup(_player.x, _player.y - 15, "+" + string(_it.amount) + " PONTOS DE TALENTO!", true, c_yellow);
+            }
+            message_text = "Adquiriu +" + string(_it.amount) + " Ponto(s) de Talento!";
+            message_colour = c_yellow;
+            message_timer = 2.0;
         } else if (_it.type == "stat_power") {
             global.shop_boost_power += _it.amount;
+            _it.purchased = true;
             if (_player != noone) {
                 player_recompute_attributes(_player);
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "+3 PODER!", true, c_orange);
@@ -79,6 +131,7 @@ if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyb
             message_timer = 1.5;
         } else if (_it.type == "stat_def") {
             global.shop_boost_defesa += _it.amount;
+            _it.purchased = true;
             if (_player != noone) {
                 player_recompute_attributes(_player);
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "+3 DEFESA!", true, c_aqua);
@@ -88,6 +141,7 @@ if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyb
             message_timer = 1.5;
         } else if (_it.type == "stat_hp") {
             global.shop_boost_hp += _it.amount;
+            _it.purchased = true;
             if (_player != noone) {
                 player_recompute_attributes(_player);
                 _player.hp += _it.amount;
@@ -98,6 +152,7 @@ if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyb
             message_timer = 1.5;
         } else if (_it.type == "stat_speed") {
             global.shop_boost_speed += _it.amount;
+            _it.purchased = true;
             if (_player != noone) {
                 player_recompute_attributes(_player);
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "+15 VELOCIDADE!", true, c_yellow);

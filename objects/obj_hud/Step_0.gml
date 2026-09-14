@@ -1,10 +1,32 @@
+// Atualiza módulo de controles touch mobile / emulador PC
+touch_controls_update();
+
 // Ticks down regardless of any pause/UI state -- if this lived behind is_world_paused()
 // itself, hitstop would freeze permanently the moment it started.
 if (global.hitstop_timer > 0) global.hitstop_timer -= delta_time / 1000000;
 if (!variable_global_exists("screen_damage_flash")) global.screen_damage_flash = 0;
 if (global.screen_damage_flash > 0) global.screen_damage_flash -= delta_time / 1000000;
 
+if (!variable_global_exists("run_playtime")) global.run_playtime = 0;
+if (!is_world_paused()) global.run_playtime += delta_time / 1000000;
+
 var _player = instance_find(obj_player, 0);
+
+// Câmera Centralizada Suave no Jogador (Feedback Lele: Jogador sempre no centro da câmera)
+if (view_enabled && view_visible[0] && _player != noone) {
+    var _cam = view_camera[0];
+    camera_set_view_target(_cam, noone);
+    var _vw = camera_get_view_width(_cam);
+    var _vh = camera_get_view_height(_cam);
+    var _target_cx = clamp(_player.x - _vw * 0.5, 0, max(0, room_width - _vw));
+    var _target_cy = clamp(_player.y - _vh * 0.5, 0, max(0, room_height - _vh));
+    
+    var _cur_cx = camera_get_view_x(_cam);
+    var _cur_cy = camera_get_view_y(_cam);
+    var _new_cx = lerp(_cur_cx, _target_cx, 0.25);
+    var _new_cy = lerp(_cur_cy, _target_cy, 0.25);
+    camera_set_view_pos(_cam, _new_cx, _new_cy);
+}
 
 if (!level_complete && boss_room && is_final_room && instance_number(obj_enemy_parent) == 0) {
     level_complete = true;
@@ -34,11 +56,19 @@ if (!game_over && _player != noone && _player.state == "dead") {
     clear_save();
 }
 
+var _touch_pause = (variable_global_exists("touch_pause_pressed") && global.touch_pause_pressed);
+
 if (game_over) {
-    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C"))) {
+    var _touch_tap = false;
+    for (var _i = 0; _i < 5; _i++) {
+        if (device_mouse_check_button_pressed(_i, mb_left)) _touch_tap = true;
+    }
+    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C")) || _touch_tap) {
+        global.inrun_saved_stats = false;
         global.char_select_direct = true;
         room_goto(room_char_select);
     } else if (keyboard_check_pressed(ord("M"))) {
+        global.inrun_saved_stats = false;
         global.char_select_direct = false;
         room_goto(room_char_select);
     } else if (keyboard_check_pressed(ord("R"))) {
@@ -59,7 +89,12 @@ if (global.run_victory) {
 }
 
 if (global.run_victory || level_complete) {
-    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C"))) {
+    var _touch_tap = false;
+    for (var _i = 0; _i < 5; _i++) {
+        if (device_mouse_check_button_pressed(_i, mb_left)) _touch_tap = true;
+    }
+    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C")) || _touch_tap) {
+        global.inrun_saved_stats = false;
         clear_save();
         global.run_victory = false;
         level_complete = false;
@@ -80,34 +115,74 @@ if (global.chest_reward_open) {
 }
 
 if (global.paused || global.attr_window_open) {
-    if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T"))) {
+    var _gw = display_get_gui_width();
+    var _gh = display_get_gui_height();
+    var _win_w = min(960, _gw - 40);
+    var _win_h = min(560, _gh - 30);
+    var _win_x = (_gw - _win_w) / 2;
+    var _win_y = (_gh - _win_h) / 2;
+    var _footer_y = _win_y + _win_h - 42;
+
+    var _men_box_w = 310;
+    var _men_box_x = _win_x + _win_w / 2 - _men_box_w / 2;
+
+    // Retomar botão ou toque no botão superior direito
+    var _touch_resume = _touch_pause 
+        || touch_gui_clicked(_win_x + _win_w - 135, _win_y + 8, _win_x + _win_w - 10, _win_y + 38)
+        || touch_gui_clicked(_win_x + 30, _footer_y + 5, _win_x + 200, _footer_y + 37);
+
+    // Botão Menu Principal no rodapé (Abandonar Run)
+    var _touch_menu = touch_gui_clicked(_men_box_x, _footer_y + 5, _men_box_x + _men_box_w, _footer_y + 37);
+
+    if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T")) || _touch_resume) {
         global.paused = false;
         global.attr_window_open = false;
+    } else if (keyboard_check_pressed(ord("M")) || _touch_menu) {
+        global.inrun_saved_stats = false;
+        global.paused = false;
+        global.attr_window_open = false;
+        global.midrun_shop_open = false;
+        global.chest_reward_open = false;
+        room_goto(room_char_select);
     } else if (_player != noone) {
+        // Upgrade de talentos por clique tátil nos cards da ficha
+        var _panel_gap = 16;
+        var _left_w = 380;
+        var _right_w = _win_w - _left_w - _panel_gap - 40;
+        var _col1_x = _win_x + 20;
+        var _col2_x = _col1_x + _left_w + _panel_gap;
+        var _content_y = _win_y + 48;
+        var _rx = _col2_x + 16;
+        var _ry = _content_y + 12 + 22 + 12;
+        var _card_w = _right_w - 32;
+        var _card_h = 100;
+        var _card_gap = 12;
+
+        for (var _t_idx = 0; _t_idx < 3; _t_idx++) {
+            var _cy = _ry + _t_idx * (_card_h + _card_gap);
+            if (touch_gui_clicked(_rx, _cy, _rx + _card_w, _cy + _card_h)) {
+                player_apply_talent_point(_player, _t_idx);
+            }
+        }
+
         if (keyboard_check_pressed(ord("1"))) player_apply_talent_point(_player, 0);
         if (keyboard_check_pressed(ord("2"))) player_apply_talent_point(_player, 1);
         if (keyboard_check_pressed(ord("3"))) player_apply_talent_point(_player, 2);
     }
 
     if (keyboard_check_pressed(ord("C"))) {
+        global.inrun_saved_stats = false;
         global.paused = false;
         global.attr_window_open = false;
         global.char_select_direct = true;
-        save_checkpoint(room_get_name(room));
-        room_goto(room_char_select);
-    } else if (keyboard_check_pressed(ord("M"))) {
-        global.paused = false;
-        global.attr_window_open = false;
-        save_checkpoint(room_get_name(room));
         room_goto(room_char_select);
     } else if (keyboard_check_pressed(ord("Q"))) {
-        save_checkpoint(room_get_name(room));
         game_end();
     }
     exit;
 }
 
-if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T"))) {
+if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T")) || _touch_pause) {
     global.paused = true;
     global.attr_window_open = true;
 } else if (keyboard_check_pressed(vk_f1)) {
@@ -145,4 +220,20 @@ if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T"))) {
             scale: 1.1
         });
     }
+} else if (keyboard_check_pressed(vk_f4)) {
+    global.dev_touch_mode = !global.dev_touch_mode;
+    var _px = (_player != noone ? _player.x : 200);
+    var _py = (_player != noone ? _player.y - 30 : 200);
+    array_push(global.combat_popups, {
+        x: _px,
+        y: _py,
+        text: global.dev_touch_mode ? "TOUCH SIM: ATIVADO" : "TOUCH SIM: DESATIVADO",
+        colour: global.dev_touch_mode ? c_lime : c_yellow,
+        is_crit: true,
+        life: 1.5,
+        life_max: 1.5,
+        vy: -30,
+        vx: 0,
+        scale: 1.2
+    });
 }

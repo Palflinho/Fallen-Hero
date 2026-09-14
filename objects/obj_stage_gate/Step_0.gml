@@ -118,7 +118,14 @@ if (_ready) {
 
         if (_dest != noone && room_exists(_dest)) {
             global.boss_buttons_pressed = 0;
-            save_checkpoint(room_get_name(_dest));
+            // Preserva todas as estatísticas in-run do herói para a próxima sala
+            global.inrun_saved_stats = true;
+            global.inrun_level = _player.level;
+            global.inrun_xp = _player.xp;
+            global.inrun_hp = _player.hp;
+            global.inrun_talent_slot_ids = _player.talent_slot_ids;
+            global.inrun_talent_slot_ranks = _player.talent_slot_ranks;
+            global.inrun_talent_pending = _player.talent_pending_points;
             room_goto(_dest);
         }
     }

@@ -38,6 +38,14 @@ if (poison_active) {
     if (poison_duration <= 0) poison_active = false;
 }
 
+if (slow_active) {
+    slow_duration -= _dt;
+    if (slow_duration <= 0) {
+        slow_active = false;
+        slow_multiplier = 1;
+    }
+}
+
 if (synth_hp_reg > 0 && state != "dead" && hp > 0) {
     hp = min(hp_max, hp + synth_hp_reg * _dt);
 }
@@ -46,23 +54,39 @@ if (state == "dead") {
     exit;
 }
 
-var _left  = keyboard_check(vk_left);
-var _right = keyboard_check(vk_right);
-var _up    = keyboard_check(vk_up);
-var _down  = keyboard_check(vk_down);
-var _attack_pressed = keyboard_check_pressed(ord("Z"));
-var _defend_pressed = keyboard_check_pressed(ord("X"));
+var _left  = keyboard_check(vk_left)  || keyboard_check(ord("A"));
+var _right = keyboard_check(vk_right) || keyboard_check(ord("D"));
+var _up    = keyboard_check(vk_up)    || keyboard_check(ord("W"));
+var _down  = keyboard_check(vk_down)  || keyboard_check(ord("S"));
+
+var _touch_atk = (variable_global_exists("touch_attack_pressed") && global.touch_attack_pressed);
+var _touch_def = (variable_global_exists("touch_defend_pressed") && global.touch_defend_pressed) || (variable_global_exists("touch_dash_pressed") && global.touch_dash_pressed);
+
+var _attack_pressed = keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("J")) || _touch_atk;
+var _defend_pressed = keyboard_check_pressed(ord("X")) || keyboard_check_pressed(ord("K")) || keyboard_check_pressed(vk_space) || _touch_def;
 
 if (_attack_pressed) attack_buffer_timer = attack_buffer_duration;
 
-input_h = _right - _left;
-input_v = _down - _up;
+var _key_h = _right - _left;
+var _key_v = _down - _up;
+
+var _touch_h = variable_global_exists("touch_input_h") ? global.touch_input_h : 0;
+var _touch_v = variable_global_exists("touch_input_v") ? global.touch_input_v : 0;
+
+if (_touch_h != 0 || _touch_v != 0) {
+    input_h = _touch_h;
+    input_v = _touch_v;
+} else {
+    input_h = _key_h;
+    input_v = _key_v;
+}
 
 switch (state) {
     case "idle":
     case "walk":
         var _cur_speed = move_speed;
         if (dance_speed_timer > 0) _cur_speed *= 1.25;
+        if (slow_active) _cur_speed *= slow_multiplier;
 
         // 42 Fortaleza Viva: ganha defesa conforme proximidade de inimigos
         if (character_class == "knight" && variable_instance_exists(id, "synth_guardiao_fortaleza_viva") && synth_guardiao_fortaleza_viva > 0) {
@@ -77,14 +101,17 @@ switch (state) {
         var _desired_vy = 0;
         if (input_h != 0 || input_v != 0) {
             var _len = point_distance(0, 0, input_h, input_v);
-            _desired_vx = (input_h / _len) * _cur_speed;
-            _desired_vy = (input_v / _len) * _cur_speed;
+            var _ratio = min(1.0, _len);
+            _desired_vx = (input_h / _len) * _cur_speed * _ratio;
+            _desired_vy = (input_v / _len) * _cur_speed * _ratio;
             facing_x = input_h / _len;
             facing_y = input_v / _len;
             move_dir = point_direction(0, 0, facing_x, facing_y);
         }
 
         on_ice = fh_place_on_ice(x, y);
+        var _on_puddle = fh_place_on_water_puddle(x, y);
+        var _on_mud = fh_place_on_mud(x, y);
 
         if (on_ice) {
             // Física de Gelo: +20% velocidade máxima, inércia fluida de patinação
@@ -94,6 +121,24 @@ switch (state) {
             vy = lerp(vy, _desired_vy, 0.04);
             if (point_distance(0, 0, vx, vy) > 20 && random(1) < 0.28) {
                 fx_spawn_sparks(x, y + body_radius - 2, make_colour_rgb(190, 240, 255), 1);
+            }
+        } else if (_on_puddle) {
+            // Poça de Água: Lentidão de 40%
+            _desired_vx *= 0.60;
+            _desired_vy *= 0.60;
+            vx = _desired_vx;
+            vy = _desired_vy;
+            if (point_distance(0, 0, vx, vy) > 10 && random(1) < 0.20) {
+                fx_spawn_sparks(x, y + body_radius, make_colour_rgb(70, 160, 240), 1);
+            }
+        } else if (_on_mud) {
+            // Lama Movediça: Lentidão de 55%
+            _desired_vx *= 0.45;
+            _desired_vy *= 0.45;
+            vx = _desired_vx;
+            vy = _desired_vy;
+            if (point_distance(0, 0, vx, vy) > 10 && random(1) < 0.20) {
+                fx_spawn_sparks(x, y + body_radius, make_colour_rgb(80, 50, 25), 1);
             }
         } else {
             vx = _desired_vx;
@@ -108,13 +153,15 @@ switch (state) {
             attack_buffer_timer = 0;
             state = "attack";
 
-            var _eff_atk_dur = attack_duration;
+            var _atk_spd_mult = 1 + synth_atk_spd_bonus;
+            var _eff_atk_dur = attack_duration / max(0.2, _atk_spd_mult);
             if (paladin_barrier_active > 0 && variable_instance_exists(id, "synth_paladino_julgamento_sereno") && synth_paladino_julgamento_sereno > 0) {
                 _eff_atk_dur *= 0.80; // +25% velocidade de ataque com barreira
             }
             if (frenesi_stacks > 0) {
                 _eff_atk_dur *= (1 / (1 + frenesi_stacks * 0.05));
             }
+            attack_duration_current = _eff_atk_dur;
             attack_timer = _eff_atk_dur;
             attack_has_fired = false;
         } else if (_defend_pressed && defend_cooldown_timer <= 0) {
@@ -164,12 +211,13 @@ switch (state) {
                 }
             } else if (defend_mode == "cryo_prison") {
                 invuln_timer = defend_duration;
+                hp = min(hp_max, hp + round(hp_max * 0.15));
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= 110) {
-                        enemy_apply_slow(id, 0.2, 2.0);
+                        enemy_apply_slow(id, 0.0, 2.0);
                     }
                 }
-                fx_spawn_sparks(x, y, c_aqua, 12);
+                fx_spawn_sparks(x, y, c_aqua, 16);
             } else if (defend_mode == "pyro_blast") {
                 trigger_hitstop(0.05);
                 with (obj_enemy_parent) {
@@ -200,24 +248,27 @@ switch (state) {
                 }
             } else if (defend_mode == "basalt_pillar") {
                 trigger_hitstop(0.06);
+                invuln_timer = 1.0;
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= 120) {
-                        var _ang = point_direction(x, y, other.x, other.y);
-                        x += lengthdir_x(25, _ang);
-                        y += lengthdir_y(25, _ang);
-                        enemy_take_damage(id, other.attack_damage * 0.6, other.x, other.y, 0);
+                        var _ang = point_direction(other.x, other.y, x, y);
+                        x += lengthdir_x(45, _ang);
+                        y += lengthdir_y(45, _ang);
+                        enemy_take_damage(id, other.attack_damage * 0.8, other.x, other.y, 0);
                         enemy_apply_slow(id, 0.5, 2.0);
                     }
                 }
-                fx_spawn_sparks(x, y, make_colour_rgb(180, 140, 80), 12);
+                fx_spawn_sparks(x, y, make_colour_rgb(180, 140, 80), 14);
             } else if (defend_mode == "mist_roll") {
                 invuln_timer = defend_duration;
+                invisible = true;
+                poison_active = false;
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= 90) {
                         enemy_apply_slow(id, 0.4, 2.0);
                     }
                 }
-                fx_spawn_sparks(x, y, c_teal, 8);
+                fx_spawn_sparks(x, y, c_teal, 10);
             } else if (defend_mode == "fire_recoil") {
                 invuln_timer = defend_duration;
                 var _ex_x = x + facing_x * 40;
@@ -285,17 +336,29 @@ switch (state) {
                     fh_move_and_collide(facing_x * 90, facing_y * 90);
                 }
                 invisible = true;
+                last_attack_was_crit = true;
                 fx_spawn_sparks(x, y, c_purple, 8);
             } else if (defend_mode == "obsidian_skin") {
-                invuln_timer = 0.2;
-                fx_spawn_sparks(x, y, c_black, 10);
+                invuln_timer = 1.2;
+                for (var _si = 0; _si < 6; _si++) {
+                    var _sang = _si * 60;
+                    var _spk = instance_create_layer(x, y, layer, obj_atk_dagger);
+                    _spk.owner = id;
+                    _spk.damage = attack_damage * 1.2;
+                    _spk.dir_x = lengthdir_x(1, _sang);
+                    _spk.dir_y = lengthdir_y(1, _sang);
+                    _spk.body_radius = 28;
+                    _spk.life = 0.3;
+                }
+                fx_spawn_sparks(x, y, make_colour_rgb(60, 60, 75), 14);
             }
         }
         break;
 
     case "attack":
         attack_timer -= _dt;
-        if (!attack_has_fired && attack_timer <= attack_duration * 0.5) {
+        var _curr_dur = variable_instance_exists(id, "attack_duration_current") ? attack_duration_current : attack_duration;
+        if (!attack_has_fired && attack_timer <= _curr_dur * 0.5) {
             attack_has_fired = true;
             player_perform_attack();
         }
@@ -304,7 +367,8 @@ switch (state) {
             if (character_class == "knight" && element_affinity == "wind" && duelist_combo_count == 0) {
                 duelist_combo_count = 1;
                 state = "attack";
-                attack_timer = attack_duration * 0.8;
+                attack_duration_current = _curr_dur * 0.8;
+                attack_timer = attack_duration_current;
                 attack_has_fired = false;
             } else {
                 duelist_combo_count = 0;

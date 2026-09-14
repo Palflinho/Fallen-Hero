@@ -21,7 +21,7 @@ switch (state) {
     case "chase":
         if (_seen != noone) {
             lost_sight_timer = 0;
-            facing_dir = point_direction(x, y, _player.x, _player.y);
+            if (_dist <= attack_range && attack_cooldown_timer <= 0) facing_dir = point_direction(x, y, _player.x, _player.y);
         } else {
             lost_sight_timer += _dt;
             if (lost_sight_timer >= lost_sight_grace) {
@@ -35,10 +35,10 @@ switch (state) {
             attack_windup_timer = attack_windup;
         } else if (_player != noone && _dist < preferred_range - 20) {
             var _dir = point_direction(x, y, _player.x, _player.y) + 180;
-            fh_move_and_collide(lengthdir_x(move_speed_effective * _dt, _dir), lengthdir_y(move_speed_effective * _dt, _dir));
+            ai_enemy_move(_dir, move_speed_effective, _dt);
         } else if (_player != noone && _dist > preferred_range + 20) {
             var _dir = point_direction(x, y, _player.x, _player.y);
-            fh_move_and_collide(lengthdir_x(move_speed_effective * _dt, _dir), lengthdir_y(move_speed_effective * _dt, _dir));
+            ai_enemy_move(_dir, move_speed_effective, _dt);
         }
         break;
 

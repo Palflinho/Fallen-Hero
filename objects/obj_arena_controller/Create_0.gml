@@ -60,8 +60,8 @@ function queue_wave_spawns(_biome, _wave) {
             array_push(spawn_queue, {obj: obj_slime, x: _pts[2].x, y: _pts[2].y});
             array_push(spawn_queue, {obj: obj_slime, x: _pts[3].x, y: _pts[3].y});
         } else {
-            array_push(spawn_queue, {obj: obj_ice_golem, x: _pts[4].x, y: _pts[4].y});
-            array_push(spawn_queue, {obj: obj_frost_caster, x: _pts[0].x, y: _pts[0].y});
+            array_push(spawn_queue, {obj: obj_elemental, x: _pts[4].x, y: _pts[4].y, greater: true});
+            array_push(spawn_queue, {obj: obj_frost_caster, x: _pts[0].x, y: _pts[0].y, greater: true});
             array_push(spawn_queue, {obj: obj_elemental, x: _pts[1].x, y: _pts[1].y});
             array_push(spawn_queue, {obj: obj_slime, x: _pts[2].x, y: _pts[2].y});
         }
@@ -75,63 +75,74 @@ function queue_wave_spawns(_biome, _wave) {
             array_push(spawn_queue, {obj: obj_magma_caster, x: _pts[1].x, y: _pts[1].y});
             array_push(spawn_queue, {obj: obj_fire_slime, x: _pts[2].x, y: _pts[2].y});
         } else if (_wave == 3) {
-            array_push(spawn_queue, {obj: obj_lava_golem, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[4].x, y: _pts[4].y, greater: true});
             array_push(spawn_queue, {obj: obj_fire_slime, x: _pts[0].x, y: _pts[0].y});
             array_push(spawn_queue, {obj: obj_magma_caster, x: _pts[1].x, y: _pts[1].y});
         } else {
-            array_push(spawn_queue, {obj: obj_lava_golem, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: obj_magma_caster, x: _pts[4].x, y: _pts[4].y, greater: true});
             array_push(spawn_queue, {obj: obj_magma_caster, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[1].x, y: _pts[1].y, greater: true});
             array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[3].x, y: _pts[3].y});
         }
     } else if (_biome == "wind") {
         var _we = asset_get_index("obj_wind_elemental");
         if (_we == -1) _we = obj_elemental;
+        var _ws = asset_get_index("obj_wind_slime");
+        if (_ws == -1) _ws = obj_slime;
+        var _wc = asset_get_index("obj_wind_caster");
+        if (_wc == -1) _wc = obj_frost_caster;
+
         if (_wave == 1) {
-            array_push(spawn_queue, {obj: _we, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_slime, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: _ws, x: _pts[0].x, y: _pts[0].y});
+            array_push(spawn_queue, {obj: _ws, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _we, x: _pts[4].x, y: _pts[4].y});
         } else if (_wave == 2) {
             array_push(spawn_queue, {obj: _we, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_frost_caster, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: _wc, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _ws, x: _pts[4].x, y: _pts[4].y});
         } else if (_wave == 3) {
-            array_push(spawn_queue, {obj: _we, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _ws, x: _pts[0].x, y: _pts[0].y});
+            array_push(spawn_queue, {obj: _wc, x: _pts[1].x, y: _pts[1].y});
             array_push(spawn_queue, {obj: _we, x: _pts[2].x, y: _pts[2].y});
-            array_push(spawn_queue, {obj: obj_ice_golem, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: _we, x: _pts[4].x, y: _pts[4].y, greater: true});
         } else {
-            array_push(spawn_queue, {obj: _we, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _we, x: _pts[0].x, y: _pts[0].y, greater: true});
+            array_push(spawn_queue, {obj: _ws, x: _pts[1].x, y: _pts[1].y});
             array_push(spawn_queue, {obj: _we, x: _pts[2].x, y: _pts[2].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[3].x, y: _pts[3].y});
-            array_push(spawn_queue, {obj: obj_frost_caster, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: _ws, x: _pts[3].x, y: _pts[3].y});
+            array_push(spawn_queue, {obj: _wc, x: _pts[4].x, y: _pts[4].y, greater: true});
         }
     } else { // Earth
         var _ee = asset_get_index("obj_earth_elemental");
         if (_ee == -1) _ee = obj_elemental;
+        var _es = asset_get_index("obj_earth_slime");
+        if (_es == -1) _es = obj_slime;
+        var _ec = asset_get_index("obj_earth_caster");
+        if (_ec == -1) _ec = obj_frost_caster;
+
         if (_wave == 1) {
-            array_push(spawn_queue, {obj: _ee, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _es, x: _pts[0].x, y: _pts[0].y});
+            array_push(spawn_queue, {obj: _es, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _ee, x: _pts[4].x, y: _pts[4].y});
         } else if (_wave == 2) {
             array_push(spawn_queue, {obj: _ee, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_fire_slime, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: _ec, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _es, x: _pts[4].x, y: _pts[4].y});
         } else if (_wave == 3) {
-            array_push(spawn_queue, {obj: _ee, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_ice_golem, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: _es, x: _pts[0].x, y: _pts[0].y});
+            array_push(spawn_queue, {obj: _ec, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _ee, x: _pts[4].x, y: _pts[4].y, greater: true});
         } else if (_wave == 4) {
             array_push(spawn_queue, {obj: _ee, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[2].x, y: _pts[2].y});
-            array_push(spawn_queue, {obj: obj_lava_golem, x: _pts[4].x, y: _pts[4].y});
+            array_push(spawn_queue, {obj: _es, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _ec, x: _pts[2].x, y: _pts[2].y});
+            array_push(spawn_queue, {obj: _ee, x: _pts[4].x, y: _pts[4].y, greater: true});
         } else {
             array_push(spawn_queue, {obj: _ee, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[2].x, y: _pts[2].y});
-            array_push(spawn_queue, {obj: obj_lava_golem, x: _pts[4].x, y: _pts[4].y});
-            array_push(spawn_queue, {obj: obj_ice_golem, x: _pts[5].x, y: _pts[5].y});
+            array_push(spawn_queue, {obj: _es, x: _pts[1].x, y: _pts[1].y});
+            array_push(spawn_queue, {obj: _ee, x: _pts[2].x, y: _pts[2].y, greater: true});
+            array_push(spawn_queue, {obj: _es, x: _pts[4].x, y: _pts[4].y, greater: true});
+            array_push(spawn_queue, {obj: _ec, x: _pts[5].x, y: _pts[5].y, greater: true});
         }
     }
 }

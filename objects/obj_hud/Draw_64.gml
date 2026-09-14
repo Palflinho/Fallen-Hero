@@ -21,14 +21,39 @@ if (variable_global_exists("screen_damage_flash") && global.screen_damage_flash 
 // ================= 1. STATUS CARD DO JOGADOR (TOP-LEFT) =================
 var _card_x = pad;
 var _card_y = pad;
-var _card_w = 320;
-var _card_h = 118;
+var _card_w = 345;
+var _card_h = (target.talent_pending_points > 0) ? 132 : 124;
+
+// Transparência Inteligente por Oclusão (Sakurai: A interface nunca deve tampar o combate nos cantos)
+var _hud_target_alpha = 1.0;
+if (view_enabled && view_visible[0] && target != noone) {
+    var _cam = view_camera[0];
+    var _cx = camera_get_view_x(_cam);
+    var _cy = camera_get_view_y(_cam);
+    var _p_scr_x = target.x - _cx;
+    var _p_scr_y = target.y - _cy;
+    
+    if (_p_scr_x >= 0 && _p_scr_x <= (_card_x + _card_w + 35) && _p_scr_y >= 0 && _p_scr_y <= (_card_y + _card_h + 35)) {
+        _hud_target_alpha = 0.22;
+    } else {
+        with (obj_enemy_parent) {
+            var _ex = x - _cx;
+            var _ey = y - _cy;
+            if (_ex >= 0 && _ex <= (_card_x + _card_w + 20) && _ey >= 0 && _ey <= (_card_y + _card_h + 20)) {
+                _hud_target_alpha = 0.22;
+                break;
+            }
+        }
+    }
+}
+if (!variable_instance_exists(id, "hud_card_alpha")) hud_card_alpha = 1.0;
+hud_card_alpha = lerp(hud_card_alpha, _hud_target_alpha, 0.15);
 
 // Fundo escuro fosco translúcido
-draw_set_alpha(0.88);
+draw_set_alpha(0.88 * hud_card_alpha);
 draw_set_color(make_colour_rgb(12, 16, 26));
 draw_rectangle(_card_x, _card_y, _card_x + _card_w, _card_y + _card_h, false);
-draw_set_alpha(1);
+draw_set_alpha(hud_card_alpha);
 
 // Cor elemental temática
 var _elem_col = make_colour_rgb(80, 200, 255); // agua
@@ -214,6 +239,18 @@ else if (target.defend_mode == "parry") _skill_name = "Aparar";
 else if (target.defend_mode == "guardian_aegis") _skill_name = "Bastiao";
 else if (target.defend_mode == "block") _skill_name = "Bloqueio";
 else if (target.defend_mode == "manashield") _skill_name = "Escudo Magico";
+else if (target.defend_mode == "cryo_prison") _skill_name = "Tumba de Gelo";
+else if (target.defend_mode == "pyro_blast") _skill_name = "Onda Piroclastica";
+else if (target.defend_mode == "voltaic_blink") _skill_name = "Blink Voltaico";
+else if (target.defend_mode == "basalt_pillar") _skill_name = "Muralha Basalto";
+else if (target.defend_mode == "mist_roll") _skill_name = "Rolamento Nevoa";
+else if (target.defend_mode == "fire_recoil") _skill_name = "Salto Propulsor";
+else if (target.defend_mode == "cyclone_roll") _skill_name = "Rolamento Vendaval";
+else if (target.defend_mode == "earth_anchor") _skill_name = "Ancoragem";
+else if (target.defend_mode == "spectral_mist") _skill_name = "Manto Espectral";
+else if (target.defend_mode == "ash_bomb") _skill_name = "Bomba de Cinzas";
+else if (target.defend_mode == "shadowstep") _skill_name = "Passo das Sombras";
+else if (target.defend_mode == "obsidian_skin") _skill_name = "Pele Obsidiana";
 else if (target.defend_mode == "roll") _skill_name = "Esquiva";
 else if (target.defend_mode == "invisible") _skill_name = "Invisivel";
 
@@ -254,21 +291,23 @@ _cur_y += _skill_pill_h + 5;
 // Linha 5: Pontos de Atributos ou Atalho
 if (target.talent_pending_points > 0) {
     var _pulse = 0.55 + 0.45 * abs(sin(current_time * 0.007));
+    var _pts_banner_h = 18;
     draw_set_alpha(0.85);
     draw_set_color(merge_colour(make_colour_rgb(45, 35, 12), make_colour_rgb(90, 70, 20), _pulse));
-    draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + 15, false);
+    draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _pts_banner_h, false);
     draw_set_alpha(1);
     draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-    draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + 15, true);
+    draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _pts_banner_h, true);
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
-    draw_text(_col_x + _col_w / 2, _cur_y + 8, "★ " + string(target.talent_pending_points) + " PONTO DISPONIVEL [T / ESC]");
+    var _plural = (target.talent_pending_points > 1) ? " PONTOS DISPONIVEIS" : " PONTO DISPONIVEL";
+    draw_text(_col_x + _col_w / 2, _cur_y + _pts_banner_h / 2, "★ " + string(target.talent_pending_points) + _plural + " [T / ESC]");
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 } else {
     draw_set_color(make_colour_rgb(130, 145, 170));
     draw_set_valign(fa_middle);
-    draw_text(_col_x + 2, _cur_y + 7, "[T] Ficha / Talentos");
+    draw_text(_col_x + 2, _cur_y + 8, "[T] Ficha / Talentos");
     draw_set_valign(fa_top);
 }
 
@@ -297,6 +336,7 @@ if (!boss_room && instance_number(obj_boss_button) > 0) {
     }
     draw_set_valign(fa_top);
 }
+draw_set_alpha(1.0);
 
 // Indicador do Modo Dev (Posicionado discretamente no rodapé central)
 if (variable_global_exists("dev_mode") && global.dev_mode) {
@@ -346,14 +386,21 @@ if (boss_room) {
         // Preenchimento de vida
         draw_set_color(make_colour_rgb(34, 12, 16));
         draw_rectangle(_bx, _by, _bx + _bw, _by + _bh, false);
-        var _boss_ratio = clamp(_boss.hp / max(1, _boss.hp_max), 0, 1);
-        draw_set_color(_boss.vulnerable ? c_lime : make_colour_rgb(180, 25, 40));
-        draw_rectangle(_bx, _by, _bx + _bw * _boss_ratio, _by + _bh, false);
 
-        draw_set_color(c_white);
+        var _bhp_ratio = clamp(_boss.hp / max(1, _boss.hp_max), 0, 1);
+        if (_bhp_ratio > 0) {
+            draw_set_color(make_colour_rgb(190, 40, 50));
+            draw_rectangle(_bx, _by, _bx + _bw * _bhp_ratio, _by + _bh, false);
+            draw_set_alpha(0.4);
+            draw_set_color(c_white);
+            draw_line(_bx, _by + 1, _bx + _bw * _bhp_ratio, _by + 1);
+            draw_set_alpha(1);
+        }
+
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        draw_text(_bx + _bw / 2, _by + _bh / 2, _boss.vulnerable ? (_boss_name + " - VULNERAVEL!") : _boss_name);
+        draw_set_color(c_white);
+        draw_text(_bx + _bw / 2, _by + _bh / 2, _boss_name + " - " + string(round(_boss.hp)) + "/" + string(round(_boss.hp_max)));
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     }
@@ -367,11 +414,26 @@ if (!game_over && !level_complete && !(variable_global_exists("run_victory") && 
     var _map_x = _gw - _map_w - 24;
     var _map_y = 20;
 
+    // Transparência Inteligente no Mapa se o jogador estiver no canto superior direito
+    var _map_target_alpha = 1.0;
+    if (view_enabled && view_visible[0] && target != noone) {
+        var _cam = view_camera[0];
+        var _cx = camera_get_view_x(_cam);
+        var _cy = camera_get_view_y(_cam);
+        var _p_scr_x = target.x - _cx;
+        var _p_scr_y = target.y - _cy;
+        if (_p_scr_x >= (_map_x - 30) && _p_scr_x <= _gw && _p_scr_y >= 0 && _p_scr_y <= (_map_y + _map_h + 30)) {
+            _map_target_alpha = 0.25;
+        }
+    }
+    if (!variable_instance_exists(id, "hud_map_alpha")) hud_map_alpha = 1.0;
+    hud_map_alpha = lerp(hud_map_alpha, _map_target_alpha, 0.15);
+
     // Fundo do radar
-    draw_set_alpha(0.85);
+    draw_set_alpha(0.85 * hud_map_alpha);
     draw_set_color(make_colour_rgb(12, 16, 26));
     draw_rectangle(_map_x, _map_y, _map_x + _map_w, _map_y + _map_h, false);
-    draw_set_alpha(1);
+    draw_set_alpha(hud_map_alpha);
 
     // Borda do radar
     draw_set_color(make_colour_rgb(50, 70, 100));
@@ -643,12 +705,16 @@ if (game_over) {
     // Botoes de Acao
     draw_set_halign(fa_center);
     var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.006));
+    var _is_mob = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
     draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-    draw_text(_bx + _box_w / 2, _ry, "[ESPACO / ENTER / Z] Voltar para Selecao de Personagem");
+    var _cont_str = _is_mob ? "Toque na tela para Voltar a Selecao de Herois" : "[ESPACO / ENTER / Z] Voltar para Selecao de Personagem";
+    draw_text(_bx + _box_w / 2, _ry, _cont_str);
     _ry += 26;
 
-    draw_set_color(c_ltgray);
-    draw_text(_bx + _box_w / 2, _ry, "[R] Tentar Novamente (Teste)   -   [M] Menu Principal");
+    if (!_is_mob) {
+        draw_set_color(c_ltgray);
+        draw_text(_bx + _box_w / 2, _ry, "[R] Reiniciar Expedicao   -   [M] Menu Principal");
+    }
 
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
@@ -683,7 +749,7 @@ if (game_over) {
     draw_text_transformed(_bx + _box_w / 2, _by + 36, "EXPEDICAO CONCLUIDA COM SUCESSO!", 1.35, 1.35, 0);
 
     draw_set_color(make_colour_rgb(140, 210, 255));
-    draw_text(_bx + _box_w / 2, _by + 68, "As Forcas da Agua e do Fogo foram Dominadas!");
+    draw_text(_bx + _box_w / 2, _by + 68, "Todos os 4 Reinos Elementais foram Conquistados!");
 
     draw_set_color(make_colour_rgb(60, 85, 125));
     draw_line(_bx + 30, _by + 92, _bx + _box_w - 30, _by + 92);
@@ -724,7 +790,7 @@ if (game_over) {
     draw_text(_bx + 50, _sy, "Afinidades Desbloqueadas:");
     draw_set_halign(fa_right);
     draw_set_color(make_colour_rgb(100, 240, 160));
-    draw_text(_bx + _box_w - 50, _sy, "Agua e Fogo Desbloqueados!");
+    draw_text(_bx + _box_w - 50, _sy, "Agua, Fogo, Vento e Terra Conquistados!");
     _sy += 38;
 
     // Linha divisoria
@@ -735,8 +801,10 @@ if (game_over) {
     // Botao de Retorno
     draw_set_halign(fa_center);
     var _b_pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
+    var _is_mob_vic = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
     draw_set_color(merge_colour(c_yellow, c_white, _b_pulse));
-    draw_text(_bx + _box_w / 2, _sy, "[ESPACO / ENTER / Z] Retornar a Selecao de Personagens");
+    var _vic_str = _is_mob_vic ? "Toque na tela para Retornar a Selecao de Herois" : "[ESPACO / ENTER / Z] Retornar a Selecao de Personagens";
+    draw_text(_bx + _box_w / 2, _sy, _vic_str);
 
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
@@ -759,25 +827,21 @@ if (game_over) {
 
     // Dimensoes responsivas calculadas dinamicamente
     var _win_w = min(880, _gw - 40);
-    var _card_top_w = _win_w - 60;
-    var _text_max_w = _card_top_w - 120;
-
-    var _eff_str = "Efeito: " + _found_desc_val;
-    var _eff_sep = 16;
-    var _eff_h = string_height_ext(_eff_str, _eff_sep, _text_max_w);
-
-    var _flv_sep = 14;
-    var _flv_h = (_found_desc_flv != "") ? string_height_ext(_found_desc_flv, _flv_sep, _text_max_w) : 0;
-
-    // Altura dinamica do card superior baseada no tamanho real dos textos
-    var _card_content_h = 56 + _eff_h + (_found_desc_flv != "" ? (8 + _flv_h) : 0) + 16;
-    var _card_top_h = max(104, _card_content_h);
-
-    var _col_h = 195;
-    var _needed_win_h = 72 + _card_top_h + 16 + 24 + _col_h + 16 + 42;
-    var _win_h = min(_needed_win_h, _gh - 20);
+    var _win_h = min(510, _gh - 24);
     var _win_x = floor((_gw - _win_w) / 2);
     var _win_y = floor((_gh - _win_h) / 2);
+
+    var _card_top_w = _win_w - 60;
+    var _text_max_w = _card_top_w - 110;
+
+    var _eff_str = "Efeito: " + _found_desc_val;
+    var _eff_sep = 15;
+    var _eff_h = string_height_ext(_eff_str, _eff_sep, _text_max_w);
+
+    var _flv_sep = 13;
+    var _flv_h = (_found_desc_flv != "") ? min(28, string_height_ext(_found_desc_flv, _flv_sep, _text_max_w)) : 0;
+
+    var _card_top_h = clamp(48 + _eff_h + (_found_desc_flv != "" ? (4 + _flv_h) : 0), 84, 106);
 
     // Fundo da Janela
     draw_set_alpha(0.95);
@@ -797,17 +861,17 @@ if (game_over) {
 
     var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
     draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-    draw_text(_win_x + _win_w / 2, _win_y + 16, "*  BAU DE TESOURO ABERTO!  *");
+    draw_text(_win_x + _win_w / 2, _win_y + 12, "*  BAU DE TESOURO ABERTO!  *");
 
     draw_set_color(c_ltgray);
-    draw_text(_win_x + _win_w / 2, _win_y + 38, "Voce encontrou um novo talento! Escolha um slot para equipar ou descarte-o.");
+    draw_text(_win_x + _win_w / 2, _win_y + 32, "Voce encontrou um novo talento! Escolha um slot para equipar ou descarte-o.");
 
     draw_set_color(make_colour_rgb(60, 50, 30));
-    draw_line(_win_x + 30, _win_y + 60, _win_x + _win_w - 30, _win_y + 60);
+    draw_line(_win_x + 30, _win_y + 50, _win_x + _win_w - 30, _win_y + 50);
 
     // ================= CARD DO NOVO TALENTO ENCONTRADO =================
     var _card_top_x = _win_x + 30;
-    var _card_top_y = _win_y + 72;
+    var _card_top_y = _win_y + 58;
 
     // Fundo do card de destaque
     draw_set_alpha(0.85);
@@ -818,42 +882,47 @@ if (game_over) {
     draw_rectangle(_card_top_x, _card_top_y, _card_top_x + _card_top_w, _card_top_y + _card_top_h, true);
 
     // Icone do talento encontrado (centralizado verticalmente no card)
-    var _icon_box_s = 68;
-    var _icon_box_x = _card_top_x + 16;
+    var _icon_box_s = 56;
+    var _icon_box_x = _card_top_x + 14;
     var _icon_box_y = _card_top_y + floor((_card_top_h - _icon_box_s) / 2);
     draw_set_color(make_colour_rgb(14, 18, 28));
     draw_rectangle(_icon_box_x, _icon_box_y, _icon_box_x + _icon_box_s, _icon_box_y + _icon_box_s, false);
     draw_set_color(make_colour_rgb(215, 170, 50));
     draw_rectangle(_icon_box_x, _icon_box_y, _icon_box_x + _icon_box_s, _icon_box_y + _icon_box_s, true);
-    draw_talent_icon(_found_icon, _icon_box_x + _icon_box_s / 2, _icon_box_y + _icon_box_s / 2, 38, c_yellow);
+    draw_talent_icon(_found_icon, _icon_box_x + _icon_box_s / 2, _icon_box_y + _icon_box_s / 2, 32, c_yellow);
 
     // Textos do novo talento
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_set_color(c_yellow);
-    draw_text(_card_top_x + 100, _card_top_y + 14, "NOVO TALENTO ENCONTRADO:");
+    draw_text(_card_top_x + 82, _card_top_y + 8, "NOVO TALENTO ENCONTRADO:  " + _found_label);
 
-    draw_set_color(c_white);
-    draw_text(_card_top_x + 100, _card_top_y + 34, _found_label);
-
-    var _eff_y = _card_top_y + 56;
+    var _eff_y = _card_top_y + 28;
     draw_set_color(make_colour_rgb(160, 220, 255));
-    draw_text_ext(_card_top_x + 100, _eff_y, _eff_str, _eff_sep, _text_max_w);
+    draw_text_ext(_card_top_x + 82, _eff_y, _eff_str, _eff_sep, _text_max_w);
 
     if (_found_desc_flv != "") {
-        var _flv_y = _eff_y + _eff_h + 8;
+        var _flv_y = _eff_y + _eff_h + 4;
         draw_set_color(make_colour_rgb(180, 190, 205));
-        draw_text_ext(_card_top_x + 100, _flv_y, _found_desc_flv, _flv_sep, _text_max_w);
+        draw_text_ext(_card_top_x + 82, _flv_y, _found_desc_flv, _flv_sep, _text_max_w);
     }
 
     // ================= SLOTS COMPARATIVOS =================
-    var _slots_y = _card_top_y + _card_top_h + 16;
+    var _slots_y = _card_top_y + _card_top_h + 10;
     draw_set_halign(fa_center);
     draw_set_color(c_yellow);
     draw_text(_win_x + _win_w / 2, _slots_y, "SELECIONE O SLOT PARA SUBSTITUIR  (O NOVO TALENTO HERDARA O RANK DO SLOT):");
 
     var _col_w = (_win_w - 60 - 2 * 16) / 3;
-    var _cols_start_y = _slots_y + 24;
+    var _cols_start_y = _slots_y + 20;
+
+    var _discard_w = min(500, _win_w - 60);
+    var _discard_h = 28;
+    var _discard_x = _win_x + (_win_w - _discard_w) / 2;
+    var _discard_y = _win_y + _win_h - 36;
+    var _footer_y = _discard_y - 8;
+
+    var _col_h = clamp(_footer_y - _cols_start_y - 8, 140, 190);
 
     var _mx = device_mouse_x_to_gui(0);
     var _my = device_mouse_y_to_gui(0);
@@ -879,60 +948,55 @@ if (game_over) {
 
         // Cabecalho do Slot
         draw_set_color(_slot_hover ? make_colour_rgb(36, 50, 78) : make_colour_rgb(26, 34, 52));
-        draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 26, false);
+        draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 24, false);
         draw_set_color(c_yellow);
-        draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 26, true);
+        draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 24, true);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        draw_text(_cx + _col_w / 2, _cols_start_y + 13, "SLOT " + string(_i + 1));
+        draw_text(_cx + _col_w / 2, _cols_start_y + 12, "SLOT " + string(_i + 1));
         draw_set_valign(fa_top);
 
         // Detalhes do Talento Atual do Slot
         if (_cur_id == "") {
             draw_set_color(c_gray);
-            draw_text(_cx + _col_w / 2, _cols_start_y + 55, "(Slot Vazio)");
+            draw_text(_cx + _col_w / 2, _cols_start_y + 44, "(Slot Vazio)");
             draw_set_color(make_colour_rgb(80, 220, 120));
-            draw_text_ext(_cx + _col_w / 2, _cols_start_y + 85, "Instale diretamente com Rank " + string(_cur_rank) + "!", 16, _col_w - 24);
+            draw_text_ext(_cx + _col_w / 2, _cols_start_y + 68, "Instale com Rank " + string(_cur_rank) + "!", 15, _col_w - 20);
         } else {
             var _cur_def = get_talent_def_by_id(_cur_id);
             var _cur_label = is_undefined(_cur_def) ? _cur_id : _cur_def.label;
             var _cur_icon = is_undefined(_cur_def) ? "sword" : talent_get_icon_type(_cur_def);
 
-            draw_talent_icon(_cur_icon, _cx + _col_w / 2, _cols_start_y + 50, 26, c_yellow);
+            draw_talent_icon(_cur_icon, _cx + _col_w / 2, _cols_start_y + 42, 22, c_yellow);
 
             draw_set_color(c_white);
-            draw_text_ext(_cx + _col_w / 2, _cols_start_y + 68, _cur_label, 14, _col_w - 20);
+            draw_text_ext(_cx + _col_w / 2, _cols_start_y + 56, _cur_label, 13, _col_w - 20);
 
             draw_set_color(c_yellow);
             var _r_str = "Rank " + string(_cur_rank) + "  ";
             for (var _s = 1; _s <= 3; _s++) _r_str += (_s <= _cur_rank) ? "[X] " : "[ ] ";
-            draw_text(_cx + _col_w / 2, _cols_start_y + 92, _r_str);
+            draw_text(_cx + _col_w / 2, _cols_start_y + 74, _r_str);
 
             draw_set_color(make_colour_rgb(240, 110, 110));
-            draw_text_ext(_cx + _col_w / 2, _cols_start_y + 114, "Substituira " + _cur_label, 14, _col_w - 18);
+            draw_text_ext(_cx + _col_w / 2, _cols_start_y + 92, "Substituira " + _cur_label, 13, _col_w - 18);
         }
 
         // Botao de Acao
-        var _btn_y = _cols_start_y + _col_h - 38;
+        var _btn_y = _cols_start_y + _col_h - 30;
         draw_set_color(_slot_hover ? make_colour_rgb(45, 75, 120) : make_colour_rgb(30, 45, 70));
-        draw_rectangle(_cx + 10, _btn_y, _cx + _col_w - 10, _btn_y + 28, false);
+        draw_rectangle(_cx + 8, _btn_y, _cx + _col_w - 8, _btn_y + 24, false);
         draw_set_color(c_yellow);
-        draw_rectangle(_cx + 10, _btn_y, _cx + _col_w - 10, _btn_y + 28, true);
+        draw_rectangle(_cx + 8, _btn_y, _cx + _col_w - 8, _btn_y + 24, true);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        draw_text(_cx + _col_w / 2, _btn_y + 14, "[Aperte " + string(_i + 1) + " para Equipar]");
+        draw_text(_cx + _col_w / 2, _btn_y + 12, "[Aperte " + string(_i + 1) + " para Equipar]");
         draw_set_valign(fa_top);
     }
 
     // ================= RODAPE DO BAU =================
-    var _footer_y = _cols_start_y + _col_h + 16;
     draw_set_color(make_colour_rgb(60, 50, 30));
     draw_line(_win_x + 30, _footer_y, _win_x + _win_w - 30, _footer_y);
 
-    var _discard_w = min(500, _win_w - 60);
-    var _discard_h = 30;
-    var _discard_x = _win_x + (_win_w - _discard_w) / 2;
-    var _discard_y = _footer_y + 8;
     var _discard_hover = (_mx >= _discard_x && _mx <= _discard_x + _discard_w && _my >= _discard_y && _my <= _discard_y + _discard_h);
 
     if (_discard_hover && _m_click) {
@@ -958,7 +1022,7 @@ if (game_over) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_set_color(_discard_hover ? c_white : make_colour_rgb(240, 110, 110));
-    draw_text(_discard_x + _discard_w / 2, _discard_y + _discard_h / 2, "[X / ESC / Clique] Descartar este Talento e Continuar a Partida");
+    draw_text(_discard_x + _discard_w / 2, _discard_y + _discard_h / 2, "[X / ESC / Clique] Descartar este Talento e Continuar");
 
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
@@ -974,7 +1038,7 @@ if (game_over) {
 
     // Dimensoes da Janela Modal
     var _win_w = min(960, _gw - 40);
-    var _win_h = min(540, _gh - 30);
+    var _win_h = min(560, _gh - 30);
     var _win_x = (_gw - _win_w) / 2;
     var _win_y = (_gh - _win_h) / 2;
 
@@ -994,11 +1058,22 @@ if (game_over) {
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_set_color(c_yellow);
-    draw_text(_win_x + 24, _win_y + 16, "PAUSADO  -  FICHA DO HEROI");
+    var _play_str = format_playtime(variable_global_exists("run_playtime") ? global.run_playtime : 0);
+    draw_text(_win_x + 24, _win_y + 16, "PAUSADO  -  FICHA DO HEROI   (Tempo: " + _play_str + ")");
 
-    draw_set_halign(fa_right);
-    draw_set_color(c_ltgray);
-    draw_text(_win_x + _win_w - 24, _win_y + 16, "Pressione [ESC] ou [T] para Retomar");
+    var _is_mobile = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
+    var _btn_rx = _win_x + _win_w - 130;
+    var _btn_ry = _win_y + 10;
+    var _btn_rw = 110;
+    var _btn_rh = 26;
+    draw_set_color(make_colour_rgb(32, 44, 68));
+    draw_rectangle(_btn_rx, _btn_ry, _btn_rx + _btn_rw, _btn_ry + _btn_rh, false);
+    draw_set_color(c_yellow);
+    draw_rectangle(_btn_rx, _btn_ry, _btn_rx + _btn_rw, _btn_ry + _btn_rh, true);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(c_white);
+    draw_text(_btn_rx + _btn_rw / 2, _btn_ry + _btn_rh / 2, _is_mobile ? "Retomar" : "[X] Retomar");
 
     // Linha divisoria do cabecalho
     draw_set_color(make_colour_rgb(45, 60, 90));
@@ -1101,6 +1176,13 @@ if (game_over) {
     draw_text(_lx, _ly, "[VEL] Movimento:");
     draw_set_color(c_white);
     draw_text(_val_x, _ly, string(round(target.nat_move_spd)));
+    _ly += 22;
+
+    // 6. Tempo de Partida
+    draw_set_color(make_colour_rgb(180, 210, 240));
+    draw_text(_lx, _ly, "[RUN] Tempo:");
+    draw_set_color(c_white);
+    draw_text(_val_x, _ly, format_playtime(variable_global_exists("run_playtime") ? global.run_playtime : 0));
     _ly += 26;
 
     // Divisor
@@ -1170,16 +1252,16 @@ if (game_over) {
         var _banner_col = merge_colour(c_yellow, c_white, _pulse);
 
         draw_set_color(_banner_col);
-        draw_text(_rx, _ry, "* " + string(_pts) + " PONTO(S) DISPONIVEL(EIS)!");
+        draw_text(_rx, _ry, "* " + string(_pts) + " PONTO(S)!");
         draw_set_halign(fa_right);
-        draw_text(_col2_x + _right_w - 16, _ry, "Pressione [1, 2 ou 3] para Evoluir");
+        draw_text(_col2_x + _right_w - 16, _ry, _is_mobile ? "Toque para Evoluir" : "Aperte [1, 2 ou 3]");
         draw_set_halign(fa_left);
     } else {
         draw_set_color(c_white);
-        draw_text(_rx, _ry, "Talentos Equipados nesta Run (3 Slots)");
+        draw_text(_rx, _ry, "Talentos Equipados");
         draw_set_halign(fa_right);
         draw_set_color(c_gray);
-        draw_text(_col2_x + _right_w - 16, _ry, "Nenhum ponto pendente");
+        draw_text(_col2_x + _right_w - 16, _ry, "0 pts pendentes");
         draw_set_halign(fa_left);
     }
 
@@ -1204,8 +1286,11 @@ if (game_over) {
         draw_rectangle(_rx, _cy, _rx + _card_w, _cy + _card_h, false);
         draw_set_alpha(1);
 
+        var _max_rank = (_tid != "") ? talent_get_max_rank(_tid) : 1;
+        var _cost = (_tid != "") ? talent_get_upgrade_cost(_tid, _rank) : 999999;
+
         // Borda do Card
-        if (_pts > 0 && _tid != "") {
+        if (_pts >= _cost && _rank < _max_rank && _tid != "") {
             var _flash = 0.5 + 0.5 * sin(current_time * 0.007 + _i * 1.5);
             draw_set_color(merge_colour(make_colour_rgb(70, 90, 130), c_yellow, _flash));
             draw_rectangle(_rx - 1, _cy - 1, _rx + _card_w + 1, _cy + _card_h + 1, true);
@@ -1243,7 +1328,7 @@ if (game_over) {
         // Tecla de atalho [1], [2], [3]
         draw_set_color(make_colour_rgb(24, 30, 46));
         draw_rectangle(_ibx, _iby + _icon_box_size + 6, _ibx + _icon_box_size, _iby + _icon_box_size + 24, false);
-        draw_set_color((_pts > 0) ? c_yellow : make_colour_rgb(80, 100, 140));
+        draw_set_color((_pts >= _cost && _rank < _max_rank) ? c_yellow : make_colour_rgb(80, 100, 140));
         draw_rectangle(_ibx, _iby + _icon_box_size + 6, _ibx + _icon_box_size, _iby + _icon_box_size + 24, true);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
@@ -1257,13 +1342,16 @@ if (game_over) {
         draw_set_color(c_yellow);
         draw_text(_tx, _ty, _tlabel);
 
-        // Pips de Rank (ex: Rank 2/3   * * -)
+        // Exibição estilizada do Rank
         draw_set_halign(fa_right);
-        var _rank_str = "Rank " + string(_rank) + "  ";
-        for (var _s = 1; _s <= 3; _s++) {
-            _rank_str += (_s <= _rank) ? "[X] " : "[ ] ";
+        var _rank_str = "";
+        if (_max_rank == 1) {
+            _rank_str = (_rank >= 1) ? "[ATIVO - MAX]" : "[INATIVO - Custo: " + string(_cost) + " pts]";
+        } else {
+            _rank_str = "Rank " + string(_rank) + "/" + string(_max_rank);
+            if (_rank >= _max_rank) _rank_str += " [MAX]";
         }
-        draw_set_color((_pts > 0) ? c_yellow : c_white);
+        draw_set_color((_pts >= _cost && _rank < _max_rank) ? c_yellow : c_white);
         draw_text(_rx + _card_w - 14, _ty, _rank_str);
         draw_set_halign(fa_left);
 
@@ -1277,14 +1365,22 @@ if (game_over) {
         draw_text_ext(_tx, _ty + 26, _tdesc, 16, _desc_w);
 
         // Aviso de upgrade
-        if (_pts > 0) {
-            draw_set_halign(fa_right);
-            draw_set_valign(fa_bottom);
-            draw_set_color(c_yellow);
-            draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "Aperte [" + string(_i + 1) + "] para Evoluir (+1)");
-            draw_set_halign(fa_left);
-            draw_set_valign(fa_top);
+        draw_set_halign(fa_right);
+        draw_set_valign(fa_bottom);
+        if (_rank < _max_rank) {
+            if (_pts >= _cost) {
+                draw_set_color(c_yellow);
+                draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "Aperte [" + string(_i + 1) + "] para Evoluir (-" + string(_cost) + " pts)");
+            } else {
+                draw_set_color(make_colour_rgb(170, 180, 200));
+                draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "Custo: " + string(_cost) + " pts (" + string(_pts) + " disponíveis)");
+            }
+        } else {
+            draw_set_color(make_colour_rgb(100, 220, 140));
+            draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "TALENTO MAXIMIZADO");
         }
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
     }
 
     // ================= RODAPE =================
@@ -1295,8 +1391,43 @@ if (game_over) {
     draw_set_valign(fa_middle);
     var _f_center_y = _footer_y + 20;
 
+    var _ret_str = _is_mobile ? "Retomar" : "[ESC] Retomar";
+    var _ret_w = max(150, string_width(_ret_str) + 32);
+    var _ret_h = 32;
+    var _ret_x = _win_x + 30;
+    var _ret_y = _footer_y + 5;
+    draw_set_color(make_colour_rgb(28, 40, 62));
+    draw_rectangle(_ret_x, _ret_y, _ret_x + _ret_w, _ret_y + _ret_h, false);
+    draw_set_color(c_yellow);
+    draw_rectangle(_ret_x, _ret_y, _ret_x + _ret_w, _ret_y + _ret_h, true);
     draw_set_color(c_white);
-    draw_text(_win_x + _win_w / 2, _f_center_y, "[ESC / T] Retomar   -   [C] Selecao de Heroi (Teste)   -   [M] Menu Principal   -   [Q] Sair");
+    var _ret_tw = max(1, string_width(_ret_str));
+    var _ret_scale = min(1.0, (_ret_w - 20) / _ret_tw);
+    draw_text_transformed(_ret_x + _ret_w / 2, _ret_y + _ret_h / 2, _ret_str, _ret_scale, _ret_scale, 0);
+
+    var _men_str = _is_mobile ? "Abandonar Run" : "[M] Abandonar Run (Menu)";
+    var _men_w = max(310, string_width(_men_str) + 40);
+    var _men_h = 32;
+    var _men_x = _win_x + _win_w / 2 - _men_w / 2;
+    var _men_y = _footer_y + 5;
+    draw_set_color(make_colour_rgb(28, 40, 62));
+    draw_rectangle(_men_x, _men_y, _men_x + _men_w, _men_y + _men_h, false);
+    draw_set_color(make_colour_rgb(70, 95, 135));
+    draw_rectangle(_men_x, _men_y, _men_x + _men_w, _men_y + _men_h, true);
+    draw_set_color(c_ltgray);
+    var _men_tw = max(1, string_width(_men_str));
+    var _men_scale = min(1.0, (_men_w - 24) / _men_tw);
+    draw_text_transformed(_men_x + _men_w / 2, _men_y + _men_h / 2, _men_str, _men_scale, _men_scale, 0);
+
+    if (!_is_mobile) {
+        draw_set_halign(fa_right);
+        draw_set_color(c_gray);
+        draw_text(_win_x + _win_w - 30, _f_center_y, "[Q] Sair");
+    }
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 }
+
+// ================= RENDERIZACAO DOS CONTROLES TOUCH MOBILE =================
+touch_controls_draw_gui();
+

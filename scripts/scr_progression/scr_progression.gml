@@ -20,13 +20,13 @@ function player_recompute_attributes(_p) {
 
     _p.hp_max = _p.nat_hp + _p.synth_armor_hp + global.shop_boost_hp;
     _p.move_speed = _p.nat_move_spd + _p.synth_move_spd_bonus + global.shop_boost_speed;
-    _p.attack_cooldown = (1 / (_p.nat_atk_spd + _p.synth_atk_spd_bonus)) * _cdr_mult;
+    _p.attack_cooldown = (1 / _p.nat_atk_spd) / max(0.2, 1 + _p.synth_atk_spd_bonus) * _cdr_mult;
     _p.defend_cooldown = _p.defend_cooldown_base * _cdr_mult;
 
     var _pwr_synth = (_p.attack_damage_type == "physical") ? _p.synth_pwr_fisica : _p.synth_pwr_magica;
     _p.attack_damage = _p.nat_power + _pwr_synth + global.shop_boost_power;
 
-    _p.xp_to_next = 40 + 20 * (_p.level - 1);
+    _p.xp_to_next = 30 + 7 * (_p.level - 1);
 
     // Leveling never removes HP you already have -- the extra max HP is added on top,
     // it doesn't force a heal-to-full either.

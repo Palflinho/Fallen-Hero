@@ -1,7 +1,7 @@
 event_inherited();
-target_room = asset_get_index("room_shop");
+target_room = asset_get_index("room_exp2");
 trigger_mode = "buttons";
 reward_type = "gold";
-reward_value = 80;
-gate_label = "Descanso: O Mercador Arcano (Intermissao 1 - +80 Ouro)";
-gate_colour = c_yellow;
+reward_value = 40;
+gate_label = "Avanco: Exploracao 2 (Sala 2)";
+gate_colour = make_colour_rgb(255, 120, 40);

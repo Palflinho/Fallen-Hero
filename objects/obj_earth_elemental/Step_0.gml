@@ -17,7 +17,7 @@ switch (state) {
     case "chase":
         if (_player != noone) {
             var _dir = point_direction(x, y, _player.x, _player.y);
-            fh_move_and_collide(lengthdir_x(move_speed_effective * _dt, _dir), lengthdir_y(move_speed_effective * _dt, _dir));
+            ai_enemy_move(_dir, move_speed_effective, _dt);
 
             if (attack_cooldown_timer <= 0 && point_distance(x, y, _player.x, _player.y) <= attack_range) {
                 state = "windup";

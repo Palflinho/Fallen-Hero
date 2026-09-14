@@ -1,0 +1,17 @@
+﻿# GameMaker & Build Artifacts
+*.zip
+*.apk
+*.manifest
+options.ini
+
+# Android intermediate build resources
+assets/
+res/
+output/Fallen Hero/assets/
+output/Fallen Hero/res/
+output/Fallen Hero/Fallen Hero.win
+output/Fallen Hero/Fallen Hero.zip
+
+# System & OS
+.DS_Store
+Thumbs.db

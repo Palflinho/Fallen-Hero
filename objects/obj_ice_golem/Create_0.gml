@@ -1,28 +1,44 @@
 event_inherited();
 
-body_colour = c_silver;
-body_radius = 26;
-hp_max = 90;
+// Mini-Chefe Guardião Glacial (Quadrado Grande Exclusivo da Sala Pré-Boss)
+body_colour = make_colour_rgb(200, 235, 255);
+body_radius = 32;
+hp_max = 260;
 hp = hp_max;
-move_speed = 32;
+move_speed = 35;
 contact_damage = 18;
-attack_range = 46;
-attack_cooldown = 1.3;
-attack_cooldown_timer = 0;
-attack_windup = 0.45;
-attack_windup_timer = 0;
-state = "patrol";
-vision_range = 200;
-vision_angle = 90;
-spider_sense_range = 65;
-patrol_radius = 80;
 
-shield_interval = 4.5;
-shield_timer = shield_interval;
-shield_duration = 1.3;
-shield_active_timer = 0;
-exp_reward = 40;
-gold_reward = 12;
-knockback_resistance = 0.75;
-is_rare_mob = true;
-rare_chest_drop_chance = 0.25;
+// Mitigação natural de dano fora da vulnerabilidade
+damage_reduction = 0.35;
+knockback_resistance = 0.85;
+
+vision_range = 9999;
+vision_angle = 360;
+patrol_radius = 0;
+state = "chase";
+
+element_type = "water";
+
+attack_cooldown_timer = 1.0;
+attack_cooldown = 2.2;
+combo_count = 0;
+
+// Golpe 1: Barragem
+fan_shots = 3;
+
+// Golpe 2: Esmagamento / Investida de Chefe
+slam_windup = 0.70;
+slam_windup_timer = 0;
+slam_radius = 130;
+slam_damage = 25;
+dash_timer = 0;
+dash_vx = 0;
+dash_vy = 0;
+
+// Janela de Vulnerabilidade
+vulnerable = false;
+vulnerable_timer = 0;
+vulnerable_duration = 3.0;
+
+exp_reward = 120;
+gold_reward = 8;

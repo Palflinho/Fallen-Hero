@@ -1,7 +1,7 @@
 event_inherited();
 
 body_colour = c_maroon;
-hp_max = 32;
+hp_max = 48;
 hp = hp_max;
 move_speed = 42;
 contact_damage = 7;
@@ -20,7 +20,7 @@ vision_angle = 100;
 spider_sense_range = 75;
 patrol_radius = 120;
 exp_reward = 32;
-gold_reward = 10;
+gold_reward = 2;
 knockback_resistance = 0.15;
 
 // Burn -- fire's answer to frost's slow: a lingering damage-over-time instead.
