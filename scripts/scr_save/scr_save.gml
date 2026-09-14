@@ -198,6 +198,8 @@ function save_slot_load(_slot) {
     global.shop_boost_hp = 0;
     global.shop_boost_speed = 0;
     global.run_playtime = ini_read_real(_sec, "playtime", 0);
+    global.temple_arena_layout = ini_read_real(_sec, "arena_layout", 0);
+    global.temple_arena_biome = ini_read_string(_sec, "arena_biome", "water");
     ini_close();
 
     // Carrega meta-progresso exclusivo deste slot (ouro, elementos, talentos de loja)
@@ -252,6 +254,8 @@ function save_slot_init_new_game(_slot) {
     global.shop_boost_speed = 0;
     global.run_biome = "water";
     global.run_room_step = 1;
+    global.temple_arena_layout = 0;
+    global.temple_arena_biome = "water";
     global.boss_buttons_pressed = 0;
     global.chosen_talent_ids = ["", "", ""];
     global.save_talent_ranks = [0, 0, 0];
@@ -289,6 +293,8 @@ function save_slot_save_character_select(_slot, _character, _element, _talent_id
     ini_write_real(_sec, "pending", 0);
     ini_write_real(_sec, "run_gold", 0);
     ini_write_real(_sec, "playtime", variable_global_exists("run_playtime") ? global.run_playtime : 0);
+    ini_write_real(_sec, "arena_layout", variable_global_exists("temple_arena_layout") ? global.temple_arena_layout : 0);
+    ini_write_string(_sec, "arena_biome", variable_global_exists("temple_arena_biome") ? global.temple_arena_biome : "water");
     ini_close();
 
     global.current_save_slot = _s;
@@ -334,8 +340,22 @@ function load_save_from_disk() {
 }
 
 function clear_save() {
-    if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
-    save_slot_init_new_game(global.current_save_slot);
+    // Sakurai Roguelite Rule:
+    // Limpa apenas o progresso volátil da expedição in-run atual (fase, ouro da run, boosts de loja)
+    // JAMAIS deleta o perfil do herói salvo no slot nem apaga o save.ini!
+    global.inrun_saved_stats = false;
+    global.use_saved_stats = false;
+    global.run_room_step = 1;
+    global.run_room_index = 1;
+    global.boss_buttons_pressed = 0;
+    global.run_gold_earned = 0;
+    global.shop_boost_power = 0;
+    global.shop_boost_defesa = 0;
+    global.shop_boost_hp = 0;
+    global.shop_boost_speed = 0;
+    if (variable_global_exists("current_save_slot") && save_slot_exists(global.current_save_slot)) {
+        global.has_save = true;
+    }
 }
 
 function goto_checkpoint() {

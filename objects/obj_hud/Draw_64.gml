@@ -707,7 +707,7 @@ if (game_over) {
     var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.006));
     var _is_mob = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
     draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-    var _cont_str = _is_mob ? "Toque na tela para Voltar a Selecao de Herois" : "[ESPACO / ENTER / Z] Voltar para Selecao de Personagem";
+    var _cont_str = _is_mob ? "Toque na tela para Voltar a Selecao de Herois" : (input_is_gamepad_active() ? (input_get_btn_label("confirm") + " Voltar para Selecao de Personagem") : "[ESPACO / ENTER / Z] Voltar para Selecao de Personagem");
     draw_text(_bx + _box_w / 2, _ry, _cont_str);
     _ry += 26;
 
@@ -803,7 +803,7 @@ if (game_over) {
     var _b_pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
     var _is_mob_vic = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
     draw_set_color(merge_colour(c_yellow, c_white, _b_pulse));
-    var _vic_str = _is_mob_vic ? "Toque na tela para Retornar a Selecao de Herois" : "[ESPACO / ENTER / Z] Retornar a Selecao de Personagens";
+    var _vic_str = _is_mob_vic ? "Toque na tela para Retornar a Selecao de Herois" : (input_is_gamepad_active() ? (input_get_btn_label("confirm") + " Retornar a Selecao de Personagens") : "[ESPACO / ENTER / Z] Retornar a Selecao de Personagens");
     draw_text(_bx + _box_w / 2, _sy, _vic_str);
 
     draw_set_halign(fa_left);
@@ -934,20 +934,25 @@ if (game_over) {
         var _cx = _win_x + 30 + _i * (_col_w + 16);
 
         var _slot_hover = (_mx >= _cx && _mx <= _cx + _col_w && _my >= _cols_start_y && _my <= _cols_start_y + _col_h);
+        var _is_cur_slot = (input_has_gamepad_connected() && hud_chest_slot_cursor == _i);
+        var _highlight = _slot_hover || _is_cur_slot;
         if (_slot_hover && _m_click) {
             equip_chest_talent(target, _i);
         }
 
         // Fundo do card de slot
         draw_set_alpha(0.85);
-        draw_set_color(_slot_hover ? make_colour_rgb(26, 36, 56) : make_colour_rgb(18, 22, 34));
+        draw_set_color(_highlight ? make_colour_rgb(26, 36, 56) : make_colour_rgb(18, 22, 34));
         draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + _col_h, false);
         draw_set_alpha(1);
-        draw_set_color(_slot_hover ? make_colour_rgb(220, 180, 60) : make_colour_rgb(50, 70, 100));
+        draw_set_color(_highlight ? make_colour_rgb(220, 180, 60) : make_colour_rgb(50, 70, 100));
         draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + _col_h, true);
+        if (_is_cur_slot) {
+            draw_rectangle(_cx - 1, _cols_start_y - 1, _cx + _col_w + 1, _cols_start_y + _col_h + 1, true);
+        }
 
         // Cabecalho do Slot
-        draw_set_color(_slot_hover ? make_colour_rgb(36, 50, 78) : make_colour_rgb(26, 34, 52));
+        draw_set_color(_highlight ? make_colour_rgb(36, 50, 78) : make_colour_rgb(26, 34, 52));
         draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 24, false);
         draw_set_color(c_yellow);
         draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 24, true);
@@ -983,13 +988,23 @@ if (game_over) {
 
         // Botao de Acao
         var _btn_y = _cols_start_y + _col_h - 30;
-        draw_set_color(_slot_hover ? make_colour_rgb(45, 75, 120) : make_colour_rgb(30, 45, 70));
+        draw_set_color(_highlight ? make_colour_rgb(45, 75, 120) : make_colour_rgb(30, 45, 70));
         draw_rectangle(_cx + 8, _btn_y, _cx + _col_w - 8, _btn_y + 24, false);
         draw_set_color(c_yellow);
         draw_rectangle(_cx + 8, _btn_y, _cx + _col_w - 8, _btn_y + 24, true);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        draw_text(_cx + _col_w / 2, _btn_y + 12, "[Aperte " + string(_i + 1) + " para Equipar]");
+        var _slot_txt = "";
+        if (input_has_gamepad_connected()) {
+            if (hud_chest_slot_cursor == _i) {
+                _slot_txt = input_get_btn_label("confirm") + " Equipar";
+            } else {
+                _slot_txt = "D-Pad Escolher";
+            }
+        } else {
+            _slot_txt = "[Aperte " + string(_i + 1) + " para Equipar]";
+        }
+        draw_text(_cx + _col_w / 2, _btn_y + 12, _slot_txt);
         draw_set_valign(fa_top);
     }
 
@@ -1022,7 +1037,8 @@ if (game_over) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_set_color(_discard_hover ? c_white : make_colour_rgb(240, 110, 110));
-    draw_text(_discard_x + _discard_w / 2, _discard_y + _discard_h / 2, "[X / ESC / Clique] Descartar este Talento e Continuar");
+    var _discard_txt = input_is_gamepad_active() ? (input_get_btn_label("cancel") + " Descartar este Talento e Continuar") : "[X / ESC / Clique] Descartar este Talento e Continuar";
+    draw_text(_discard_x + _discard_w / 2, _discard_y + _discard_h / 2, _discard_txt);
 
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
@@ -1073,7 +1089,7 @@ if (game_over) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_set_color(c_white);
-    draw_text(_btn_rx + _btn_rw / 2, _btn_ry + _btn_rh / 2, _is_mobile ? "Retomar" : "[X] Retomar");
+    draw_text(_btn_rx + _btn_rw / 2, _btn_ry + _btn_rh / 2, _is_mobile ? "Retomar" : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + " Retomar") : "[ESC] Retomar"));
 
     // Linha divisoria do cabecalho
     draw_set_color(make_colour_rgb(45, 60, 90));
@@ -1254,7 +1270,7 @@ if (game_over) {
         draw_set_color(_banner_col);
         draw_text(_rx, _ry, "* " + string(_pts) + " PONTO(S)!");
         draw_set_halign(fa_right);
-        draw_text(_col2_x + _right_w - 16, _ry, _is_mobile ? "Toque para Evoluir" : "Aperte [1, 2 ou 3]");
+        draw_text(_col2_x + _right_w - 16, _ry, _is_mobile ? "Toque para Evoluir" : (input_is_gamepad_active() ? ("D-Pad Navegar | " + input_get_btn_label("aux") + " Evoluir") : "Aperte [1, 2 ou 3]"));
         draw_set_halign(fa_left);
     } else {
         draw_set_color(c_white);
@@ -1290,7 +1306,13 @@ if (game_over) {
         var _cost = (_tid != "") ? talent_get_upgrade_cost(_tid, _rank) : 999999;
 
         // Borda do Card
-        if (_pts >= _cost && _rank < _max_rank && _tid != "") {
+        var _is_cur_card = (input_has_gamepad_connected() && hud_talent_slot_cursor == _i);
+        if (_is_cur_card) {
+            var _flash_cur = 0.5 + 0.5 * abs(sin(current_time * 0.009));
+            draw_set_color(merge_colour(c_yellow, c_white, _flash_cur));
+            draw_rectangle(_rx - 2, _cy - 2, _rx + _card_w + 2, _cy + _card_h + 2, true);
+            draw_rectangle(_rx - 1, _cy - 1, _rx + _card_w + 1, _cy + _card_h + 1, true);
+        } else if (_pts >= _cost && _rank < _max_rank && _tid != "") {
             var _flash = 0.5 + 0.5 * sin(current_time * 0.007 + _i * 1.5);
             draw_set_color(merge_colour(make_colour_rgb(70, 90, 130), c_yellow, _flash));
             draw_rectangle(_rx - 1, _cy - 1, _rx + _card_w + 1, _cy + _card_h + 1, true);
@@ -1370,7 +1392,17 @@ if (game_over) {
         if (_rank < _max_rank) {
             if (_pts >= _cost) {
                 draw_set_color(c_yellow);
-                draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "Aperte [" + string(_i + 1) + "] para Evoluir (-" + string(_cost) + " pts)");
+                var _upg_str = "";
+                if (input_has_gamepad_connected()) {
+                    if (hud_talent_slot_cursor == _i) {
+                        _upg_str = input_get_btn_label("aux") + " ou " + input_get_btn_label("confirm") + " Evoluir (-" + string(_cost) + " pts)";
+                    } else {
+                        _upg_str = "Custo: " + string(_cost) + " pts";
+                    }
+                } else {
+                    _upg_str = "Aperte [" + string(_i + 1) + "] para Evoluir (-" + string(_cost) + " pts)";
+                }
+                draw_text(_rx + _card_w - 14, _cy + _card_h - 6, _upg_str);
             } else {
                 draw_set_color(make_colour_rgb(170, 180, 200));
                 draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "Custo: " + string(_cost) + " pts (" + string(_pts) + " disponíveis)");
@@ -1391,7 +1423,7 @@ if (game_over) {
     draw_set_valign(fa_middle);
     var _f_center_y = _footer_y + 20;
 
-    var _ret_str = _is_mobile ? "Retomar" : "[ESC] Retomar";
+    var _ret_str = _is_mobile ? "Retomar" : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + " / " + input_get_btn_label("pause") + " Retomar") : "[ESC] Retomar");
     var _ret_w = max(150, string_width(_ret_str) + 32);
     var _ret_h = 32;
     var _ret_x = _win_x + 30;
@@ -1405,7 +1437,7 @@ if (game_over) {
     var _ret_scale = min(1.0, (_ret_w - 20) / _ret_tw);
     draw_text_transformed(_ret_x + _ret_w / 2, _ret_y + _ret_h / 2, _ret_str, _ret_scale, _ret_scale, 0);
 
-    var _men_str = _is_mobile ? "Abandonar Run" : "[M] Abandonar Run (Menu)";
+    var _men_str = _is_mobile ? "Abandonar Run" : (input_has_gamepad_connected() ? "[Select / M] Abandonar Run" : "[M] Abandonar Run (Menu)");
     var _men_w = max(310, string_width(_men_str) + 40);
     var _men_h = 32;
     var _men_x = _win_x + _win_w / 2 - _men_w / 2;

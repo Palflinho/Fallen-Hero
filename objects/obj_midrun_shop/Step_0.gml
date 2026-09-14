@@ -9,7 +9,7 @@ if (!global.midrun_shop_open) {
         prompt_active = true;
         var _touch_open = touch_room_clicked(x - 50, y - 60, x + 50, y + 40)
             || (variable_global_exists("touch_attack_pressed") && global.touch_attack_pressed);
-        if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || _touch_open) {
+        if (input_check_ui_confirm() || _touch_open) {
             global.midrun_shop_open = true;
             selected_index = 0;
             message_text = "";
@@ -62,22 +62,22 @@ if (touch_gui_clicked(_bx + _box_w - 190, _by + _box_h - 40, _bx + _box_w - 30, 
     _touch_buy = true;
 }
 
-if (keyboard_check_pressed(vk_up) || keyboard_check_pressed(ord("W"))) {
+if (input_check_ui_up_pressed()) {
     selected_index = (selected_index - 1 + _len) % _len;
-} else if (keyboard_check_pressed(vk_down) || keyboard_check_pressed(ord("S"))) {
+} else if (input_check_ui_down_pressed()) {
     selected_index = (selected_index + 1) % _len;
-} else if (keyboard_check_pressed(vk_left) || keyboard_check_pressed(ord("A"))) {
+} else if (input_check_ui_left_pressed()) {
     selected_index = max(0, selected_index - 2);
-} else if (keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))) {
+} else if (input_check_ui_right_pressed()) {
     selected_index = min(_len - 1, selected_index + 2);
 }
 
-if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("C"))) {
+if (input_check_ui_cancel() || keyboard_check_pressed(ord("C"))) {
     global.midrun_shop_open = false;
     exit;
 }
 
-if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || _touch_buy) {
+if (input_check_ui_confirm() || _touch_buy) {
     var _it = items[selected_index];
 
     if (_it.purchased) {

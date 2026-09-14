@@ -1,11 +1,15 @@
 event_inherited();
 
+// Sincroniza a arquitetura do chefe com o layout sorteado para a arena deste templo
+var _layout = arena_ensure_temple_layout("wind");
+arena_setup_chamber(_layout, true, "wind");
+
 body_colour = make_colour_rgb(180, 245, 255);
 body_radius = 46;
-hp_max = 500;
+hp_max = 1000;
 hp = hp_max;
 move_speed = 65;
-contact_damage = 14;
+contact_damage = 28;
 
 // Imune quase totalmente durante voo de ataque; vulnerabilidade total após o ciclo de dashes
 damage_reduction = 0;

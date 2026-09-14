@@ -1,3 +1,7 @@
+// Atualiza sistema de vibracao e deteccao dinamica de dispositivos
+input_rumble_update(delta_time / 1000000);
+input_update_device();
+
 // Atualiza módulo de controles touch mobile / emulador PC
 touch_controls_update();
 
@@ -38,6 +42,7 @@ if (!boss_room && !mob_clear_chest_spawned && instance_number(obj_enemy_parent) 
 
 if (!game_over && _player != noone && _player.state == "dead") {
     game_over = true;
+    input_rumble_stop();
     global.paused = false;
     global.attr_window_open = false;
     global.chest_reward_open = false;
@@ -63,7 +68,7 @@ if (game_over) {
     for (var _i = 0; _i < 5; _i++) {
         if (device_mouse_check_button_pressed(_i, mb_left)) _touch_tap = true;
     }
-    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C")) || _touch_tap) {
+    if (input_check_ui_confirm() || keyboard_check_pressed(ord("C")) || _touch_tap) {
         global.inrun_saved_stats = false;
         global.char_select_direct = true;
         room_goto(room_char_select);
@@ -93,7 +98,7 @@ if (global.run_victory || level_complete) {
     for (var _i = 0; _i < 5; _i++) {
         if (device_mouse_check_button_pressed(_i, mb_left)) _touch_tap = true;
     }
-    if (keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("C")) || _touch_tap) {
+    if (input_check_ui_confirm() || keyboard_check_pressed(ord("C")) || _touch_tap) {
         global.inrun_saved_stats = false;
         clear_save();
         global.run_victory = false;
@@ -106,10 +111,21 @@ if (global.run_victory || level_complete) {
 
 if (global.chest_reward_open) {
     if (_player != noone) {
-        if (keyboard_check_pressed(ord("1"))) equip_chest_talent(_player, 0);
-        if (keyboard_check_pressed(ord("2"))) equip_chest_talent(_player, 1);
-        if (keyboard_check_pressed(ord("3"))) equip_chest_talent(_player, 2);
-        if (keyboard_check_pressed(ord("X")) || keyboard_check_pressed(vk_escape)) skip_chest_reward();
+        if (input_check_ui_left_pressed()) {
+            hud_chest_slot_cursor = max(0, hud_chest_slot_cursor - 1);
+        }
+        if (input_check_ui_right_pressed()) {
+            hud_chest_slot_cursor = min(2, hud_chest_slot_cursor + 1);
+        }
+        if (input_check_ui_confirm()) {
+            equip_chest_talent(_player, hud_chest_slot_cursor);
+        }
+        if (input_check_ui_cancel() || input_check_slot_discard_pressed()) {
+            skip_chest_reward();
+        }
+        if (input_check_slot_pressed(0)) equip_chest_talent(_player, 0);
+        if (input_check_slot_pressed(1)) equip_chest_talent(_player, 1);
+        if (input_check_slot_pressed(2)) equip_chest_talent(_player, 2);
     }
     exit;
 }
@@ -133,11 +149,18 @@ if (global.paused || global.attr_window_open) {
 
     // Botão Menu Principal no rodapé (Abandonar Run)
     var _touch_menu = touch_gui_clicked(_men_box_x, _footer_y + 5, _men_box_x + _men_box_w, _footer_y + 37);
+    var _pad_abandon = false;
+    var _pad = input_get_active_pad();
+    if (_pad != -1) {
+        if (gamepad_button_check_pressed(_pad, gp_select)) {
+            _pad_abandon = true;
+        }
+    }
 
-    if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T")) || _touch_resume) {
+    if (input_check_ui_cancel() || input_check_pause_pressed() || _touch_resume) {
         global.paused = false;
         global.attr_window_open = false;
-    } else if (keyboard_check_pressed(ord("M")) || _touch_menu) {
+    } else if (keyboard_check_pressed(ord("M")) || _touch_menu || _pad_abandon) {
         global.inrun_saved_stats = false;
         global.paused = false;
         global.attr_window_open = false;
@@ -145,6 +168,19 @@ if (global.paused || global.attr_window_open) {
         global.chest_reward_open = false;
         room_goto(room_char_select);
     } else if (_player != noone) {
+        // Navegacao com D-Pad nos 3 cards de talentos
+        if (input_check_ui_up_pressed()) {
+            hud_talent_slot_cursor = max(0, hud_talent_slot_cursor - 1);
+        }
+        if (input_check_ui_down_pressed()) {
+            hud_talent_slot_cursor = min(2, hud_talent_slot_cursor + 1);
+        }
+
+        // Y / Triangulo (auxiliar fixo) ou A / Cruz confirma ponto no talento focado
+        if (input_check_ui_aux_pressed() || input_check_ui_confirm()) {
+            player_apply_talent_point(_player, hud_talent_slot_cursor);
+        }
+
         // Upgrade de talentos por clique tátil nos cards da ficha
         var _panel_gap = 16;
         var _left_w = 380;
@@ -161,13 +197,14 @@ if (global.paused || global.attr_window_open) {
         for (var _t_idx = 0; _t_idx < 3; _t_idx++) {
             var _cy = _ry + _t_idx * (_card_h + _card_gap);
             if (touch_gui_clicked(_rx, _cy, _rx + _card_w, _cy + _card_h)) {
+                hud_talent_slot_cursor = _t_idx;
                 player_apply_talent_point(_player, _t_idx);
             }
         }
 
-        if (keyboard_check_pressed(ord("1"))) player_apply_talent_point(_player, 0);
-        if (keyboard_check_pressed(ord("2"))) player_apply_talent_point(_player, 1);
-        if (keyboard_check_pressed(ord("3"))) player_apply_talent_point(_player, 2);
+        if (input_check_slot_pressed(0)) { hud_talent_slot_cursor = 0; player_apply_talent_point(_player, 0); }
+        if (input_check_slot_pressed(1)) { hud_talent_slot_cursor = 1; player_apply_talent_point(_player, 1); }
+        if (input_check_slot_pressed(2)) { hud_talent_slot_cursor = 2; player_apply_talent_point(_player, 2); }
     }
 
     if (keyboard_check_pressed(ord("C"))) {
@@ -182,7 +219,7 @@ if (global.paused || global.attr_window_open) {
     exit;
 }
 
-if (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("T")) || _touch_pause) {
+if (input_check_pause_pressed() || _touch_pause) {
     global.paused = true;
     global.attr_window_open = true;
 } else if (keyboard_check_pressed(vk_f1)) {

@@ -143,7 +143,7 @@ draw_rectangle(_bx + 30, _btn_m_y, _bx + 160, _btn_m_y + 30, true);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 draw_set_color(c_ltgray);
-draw_text(_bx + 95, _btn_m_y + 15, _is_mob ? "Fechar" : "[ESC] Fechar");
+draw_text(_bx + 95, _btn_m_y + 15, _is_mob ? "Fechar" : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + " Fechar") : "[ESC] Fechar"));
 
 // Botão Comprar Item
 draw_set_color(make_colour_rgb(32, 54, 86));
@@ -151,11 +151,11 @@ draw_rectangle(_bx + _box_w - 190, _btn_m_y, _bx + _box_w - 30, _btn_m_y + 30, f
 draw_set_color(c_yellow);
 draw_rectangle(_bx + _box_w - 190, _btn_m_y, _bx + _box_w - 30, _btn_m_y + 30, true);
 draw_set_color(c_white);
-draw_text(_bx + _box_w - 110, _btn_m_y + 15, _is_mob ? "Comprar Item" : "[Z] Comprar Item");
+draw_text(_bx + _box_w - 110, _btn_m_y + 15, _is_mob ? "Comprar Item" : (input_is_gamepad_active() ? (input_get_btn_label("confirm") + " Comprar") : "[Z] Comprar Item"));
 
 draw_set_halign(fa_center);
 draw_set_color(make_colour_rgb(180, 200, 225));
-var _hint = _is_mob ? "Toque nos itens para selecionar e comprar" : "Clique ou use Setas/Enter para comprar";
+var _hint = _is_mob ? "Toque nos itens para selecionar e comprar" : (input_is_gamepad_active() ? ("D-Pad para navegar | " + input_get_btn_label("confirm") + " Comprar") : "Clique ou use Setas/Enter para comprar");
 draw_text(_bx + _box_w / 2, _btn_m_y + 15, _hint);
 
 draw_set_halign(fa_left);

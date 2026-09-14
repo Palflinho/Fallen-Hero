@@ -1,3 +1,4 @@
+input_rumble_stop();
 global.paused = false;
 global.attr_window_open = false;
 global.chest_reward_open = false;
@@ -65,5 +66,6 @@ talent_card_gap_y = 14;
 talent_grid_cols = 6;
 talent_grid_scroll_row = 0;
 talent_grid_visible_rows = 3;
+shop_grid_cols = 6;
 shop_grid_scroll_row = 0;
 shop_grid_visible_rows = 3;

@@ -15,6 +15,9 @@ global.attr_window_open = false;
 global.chest_reward_open = false;
 global.run_victory = false;
 
+hud_chest_slot_cursor = 0;
+hud_talent_slot_cursor = 0;
+
 global.boss_buttons_pressed = 0;
 death_gold_earned = 0;
 death_gold_kept = 0;

@@ -31,7 +31,7 @@ if (state == "vulnerable") {
         trigger_hitstop(0.06);
         fx_spawn_sparks(x, y, c_white, 16);
         if (_player != noone && point_distance(x, y, _player.x, _player.y) <= 120) {
-            player_take_damage(10, "magical");
+            player_take_damage(20, "magical");
         }
     }
     exit;
@@ -80,7 +80,7 @@ switch (state) {
                     var _ang = _base_ang + _a * 15;
                     var _proj = instance_create_layer(x, y, layer, obj_enemy_projectile);
                     _proj.owner = id;
-                    _proj.damage = 11;
+                    _proj.damage = 22;
                     _proj.dir_x = lengthdir_x(1, _ang);
                     _proj.dir_y = lengthdir_y(1, _ang);
                     _proj.speed_px = 310;

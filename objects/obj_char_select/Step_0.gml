@@ -1,3 +1,5 @@
+input_update_device();
+
 if (locked_warning_timer > 0) locked_warning_timer--;
 if (reset_notice_timer > 0) reset_notice_timer--;
 if (save_notice_timer > 0) save_notice_timer--;
@@ -95,14 +97,14 @@ switch (state) {
             }
         }
 
-        if (keyboard_check_pressed(vk_up) || keyboard_check_pressed(ord("W"))) {
+        if (input_check_ui_up_pressed()) {
             main_menu_cursor = (main_menu_cursor - 1 + _opt_count) mod _opt_count;
         }
-        if (keyboard_check_pressed(vk_down) || keyboard_check_pressed(ord("S"))) {
+        if (input_check_ui_down_pressed()) {
             main_menu_cursor = (main_menu_cursor + 1) mod _opt_count;
         }
 
-        if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space)) {
+        if (input_check_ui_confirm()) {
             switch (main_menu_cursor) {
                 case 0: // Novo Jogo -> abre tela de 3 slots
                     save_slot_action = "new_game";
@@ -128,15 +130,15 @@ switch (state) {
         var _start_x = (room_width - _total_w) / 2;
         var _card_y = 160;
 
-        if (keyboard_check_pressed(vk_left) || keyboard_check_pressed(ord("A"))) {
+        if (input_check_ui_left_pressed()) {
             save_slot_cursor = (save_slot_cursor - 1 + 3) mod 3;
         }
-        if (keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))) {
+        if (input_check_ui_right_pressed()) {
             save_slot_cursor = (save_slot_cursor + 1) mod 3;
         }
-        if (keyboard_check_pressed(ord("1"))) save_slot_cursor = 0;
-        if (keyboard_check_pressed(ord("2"))) save_slot_cursor = 1;
-        if (keyboard_check_pressed(ord("3"))) save_slot_cursor = 2;
+        if (input_check_slot_pressed(0)) save_slot_cursor = 0;
+        if (input_check_slot_pressed(1)) save_slot_cursor = 1;
+        if (input_check_slot_pressed(2)) save_slot_cursor = 2;
 
         var _slot_to_confirm = -1;
 
@@ -161,8 +163,12 @@ switch (state) {
             }
         }
 
-        // Excluir slot selecionado com a tecla Delete
-        if (keyboard_check_pressed(vk_delete)) {
+        // Excluir slot selecionado com a tecla Delete ou Botão Y do Controle
+        var _pad_del = false;
+        var _pad_cs = input_get_active_pad();
+        if (_pad_cs != -1 && gamepad_button_check_pressed(_pad_cs, gp_face4)) _pad_del = true;
+
+        if (keyboard_check_pressed(vk_delete) || _pad_del) {
             var _target_slot = save_slot_cursor + 1;
             if (save_slot_exists(_target_slot)) {
                 save_slot_delete(_target_slot);
@@ -171,8 +177,8 @@ switch (state) {
             }
         }
 
-        // Tecla de confirmação
-        if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_space)) {
+        // Confirmação
+        if (input_check_ui_confirm()) {
             _slot_to_confirm = save_slot_cursor + 1;
         }
 
@@ -223,7 +229,7 @@ switch (state) {
         // Botão voltar no rodapé
         var _btn_back_y = room_height - 60;
         var _btn_back_h = 42;
-        if (touch_room_clicked(40, _btn_back_y, 200, _btn_back_y + _btn_back_h) || keyboard_check_pressed(ord("X")) || keyboard_check_pressed(vk_escape)) {
+        if (touch_room_clicked(40, _btn_back_y, 200, _btn_back_y + _btn_back_h) || input_check_ui_cancel()) {
             state = "main_menu";
         }
         break;
@@ -247,16 +253,18 @@ switch (state) {
                 save_notice_timer = 60;
             }
         }
-        if (keyboard_check_pressed(ord("1"))) { global.current_save_slot = 1; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 1"; save_notice_timer = 60; }
-        if (keyboard_check_pressed(ord("2"))) { global.current_save_slot = 2; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 2"; save_notice_timer = 60; }
-        if (keyboard_check_pressed(ord("3"))) { global.current_save_slot = 3; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 3"; save_notice_timer = 60; }
+        if (input_check_slot_pressed(0)) { global.current_save_slot = 1; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 1"; save_notice_timer = 60; }
+        if (input_check_slot_pressed(1)) { global.current_save_slot = 2; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 2"; save_notice_timer = 60; }
+        if (input_check_slot_pressed(2)) { global.current_save_slot = 3; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 3"; save_notice_timer = 60; }
 
-        // Salvamento explícito do perfil no slot escolhido com G
+        // Salvamento explícito do perfil no slot escolhido com G, Y ou Botão Y do Controle
         var _btn_sel_y = room_height - 62;
         var _btn_sel_h = 42;
         var _save_btn_x = room_width / 2 + 30;
         var _save_btn_w = 200;
-        if (keyboard_check_pressed(ord("G")) || touch_room_clicked(_save_btn_x, _btn_sel_y, _save_btn_x + _save_btn_w, _btn_sel_y + _btn_sel_h)) {
+        var _pad_save = input_get_active_pad();
+        var _gp_save_btn = (_pad_save != -1 && gamepad_button_check_pressed(_pad_save, gp_face4));
+        if (keyboard_check_pressed(ord("G")) || keyboard_check_pressed(ord("Y")) || _gp_save_btn || touch_room_clicked(_save_btn_x, _btn_sel_y, _save_btn_x + _save_btn_w, _btn_sel_y + _btn_sel_h)) {
             save_slot_save_character_select(global.current_save_slot, classes[selected_index], elements[selected_element_index], talent_selected_ids);
             save_notice_text = "Perfil salvo com sucesso no Slot " + string(global.current_save_slot) + "!";
             save_notice_timer = 120;
@@ -329,10 +337,13 @@ switch (state) {
             state = "shop";
         }
 
-        if (keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))) selected_index = (selected_index + 1) mod _n;
-        if (keyboard_check_pressed(vk_left) || keyboard_check_pressed(ord("A"))) selected_index = (selected_index - 1 + _n) mod _n;
+        var _pad_sel = input_get_active_pad();
+        var _gp_sh_l = (_pad_sel != -1 && (gamepad_button_check_pressed(_pad_sel, gp_shoulderl) || gamepad_button_check_pressed(_pad_sel, gp_shoulderlb)));
+        var _gp_sh_r = (_pad_sel != -1 && (gamepad_button_check_pressed(_pad_sel, gp_shoulderr) || gamepad_button_check_pressed(_pad_sel, gp_shoulderrb)));
+        if (input_check_ui_right_pressed() || _gp_sh_r) selected_index = (selected_index + 1) mod _n;
+        if (input_check_ui_left_pressed() || _gp_sh_l) selected_index = (selected_index - 1 + _n) mod _n;
 
-        if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter)) {
+        if (input_check_ui_confirm()) {
             var _character = classes[selected_index];
             var _elem_current = elements[selected_element_index];
             if (element_is_unlocked(_elem_current, _character)) {
@@ -351,14 +362,17 @@ switch (state) {
             state = "select_talents";
         }
 
-        if (keyboard_check_pressed(ord("S"))) {
+        var _pad_sel = input_get_active_pad();
+        var _gp_shop_btn = (_pad_sel != -1 && gamepad_button_check_pressed(_pad_sel, gp_face3));
+
+        if (keyboard_check_pressed(ord("S")) || _gp_shop_btn) {
             shop_tab_index = selected_index;
             shop_talent_index = 0;
             shop_grid_scroll_row = 0;
             state = "shop";
         }
 
-        if (keyboard_check_pressed(ord("X")) || keyboard_check_pressed(vk_escape)) {
+        if (input_check_ui_cancel()) {
             state = "main_menu";
         }
         break;
@@ -369,20 +383,24 @@ switch (state) {
         var _elem_changed = false;
 
         // Troca de elemento por toque / clique no cabeçalho
-        if (touch_room_clicked(room_width / 2 - 320, 50, room_width / 2 - 240, 84)) {
+        if (touch_room_clicked(room_width / 2 - 320, 50, room_width / 2 - 240, 78)) {
             selected_element_index = (selected_element_index - 1 + _el_n) mod _el_n;
             _elem_changed = true;
         }
-        if (touch_room_clicked(room_width / 2 + 240, 50, room_width / 2 + 320, 84)) {
+        if (touch_room_clicked(room_width / 2 + 240, 50, room_width / 2 + 320, 78)) {
             selected_element_index = (selected_element_index + 1) mod _el_n;
             _elem_changed = true;
         }
 
-        if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("A"))) {
+        var _pad_st = input_get_active_pad();
+        var _gp_prev_elem = (_pad_st != -1 && (gamepad_button_check_pressed(_pad_st, gp_shoulderl) || gamepad_button_check_pressed(_pad_st, gp_shoulderlb)));
+        var _gp_next_elem = (_pad_st != -1 && (gamepad_button_check_pressed(_pad_st, gp_shoulderr) || gamepad_button_check_pressed(_pad_st, gp_shoulderrb)));
+
+        if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("A")) || _gp_prev_elem) {
             selected_element_index = (selected_element_index - 1 + _el_n) mod _el_n;
             _elem_changed = true;
         }
-        if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("D"))) {
+        if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("D")) || _gp_next_elem) {
             selected_element_index = (selected_element_index + 1) mod _el_n;
             _elem_changed = true;
         }
@@ -461,20 +479,20 @@ switch (state) {
                 }
             }
 
-            if (keyboard_check_pressed(vk_right)) {
+            if (input_check_ui_right_pressed()) {
                 talent_select_cursor = (talent_select_cursor + 1) mod _m;
             }
-            if (keyboard_check_pressed(vk_left)) {
+            if (input_check_ui_left_pressed()) {
                 talent_select_cursor = (talent_select_cursor - 1 + _m) mod _m;
             }
-            if (keyboard_check_pressed(vk_down)) {
+            if (input_check_ui_down_pressed()) {
                 if (talent_select_cursor + _cols < _m) {
                     talent_select_cursor += _cols;
                 } else {
                     talent_select_cursor = talent_select_cursor mod _cols;
                 }
             }
-            if (keyboard_check_pressed(vk_up)) {
+            if (input_check_ui_up_pressed()) {
                 if (talent_select_cursor - _cols >= 0) {
                     talent_select_cursor -= _cols;
                 } else {
@@ -501,7 +519,9 @@ switch (state) {
                 }
             }
 
-            if (keyboard_check_pressed(vk_space)) {
+            var _gp_toggle = (_pad_st != -1 && (gamepad_button_check_pressed(_pad_st, gp_face1) || gamepad_button_check_pressed(_pad_st, gp_face3)));
+
+            if (keyboard_check_pressed(vk_space) || _gp_toggle) {
                 var _id = talent_select_list[talent_select_cursor].id;
                 var _idx = -1;
                 for (var i = 0; i < array_length(talent_selected_ids); i++) {
@@ -541,12 +561,16 @@ switch (state) {
                 save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
                 global.run_biome = "water";
                 global.run_room_step = 1;
+                global.temple_arena_layout = irandom(3);
+                global.temple_arena_biome = "water";
                 global.inrun_saved_stats = false;
                 room_goto(Room1);
             }
         }
 
-        if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
+        var _gp_start_run = (_pad_st != -1 && gamepad_button_check_pressed(_pad_st, gp_start));
+
+        if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter) || _gp_start_run) {
             var _elem_current = elements[selected_element_index];
             if (!element_is_unlocked(_elem_current, classes[selected_index])) {
                 locked_warning_timer = 90;
@@ -563,12 +587,14 @@ switch (state) {
                 save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
                 global.run_biome = "water";
                 global.run_room_step = 1;
+                global.temple_arena_layout = irandom(3);
+                global.temple_arena_biome = "water";
                 global.inrun_saved_stats = false;
                 room_goto(Room1);
             }
         }
 
-        if (keyboard_check_pressed(ord("X")) || keyboard_check_pressed(vk_escape)) {
+        if (input_check_ui_cancel()) {
             state = "select";
         }
         break;
@@ -603,12 +629,16 @@ switch (state) {
             }
         }
 
-        if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("A"))) {
+        var _pad_sh = input_get_active_pad();
+        var _gp_prev_tab = (_pad_sh != -1 && (gamepad_button_check_pressed(_pad_sh, gp_shoulderl) || gamepad_button_check_pressed(_pad_sh, gp_shoulderlb)));
+        var _gp_next_tab = (_pad_sh != -1 && (gamepad_button_check_pressed(_pad_sh, gp_shoulderr) || gamepad_button_check_pressed(_pad_sh, gp_shoulderrb)));
+
+        if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("A")) || _gp_prev_tab) {
             shop_tab_index = (shop_tab_index - 1 + _cn) mod _cn;
             shop_talent_index = 0;
             shop_grid_scroll_row = 0;
         }
-        if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("D"))) {
+        if (keyboard_check_pressed(ord("E")) || keyboard_check_pressed(ord("D")) || _gp_next_tab) {
             shop_tab_index = (shop_tab_index + 1) mod _cn;
             shop_talent_index = 0;
             shop_grid_scroll_row = 0;
@@ -616,10 +646,11 @@ switch (state) {
 
         var _tab_talents = get_talents_for_character(classes[shop_tab_index]);
         var _tn = array_length(_tab_talents);
-        var _grid_shop_y = 110;
+        var _grid_shop_y = 126;
 
         if (_tn > 0) {
-            var _cols = min(talent_grid_cols, _tn);
+            if (!variable_instance_exists(id, "shop_grid_cols")) shop_grid_cols = 6;
+            var _cols = min(shop_grid_cols, _tn);
             if (_cols <= 0) _cols = 1;
             var _total_grid_w = _cols * talent_card_w + (_cols - 1) * talent_card_gap_x;
             var _start_x = (room_width - _total_grid_w) / 2;
@@ -658,20 +689,20 @@ switch (state) {
                 }
             }
 
-            if (keyboard_check_pressed(vk_right)) {
+            if (input_check_ui_right_pressed()) {
                 shop_talent_index = (shop_talent_index + 1) mod _tn;
             }
-            if (keyboard_check_pressed(vk_left)) {
+            if (input_check_ui_left_pressed()) {
                 shop_talent_index = (shop_talent_index - 1 + _tn) mod _tn;
             }
-            if (keyboard_check_pressed(vk_down)) {
+            if (input_check_ui_down_pressed()) {
                 if (shop_talent_index + _cols < _tn) {
                     shop_talent_index += _cols;
                 } else {
                     shop_talent_index = shop_talent_index mod _cols;
                 }
             }
-            if (keyboard_check_pressed(vk_up)) {
+            if (input_check_ui_up_pressed()) {
                 if (shop_talent_index - _cols >= 0) {
                     shop_talent_index -= _cols;
                 } else {
@@ -698,7 +729,7 @@ switch (state) {
                 }
             }
 
-            if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter)) {
+            if (input_check_ui_confirm()) {
                 var _cur_shop_t = _tab_talents[shop_talent_index];
                 if (_cur_shop_t.affinity != "none" && !element_is_unlocked(_cur_shop_t.affinity, classes[shop_tab_index])) {
                     locked_warning_timer = 60;
@@ -725,7 +756,7 @@ switch (state) {
             }
         }
 
-        if (keyboard_check_pressed(ord("X")) || keyboard_check_pressed(vk_escape)) {
+        if (input_check_ui_cancel()) {
             state = "select";
         }
         break;

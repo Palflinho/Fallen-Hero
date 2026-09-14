@@ -1,4 +1,4 @@
-﻿// Shop talents per class -- cost 0 means unlocked from the start, cost > 0 must be bought
+// Shop talents per class -- cost 0 means unlocked from the start, cost > 0 must be bought
 // with gold in the shop before it can be picked at the pre-run talent-selection screen.
 //
 // General talents (character: "general") are never sold in a shop and never offered at
@@ -1052,7 +1052,12 @@ function load_meta_from_disk() {
     buffer_delete(_buf);
 
     if (_str == "") return;
-    var _data = json_parse(_str);
+    var _data = undefined;
+    try {
+        _data = json_parse(_str);
+    } catch (_ex) {
+        _data = undefined;
+    }
     if (is_struct(_data)) {
         if (variable_struct_exists(_data, "gold")) global.gold = _data.gold;
         if (variable_struct_exists(_data, "unlocked") && is_struct(_data.unlocked)) {

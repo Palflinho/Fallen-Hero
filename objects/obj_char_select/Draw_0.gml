@@ -264,11 +264,11 @@ switch (state) {
         draw_set_color(make_colour_rgb(70, 95, 135));
         draw_rectangle(40, _btn_back_y, 200, _btn_back_y + _btn_back_h, true);
         draw_set_color(c_ltgray);
-        draw_text(120, _btn_back_y + _btn_back_h / 2, _is_mobile ? "VOLTAR" : "[X] Voltar");
+        draw_text(120, _btn_back_y + _btn_back_h / 2, _is_mobile ? "VOLTAR" : (input_has_gamepad_connected() ? (input_get_btn_label("cancel") + " Voltar") : "[ESC / X] Voltar"));
 
         draw_set_halign(fa_center);
         draw_set_color(make_colour_rgb(160, 175, 195));
-        var _slots_tip = _is_mobile ? "Toque no card para selecionar   |   Toque no [X] para excluir" : "Setas / A / D / 1, 2, 3: Navegar   |   Z / Enter / Clique: Confirmar   |   Del: Excluir   |   ESC: Voltar";
+        var _slots_tip = _is_mobile ? "Toque no card para selecionar   |   Toque no [X] para excluir" : (input_has_gamepad_connected() ? ("D-Pad: Navegar   |   " + input_get_btn_label("confirm") + ": Confirmar   |   " + input_get_btn_label("cancel") + ": Voltar") : "Setas / 1, 2, 3: Navegar   |   Enter / Clique: Confirmar   |   ESC: Voltar");
         draw_text(room_width / 2 + 50, _btn_back_y + _btn_back_h / 2, _slots_tip);
         break;
 
@@ -394,7 +394,7 @@ switch (state) {
         draw_set_color(make_colour_rgb(70, 95, 135));
         draw_rectangle(40, _btn_sel_y, 190, _btn_sel_y + _btn_sel_h, true);
         draw_set_color(c_ltgray);
-        draw_text(115, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "VOLTAR" : "[X] Voltar");
+        draw_text(115, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "VOLTAR" : (input_get_btn_label("cancel") + " Voltar"));
 
         // Botão [ Confirmar Heroi ]
         draw_set_color(make_colour_rgb(32, 54, 86));
@@ -402,7 +402,7 @@ switch (state) {
         draw_set_color(c_yellow);
         draw_rectangle(room_width / 2 - 210, _btn_sel_y, room_width / 2 + 10, _btn_sel_y + _btn_sel_h, true);
         draw_set_color(c_white);
-        draw_text(room_width / 2 - 100, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "CONFIRMAR" : "[Z] Confirmar Heroi");
+        draw_text(room_width / 2 - 100, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "CONFIRMAR" : (input_get_btn_label("confirm") + " Confirmar Heroi"));
 
         // Botão [ Salvar Perfil ] (Exclusivo na Seleção de Personagem)
         var _save_btn_x = room_width / 2 + 30;
@@ -412,7 +412,7 @@ switch (state) {
         draw_set_color(c_lime);
         draw_rectangle(_save_btn_x, _btn_sel_y, _save_btn_x + _save_btn_w, _btn_sel_y + _btn_sel_h, true);
         draw_set_color(c_white);
-        draw_text(_save_btn_x + _save_btn_w / 2, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "SALVAR PERFIL" : "[G] Salvar Perfil");
+        draw_text(_save_btn_x + _save_btn_w / 2, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "SALVAR PERFIL" : (input_get_btn_label("save") + " Salvar Perfil"));
 
         // Botão [ Loja de Talentos ]
         draw_set_color(make_colour_rgb(26, 36, 56));
@@ -420,45 +420,64 @@ switch (state) {
         draw_set_color(make_colour_rgb(215, 175, 60));
         draw_rectangle(room_width - 240, _btn_sel_y, room_width - 40, _btn_sel_y + _btn_sel_h, true);
         draw_set_color(c_yellow);
-        draw_text(room_width - 140, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "LOJA TALENTOS" : "[S] Loja de Talentos");
+        draw_text(room_width - 140, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "LOJA TALENTOS" : (input_get_btn_label("shop") + " Loja Talentos"));
         break;
 
     case "select_talents":
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_white);
-        draw_text(room_width / 2, 36, "Talentos - " + labels[selected_index]);
+        draw_text(room_width / 2, 34, "Talentos - " + labels[selected_index]);
 
         var _elem_id = elements[selected_element_index];
         var _elem_unlocked = element_is_unlocked(_elem_id, classes[selected_index]);
         var _arch = class_get_archetype_name(classes[selected_index], _elem_id);
         var _desc = class_get_archetype_desc(classes[selected_index], _elem_id);
 
-        // Setas para troca de elemento
-        draw_set_color(make_colour_rgb(30, 42, 64));
-        draw_rectangle(room_width / 2 - 320, 50, room_width / 2 - 240, 84, false);
-        draw_set_color(c_yellow);
-        draw_rectangle(room_width / 2 - 320, 50, room_width / 2 - 240, 84, true);
-        draw_set_color(c_yellow);
-        draw_text_transformed(room_width / 2 - 280, 67, _is_mobile ? "◀" : "< Q", 1.2, 1.2, 0);
+        // Setas para troca de elemento com suporte dinamico a gamepad (L1/LB e R1/RB)
+        var _lbl_shoulder_l = "< Q";
+        var _lbl_shoulder_r = "E >";
+        if (_is_mobile) {
+            _lbl_shoulder_l = "◀";
+            _lbl_shoulder_r = "▶";
+        } else {
+            var _dev_sh = input_get_device_type();
+            if (_dev_sh == "ps") {
+                _lbl_shoulder_l = "< L1";
+                _lbl_shoulder_r = "R1 >";
+            } else if (_dev_sh == "xbox") {
+                _lbl_shoulder_l = "< LB";
+                _lbl_shoulder_r = "RB >";
+            } else {
+                _lbl_shoulder_l = "< Q";
+                _lbl_shoulder_r = "E >";
+            }
+        }
 
         draw_set_color(make_colour_rgb(30, 42, 64));
-        draw_rectangle(room_width / 2 + 240, 50, room_width / 2 + 320, 84, false);
+        draw_rectangle(room_width / 2 - 320, 50, room_width / 2 - 240, 78, false);
         draw_set_color(c_yellow);
-        draw_rectangle(room_width / 2 + 240, 50, room_width / 2 + 320, 84, true);
+        draw_rectangle(room_width / 2 - 320, 50, room_width / 2 - 240, 78, true);
         draw_set_color(c_yellow);
-        draw_text_transformed(room_width / 2 + 280, 67, _is_mobile ? "▶" : "E >", 1.2, 1.2, 0);
+        draw_text(room_width / 2 - 280, 64, _lbl_shoulder_l);
+
+        draw_set_color(make_colour_rgb(30, 42, 64));
+        draw_rectangle(room_width / 2 + 240, 50, room_width / 2 + 320, 78, false);
+        draw_set_color(c_yellow);
+        draw_rectangle(room_width / 2 + 240, 50, room_width / 2 + 320, 78, true);
+        draw_set_color(c_yellow);
+        draw_text(room_width / 2 + 280, 64, _lbl_shoulder_r);
 
         if (_elem_unlocked) {
             draw_set_color(c_yellow);
-            draw_text(room_width / 2, 66, "Sintonia: " + element_get_name(_elem_id) + " (" + _arch + ")");
+            draw_text(room_width / 2, 64, "Sintonia: " + element_get_name(_elem_id) + " (" + _arch + ")");
             draw_set_color(c_aqua);
-            draw_text(room_width / 2, 88, _desc);
+            draw_text(room_width / 2, 95, _desc);
         } else {
             draw_set_color(make_colour_rgb(255, 90, 90));
-            draw_text(room_width / 2, 66, "Sintonia: " + element_get_name(_elem_id) + " (" + _arch + ") [BLOQUEADO]");
+            draw_text(room_width / 2, 64, "Sintonia: " + element_get_name(_elem_id) + " (" + _arch + ") [BLOQUEADO]");
             draw_set_color(c_yellow);
-            draw_text(room_width / 2, 88, "Requisito: " + element_get_unlock_requirement(_elem_id));
+            draw_text(room_width / 2, 95, "Requisito: " + element_get_unlock_requirement(_elem_id));
         }
         var _grid_start_y = 126;
 
@@ -630,7 +649,7 @@ switch (state) {
                     draw_text(_box_x + _box_w - 24, _box_y + 18, "SELECIONADO (Slot " + string(_cur_slot + 1) + "/3)");
                 } else if (array_length(talent_selected_ids) < 3) {
                     draw_set_color(c_white);
-                    var _sel_prompt = _is_mobile ? "Toque para Selecionar" : "[Espaco] para Selecionar";
+                    var _sel_prompt = _is_mobile ? "Toque para Selecionar" : (input_get_btn_label("confirm") + " para Selecionar");
                     draw_text(_box_x + _box_w - 24, _box_y + 18, _sel_prompt + "  (" + string(array_length(talent_selected_ids)) + "/3)");
                 } else {
                     draw_set_color(c_gray);
@@ -671,7 +690,7 @@ switch (state) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_ltgray);
-        draw_text(150, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? "VOLTAR" : "[X] Voltar");
+        draw_text(150, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? "VOLTAR" : (input_get_btn_label("cancel") + " Voltar"));
 
         // Botão [ Iniciar Expedição ]
         var _btn_ini_w = 320;
@@ -681,7 +700,7 @@ switch (state) {
         draw_set_color(_elem_unlocked ? c_lime : c_red);
         draw_rectangle(_btn_ini_x, _btn_tal_y, _btn_ini_x + _btn_ini_w, _btn_tal_y + _btn_tal_h, true);
         draw_set_color(c_white);
-        draw_text(_btn_ini_x + _btn_ini_w / 2, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? "INICIAR EXPEDICAO" : "[Z] INICIAR EXPEDICAO");
+        draw_text(_btn_ini_x + _btn_ini_w / 2, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? "INICIAR EXPEDICAO" : (input_is_gamepad_active() ? (input_get_btn_label("pause") + " INICIAR EXPEDICAO") : "[Z / Enter] INICIAR EXPEDICAO"));
 
         // Footer instructions adaptadas ao dispositivo
         draw_set_halign(fa_center);
@@ -716,11 +735,30 @@ switch (state) {
         var _start_tab_x = (room_width - _total_tabs_w) / 2;
         var _tab_y = 60;
 
+        var _tab_lbl_l = "< Q";
+        var _tab_lbl_r = "E >";
+        if (_is_mobile) {
+            _tab_lbl_l = "◀";
+            _tab_lbl_r = "▶";
+        } else {
+            var _dev_tab = input_get_device_type();
+            if (_dev_tab == "ps") {
+                _tab_lbl_l = "< L1";
+                _tab_lbl_r = "R1 >";
+            } else if (_dev_tab == "xbox") {
+                _tab_lbl_l = "< LB";
+                _tab_lbl_r = "RB >";
+            } else {
+                _tab_lbl_l = "< Q";
+                _tab_lbl_r = "E >";
+            }
+        }
+
         draw_set_color(c_yellow);
         draw_set_halign(fa_right);
-        draw_text(_start_tab_x - 14, _tab_y + 16, _is_mobile ? "◀" : "< Q");
+        draw_text(_start_tab_x - 14, _tab_y + 16, _tab_lbl_l);
         draw_set_halign(fa_left);
-        draw_text(_start_tab_x + _total_tabs_w + 14, _tab_y + 16, _is_mobile ? "▶" : "E >");
+        draw_text(_start_tab_x + _total_tabs_w + 14, _tab_y + 16, _tab_lbl_r);
         draw_set_halign(fa_center);
         draw_set_halign(fa_center);
 
@@ -749,7 +787,8 @@ switch (state) {
         var _grid_shop_y = 110;
 
         if (_tn > 0) {
-            var _cols = min(talent_grid_cols, _tn);
+            if (!variable_instance_exists(id, "shop_grid_cols")) shop_grid_cols = 6;
+            var _cols = min(shop_grid_cols, _tn);
             if (_cols <= 0) _cols = 1;
             var _total_grid_w = _cols * talent_card_w + (_cols - 1) * talent_card_gap_x;
             var _start_x = (room_width - _total_grid_w) / 2;
@@ -925,7 +964,7 @@ switch (state) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_ltgray);
-        draw_text(150, _btn_shop_y + _btn_shop_h / 2, _is_mobile ? "VOLTAR" : "[X] Voltar");
+        draw_text(150, _btn_shop_y + _btn_shop_h / 2, _is_mobile ? "VOLTAR" : (input_get_btn_label("cancel") + " Voltar"));
 
         // Botão [ Comprar ]
         var _btn_buy_w = 320;
@@ -935,13 +974,13 @@ switch (state) {
         draw_set_color(c_yellow);
         draw_rectangle(_btn_buy_x, _btn_shop_y, _btn_buy_x + _btn_buy_w, _btn_shop_y + _btn_shop_h, true);
         draw_set_color(c_white);
-        draw_text(_btn_buy_x + _btn_buy_w / 2, _btn_shop_y + _btn_shop_h / 2, _is_mobile ? "COMPRAR TALENTO" : "[Z] Comprar Talento");
+        draw_text(_btn_buy_x + _btn_buy_w / 2, _btn_shop_y + _btn_shop_h / 2, _is_mobile ? "COMPRAR TALENTO" : (input_get_btn_label("confirm") + " Comprar Talento"));
 
         // Footer instructions adaptadas ao dispositivo
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_white);
-        var _shop_tip = _is_mobile ? "Toque nas abas de classe ou nos cards para comprar" : "Clique ou use as Setas/Enter para selecionar e comprar";
+        var _shop_tip = _is_mobile ? "Toque nas abas de classe ou nos cards para comprar" : (input_is_gamepad_active() ? ("D-Pad: Navegar   |   " + input_get_btn_label("shoulder_l") + "/" + input_get_btn_label("shoulder_r") + ": Abas   |   " + input_get_btn_label("confirm") + ": Comprar") : "Clique ou use as Setas/Enter para selecionar e comprar");
         draw_text(room_width / 2, 626, _shop_tip);
 
         if (locked_warning_timer > 0) {

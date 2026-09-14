@@ -1,6 +1,10 @@
 if (!variable_global_exists("run_biome")) global.run_biome = "water";
 biome = global.run_biome;
 
+// Configura o layout sorteado para a Arena do Templo atual
+var _layout = arena_ensure_temple_layout(biome);
+arena_setup_chamber(_layout, false, biome);
+
 // Escalonamento de ondas conforme a fase (Água: 3, Fogo: 4, Vento: 4, Terra: 5)
 if (biome == "water") {
     total_waves = 3;

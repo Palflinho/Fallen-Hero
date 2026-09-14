@@ -1,11 +1,18 @@
 event_inherited();
 
+// Sincroniza a arquitetura do chefe com o layout sorteado para a arena deste templo
+var _layout = arena_ensure_temple_layout("water");
+arena_setup_chamber(_layout, true, "water");
+if (instance_number(obj_stage_gate2) == 0 && object_exists(asset_get_index("obj_stage_gate2"))) {
+    instance_create_layer(600, 120, layer, obj_stage_gate2);
+}
+
 body_colour = c_maroon;
 body_radius = 60;
-hp_max = 600;
+hp_max = 1200;
 hp = hp_max;
 move_speed = 20;
-contact_damage = 16;
+contact_damage = 32;
 
 // Immune by default -- only takes damage while `vulnerable` is true.
 damage_reduction = 0;
@@ -24,7 +31,7 @@ barrage_shot_timer = 0.6;
 barrage_shot_interval = 0.16;
 barrage_volley_pause = 0.45;
 barrage_spread = 60;
-projectile_damage = 9;
+projectile_damage = 18;
 projectile_speed = 260;
 
 // Melee AoE slam -- same idea as slime/golem windup hits, but huge. Only triggers when
@@ -37,7 +44,7 @@ melee_trigger_dist = melee_range * 0.5;
 slam_windup = 1.5;
 slam_windup_timer = 0;
 slam_hit_radius = 190;
-slam_damage = 26;
+slam_damage = 52;
 
 vulnerable = false;
 vulnerable_timer = 0;

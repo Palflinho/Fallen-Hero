@@ -5,6 +5,7 @@ fx_system_update(_dt);
 
 if (hp <= 0) {
     state = "dead";
+    input_rumble_stop();
 }
 
 if (hit_flash_timer > 0) hit_flash_timer -= _dt;
@@ -31,7 +32,21 @@ if (poison_active) {
     poison_duration -= _dt;
     poison_tick_timer -= _dt;
     if (poison_tick_timer <= 0) {
-        hp -= poison_damage;
+        var _pdmg = poison_damage;
+        if (variable_instance_exists(id, "paladin_barrier_active") && paladin_barrier_active > 0) {
+            if (paladin_barrier_active >= _pdmg) {
+                paladin_barrier_active -= _pdmg;
+                _pdmg = 0;
+                fx_spawn_damage_popup(x, y - 24, "SOBREVIDA!", false, c_aqua);
+            } else {
+                _pdmg -= paladin_barrier_active;
+                paladin_barrier_active = 0;
+                fx_spawn_damage_popup(x, y - 24, "ESCUDO QUEBROU!", false, c_orange);
+            }
+        }
+        if (_pdmg > 0) {
+            hp -= _pdmg;
+        }
         poison_tick_timer = poison_tick_interval;
         hit_flash_timer = hit_flash_duration;
     }
@@ -54,32 +69,13 @@ if (state == "dead") {
     exit;
 }
 
-var _left  = keyboard_check(vk_left)  || keyboard_check(ord("A"));
-var _right = keyboard_check(vk_right) || keyboard_check(ord("D"));
-var _up    = keyboard_check(vk_up)    || keyboard_check(ord("W"));
-var _down  = keyboard_check(vk_down)  || keyboard_check(ord("S"));
-
-var _touch_atk = (variable_global_exists("touch_attack_pressed") && global.touch_attack_pressed);
-var _touch_def = (variable_global_exists("touch_defend_pressed") && global.touch_defend_pressed) || (variable_global_exists("touch_dash_pressed") && global.touch_dash_pressed);
-
-var _attack_pressed = keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(ord("J")) || _touch_atk;
-var _defend_pressed = keyboard_check_pressed(ord("X")) || keyboard_check_pressed(ord("K")) || keyboard_check_pressed(vk_space) || _touch_def;
+var _attack_pressed = input_check_attack_pressed();
+var _defend_pressed = input_check_defend_pressed();
 
 if (_attack_pressed) attack_buffer_timer = attack_buffer_duration;
 
-var _key_h = _right - _left;
-var _key_v = _down - _up;
-
-var _touch_h = variable_global_exists("touch_input_h") ? global.touch_input_h : 0;
-var _touch_v = variable_global_exists("touch_input_v") ? global.touch_input_v : 0;
-
-if (_touch_h != 0 || _touch_v != 0) {
-    input_h = _touch_h;
-    input_v = _touch_v;
-} else {
-    input_h = _key_h;
-    input_v = _key_v;
-}
+input_h = input_get_h();
+input_v = input_get_v();
 
 switch (state) {
     case "idle":

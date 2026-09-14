@@ -3,6 +3,8 @@
 // is_world_paused() so every object that already gates on it freezes for free.
 function trigger_hitstop(_duration) {
     global.hitstop_timer = max(global.hitstop_timer, _duration);
+    var _rumble_mag = clamp(_duration * 3.5, 0.2, 0.7);
+    input_rumble(_rumble_mag, _rumble_mag, _duration);
 }
 
 // -------------------------------------------------------------
@@ -1250,27 +1252,6 @@ function player_take_damage(_amount, _damage_type) {
                 _final = 0;
                 _blocked_fully = true;
             }
-
-            if (_p.paladin_barrier_active > 0 && !_blocked_fully) {
-                if (_p.paladin_barrier_active >= _final) {
-                    _p.paladin_barrier_active -= _final;
-                    _final = 0;
-                    _blocked_fully = true;
-                } else {
-                    _final -= _p.paladin_barrier_active;
-                    _p.paladin_barrier_active = 0;
-
-                    // 16 Escudo Espelhado: barreira explode ao quebrar
-                    if (variable_instance_exists(_p, "synth_paladino_escudo_espelhado") && _p.synth_paladino_escudo_espelhado > 0) {
-                        with (obj_enemy_parent) {
-                            if (point_distance(x, y, _p.x, _p.y) <= 120) {
-                                enemy_take_damage(id, 15, _p.x, _p.y, 200);
-                                enemy_apply_slow(id, 0.2, 1.2);
-                            }
-                        }
-                    }
-                }
-            }
             if (_final > 0 && !_blocked_fully) {
                 _final *= 0.60;
             }
@@ -1353,6 +1334,36 @@ function player_take_damage(_amount, _damage_type) {
         var _min_dmg = max(2, ceil(_amount * 0.20));
         _final = max(_min_dmg, round(_final));
 
+        // Absorção de Sobrevida (Barreira Sagrada / Paladino)
+        if (variable_instance_exists(_p, "paladin_barrier_active") && _p.paladin_barrier_active > 0 && _final > 0) {
+            if (_p.paladin_barrier_active >= _final) {
+                _p.paladin_barrier_active -= _final;
+                _final = 0;
+                fx_spawn_damage_popup(_p.x, _p.y - 24, "SOBREVIDA!", false, c_aqua);
+                fx_spawn_sparks(_p.x, _p.y, c_aqua, 8);
+                trigger_hitstop(0.04);
+                input_rumble(0.3, 0.3, 0.12);
+            } else {
+                _final -= _p.paladin_barrier_active;
+                _p.paladin_barrier_active = 0;
+                fx_spawn_damage_popup(_p.x, _p.y - 24, "ESCUDO QUEBROU!", false, c_orange);
+                fx_spawn_sparks(_p.x, _p.y, c_aqua, 16);
+                trigger_hitstop(0.06);
+                input_rumble(0.5, 0.5, 0.18);
+
+                // 16 Escudo Espelhado: barreira explode ao quebrar por dano
+                if (variable_instance_exists(_p, "synth_paladino_escudo_espelhado") && _p.synth_paladino_escudo_espelhado > 0) {
+                    with (obj_enemy_parent) {
+                        if (point_distance(x, y, _p.x, _p.y) <= 120) {
+                            enemy_take_damage(id, 15, _p.x, _p.y, 200);
+                            enemy_apply_slow(id, 0.2, 1.2);
+                        }
+                    }
+                    fx_spawn_sparks(_p.x, _p.y, c_white, 16);
+                }
+            }
+        }
+
         // 26 Furia Imortal: nao morre durante Furia Ardente
         if (_p.defend_mode == "berserk_fury" && variable_instance_exists(_p, "synth_berserk_furia_imortal") && _p.synth_berserk_furia_imortal > 0) {
             if ((_p.hp - _final) <= 0) {
@@ -1400,6 +1411,7 @@ function player_take_damage(_amount, _damage_type) {
         if (_final > 0) {
             _p.state = "hurt";
             trigger_hitstop(0.05);
+            input_rumble(0.6, 0.7, 0.22);
             global.screen_damage_flash = 0.35;
         }
 

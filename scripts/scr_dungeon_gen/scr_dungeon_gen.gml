@@ -900,3 +900,166 @@ function dungeon_generate_modular() {
     var _c2_e = (_combat_room2.gx < 2) ? _h_conn[_combat_room2.gx][_combat_room2.gy] : false;
     dungeon_build_chamber_template(_combat_room2.gx * _cw, _combat_room2.gy * _ch, (irandom(1) == 0 ? 1 : 2), "combat", _biome, _layer_id, _c2_n, _c2_s, _c2_w, _c2_e);
 }
+
+// =========================================================================
+// SISTEMA DE RODÍZIO DE ARENA E CHEFE SINCRONIZADOS POR TEMPLO
+// (Filosofia Sakurai/Miyamoto: O desafio da Arena funciona como prévia tática da Sala do Chefe)
+// =========================================================================
+
+/// @function arena_ensure_temple_layout(biome)
+/// @desc Garante que um layout aleatório (0 a 3) seja sorteado para o templo atual e mantido consistente
+function arena_ensure_temple_layout(_biome) {
+    if (!variable_global_exists("run_biome")) global.run_biome = "water";
+    var _cur_biome = is_undefined(_biome) ? global.run_biome : _biome;
+    
+    if (!variable_global_exists("temple_arena_layout") || !variable_global_exists("temple_arena_biome") || global.temple_arena_biome != _cur_biome) {
+        global.temple_arena_layout = irandom(3);
+        global.temple_arena_biome = _cur_biome;
+    }
+    return global.temple_arena_layout;
+}
+
+/// @function arena_setup_chamber(layout_idx, is_boss, biome)
+/// @desc Constrói a arquitetura interna sincronizada da arena/chefe com cobertura tática e perigos
+function arena_setup_chamber(_layout_idx, _is_boss, _biome) {
+    if (is_undefined(_biome)) {
+        if (!variable_global_exists("run_biome")) global.run_biome = "water";
+        _biome = global.run_biome;
+    }
+    if (is_undefined(_layout_idx) || _layout_idx < 0) {
+        _layout_idx = arena_ensure_temple_layout(_biome);
+    }
+    global.temple_arena_layout = _layout_idx;
+    global.temple_arena_biome = _biome;
+
+    var _layer_id = layer_get_id("Instances");
+    if (_layer_id == -1) _layer_id = layer_create(0, "Instances");
+
+    // 1. Limpeza de paredes internas (preservando as paredes de borda 1200x900)
+    with (obj_wall) {
+        if (x > 32 && x < 1160 && y > 32 && y < 860) {
+            instance_destroy();
+        }
+    }
+
+    // 2. Limpeza de perigos e armadilhas anteriores
+    with (obj_trap_spike) instance_destroy();
+    var _wp = asset_get_index("obj_water_puddle");
+    if (_wp != -1) with (_wp) instance_destroy();
+    var _lp = asset_get_index("obj_lava_pool_cycle");
+    if (_lp != -1) with (_lp) instance_destroy();
+    var _lp2 = asset_get_index("obj_lava_pool");
+    if (_lp2 != -1) with (_lp2) instance_destroy();
+    var _wc = asset_get_index("obj_wind_cyclone");
+    if (_wc != -1) with (_wc) instance_destroy();
+    var _mq = asset_get_index("obj_mud_quicksand");
+    if (_mq != -1) with (_mq) instance_destroy();
+    var _ip = asset_get_index("obj_ice_patch");
+    if (_ip != -1) with (_ip) instance_destroy();
+    var _ef = asset_get_index("obj_earth_fissure");
+    if (_ef != -1) with (_ef) instance_destroy();
+
+    // Helper para gerar perigo elemental condizente
+    var _spawn_hazard = function(_hx, _hy, _b, _lid) {
+        if (_b == "water") {
+            instance_create_layer(_hx, _hy, _lid, obj_ice_patch);
+            var _puddle = asset_get_index("obj_water_puddle");
+            if (_puddle != -1) instance_create_layer(_hx + 8, _hy + 8, _lid, _puddle);
+        } else if (_b == "fire") {
+            instance_create_layer(_hx, _hy, _lid, obj_lava_pool_cycle);
+        } else if (_b == "wind") {
+            var _wind = asset_get_index("obj_wind_cyclone");
+            if (_wind != -1) instance_create_layer(_hx, _hy, _lid, _wind);
+        } else { // earth
+            var _fissure = asset_get_index("obj_earth_fissure");
+            if (_fissure != -1) instance_create_layer(_hx, _hy, _lid, _fissure);
+            var _mud = asset_get_index("obj_mud_quicksand");
+            if (_mud != -1) instance_create_layer(_hx + 8, _hy + 8, _lid, _mud);
+        }
+    };
+
+    // 3. Construção da geometria dos 4 layouts modulares
+    switch (_layout_idx mod 4) {
+        case 0:
+            // Layout 0: Pilares Gêmeos Centrais & Flancos Táticos (Clássico Hades/Isaac)
+            dungeon_spawn_wall(350, 380, 64, 64);
+            dungeon_spawn_wall(786, 380, 64, 64);
+            dungeon_spawn_wall(190, 560, 48, 48);
+            dungeon_spawn_wall(962, 560, 48, 48);
+
+            instance_create_layer(250, 300, _layer_id, obj_trap_spike);
+            instance_create_layer(886, 300, _layer_id, obj_trap_spike);
+            instance_create_layer(450, 660, _layer_id, obj_trap_spike);
+            instance_create_layer(690, 660, _layer_id, obj_trap_spike);
+
+            _spawn_hazard(180, 250, _biome, _layer_id);
+            _spawn_hazard(940, 250, _biome, _layer_id);
+            _spawn_hazard(300, 490, _biome, _layer_id);
+            _spawn_hazard(830, 490, _biome, _layer_id);
+            break;
+
+        case 1:
+            // Layout 1: Os Quatro Bastiões Angulares (Arena de Kiting Circular)
+            dungeon_spawn_wall(290, 230, 64, 64);
+            dungeon_spawn_wall(846, 230, 64, 64);
+            dungeon_spawn_wall(290, 590, 64, 64);
+            dungeon_spawn_wall(846, 590, 64, 64);
+
+            instance_create_layer(290, 410, _layer_id, obj_trap_spike);
+            instance_create_layer(846, 410, _layer_id, obj_trap_spike);
+            instance_create_layer(568, 290, _layer_id, obj_trap_spike);
+            instance_create_layer(568, 610, _layer_id, obj_trap_spike);
+
+            _spawn_hazard(180, 410, _biome, _layer_id);
+            _spawn_hazard(950, 410, _biome, _layer_id);
+            _spawn_hazard(420, 410, _biome, _layer_id);
+            _spawn_hazard(716, 410, _biome, _layer_id);
+            break;
+
+        case 2:
+            // Layout 2: Trincheiras Horizontais & Barricadas de Linha de Visão
+            dungeon_spawn_wall(270, 434, 160, 32);
+            dungeon_spawn_wall(770, 434, 160, 32);
+            dungeon_spawn_wall(568, 290, 64, 48);
+            dungeon_spawn_wall(568, 570, 64, 48);
+
+            instance_create_layer(270, 350, _layer_id, obj_trap_spike);
+            instance_create_layer(870, 350, _layer_id, obj_trap_spike);
+            instance_create_layer(270, 520, _layer_id, obj_trap_spike);
+            instance_create_layer(870, 520, _layer_id, obj_trap_spike);
+
+            _spawn_hazard(180, 260, _biome, _layer_id);
+            _spawn_hazard(940, 260, _biome, _layer_id);
+            _spawn_hazard(180, 610, _biome, _layer_id);
+            _spawn_hazard(940, 610, _biome, _layer_id);
+            break;
+
+        case 3:
+            // Layout 3: A Encruzilhada dos Altares (Chicane Tático)
+            dungeon_spawn_wall(420, 250, 32, 160);
+            dungeon_spawn_wall(748, 490, 32, 160);
+            dungeon_spawn_wall(210, 420, 64, 64);
+            dungeon_spawn_wall(926, 420, 64, 64);
+
+            instance_create_layer(340, 420, _layer_id, obj_trap_spike);
+            instance_create_layer(800, 420, _layer_id, obj_trap_spike);
+            instance_create_layer(568, 410, _layer_id, obj_trap_spike);
+            instance_create_layer(568, 490, _layer_id, obj_trap_spike);
+
+            _spawn_hazard(280, 250, _biome, _layer_id);
+            _spawn_hazard(860, 650, _biome, _layer_id);
+            _spawn_hazard(420, 610, _biome, _layer_id);
+            _spawn_hazard(748, 290, _biome, _layer_id);
+            break;
+    }
+
+    // 4. Posicionamento seguro do jogador
+    var _player = instance_find(obj_player, 0);
+    var _target_py = _is_boss ? 760 : 720;
+    if (_player != noone) {
+        _player.x = 600;
+        _player.y = _target_py;
+        _player.xprevious = 600;
+        _player.yprevious = _target_py;
+    }
+}

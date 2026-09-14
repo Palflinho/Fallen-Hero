@@ -22,7 +22,7 @@ switch (state) {
                     var _bang = _dir + _b * 22;
                     var _bp = instance_create_layer(x, y, layer, obj_enemy_projectile);
                     _bp.owner = id;
-                    _bp.damage = 14;
+                    _bp.damage = 28;
                     _bp.dir_x = lengthdir_x(1, _bang);
                     _bp.dir_y = lengthdir_y(1, _bang);
                     _bp.speed_px = 220;
@@ -59,7 +59,7 @@ switch (state) {
                 var _ang = _a * 45;
                 var _proj = instance_create_layer(x, y, layer, obj_enemy_projectile);
                 _proj.owner = id;
-                _proj.damage = 18;
+                _proj.damage = 36;
                 _proj.dir_x = lengthdir_x(1, _ang);
                 _proj.dir_y = lengthdir_y(1, _ang);
                 _proj.speed_px = 260;

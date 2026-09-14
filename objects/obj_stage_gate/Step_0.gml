@@ -101,14 +101,20 @@ if (_ready) {
         else if (room == Room2) {
             global.run_biome = "fire";
             global.run_room_step = 1;
+            global.temple_arena_layout = irandom(3);
+            global.temple_arena_biome = "fire";
             _dest = asset_get_index("Room3");
         } else if (room == Room4) {
             global.run_biome = "wind";
             global.run_room_step = 1;
+            global.temple_arena_layout = irandom(3);
+            global.temple_arena_biome = "wind";
             _dest = asset_get_index("Room5");
         } else if (room == Room6) {
             global.run_biome = "earth";
             global.run_room_step = 1;
+            global.temple_arena_layout = irandom(3);
+            global.temple_arena_biome = "earth";
             _dest = asset_get_index("Room7");
         } else if (room == Room8) {
             global.run_victory = true;

@@ -39,7 +39,7 @@ if (state == "overheat") {
         trigger_hitstop(0.08);
         fx_spawn_sparks(x, y, c_red, 20);
         if (_player != noone && point_distance(x, y, _player.x, _player.y) <= 140) {
-            player_take_damage(12, "magical");
+            player_take_damage(24, "magical");
         }
     }
     exit;
