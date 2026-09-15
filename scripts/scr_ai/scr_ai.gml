@@ -1,6 +1,9 @@
 function ai_detect_player(_vision_range, _vision_angle, _spider_range) {
     var _player = instance_find(obj_player, 0);
-    if (_player == noone || _player.invisible || _player.hp <= 0) return noone;
+    if (_player == noone || _player.invisible || _player.hp <= 0) {
+        if (variable_instance_exists(id, "has_spotted_player")) has_spotted_player = false;
+        return noone;
+    }
 
     // Se ja avistou o jogador e esta em combate, mantem o foco continuo
     if (variable_instance_exists(id, "has_spotted_player") && has_spotted_player) {

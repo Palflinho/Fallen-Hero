@@ -100,22 +100,22 @@ function input_get_btn_label(_action) {
     if (_action == "defend") {
         if (_type == "ps") return "[Quadrado]";
         if (_type == "xbox") return "[X]";
-        return "[X / Espaco]";
+        return "[X]";
     }
     if (_action == "confirm" || _action == "interact" || _action == "accept") {
         if (_type == "ps") return "[X]";
         if (_type == "xbox") return "[A]";
-        return "[ESPACO / Z]";
+        return "[Z]";
     }
     if (_action == "cancel" || _action == "back" || _action == "refuse") {
         if (_type == "ps") return "[O]";
         if (_type == "xbox") return "[B]";
-        return "[ESC / X]";
+        return "[X]";
     }
     if (_action == "save") {
         if (_type == "ps") return "[Triangulo]";
         if (_type == "xbox") return "[Y]";
-        return "[Y / G]";
+        return "[G]";
     }
     if (_action == "shop") {
         if (_type == "ps") return "[Quadrado]";
@@ -125,7 +125,7 @@ function input_get_btn_label(_action) {
     if (_action == "aux" || _action == "talent") {
         if (_type == "ps") return "[Triangulo]";
         if (_type == "xbox") return "[Y]";
-        return "[Y / G]";
+        return "[G]";
     }
     if (_action == "pause") {
         if (_type == "ps") return "[Options]";

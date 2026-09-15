@@ -16,10 +16,23 @@ if (facing_dir > 105 && facing_dir < 255) {
 
 if (hit_flash_timer > 0) {
     hit_flash_timer -= _dt;
-    has_spotted_player = true;
-    if (state == "patrol") state = "chase";
+    var _p_check = instance_find(obj_player, 0);
+    if (_p_check != noone && !_p_check.invisible) {
+        has_spotted_player = true;
+        if (state == "patrol") state = "chase";
+    }
 }
 if (spider_alert_timer > 0) spider_alert_timer -= _dt;
+
+// Perda imediata e contínua de alvo quando o jogador estiver invisível
+var _p_inst = instance_find(obj_player, 0);
+if (_p_inst != noone && _p_inst.invisible) {
+    has_spotted_player = false;
+    lost_sight_timer = lost_sight_grace;
+    if (state == "chase" || state == "windup" || state == "cast") {
+        state = "patrol";
+    }
+}
 
 // Sakurai Polish: Knockback Physics with Wall Collisions
 if (abs(knockback_vx) > 1 || abs(knockback_vy) > 1) {

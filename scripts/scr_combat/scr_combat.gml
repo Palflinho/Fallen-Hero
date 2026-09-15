@@ -1479,3 +1479,19 @@ function player_take_damage(_amount, _damage_type) {
 
     _p.hp = max(0, _p.hp);
 }
+
+/// @function player_enter_stealth()
+/// @desc Ativa a invisibilidade do jogador e faz todos os inimigos perderem o foco/alvo imediatamente
+function player_enter_stealth() {
+    var _player = instance_find(obj_player, 0);
+    if (_player != noone) {
+        _player.invisible = true;
+    }
+    with (obj_enemy_parent) {
+        has_spotted_player = false;
+        lost_sight_timer = lost_sight_grace;
+        if (state == "chase" || state == "windup" || state == "cast") {
+            state = "patrol";
+        }
+    }
+}

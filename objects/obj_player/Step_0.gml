@@ -164,7 +164,7 @@ switch (state) {
             state = "defend";
             defend_active = true;
             defend_timer = defend_duration;
-            if (defend_mode == "invisible") invisible = true;
+            if (defend_mode == "invisible") player_enter_stealth();
             if (defend_mode == "roll") invuln_timer = defend_duration;
 
             if (defend_mode == "paladin_aura") {
@@ -257,7 +257,7 @@ switch (state) {
                 fx_spawn_sparks(x, y, make_colour_rgb(180, 140, 80), 14);
             } else if (defend_mode == "mist_roll") {
                 invuln_timer = defend_duration;
-                invisible = true;
+                player_enter_stealth();
                 poison_active = false;
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= 90) {
@@ -293,11 +293,11 @@ switch (state) {
                 earth_anchored = true;
                 fx_spawn_sparks(x, y, make_colour_rgb(140, 160, 60), 8);
             } else if (defend_mode == "spectral_mist") {
-                invisible = true;
+                player_enter_stealth();
                 invuln_timer = defend_duration;
                 fx_spawn_sparks(x, y, c_aqua, 8);
             } else if (defend_mode == "ash_bomb") {
-                invisible = true;
+                player_enter_stealth();
                 invuln_timer = 0.5;
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= 100) {
@@ -331,7 +331,7 @@ switch (state) {
                 } else {
                     fh_move_and_collide(facing_x * 90, facing_y * 90);
                 }
-                invisible = true;
+                player_enter_stealth();
                 last_attack_was_crit = true;
                 fx_spawn_sparks(x, y, c_purple, 8);
             } else if (defend_mode == "obsidian_skin") {
@@ -368,6 +368,7 @@ switch (state) {
                 attack_has_fired = false;
             } else {
                 duelist_combo_count = 0;
+                invisible = false;
                 state = "idle";
                 attack_cooldown_timer = attack_cooldown;
             }
@@ -375,6 +376,43 @@ switch (state) {
         break;
 
     case "defend":
+        // Cancelamento antecipado ao apertar o botão de defesa novamente (Cavaleiro e Mago)
+        if ((character_class == "knight" || character_class == "mage") && _defend_pressed && defend_timer < (defend_duration - 0.08)) {
+            defend_timer = 0;
+            if (defend_mode == "cryo_prison") {
+                invuln_timer = min(invuln_timer, 0.15);
+            }
+            fx_spawn_sparks(x, y, c_white, 6);
+        }
+
+        // Assassino: Movimentacao durante a habilidade com 20% de reducao de velocidade (80% da velocidade)
+        if (character_class == "assassin" && (defend_mode == "invisible" || defend_mode == "ash_bomb" || defend_mode == "obsidian_skin")) {
+            if (input_h != 0 || input_v != 0) {
+                var _len = point_distance(0, 0, input_h, input_v);
+                facing_x = input_h / _len;
+                facing_y = input_v / _len;
+                move_dir = point_direction(0, 0, facing_x, facing_y);
+                fh_move_and_collide((input_h / _len) * move_speed * 0.80 * _dt, (input_v / _len) * move_speed * 0.80 * _dt);
+            }
+        }
+
+        // Assassino: quebra a furtividade ao atacar, desferindo golpe surpresa emboscado
+        if (character_class == "assassin" && (attack_buffer_timer > 0 || _attack_pressed) && attack_cooldown_timer <= 0) {
+            defend_active = false;
+            defend_timer = 0;
+            state = "attack";
+            attack_buffer_timer = 0;
+            var _atk_spd_mult = 1 + synth_atk_spd_bonus;
+            var _eff_atk_dur = attack_duration / max(0.2, _atk_spd_mult);
+            if (frenesi_stacks > 0) {
+                _eff_atk_dur *= (1 / (1 + frenesi_stacks * 0.05));
+            }
+            attack_duration_current = _eff_atk_dur;
+            attack_timer = _eff_atk_dur;
+            attack_has_fired = false;
+            defend_cooldown_timer = defend_cooldown;
+        }
+
         defend_timer -= _dt;
 
         if (defend_mode == "roll" || defend_mode == "mist_roll" || defend_mode == "cyclone_roll") {
@@ -499,7 +537,7 @@ switch (state) {
         break;
 }
 
-if ((defend_mode == "invisible" || defend_mode == "spectral_mist" || defend_mode == "ash_bomb" || defend_mode == "shadowstep") && state != "defend") invisible = false;
+if ((defend_mode == "invisible" || defend_mode == "spectral_mist" || defend_mode == "ash_bomb" || defend_mode == "shadowstep") && state != "defend" && state != "attack") invisible = false;
 
 hp = clamp(hp, 0, hp_max);
 

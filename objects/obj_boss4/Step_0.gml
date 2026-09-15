@@ -11,7 +11,7 @@ switch (state) {
     case "chase":
         damage_reduction = 0;
         vulnerable = false;
-        if (_player != noone) {
+        if (_player != noone && !_player.invisible) {
             var _dir = point_direction(x, y, _player.x, _player.y);
             fh_move_and_collide(lengthdir_x(move_speed * _dt, _dir), lengthdir_y(move_speed * _dt, _dir));
 

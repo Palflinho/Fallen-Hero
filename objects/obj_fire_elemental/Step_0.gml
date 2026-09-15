@@ -19,6 +19,10 @@ switch (state) {
         break;
 
     case "chase":
+        if (_player != noone && _player.invisible) {
+            state = "patrol";
+            break;
+        }
         if (_seen != noone) {
             lost_sight_timer = 0;
             if (_dist <= attack_range && attack_cooldown_timer <= 0) facing_dir = point_direction(x, y, _player.x, _player.y);

@@ -4,7 +4,7 @@ var _dt = delta_time / 1000000;
 var _player = instance_find(obj_player, 0);
 var _dist = (_player != noone) ? point_distance(x, y, _player.x, _player.y) : infinity;
 
-if (_player != noone && state != "slam_windup") {
+if (_player != noone && !_player.invisible && state != "slam_windup") {
     facing_dir = point_direction(x, y, _player.x, _player.y);
 }
 
@@ -33,6 +33,10 @@ if (vulnerable) {
             break;
 
         case "barrage":
+            if (_player != noone && _player.invisible) {
+                break;
+            }
+
             // Back to normal: check distance, and only go for melee if the player
             // pushed in deep. Otherwise keep the ranged barrage constant.
             if (_dist <= melee_trigger_dist) {

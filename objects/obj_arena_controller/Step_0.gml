@@ -39,8 +39,14 @@ switch (arena_state) {
                 var _sp = fh_find_free_spawn_pos(_item.x, _item.y, 28);
                 var _e = instance_create_layer(_sp.x, _sp.y, layer, _item.obj);
                 if (_e != noone) {
-                    _e.has_spotted_player = true;
-                    _e.state = "chase";
+                    var _p_check = instance_find(obj_player, 0);
+                    if (_p_check != noone && _p_check.invisible) {
+                        _e.has_spotted_player = false;
+                        _e.state = "patrol";
+                    } else {
+                        _e.has_spotted_player = true;
+                        _e.state = "chase";
+                    }
                     if (variable_struct_exists(_item, "greater") && _item.greater) {
                         _e.is_greater_variant = true;
                     }

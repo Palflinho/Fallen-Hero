@@ -9,12 +9,16 @@ if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
 switch (state) {
     case "patrol":
         ai_patrol(_dt);
-        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= vision_range) {
+        if (_player != noone && !_player.invisible && point_distance(x, y, _player.x, _player.y) <= vision_range) {
             state = "chase";
         }
         break;
 
     case "chase":
+        if (_player != noone && _player.invisible) {
+            state = "patrol";
+            break;
+        }
         if (_player != noone) {
             var _dir = point_direction(x, y, _player.x, _player.y);
             ai_enemy_move(_dir, move_speed_effective, _dt);

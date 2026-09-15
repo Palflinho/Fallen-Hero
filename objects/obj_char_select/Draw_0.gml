@@ -264,7 +264,7 @@ switch (state) {
         draw_set_color(make_colour_rgb(70, 95, 135));
         draw_rectangle(40, _btn_back_y, 200, _btn_back_y + _btn_back_h, true);
         draw_set_color(c_ltgray);
-        draw_text(120, _btn_back_y + _btn_back_h / 2, _is_mobile ? "VOLTAR" : (input_has_gamepad_connected() ? (input_get_btn_label("cancel") + " Voltar") : "[ESC / X] Voltar"));
+        draw_text(120, _btn_back_y + _btn_back_h / 2, _is_mobile ? "VOLTAR" : (input_get_btn_label("cancel") + " Voltar"));
 
         draw_set_halign(fa_center);
         draw_set_color(make_colour_rgb(160, 175, 195));
@@ -700,7 +700,7 @@ switch (state) {
         draw_set_color(_elem_unlocked ? c_lime : c_red);
         draw_rectangle(_btn_ini_x, _btn_tal_y, _btn_ini_x + _btn_ini_w, _btn_tal_y + _btn_tal_h, true);
         draw_set_color(c_white);
-        draw_text(_btn_ini_x + _btn_ini_w / 2, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? "INICIAR EXPEDICAO" : (input_is_gamepad_active() ? (input_get_btn_label("pause") + " INICIAR EXPEDICAO") : "[Z / Enter] INICIAR EXPEDICAO"));
+        draw_text(_btn_ini_x + _btn_ini_w / 2, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? "INICIAR EXPEDICAO" : (input_is_gamepad_active() ? (input_get_btn_label("pause") + " INICIAR EXPEDICAO") : (input_get_btn_label("confirm") + " INICIAR EXPEDICAO")));
 
         // Footer instructions adaptadas ao dispositivo
         draw_set_halign(fa_center);

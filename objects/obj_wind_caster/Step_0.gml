@@ -19,6 +19,10 @@ switch (state) {
         break;
 
     case "chase":
+        if (_player != noone && _player.invisible) {
+            state = "patrol";
+            break;
+        }
         if (_seen != noone) {
             lost_sight_timer = 0;
         } else {

@@ -41,7 +41,7 @@ if (prompt_active && !global.midrun_shop_open) {
 
     draw_set_color(c_yellow);
     draw_rectangle(x - 120, _py - 22, x + 120, _py + 4, true);
-    var _interact_str = input_is_gamepad_active() ? (input_get_btn_label("confirm") + " Falar com o Mercador") : "[ESPACO / Z] Falar com o Mercador";
+    var _interact_str = input_get_btn_label("confirm") + " Falar com o Mercador";
     draw_text(x, _py, _interact_str);
 
     draw_set_halign(fa_left);

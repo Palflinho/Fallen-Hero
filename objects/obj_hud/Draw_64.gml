@@ -707,7 +707,7 @@ if (game_over) {
     var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.006));
     var _is_mob = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
     draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-    var _cont_str = _is_mob ? "Toque na tela para Voltar a Selecao de Herois" : (input_is_gamepad_active() ? (input_get_btn_label("confirm") + " Voltar para Selecao de Personagem") : "[ESPACO / ENTER / Z] Voltar para Selecao de Personagem");
+    var _cont_str = _is_mob ? "Toque na tela para Voltar a Selecao de Herois" : (input_get_btn_label("confirm") + " Voltar para Selecao de Personagem");
     draw_text(_bx + _box_w / 2, _ry, _cont_str);
     _ry += 26;
 
@@ -803,7 +803,7 @@ if (game_over) {
     var _b_pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
     var _is_mob_vic = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
     draw_set_color(merge_colour(c_yellow, c_white, _b_pulse));
-    var _vic_str = _is_mob_vic ? "Toque na tela para Retornar a Selecao de Herois" : (input_is_gamepad_active() ? (input_get_btn_label("confirm") + " Retornar a Selecao de Personagens") : "[ESPACO / ENTER / Z] Retornar a Selecao de Personagens");
+    var _vic_str = _is_mob_vic ? "Toque na tela para Retornar a Selecao de Herois" : (input_get_btn_label("confirm") + " Retornar a Selecao de Personagens");
     draw_text(_bx + _box_w / 2, _sy, _vic_str);
 
     draw_set_halign(fa_left);
@@ -1037,7 +1037,7 @@ if (game_over) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_set_color(_discard_hover ? c_white : make_colour_rgb(240, 110, 110));
-    var _discard_txt = input_is_gamepad_active() ? (input_get_btn_label("cancel") + " Descartar este Talento e Continuar") : "[X / ESC / Clique] Descartar este Talento e Continuar";
+    var _discard_txt = input_get_btn_label("cancel") + " Descartar este Talento e Continuar";
     draw_text(_discard_x + _discard_w / 2, _discard_y + _discard_h / 2, _discard_txt);
 
     draw_set_halign(fa_left);

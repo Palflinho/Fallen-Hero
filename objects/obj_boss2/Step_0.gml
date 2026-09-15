@@ -4,7 +4,7 @@ if (is_world_paused()) exit;
 var _dt = delta_time / 1000000;
 var _player = instance_find(obj_player, 0);
 
-if (_player != noone && state != "erupcao_windup" && state != "charge") {
+if (_player != noone && !_player.invisible && state != "erupcao_windup" && state != "charge") {
     facing_dir = point_direction(x, y, _player.x, _player.y);
 }
 
@@ -60,7 +60,7 @@ switch (state) {
     case "chase":
         body_colour = c_red;
         damage_reduction = 0;
-        if (_player != noone) {
+        if (_player != noone && !_player.invisible) {
             var _dist = point_distance(x, y, _player.x, _player.y);
             if (_dist > 220) {
                 var _dir = point_direction(x, y, _player.x, _player.y);
