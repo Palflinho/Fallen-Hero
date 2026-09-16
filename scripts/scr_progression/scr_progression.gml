@@ -23,8 +23,9 @@ function player_recompute_attributes(_p) {
     _p.attack_cooldown = (1 / _p.nat_atk_spd) / max(0.2, 1 + _p.synth_atk_spd_bonus) * _cdr_mult;
     _p.defend_cooldown = _p.defend_cooldown_base * _cdr_mult;
 
-    var _pwr_synth = (_p.attack_damage_type == "physical") ? _p.synth_pwr_fisica : _p.synth_pwr_magica;
-    _p.attack_damage = _p.nat_power + _pwr_synth + global.shop_boost_power;
+    // NOVO SISTEMA UNIFICADO:
+    // Poder Fisico (synth_pwr_fisica) escala diretamente o Auto-Ataque (AA) basico com a arma de qualquer heroi
+    _p.attack_damage = _p.nat_power + _p.synth_pwr_fisica + global.shop_boost_power;
 
     _p.xp_to_next = 30 + 7 * (_p.level - 1);
 

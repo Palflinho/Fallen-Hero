@@ -697,15 +697,18 @@ function get_talent_defs() {
         {id: "general_precisao", character: "general", label: "Precisao", synth_field: "synth_crit_chance", per_rank: 0.03, cost: 0,
          desc_flavor: "Olhar clinico para encontrar falhas na postura inimiga e acertar pontos vitais.",
          desc_value: "+3% de Chance de Golpe Critico por rank (limite de 40%).", icon_type: "crit"},
-        {id: "general_essencia", character: "general", label: "Essencia Arcana", synth_field: "synth_pwr_magica", per_rank: 3, cost: 0,
-         desc_flavor: "Canalizacao pura de forca arcana primordial ampliando magias.",
-         desc_value: "+3 de Poder Magico por rank.", icon_type: "fireball"},
-        {id: "general_aura", character: "general", label: "Aura Protetora", synth_field: "synth_def_magica", per_rank: 3, cost: 0,
-         desc_flavor: "Campo protetor etereo contra feiticos e elementos hostis.",
-         desc_value: "+3 de Defesa Magica por rank.", icon_type: "magic_def"},
         {id: "general_forca", character: "general", label: "Forca Bruta", synth_field: "synth_pwr_fisica", per_rank: 3, cost: 0,
-         desc_flavor: "Aumento de musculatura e peso do impacto em combate direto.",
-         desc_value: "+3 de Poder Fisico por rank.", icon_type: "sword"}
+         desc_flavor: "Musculatura marcial e potencia do impacto com a arma basica.",
+         desc_value: "+3 de Poder Fisico (aumenta o dano do Auto-Ataque com a arma).", icon_type: "sword"},
+        {id: "general_essencia", character: "general", label: "Essencia Arcana", synth_field: "synth_pwr_magica", per_rank: 3, cost: 0,
+         desc_flavor: "Forca arcana primordial que intensifica habilidades especiais, auras e efeitos elementais.",
+         desc_value: "+3 de Poder Magico (amplifica Habilidades, Curas e Efeitos Elementais).", icon_type: "fireball"},
+        {id: "general_couraca", character: "general", label: "Couraca de Aco", synth_field: "synth_def_fisica", per_rank: 3, cost: 0,
+         desc_flavor: "Placas reforcadas que absorvem o choque de impactos diretos e armadilhas mecânicas.",
+         desc_value: "+3 de Defesa Fisica (mitiga dano corpo a corpo e armadilhas de contato).", icon_type: "shield"},
+        {id: "general_aura", character: "general", label: "Aura Protetora", synth_field: "synth_def_magica", per_rank: 3, cost: 0,
+         desc_flavor: "Campo protetor etereo que dissipa disparos a distancia e perigos em area.",
+         desc_value: "+3 de Defesa Magica (mitiga projeteis a distancia e perigos de area).", icon_type: "magic_def"}
     ];
 }
 

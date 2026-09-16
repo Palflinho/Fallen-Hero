@@ -167,13 +167,14 @@ switch (state) {
             if (defend_mode == "invisible") player_enter_stealth();
             if (defend_mode == "roll") invuln_timer = defend_duration;
 
+            var _mag_bonus = variable_instance_exists(id, "synth_pwr_magica") ? synth_pwr_magica : 0;
             if (defend_mode == "paladin_aura") {
                 paladin_aura_tick_timer = 0;
-                var _bar_cap = hp_max * 0.5;
+                var _bar_cap = hp_max * 0.5 + round(_mag_bonus * 2);
                 if (variable_instance_exists(id, "synth_paladino_bastiao_liquido") && synth_paladino_bastiao_liquido > 0) {
-                    _bar_cap = hp_max * 0.75;
+                    _bar_cap = hp_max * 0.75 + round(_mag_bonus * 3);
                 }
-                paladin_barrier_active = min(_bar_cap, paladin_barrier_active + 25 + synth_paladin_barrier);
+                paladin_barrier_active = min(_bar_cap, paladin_barrier_active + 25 + synth_paladin_barrier + round(_mag_bonus * 2));
             } else if (defend_mode == "berserk_fury") {
                 trigger_hitstop(0.04);
                 if (variable_instance_exists(id, "synth_berserk_cinzas_sacrificio") && synth_berserk_cinzas_sacrificio > 0) {
@@ -192,7 +193,7 @@ switch (state) {
                 if (variable_instance_exists(id, "synth_guardiao_muralha_sismica") && synth_guardiao_muralha_sismica > 0) {
                     with (obj_enemy_parent) {
                         if (point_distance(x, y, other.x, other.y) <= 120) {
-                            enemy_take_damage(id, 14, other.x, other.y, 200);
+                            enemy_take_damage(id, 14 + round(_mag_bonus * 1.5), other.x, other.y, 200);
                             enemy_apply_slow(id, 0.2, 1.0);
                         }
                     }
@@ -200,14 +201,14 @@ switch (state) {
                 if (synth_guardian_taunt_shock > 0) {
                     with (obj_enemy_parent) {
                         if (point_distance(x, y, other.x, other.y) <= 180) {
-                            enemy_take_damage(id, other.synth_guardian_taunt_shock, other.x, other.y, 160);
+                            enemy_take_damage(id, other.synth_guardian_taunt_shock + round(_mag_bonus * 1.5), other.x, other.y, 160);
                             enemy_apply_slow(id, 0.5, 2.0);
                         }
                     }
                 }
             } else if (defend_mode == "cryo_prison") {
                 invuln_timer = defend_duration;
-                hp = min(hp_max, hp + round(hp_max * 0.15));
+                hp = min(hp_max, hp + round(hp_max * 0.15 + _mag_bonus * 1.5));
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= 110) {
                         enemy_apply_slow(id, 0.0, 2.0);
@@ -218,8 +219,8 @@ switch (state) {
                 trigger_hitstop(0.05);
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= 130) {
-                        enemy_take_damage(id, other.attack_damage * 1.5, other.x, other.y, 220);
-                        enemy_apply_poison(id, 4, 0.5, 3.0);
+                        enemy_take_damage(id, other.attack_damage * 1.5 + _mag_bonus * 2.5, other.x, other.y, 220);
+                        enemy_apply_poison(id, 4 + round(_mag_bonus * 0.4), 0.5, 3.0);
                     }
                 }
                 fx_spawn_death_burst(x, y, c_orange, 15);
@@ -238,7 +239,7 @@ switch (state) {
                 fx_spawn_sparks(x, y, c_yellow, 10);
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, _ox, _oy) <= 80 || point_distance(x, y, other.x, other.y) <= 80) {
-                        enemy_take_damage(id, other.attack_damage * 0.8, other.x, other.y, 100);
+                        enemy_take_damage(id, other.attack_damage * 0.8 + _mag_bonus * 1.5, other.x, other.y, 100);
                         enemy_apply_slow(id, 0.4, 1.0);
                     }
                 }
@@ -250,7 +251,7 @@ switch (state) {
                         var _ang = point_direction(other.x, other.y, x, y);
                         x += lengthdir_x(45, _ang);
                         y += lengthdir_y(45, _ang);
-                        enemy_take_damage(id, other.attack_damage * 0.8, other.x, other.y, 0);
+                        enemy_take_damage(id, other.attack_damage * 0.8 + _mag_bonus * 1.5, other.x, other.y, 0);
                         enemy_apply_slow(id, 0.5, 2.0);
                     }
                 }
@@ -431,7 +432,8 @@ switch (state) {
             paladin_aura_tick_timer -= _dt;
             if (paladin_aura_tick_timer <= 0) {
                 paladin_aura_tick_timer = (variable_instance_exists(id, "synth_paladino_bencao_mare") && synth_paladino_bencao_mare > 0) ? 0.45 : paladin_aura_tick_interval;
-                var _heal = 3 + synth_paladin_aura_heal + synth_paladino_bencao_mare;
+                var _mag_bonus = variable_instance_exists(id, "synth_pwr_magica") ? synth_pwr_magica : 0;
+                var _heal = 3 + synth_paladin_aura_heal + synth_paladino_bencao_mare + round(_mag_bonus * 0.4);
                 if (hp >= hp_max && variable_instance_exists(id, "synth_paladino_graca_abencoada") && synth_paladino_graca_abencoada > 0) {
                     paladin_barrier_active = min(hp_max * 0.75, paladin_barrier_active + _heal * 0.5);
                 } else {
@@ -442,7 +444,7 @@ switch (state) {
                         enemy_apply_slow(id, 0.6, 0.6);
                         // 14 Correnteza Dilacerante
                         if (variable_instance_exists(other, "synth_paladino_correnteza_dilacerante") && other.synth_paladino_correnteza_dilacerante > 0) {
-                            enemy_take_damage(id, other.synth_paladino_correnteza_dilacerante, other.x, other.y, 10);
+                            enemy_take_damage(id, other.synth_paladino_correnteza_dilacerante + round(_mag_bonus * 0.8), other.x, other.y, 10);
                         }
                     }
                 }

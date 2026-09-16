@@ -1,4 +1,4 @@
-﻿// =========================================================================
+// =========================================================================
 // SISTEMA MODULAR DE INTERFACE E HUD (NINTENDO PILLARS - IWATA MODULARITY)
 // =========================================================================
 
@@ -1164,27 +1164,48 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         draw_text(_val_x, _ly, _hp_val);
         _ly += 22;
     
-        // 2. Poder
+        // 2. Poder Fisico (Auto-Ataque com a arma basica)
         var _pwr_str = string(round(target.nat_power));
         if (variable_instance_exists(target, "synth_pwr_fisica") && target.synth_pwr_fisica > 0) {
             _pwr_str += " (+" + string(target.synth_pwr_fisica) + ")";
         }
         draw_set_color(make_colour_rgb(255, 170, 40));
-        draw_text(_lx, _ly, "[PWR] Poder:");
+        draw_text(_lx, _ly, "[PWR-F] Fisico (AA):");
         draw_set_color(c_white);
         draw_text(_val_x, _ly, _pwr_str);
-        _ly += 22;
+        _ly += 20;
     
-        // 3. Defesa
+        // 3. Poder Magico (Habilidades, Curas e Efeitos Elementais)
+        var _mag_val = variable_instance_exists(target, "synth_pwr_magica") ? target.synth_pwr_magica : 0;
+        var _mag_str = (_mag_val > 0) ? ("+" + string(_mag_val) + " (Skills/Cura)") : "Base (x1.0)";
+        draw_set_color(make_colour_rgb(200, 130, 255));
+        draw_text(_lx, _ly, "[PWR-M] Magico (Skill):");
+        draw_set_color((_mag_val > 0) ? c_yellow : c_gray);
+        draw_text(_val_x, _ly, _mag_str);
+        _ly += 20;
+    
+        // 4. Defesa Fisica (Melee / Contato / Espinhos)
         var _def_str = string(round(target.nat_defesa));
         if (variable_instance_exists(target, "synth_def_fisica") && target.synth_def_fisica > 0) {
             _def_str += " (+" + string(target.synth_def_fisica) + ")";
         }
         draw_set_color(make_colour_rgb(70, 160, 240));
-        draw_text(_lx, _ly, "[DEF] Defesa:");
+        draw_text(_lx, _ly, "[DEF-F] Melee/Contato:");
         draw_set_color(c_white);
         draw_text(_val_x, _ly, _def_str);
-        _ly += 22;
+        _ly += 20;
+    
+        // 5. Defesa Magica (Projeteis Ranged / Pocas / Area)
+        var _mdef_val = variable_instance_exists(target, "synth_def_magica") ? target.synth_def_magica : 0;
+        var _mdef_str = string(round(target.nat_defesa));
+        if (_mdef_val > 0) {
+            _mdef_str += " (+" + string(_mdef_val) + ")";
+        }
+        draw_set_color(make_colour_rgb(100, 220, 240));
+        draw_text(_lx, _ly, "[DEF-M] Ranged/Area:");
+        draw_set_color(c_white);
+        draw_text(_val_x, _ly, _mdef_str);
+        _ly += 20;
     
         // 4. Velocidade de Ataque
         draw_set_color(make_colour_rgb(230, 210, 80));

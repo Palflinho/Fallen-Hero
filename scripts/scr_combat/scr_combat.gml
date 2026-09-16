@@ -533,14 +533,15 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             _owner.hp = min(_owner.hp_max, _owner.hp + 2);
         }
 
+        var _mag_scale = variable_instance_exists(_owner, "synth_pwr_magica") ? _owner.synth_pwr_magica : 0;
         if (_owner.element_affinity == "fire") {
-            enemy_apply_poison(_enemy, 4 + _owner.synth_berserk_burn, 0.5, 2.0);
+            enemy_apply_poison(_enemy, 4 + _owner.synth_berserk_burn + round(_mag_scale * 0.5), 0.5, 2.0);
             if (_owner.synth_berserk_lifesteal > 0 && _dealt > 0) {
                 _owner.hp = min(_owner.hp_max, _owner.hp + min(5, _dealt * _owner.synth_berserk_lifesteal));
             }
         } else if (_owner.element_affinity == "water") {
             if (_owner.synth_paladin_heal_hit > 0 && _dealt > 0) {
-                _owner.hp = min(_owner.hp_max, _owner.hp + min(4, _owner.synth_paladin_heal_hit));
+                _owner.hp = min(_owner.hp_max, _owner.hp + min(8, _owner.synth_paladin_heal_hit + round(_mag_scale * 0.4)));
             }
         }
 
@@ -753,7 +754,8 @@ function player_perform_attack() {
             _dmg *= 1.25;
         }
         if (element_affinity == "fire" && state == "defend" && defend_mode == "berserk_fury") {
-            var _fury_mult = 1.5 + synth_berserk_dmg_bonus;
+            var _mag_bonus = variable_instance_exists(id, "synth_pwr_magica") ? synth_pwr_magica : 0;
+            var _fury_mult = 1.5 + synth_berserk_dmg_bonus + (_mag_bonus * 0.05);
             if (variable_instance_exists(id, "synth_berserk_cinzas_sacrificio") && synth_berserk_cinzas_sacrificio > 0) {
                 if (defend_duration - defend_timer <= 3.0) _fury_mult *= 1.5;
             }
@@ -1229,8 +1231,9 @@ function player_take_damage(_amount, _damage_type) {
                 }
             }
 
-            // 27 Riposte Perfeito
-            var _mult = 2.2 + _p.synth_duelist_counter_mult;
+            // 27 Riposte Perfeito (escala tambem com synth_pwr_magica)
+            var _mag_bonus = variable_instance_exists(_p, "synth_pwr_magica") ? _p.synth_pwr_magica : 0;
+            var _mult = 2.2 + _p.synth_duelist_counter_mult + (_mag_bonus * 0.08);
             if (variable_instance_exists(_p, "synth_duelista_riposte_perfeito") && _p.synth_duelista_riposte_perfeito > 0) {
                 _mult += 1.0;
             }
@@ -1319,7 +1322,11 @@ function player_take_damage(_amount, _damage_type) {
     if (!_blocked_fully) {
         _p.clean_kills_count = 0;
 
-        var _mitigation = _p.nat_defesa + ((_damage_type == "physical") ? _p.synth_def_fisica : _p.synth_def_magica) + (variable_global_exists("shop_boost_defesa") ? global.shop_boost_defesa : 0);
+        // Mitigacao Tatica Inteligente:
+        // Dano "physical" (Melee, espinhos, esmagadores, mordidas, investidas) -> mitigado por synth_def_fisica
+        // Dano "magical"  (Ranged, projeteis balisticos, pocaws de lava, gas, ciclones) -> mitigado por synth_def_magica
+        var _def_bonus = (_damage_type == "physical") ? _p.synth_def_fisica : _p.synth_def_magica;
+        var _mitigation = _p.nat_defesa + _def_bonus + (variable_global_exists("shop_boost_defesa") ? global.shop_boost_defesa : 0);
         if (_p.character_class == "knight" && _p.synth_guardian_def > 0) {
             _mitigation += _p.synth_guardian_def;
         }
