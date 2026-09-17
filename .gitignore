@@ -1,4 +1,4 @@
-﻿# GameMaker & Build Artifacts
+# GameMaker & Build Artifacts
 *.zip
 *.apk
 *.manifest
@@ -15,3 +15,14 @@ output/Fallen Hero/Fallen Hero.zip
 # System & OS
 .DS_Store
 Thumbs.db
+
+# SNES Homebrew Build Artifacts
+*.sfc
+*.smc
+*.obj
+*.ps
+*.sym
+*.symfull
+*.log
+linkfile
+tools/
