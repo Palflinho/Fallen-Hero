@@ -15,7 +15,7 @@ $libDir = "$pvsneslib/lib/LoROM_SlowROM"
 
 if ($Clean) {
     Write-Host "Limpando artefatos de build SNES..." -ForegroundColor Yellow
-    Remove-Item "src/*.obj", "src/*.ps", "src/*.asm", "hdr.obj", "linkfile", "*.sym", "*.symfull", "*.log" -ErrorAction SilentlyContinue
+    Remove-Item "src/*.obj", "src/*.ps", "src/*.asm", "hdr.obj", "data.obj", "linkfile", "*.sym", "*.symfull", "*.log" -ErrorAction SilentlyContinue
     Remove-Item "fallen_hero.sfc" -ErrorAction SilentlyContinue
     Write-Host "Limpeza concluida!" -ForegroundColor Green
     exit 0
@@ -25,31 +25,42 @@ Write-Host "=================================================" -ForegroundColor 
 Write-Host "   Compilando Fallen Hero para Super Nintendo    " -ForegroundColor Cyan
 Write-Host "=================================================" -ForegroundColor Cyan
 
-# 1. Compilar src/main.c para .ps
-Write-Host "[1/5] Compilando C com 816-tcc..." -ForegroundColor Gray
+# 1. Gerar/Converter Sprites Graficos do GameMaker
+Write-Host "[1/6] Convertendo graficos com gfx4snes..." -ForegroundColor Gray
+if (-not (Test-Path "gfx/sprites.bmp")) {
+    & powershell.exe -ExecutionPolicy Bypass -File "$root/generate_sprites.ps1"
+}
+& "$toolBin/gfx4snes.exe" -s 16 -o 16 -u 16 -p -t bmp -i "gfx/sprites.bmp"
+if ($LASTEXITCODE -ne 0) { throw "Falha na conversao de sprites com gfx4snes." }
+
+# 2. Montar data.asm (Sprites binarios) para data.obj
+Write-Host "[2/6] Montando data.asm com wla-65816..." -ForegroundColor Gray
+& "$bin/wla-65816.exe" -d -s -x -I "." -o "data.obj" "data.asm"
+if ($LASTEXITCODE -ne 0) { throw "Falha na montagem de data.asm." }
+
+# 3. Compilar src/main.c para .ps
+Write-Host "[3/6] Compilando C com 816-tcc..." -ForegroundColor Gray
 & "$bin/816-tcc.exe" -I"$pvsneslib/include" -I"$devkitsnes/include" -I"include" -Wall -c "src/main.c" -o "src/main.ps"
 if ($LASTEXITCODE -ne 0) { throw "Falha na compilacao C com 816-tcc." }
 
-# 2. Otimizar .ps para .asm
-Write-Host "[2/5] Otimizando com 816-opt..." -ForegroundColor Gray
+# 4. Otimizar .ps para .asm e montar para .obj
+Write-Host "[4/6] Otimizando com 816-opt e montando src/main.asm..." -ForegroundColor Gray
 & "$toolBin/816-opt.exe" -i "src/main.ps" -o "src/main.asm"
 if ($LASTEXITCODE -ne 0) { throw "Falha na otimizacao com 816-opt." }
-
-# 3. Montar src/main.asm para .obj
-Write-Host "[3/5] Montando codigo com wla-65816..." -ForegroundColor Gray
 & "$bin/wla-65816.exe" -d -s -x -I "." -o "src/main.obj" "src/main.asm"
 if ($LASTEXITCODE -ne 0) { throw "Falha na montagem de src/main.asm." }
 
-# 4. Montar hdr.asm para .obj
-Write-Host "[4/5] Montando cabecalho do cartucho (hdr.asm)..." -ForegroundColor Gray
+# 5. Montar hdr.asm para .obj
+Write-Host "[5/6] Montando cabecalho do cartucho (hdr.asm)..." -ForegroundColor Gray
 & "$bin/wla-65816.exe" -d -s -x -I "." -o "hdr.obj" "hdr.asm"
 if ($LASTEXITCODE -ne 0) { throw "Falha na montagem de hdr.asm." }
 
-# 5. Gerar linkfile e linkar ROM .sfc
-Write-Host "[5/5] Linkando ROM SNES com wlalink..." -ForegroundColor Gray
+# 6. Gerar linkfile e linkar ROM .sfc
+Write-Host "[6/6] Linkando ROM SNES com wlalink..." -ForegroundColor Gray
 $linkContent = @"
 [objects]
 hdr.obj
+data.obj
 src/main.obj
 $libDir/crt0_snes.obj
 $libDir/libc.obj
