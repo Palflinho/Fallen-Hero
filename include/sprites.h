@@ -21,7 +21,9 @@ extern unsigned char sprites_pal, sprites_palend;
 #define SPR_NPC_CASTOR    34  // Morador Castor (Canad?)
 #define SPR_NPC_BISAO     36  // Morador Bis?o (EUA)
 #define SPR_NPC_ORNITOR   38  // Morador Ornitorrinco (Austr?lia)
-#define SPR_ALTAR         40  // Altar das Ess?ncias
+#define SPR_ALTAR         40  // Altar das Essencias
 #define SPR_PORTAL        42  // Portal Dimensional
+#define SPR_SLIME         44  // Slime / Minion (com olhinhos)
+#define SPR_ESSENCE       46  // Orbe da Essencia Elemental Resgatada
 
 #endif // _SPRITES_H_

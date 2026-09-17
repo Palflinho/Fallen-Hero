@@ -1,4 +1,4 @@
-﻿Add-Type -AssemblyName System.Drawing
+Add-Type -AssemblyName System.Drawing
 
 $width = 128
 $height = 32
@@ -144,10 +144,26 @@ Fill-Rect 68 20 8 8 2
 # 4 Elemental Slots
 Set-Px 69 21 8; Set-Px 74 21 12; Set-Px 69 26 14; Set-Px 74 26 9
 
-# Sprite 13 (80,16): Portal Dimensional (Vórtice)
+# Sprite 13 (80,16): Portal Dimensional (Vortice)
 Draw-Box 82 17 12 14 1 13
 Fill-Rect 84 19 8 10 12
 Fill-Rect 86 21 4 6 6
+
+# Sprite 14 (96,16): Slime / Minion (Quadradinho menor com olhinhos do GameMaker)
+Draw-Box 99 19 10 10 1 14
+# Slime eyes looking at hero
+Set-Px 101 22 6; Set-Px 102 22 1
+Set-Px 105 22 6; Set-Px 106 22 1
+# Slime highlight
+Set-Px 100 20 4; Set-Px 101 20 4
+
+# Sprite 15 (112,16): Orbe de Essencia Elemental (Resgate)
+Fill-Rect 116 19 8 8 12
+Draw-Box 115 18 10 10 1 7
+Fill-Rect 117 20 6 6 6
+# Pulsing core
+Set-Px 119 22 9; Set-Px 120 22 9
+
 
 # Create Bitmap and copy bytes
 $bmp = New-Object System.Drawing.Bitmap($width, $height, [System.Drawing.Imaging.PixelFormat]::Format8bppIndexed)
@@ -182,6 +198,7 @@ $data = $bmp.LockBits($rect, [System.Drawing.Imaging.ImageLockMode]::WriteOnly, 
 [System.Runtime.InteropServices.Marshal]::Copy($bytes, 0, $data.Scan0, $bytes.Length)
 $bmp.UnlockBits($data)
 
-$bmp.Save("d:\Repositórios\Fallen-Hero\gfx\sprites.bmp", [System.Drawing.Imaging.ImageFormat]::Bmp)
+$outPath = Join-Path $PSScriptRoot "gfx/sprites.bmp"
+$bmp.Save($outPath, [System.Drawing.Imaging.ImageFormat]::Bmp)
 $bmp.Dispose()
-Write-Host "gfx/sprites.bmp gerado com sucesso!"
+Write-Host "gfx/sprites.bmp gerado com sucesso em $outPath!"
