@@ -105,38 +105,47 @@ Draw-Box 116 3 8 10 1 7
 Fill-Rect 118 5 4 6 5
 
 # ----------------------------------------------------
-# Row 2 (y=16): Moradores da Vila (NPCs) & Estruturas
+# Row 2 (y=16): Estruturas, Itens & Inimigos Fiéis ao GM
 # ----------------------------------------------------
 
-# Sprite 8 (0,16): Tanuki NPC (Japão)
-Draw-Box 2 18 12 12 1 3
-# Mask around eyes
-Fill-Rect 4 22 8 3 2
-Set-Px 5 23 6; Set-Px 6 23 1
-Set-Px 9 23 6; Set-Px 10 23 1
+# Sprite 8 (0,16): Pedestal de Seleção de Classe (Vila)
+# Base de pedra com borda e placa central luminosa
+Fill-Rect 2 26 12 4 11
+Draw-Box 2 26 12 4 1 11
+Fill-Rect 4 21 8 5 5
+Draw-Box 4 21 8 5 1 5
+# Glowing Class Orb / Emblem on top
+Fill-Rect 6 18 4 3 7
+Set-Px 7 19 6; Set-Px 8 19 6
 
-# Sprite 9 (16,16): Castor NPC (Canadá)
-Draw-Box 18 18 12 12 1 11
-# Eyes and tooth
-Set-Px 21 22 6; Set-Px 22 22 1
-Set-Px 25 22 6; Set-Px 26 22 1
-Set-Px 23 26 6; Set-Px 24 26 6
+# Sprite 9 (16,16): Baú de Tesouro Fechado (Chest Closed)
+Fill-Rect 18 20 12 10 11
+Draw-Box 18 20 12 10 1 11
+# Golden trims and lock
+Fill-Rect 18 20 12 2 7
+Fill-Rect 23 23 2 3 7
+Set-Px 23 24 1
 
-# Sprite 10 (32,16): Bisão NPC (EUA)
-Draw-Box 34 18 12 12 1 2
-# Horns
-Set-Px 33 17 6; Set-Px 34 18 6
-Set-Px 46 17 6; Set-Px 45 18 6
-# Eyes
-Set-Px 37 22 6; Set-Px 38 22 1
-Set-Px 41 22 6; Set-Px 42 22 1
+# Sprite 10 (32,16): Baú de Tesouro Aberto (Chest Opened)
+# Open lid angled back
+Fill-Rect 34 17 12 4 7
+Draw-Box 34 17 12 4 1 7
+# Open base
+Fill-Rect 34 22 12 8 11
+Draw-Box 34 22 12 8 1 11
+Fill-Rect 36 22 8 2 1
+# Treasure sparkles inside
+Set-Px 38 21 6; Set-Px 41 20 7; Set-Px 43 21 6
 
-# Sprite 11 (48,16): Ornitorrinco NPC (Austrália)
-Draw-Box 50 18 12 12 1 14
-# Duck bill
-Fill-Rect 54 24 6 3 15
-Set-Px 53 22 6; Set-Px 54 22 1
-Set-Px 57 22 6; Set-Px 58 22 1
+# Sprite 11 (48,16): Elemental de Gelo (Inimigo à Distância do GM)
+# Floating ice diamond
+Draw-Box 51 18 10 10 1 12
+Fill-Rect 53 20 6 6 12
+# Glowing core eyes
+Set-Px 54 22 6; Set-Px 55 22 13
+Set-Px 57 22 6; Set-Px 58 22 13
+# Ice crystal shards top and bottom
+Set-Px 56 17 6; Set-Px 56 29 12
 
 # Sprite 12 (64,16): Altar Central (Monumento das Essências)
 Draw-Box 66 18 12 12 1 5
