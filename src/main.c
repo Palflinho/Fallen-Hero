@@ -1,6 +1,8 @@
 /*---------------------------------------------------------------------------------
     Fallen Hero - Super Nintendo (SNES) Native 16-Bit Edition
-    Port 100% Fiel a Mecanica e Dinamica do GameMaker Studio 2
+    Ciclo de 7 Salas por Templo Fiel ao GameMaker Studio 2:
+    1: Exploracao 1 (Mobs) -> 2: Exploracao 2 (Mobs + Bau) -> 3: Arena (Ondas)
+    -> 4: Mercado (Loja) -> 5: Exploracao 3 -> 6: Pre-Chefe -> 7: General da Agua
 ---------------------------------------------------------------------------------*/
 #include <snes.h>
 #include "game.h"
@@ -11,7 +13,7 @@
 #define OAM_ATK_SLASH      (1 * 4)   // 4: Arco de corte / golpe (Cavaleiro / Assassino)
 #define OAM_SHIELD_DEF     (2 * 4)   // 8: Escudo / Barreira de Mana
 #define OAM_PLAYER_PROJ    (3 * 4)   // 12: Projetil do Jogador (Maga / Arqueiro)
-#define OAM_DUMMY          (4 * 4)   // 16: Boneco de Treino (Vila)
+#define OAM_DUMMY          (4 * 4)   // 16: Boneco (Vila) / Mercador (Loja) / Fonte (Pre-Chefe)
 #define OAM_PEDESTAL0      (5 * 4)   // 20: Pedestal Cavaleiro (Tatu)
 #define OAM_PEDESTAL1      (6 * 4)   // 24: Pedestal Maga (Lobo-Guara)
 #define OAM_PEDESTAL2      (7 * 4)   // 28: Pedestal Arqueiro (Lagarto)
@@ -58,13 +60,28 @@ static const TalentDef talent_catalog[8] = {
     { 7, "Lamina Venenosa",  "Veneno continuo no golpe",      4, 5 }
 };
 
+// Titulos das 7 Salas do Templo (Fiel a scr_progression.gml)
+static const char* room_titles[8] = {
+    "",
+    "SALA 1/7 [EXPLORACAO 1]",
+    "SALA 2/7 [EXPLORACAO 2]",
+    "SALA 3/7 [ARENA]",
+    "SALA 4/7 [MERCADO]",
+    "SALA 5/7 [EXPLORACAO 3]",
+    "SALA 6/7 [PRE-CHEFE]",
+    "SALA 7/7 [GENERAL DA AGUA]"
+};
+
 // Estado da Masmorra
 static SlimeMob slime1;
 static SlimeMob slime2;
 static ElementalMob elemental;
 static DungeonChest chest;
-static u8 chamber1_cleared = 0;
-static u8 dungeon_door_open = 0;
+static u8 room_cleared = 0;
+static u8 door_open = 0;
+static u8 arena_wave = 1;
+static u8 fountain_used = 0;
+static const char *shop_feedback = "";
 
 // Estado do Chefe
 static BossGeneral boss;
@@ -92,8 +109,8 @@ static const char* class_specials[4] = {
 
 // Prototipos de Funcoes
 void apply_class_stats(HeroClass cls);
-void enter_dungeon_chamber(void);
-void enter_boss_chamber(void);
+void load_current_room(void);
+void advance_to_next_room(void);
 void return_to_village(u8 won);
 void clear_screen_text(void);
 void clear_dialogue_box(void);
@@ -148,6 +165,8 @@ void init_player(void) {
     player.invuln_timer = 0;
     player.is_moving = 0;
     player.essences_rescued = 0;
+    player.gold = 0;
+    player.run_room_step = 1;
     player.talent_slots[1] = 0;
     player.talent_slots[2] = 0;
 
@@ -224,52 +243,8 @@ void clear_screen_text(void) {
     }
 }
 
-void enter_dungeon_chamber(void) {
-    setFadeEffect(FADE_OUT);
-    WaitForVBlank();
-    clear_screen_text();
-
-    current_state = STATE_DUNGEON_CHAMBER;
-    player.x = 120;
-    player.y = 180;
-    player.dir = 1;
-    player.atk_timer = 0;
-    player.def_timer = 0;
-    player.def_cooldown = 0;
-    player.invuln_timer = 0;
-
-    // Slimes
-    slime1.x = 60;
-    slime1.y = 95;
-    slime1.hp = 30;
-    slime1.hit_flash = 0;
-    slime1.is_alive = 1;
-
-    slime2.x = 180;
-    slime2.y = 95;
-    slime2.hp = 30;
-    slime2.hit_flash = 0;
-    slime2.is_alive = 1;
-
-    // Elemental de Gelo (Atacante a Distancia do GM)
-    elemental.x = 120;
-    elemental.y = 65;
-    elemental.hp = 45;
-    elemental.hit_flash = 0;
-    elemental.shoot_timer = 60;
-    elemental.is_alive = 1;
-
-    // Bau de Tesouro
-    chest.x = 120;
-    chest.y = 110;
-    chest.is_spawned = 0;
-    chest.is_open = 0;
-    chest.rolled_talent_id = 4; // Vitalidade (+30 HP) ou Segundo Folego
-
-    chamber1_cleared = 0;
-    dungeon_door_open = 0;
-
-    // Projeteis zerados
+void load_current_room(void) {
+    // Reseta projeteis
     player_proj.is_active = 0;
     player_proj.x = 0;
     player_proj.y = 240;
@@ -282,44 +257,111 @@ void enter_dungeon_chamber(void) {
     enemy_proj2.x = 0;
     enemy_proj2.y = 240;
 
-    hud_dirty = 1;
-    WaitForVBlank();
-    setFadeEffect(FADE_IN);
+    // Padrao de Bau
+    chest.x = 120;
+    chest.y = 110;
+    chest.is_spawned = 0;
+    chest.is_open = 0;
+    chest.rolled_talent_id = 4; // Vitalidade
+
+    // Configuracao individual das 7 Salas
+    if (player.run_room_step == 1) {
+        // SALA 1: EXPLORACAO 1 (2 Slimes)
+        current_state = STATE_DUNGEON_CHAMBER;
+        slime1.x = 70; slime1.y = 100; slime1.hp = 25; slime1.hit_flash = 0; slime1.is_alive = 1;
+        slime2.x = 170; slime2.y = 100; slime2.hp = 25; slime2.hit_flash = 0; slime2.is_alive = 1;
+        elemental.is_alive = 0;
+        room_cleared = 0;
+        door_open = 0;
+    } else if (player.run_room_step == 2) {
+        // SALA 2: EXPLORACAO 2 (1 Slime + 1 Elemental de Gelo + Bau)
+        current_state = STATE_DUNGEON_CHAMBER;
+        slime1.x = 80; slime1.y = 110; slime1.hp = 30; slime1.hit_flash = 0; slime1.is_alive = 1;
+        slime2.is_alive = 0;
+        elemental.x = 120; elemental.y = 65; elemental.hp = 40; elemental.hit_flash = 0; elemental.shoot_timer = 50; elemental.is_alive = 1;
+        chest.rolled_talent_id = 5; // Segundo Folego
+        room_cleared = 0;
+        door_open = 0;
+    } else if (player.run_room_step == 3) {
+        // SALA 3: ARENA DE COMBATE (Ondas)
+        current_state = STATE_DUNGEON_CHAMBER;
+        arena_wave = 1;
+        slime1.x = 60; slime1.y = 90; slime1.hp = 30; slime1.hit_flash = 0; slime1.is_alive = 1;
+        slime2.x = 180; slime2.y = 90; slime2.hp = 30; slime2.hit_flash = 0; slime2.is_alive = 1;
+        elemental.is_alive = 0;
+        chest.rolled_talent_id = 1; // Golpe Pesado
+        room_cleared = 0;
+        door_open = 0;
+    } else if (player.run_room_step == 4) {
+        // SALA 4: MERCADO / LOJA (Segura, Balcao de Vendas com Ouro)
+        current_state = STATE_DUNGEON_CHAMBER;
+        slime1.is_alive = 0;
+        slime2.is_alive = 0;
+        elemental.is_alive = 0;
+        chest.is_spawned = 0;
+        room_cleared = 1;
+        door_open = 1; // Porta ja aberta para seguir quando quiser
+        shop_feedback = "";
+    } else if (player.run_room_step == 5) {
+        // SALA 5: EXPLORACAO 3 (Mobs intensos: 2 Elementais + 1 Slime)
+        current_state = STATE_DUNGEON_CHAMBER;
+        slime1.x = 120; slime1.y = 130; slime1.hp = 35; slime1.hit_flash = 0; slime1.is_alive = 1;
+        slime2.is_alive = 0;
+        elemental.x = 120; elemental.y = 65; elemental.hp = 45; elemental.hit_flash = 0; elemental.shoot_timer = 40; elemental.is_alive = 1;
+        chest.rolled_talent_id = 6; // Flechas Velozes / Sobrecarga
+        room_cleared = 0;
+        door_open = 0;
+    } else if (player.run_room_step == 6) {
+        // SALA 6: PRE-CHEFE (Santuario, Bau Final e Fonte de Cura)
+        current_state = STATE_DUNGEON_CHAMBER;
+        slime1.is_alive = 0;
+        slime2.is_alive = 0;
+        elemental.is_alive = 0;
+        chest.x = 120;
+        chest.y = 95;
+        chest.is_spawned = 1; // Bau ja pronto para fechar a build
+        chest.is_open = 0;
+        chest.rolled_talent_id = 4; // Vitalidade
+        fountain_used = 0;
+        room_cleared = 1;
+        door_open = 1; // Portal para o General
+    } else if (player.run_room_step == 7) {
+        // SALA 7: CAMARA DO GENERAL DA AGUA (Chefe)
+        current_state = STATE_BOSS_CHAMBER;
+        boss.x = 120;
+        boss.y = 60;
+        boss.dir_x = 1;
+        boss.dir_y = 0;
+        boss.max_hp = 350;
+        boss.hp = 350;
+        boss.hit_flash = 0;
+        boss.shoot_timer = 60;
+        boss.slam_timer = 0;
+        boss.vuln_timer = 0;
+        boss.state = 0;
+        boss.is_alive = 1;
+        essence_spawned = 0;
+        essence_collected = 0;
+        boss_portal_open = 0;
+    }
 }
 
-void enter_boss_chamber(void) {
+void advance_to_next_room(void) {
     setFadeEffect(FADE_OUT);
     WaitForVBlank();
     clear_screen_text();
 
-    current_state = STATE_BOSS_CHAMBER;
+    player.run_room_step++;
     player.x = 120;
     player.y = 180;
     player.dir = 1;
     player.atk_timer = 0;
     player.def_timer = 0;
-    player.def_cooldown = 0;
     player.invuln_timer = 0;
 
-    // General da Agua (Chefe com padrao Sakurai)
-    boss.x = 120;
-    boss.y = 60;
-    boss.dir_x = 1;
-    boss.dir_y = 0;
-    boss.max_hp = 300;
-    boss.hp = 300;
-    boss.hit_flash = 0;
-    boss.shoot_timer = 60;
-    boss.slam_timer = 0;
-    boss.vuln_timer = 0;
-    boss.state = 0;
-    boss.is_alive = 1;
-
-    essence_spawned = 0;
-    essence_collected = 0;
-    boss_portal_open = 0;
-
+    load_current_room();
     hud_dirty = 1;
+
     WaitForVBlank();
     setFadeEffect(FADE_IN);
 }
@@ -338,6 +380,7 @@ void return_to_village(u8 won) {
     player.def_timer = 0;
     player.def_cooldown = 0;
     player.invuln_timer = 0;
+    player.run_room_step = 1;
 
     hud_dirty = 1;
     WaitForVBlank();
@@ -361,20 +404,20 @@ void draw_hud(void) {
         consoleDrawText(9, 2, (char*)class_names[player.class_id]);
 
         get_hp_bar(hp_buf, player.hp, player.max_hp, 8);
-        consoleDrawText(1, 3, "HP:[%s] %d/%d  ESSENCIA:%d/4", hp_buf, player.hp, player.max_hp, player.essences_rescued);
+        consoleDrawText(1, 3, "HP:[%s] %d/%d  OURO:%d", hp_buf, player.hp, player.max_hp, player.gold);
 
         if (current_state == STATE_VILLAGE) {
             consoleDrawText(1, 25, "D-Pad:Andar  Y:Atacar  B:Especial");
             consoleDrawText(1, 26, "A:Pedestal/Altar  X:Ficha/Talentos");
         } else if (current_state == STATE_PORTAL_CONFIRM) {
             consoleDrawText(1, 18, "==============================");
-            consoleDrawText(1, 19, "PORTAL DIMENSIONAL (ROOM 1)   ");
+            consoleDrawText(1, 19, "PORTAL DO TEMPLO DA AGUA      ");
             consoleDrawText(1, 20, "------------------------------");
-            consoleDrawText(1, 21, "Entrar na Masmorra de Agua?   ");
-            consoleDrawText(1, 22, "Enfrente os monstros da fase  ");
-            consoleDrawText(1, 23, "e alcance o General da Agua!  ");
+            consoleDrawText(1, 21, "Iniciando expedicao (7 salas) ");
+            consoleDrawText(1, 22, "Exploracao -> Arena -> Loja   ");
+            consoleDrawText(1, 23, "Pre-Chefe e General da Agua!  ");
             consoleDrawText(1, 24, "------------------------------");
-            consoleDrawText(1, 25, "[A] ENTRAR NA MASMORRA        ");
+            consoleDrawText(1, 25, "[A] ATRAVESSAR PORTAL         ");
             consoleDrawText(1, 26, "[B] Ficar na Vila             ");
         } else if (current_state == STATE_ALTAR_MENU) {
             consoleDrawText(1, 18, "==============================");
@@ -401,10 +444,10 @@ void draw_hud(void) {
             consoleDrawText(1, 26, "==============================");
         } else if (current_state == STATE_VICTORY) {
             consoleDrawText(1, 18, "==============================");
-            consoleDrawText(1, 19, "VITORIA! ESSENCIA RESGATADA!  ");
+            consoleDrawText(1, 19, "TEMPLO CONCLUIDO COM VITORIA! ");
             consoleDrawText(1, 20, "------------------------------");
-            consoleDrawText(1, 21, "O General foi purificado!     ");
-            consoleDrawText(1, 22, "A agua limipida corre na vila!");
+            consoleDrawText(1, 21, "As 7 salas foram superadas!   ");
+            consoleDrawText(1, 22, "O General da Agua foi purificado");
             consoleDrawText(1, 23, "O Altar recebeu a Essencia!   ");
             consoleDrawText(1, 25, "[A / B] Continuar explorando  ");
             consoleDrawText(1, 26, "==============================");
@@ -416,7 +459,7 @@ void draw_hud(void) {
         consoleDrawText(1, 4, "ESPECIAL [B]: ");
         consoleDrawText(15, 4, (char*)class_specials[player.class_id]);
 
-        consoleDrawText(1, 6, "PODER:%d  DEFESA:%d  VEL:%d", player.power, player.defense, player.move_speed);
+        consoleDrawText(1, 6, "PODER:%d  DEFESA:%d  OURO:%d", player.power, player.defense, player.gold);
         consoleDrawText(1, 7, "HP MAXIMO: %d", player.max_hp);
         consoleDrawText(1, 9, "--- SLOTS DE TALENTOS ---");
         consoleDrawText(1, 11, "SLOT 1: %s", talent_catalog[player.talent_slots[0]].name);
@@ -429,24 +472,31 @@ void draw_hud(void) {
         consoleDrawText(1, 22, "Abra baus na masmorra p/ mais!");
         consoleDrawText(1, 25, "[A / B / X] Fechar Ficha      ");
     } else if (current_state == STATE_DUNGEON_CHAMBER) {
-        consoleDrawText(1, 1, "== MASMORRA (SALA 1 DE MOBS) ==");
+        consoleDrawText(1, 1, (char*)room_titles[player.run_room_step]);
         consoleDrawText(1, 2, "CLASSE: ");
         consoleDrawText(9, 2, (char*)class_names[player.class_id]);
 
         get_hp_bar(hp_buf, player.hp, player.max_hp, 8);
-        consoleDrawText(1, 3, "HP:[%s] %d/%d  ESP:[B]", hp_buf, player.hp, player.max_hp);
+        consoleDrawText(1, 3, "HP:[%s] %d/%d  OURO:%d", hp_buf, player.hp, player.max_hp, player.gold);
 
-        if (!chamber1_cleared) {
-            consoleDrawText(1, 4, "INIMIGOS: Derrote os monstros! ");
+        if (player.run_room_step == 4) {
+            consoleDrawText(1, 4, "MERCADO: Fale c/ Balcao [A]    ");
+            consoleDrawText(1, 25, "Suba ao balcao para comprar!   ");
+            consoleDrawText(1, 26, "Porta Norte aberta p/ avancar! ");
+        } else if (player.run_room_step == 6) {
+            consoleDrawText(1, 4, "SANTUARIO: Toque Fonte/Bau [A] ");
+            consoleDrawText(1, 25, "Prepare-se para o confronto!   ");
+            consoleDrawText(1, 26, "Avance ao Norte para o General!");
         } else {
-            consoleDrawText(1, 4, "SALA LIMPA! Abra o Bau / Porta ");
-        }
-
-        consoleDrawText(1, 25, "Y:Ataque  B:Especial  A:Bau    ");
-        if (dungeon_door_open) {
-            consoleDrawText(1, 26, "PORTA DO CHEFE ABERTA AO NORTE ");
-        } else {
-            consoleDrawText(1, 26, "Limpe a sala para avancar!     ");
+            if (!room_cleared) {
+                consoleDrawText(1, 4, "INIMIGOS: Derrote os monstros! ");
+                consoleDrawText(1, 25, "Y:Ataque  B:Especial  X:Ficha  ");
+                consoleDrawText(1, 26, "Porta trancada ate limpar sala!");
+            } else {
+                consoleDrawText(1, 4, "SALA LIMPA! Avance ao Norte    ");
+                consoleDrawText(1, 25, "Pegue o Bau e siga pela Porta! ");
+                consoleDrawText(1, 26, "PORTA NORTE DESTRANCADA!       ");
+            }
         }
     } else if (current_state == STATE_CHEST_OPEN) {
         consoleDrawText(1, 18, "==============================");
@@ -458,6 +508,16 @@ void draw_hud(void) {
         consoleDrawText(1, 24, "[Y] Equipar no Slot 1");
         consoleDrawText(1, 25, "[X] Equipar no Slot 2");
         consoleDrawText(1, 26, "[A] Equipar no Slot 3  [B] Sair");
+    } else if (current_state == STATE_SHOP_MENU) {
+        consoleDrawText(1, 18, "==============================");
+        consoleDrawText(1, 19, "MERCADO DA MASMORRA           ");
+        consoleDrawText(1, 20, "------------------------------");
+        consoleDrawText(1, 21, "[Y] Pocao Vida (+35 HP)    40g");
+        consoleDrawText(1, 22, "[X] Bencao Forca (+4 Dmg)  60g");
+        consoleDrawText(1, 23, "[A] Bencao Escudo (+4 Def) 60g");
+        consoleDrawText(1, 24, "------------------------------");
+        consoleDrawText(1, 25, (char*)shop_feedback);
+        consoleDrawText(1, 26, "[B] Sair do Balcao            ");
     } else if (current_state == STATE_BOSS_CHAMBER) {
         consoleDrawText(1, 1, "== CAMARA DO GENERAL DA AGUA ==");
         consoleDrawText(1, 2, "CLASSE: ");
@@ -469,7 +529,7 @@ void draw_hud(void) {
         if (boss.is_alive) {
             get_hp_bar(boss_buf, boss.hp, boss.max_hp, 8);
             if (boss.state == 2) {
-                consoleDrawText(1, 4, "CHEFE: [VULNERAVEL!] %d/300", boss.hp);
+                consoleDrawText(1, 4, "CHEFE: [VULNERAVEL!] %d/350", boss.hp);
             } else {
                 consoleDrawText(1, 4, "CHEFE:    [%s] %d/%d", boss_buf, boss.hp, boss.max_hp);
             }
@@ -530,7 +590,7 @@ int main(void) {
         if (player.invuln_timer > 0) player.invuln_timer--;
 
         // =========================================================================
-        // ESTADO 1: A VILA (Hub Seguro - Fiel ao GameMaker)
+        // ESTADO 1: A VILA (Hub Seguro)
         // =========================================================================
         if (current_state == STATE_VILLAGE) {
             player.is_moving = 0;
@@ -555,7 +615,7 @@ int main(void) {
                 player.is_moving = 1;
             }
 
-            // Entrar no Portal ao caminhar diretamente no topo (120, 35)
+            // Entrar no Portal (120, 35)
             if (player.y <= 42 && player.x >= 110 && player.x <= 130) {
                 current_state = STATE_PORTAL_CONFIRM;
                 clear_dialogue_box();
@@ -574,7 +634,6 @@ int main(void) {
                 player.atk_timer = 12;
                 player.atk_cooldown = 18;
 
-                // Se for Arqueiro ou Maga, atira projetil
                 if (player.class_id == CLASS_MAGE || player.class_id == CLASS_ARCHER) {
                     player_proj.is_active = 1;
                     player_proj.x = player.x;
@@ -586,7 +645,7 @@ int main(void) {
                     else if (player.dir == 3) { player_proj.vx = 4; player_proj.vy = 0; }
                 }
 
-                // Colisao com Boneco de Treino (120, 165)
+                // Boneco de Treino (120, 165)
                 {
                     s16 ddx = player.x - 120;
                     s16 ddy = player.y - 165;
@@ -600,25 +659,24 @@ int main(void) {
                 }
             }
 
-            // Habilidade de Defesa / Especial (Botao B)
+            // Habilidade de Defesa (Botao B)
             if ((pad_down & KEY_B) && player.def_cooldown == 0) {
                 if (player.def_mode == DEF_BLOCK) {
-                    player.def_timer = 120; // 2 segundos de escudo
+                    player.def_timer = 120;
                     player.def_cooldown = 200;
                 } else if (player.def_mode == DEF_MANA_SHIELD) {
                     player.def_timer = 100;
                     player.def_cooldown = 240;
                 } else if (player.def_mode == DEF_ROLL) {
-                    player.def_timer = 15;  // 0.25s de dash veloz
+                    player.def_timer = 15;
                     player.invuln_timer = 15;
                     player.def_cooldown = 120;
                 } else if (player.def_mode == DEF_STEALTH) {
-                    player.def_timer = 150; // 2.5s invisivel
+                    player.def_timer = 150;
                     player.def_cooldown = 260;
                 }
             }
 
-            // Movimento do Rolamento (Dash do Arqueiro)
             if (player.def_timer > 0 && player.def_mode == DEF_ROLL) {
                 if (player.dir == 0 && player.y < 185) player.y += 4;
                 if (player.dir == 1 && player.y > 36)  player.y -= 4;
@@ -626,10 +684,9 @@ int main(void) {
                 if (player.dir == 3 && player.x < 225) player.x += 4;
             }
 
-            // Interagir com Pedestais de Classe, Altar ou Portal (Botao A)
+            // Interacoes com Pedestais, Altar ou Portal (Botao A)
             if (pad_down & KEY_A) {
                 u8 p;
-                // 1. Checa os 4 Pedestais
                 for (p = 0; p < 4; p++) {
                     s16 dx = player.x - (s16)pedestals[p].x;
                     s16 dy = player.y - (s16)pedestals[p].y;
@@ -642,7 +699,7 @@ int main(void) {
                     }
                 }
 
-                // 2. Checa o Altar (120, 75)
+                // Altar (120, 75)
                 {
                     s16 dx = player.x - 120;
                     s16 dy = player.y - 75;
@@ -655,7 +712,7 @@ int main(void) {
                     }
                 }
 
-                // 3. Checa o Portal (120, 35)
+                // Portal (120, 35)
                 {
                     s16 dx = player.x - 120;
                     s16 dy = player.y - 35;
@@ -676,7 +733,19 @@ int main(void) {
         // =========================================================================
         else if (current_state == STATE_PORTAL_CONFIRM) {
             if (pad_down & KEY_A) {
-                enter_dungeon_chamber(); // Entra na Camara 1 da Masmorra!
+                setFadeEffect(FADE_OUT);
+                WaitForVBlank();
+                clear_screen_text();
+
+                player.run_room_step = 1; // Inicia na Sala 1/7
+                player.x = 120;
+                player.y = 180;
+                player.dir = 1;
+                load_current_room();
+                hud_dirty = 1;
+
+                WaitForVBlank();
+                setFadeEffect(FADE_IN);
             } else if (pad_down & KEY_B) {
                 player.y = 52;
                 current_state = STATE_VILLAGE;
@@ -699,13 +768,13 @@ int main(void) {
         // =========================================================================
         else if (current_state == STATE_TALENTS_MENU) {
             if ((pad_down & KEY_B) || (pad_down & KEY_A) || (pad_down & KEY_X)) {
-                current_state = STATE_VILLAGE;
+                current_state = (player.run_room_step >= 1 && player.run_room_step <= 6) ? STATE_DUNGEON_CHAMBER : STATE_VILLAGE;
                 clear_screen_text();
                 hud_dirty = 1;
             }
         }
         // =========================================================================
-        // ESTADO 5: CAMARA 1 DA MASMORRA (Slimes + Elemental de Gelo)
+        // ESTADO 5: SALAS DE 1 A 6 DA MASMORRA (Exploracao, Arena, Loja, Pre-Chefe)
         // =========================================================================
         else if (current_state == STATE_DUNGEON_CHAMBER) {
             player.is_moving = 0;
@@ -730,6 +799,13 @@ int main(void) {
                 player.is_moving = 1;
             }
 
+            // Ficha de Talentos (Botao X)
+            if (pad_down & KEY_X) {
+                current_state = STATE_TALENTS_MENU;
+                clear_screen_text();
+                hud_dirty = 1;
+            }
+
             // Habilidade de Defesa / Especial (Botao B)
             if ((pad_down & KEY_B) && player.def_cooldown == 0) {
                 if (player.def_mode == DEF_BLOCK) {
@@ -748,7 +824,6 @@ int main(void) {
                 }
             }
 
-            // Movimento do Rolamento (Dash do Arqueiro)
             if (player.def_timer > 0 && player.def_mode == DEF_ROLL) {
                 if (player.dir == 0 && player.y < 185) player.y += 4;
                 if (player.dir == 1 && player.y > 36)  player.y -= 4;
@@ -761,7 +836,6 @@ int main(void) {
                 player.atk_timer = (player.class_id == CLASS_ASSASSIN) ? 6 : 12;
                 player.atk_cooldown = (player.class_id == CLASS_ASSASSIN) ? 10 : 18;
 
-                // Maga e Arqueiro disparam projetil
                 if (player.class_id == CLASS_MAGE || player.class_id == CLASS_ARCHER) {
                     player_proj.is_active = 1;
                     player_proj.x = player.x;
@@ -773,7 +847,6 @@ int main(void) {
                     else if (player.dir == 3) { player_proj.vx = 5; player_proj.vy = 0; }
                 }
 
-                // Cavaleiro e Assassino: Golpe corpo-a-corpo
                 if (player.class_id == CLASS_KNIGHT || player.class_id == CLASS_ASSASSIN) {
                     s16 atk_cx = player.x;
                     s16 atk_cy = player.y;
@@ -782,7 +855,6 @@ int main(void) {
                     if (player.dir == 2) atk_cx -= 14;
                     if (player.dir == 3) atk_cx += 14;
 
-                    // Acerto em Slime 1
                     if (slime1.is_alive) {
                         s16 dx = atk_cx - slime1.x;
                         s16 dy = atk_cy - slime1.y;
@@ -791,12 +863,11 @@ int main(void) {
                         if (dx < 16 && dy < 16) {
                             slime1.hp -= player.power;
                             slime1.hit_flash = 8;
-                            if (slime1.hp <= 0) slime1.is_alive = 0;
+                            if (slime1.hp <= 0) { slime1.is_alive = 0; player.gold += 15; }
                             hud_dirty = 1;
                         }
                     }
 
-                    // Acerto em Slime 2
                     if (slime2.is_alive) {
                         s16 dx = atk_cx - slime2.x;
                         s16 dy = atk_cy - slime2.y;
@@ -805,12 +876,11 @@ int main(void) {
                         if (dx < 16 && dy < 16) {
                             slime2.hp -= player.power;
                             slime2.hit_flash = 8;
-                            if (slime2.hp <= 0) slime2.is_alive = 0;
+                            if (slime2.hp <= 0) { slime2.is_alive = 0; player.gold += 15; }
                             hud_dirty = 1;
                         }
                     }
 
-                    // Acerto em Elemental
                     if (elemental.is_alive) {
                         s16 dx = atk_cx - elemental.x;
                         s16 dy = atk_cy - elemental.y;
@@ -819,7 +889,7 @@ int main(void) {
                         if (dx < 16 && dy < 16) {
                             elemental.hp -= player.power;
                             elemental.hit_flash = 8;
-                            if (elemental.hp <= 0) elemental.is_alive = 0;
+                            if (elemental.hp <= 0) { elemental.is_alive = 0; player.gold += 25; }
                             hud_dirty = 1;
                         }
                     }
@@ -835,7 +905,6 @@ int main(void) {
                     player_proj.is_active = 0;
                 }
 
-                // Colisao com Slime 1
                 if (slime1.is_alive && player_proj.is_active) {
                     s16 dx = player_proj.x - slime1.x;
                     s16 dy = player_proj.y - slime1.y;
@@ -844,13 +913,12 @@ int main(void) {
                     if (dx < 14 && dy < 14) {
                         slime1.hp -= player_proj.damage;
                         slime1.hit_flash = 8;
-                        if (slime1.hp <= 0) slime1.is_alive = 0;
+                        if (slime1.hp <= 0) { slime1.is_alive = 0; player.gold += 15; }
                         player_proj.is_active = 0;
                         hud_dirty = 1;
                     }
                 }
 
-                // Colisao com Slime 2
                 if (slime2.is_alive && player_proj.is_active) {
                     s16 dx = player_proj.x - slime2.x;
                     s16 dy = player_proj.y - slime2.y;
@@ -859,13 +927,12 @@ int main(void) {
                     if (dx < 14 && dy < 14) {
                         slime2.hp -= player_proj.damage;
                         slime2.hit_flash = 8;
-                        if (slime2.hp <= 0) slime2.is_alive = 0;
+                        if (slime2.hp <= 0) { slime2.is_alive = 0; player.gold += 15; }
                         player_proj.is_active = 0;
                         hud_dirty = 1;
                     }
                 }
 
-                // Colisao com Elemental
                 if (elemental.is_alive && player_proj.is_active) {
                     s16 dx = player_proj.x - elemental.x;
                     s16 dy = player_proj.y - elemental.y;
@@ -874,14 +941,14 @@ int main(void) {
                     if (dx < 14 && dy < 14) {
                         elemental.hp -= player_proj.damage;
                         elemental.hit_flash = 8;
-                        if (elemental.hp <= 0) elemental.is_alive = 0;
+                        if (elemental.hp <= 0) { elemental.is_alive = 0; player.gold += 25; }
                         player_proj.is_active = 0;
                         hud_dirty = 1;
                     }
                 }
             }
 
-            // IA dos Slimes (Perseguem o heroi se ele nao estiver invisivel)
+            // IA dos Inimigos
             if (!(player.def_timer > 0 && player.def_mode == DEF_STEALTH)) {
                 if (slime1.is_alive) {
                     if (slime1.x < player.x) slime1.x += 1;
@@ -897,7 +964,6 @@ int main(void) {
                 }
             }
 
-            // IA do Elemental (Kiting + Disparo de Gelo fiel ao GM)
             if (elemental.is_alive) {
                 s16 edx = player.x - elemental.x;
                 s16 edy = player.y - elemental.y;
@@ -906,7 +972,6 @@ int main(void) {
                 if (edy < 0) edy = -edy;
                 dist_sq = edx + edy;
 
-                // Kiting: se o jogador chegar muito perto (< 50px), o elemental se afasta
                 if (dist_sq < 50) {
                     if (elemental.x < player.x && elemental.x > 25) elemental.x -= 1;
                     else if (elemental.x > player.x && elemental.x < 215) elemental.x += 1;
@@ -914,7 +979,6 @@ int main(void) {
                     else if (elemental.y > player.y && elemental.y < 165) elemental.y += 1;
                 }
 
-                // Disparo de Gelo a cada 75 frames
                 if (elemental.shoot_timer > 0) elemental.shoot_timer--;
                 if (elemental.shoot_timer == 0 && !enemy_proj1.is_active && !(player.def_timer > 0 && player.def_mode == DEF_STEALTH)) {
                     enemy_proj1.is_active = 1;
@@ -927,7 +991,6 @@ int main(void) {
                 }
             }
 
-            // Movimento do Projetil do Elemental
             if (enemy_proj1.is_active) {
                 enemy_proj1.x += enemy_proj1.vx;
                 enemy_proj1.y += enemy_proj1.vy;
@@ -935,7 +998,6 @@ int main(void) {
                     enemy_proj1.is_active = 0;
                 }
 
-                // Dano no Jogador
                 if (player.invuln_timer == 0) {
                     s16 dx = enemy_proj1.x - player.x;
                     s16 dy = enemy_proj1.y - player.y;
@@ -943,7 +1005,7 @@ int main(void) {
                     if (dy < 0) dy = -dy;
                     if (dx < 12 && dy < 12) {
                         s16 dmg = enemy_proj1.damage;
-                        if (player.def_timer > 0 && player.def_mode == DEF_MANA_SHIELD) dmg = 0; // Mana Shield absorve!
+                        if (player.def_timer > 0 && player.def_mode == DEF_MANA_SHIELD) dmg = 0;
                         if (player.def_timer > 0 && player.def_mode == DEF_BLOCK) dmg /= 2;
 
                         player.hp -= dmg;
@@ -954,7 +1016,6 @@ int main(void) {
                 }
             }
 
-            // Dano por contato de Slimes
             if (player.invuln_timer == 0) {
                 if (slime1.is_alive) {
                     s16 dx = slime1.x - player.x;
@@ -963,7 +1024,7 @@ int main(void) {
                     if (dy < 0) dy = -dy;
                     if (dx < 14 && dy < 14) {
                         s16 dmg = 10;
-                        if (player.def_timer > 0 && player.def_mode == DEF_BLOCK) dmg = 0; // Escudo bloqueia contato fisico!
+                        if (player.def_timer > 0 && player.def_mode == DEF_BLOCK) dmg = 0;
                         player.hp -= dmg;
                         player.invuln_timer = 30;
                         hud_dirty = 1;
@@ -984,12 +1045,23 @@ int main(void) {
                 }
             }
 
-            // Checa se a sala foi limpa
-            if (!slime1.is_alive && !slime2.is_alive && !elemental.is_alive && !chamber1_cleared) {
-                chamber1_cleared = 1;
-                chest.is_spawned = 1;
-                dungeon_door_open = 1;
-                hud_dirty = 1;
+            // Gerenciamento de Vitoria da Sala
+            if (!slime1.is_alive && !slime2.is_alive && !elemental.is_alive && !room_cleared) {
+                // Caso seja Arena e esteja na onda 1, inicia onda 2
+                if (player.run_room_step == 3 && arena_wave == 1) {
+                    arena_wave = 2;
+                    slime1.x = 70; slime1.y = 80; slime1.hp = 30; slime1.hit_flash = 0; slime1.is_alive = 1;
+                    elemental.x = 120; elemental.y = 60; elemental.hp = 40; elemental.hit_flash = 0; elemental.shoot_timer = 40; elemental.is_alive = 1;
+                    hud_dirty = 1;
+                } else {
+                    room_cleared = 1;
+                    door_open = 1;
+                    if (player.run_room_step == 2 || player.run_room_step == 3 || player.run_room_step == 5) {
+                        chest.is_spawned = 1;
+                    }
+                    if (player.run_room_step == 3) player.gold += 50; // Bonus da Arena
+                    hud_dirty = 1;
+                }
             }
 
             // Morte do Jogador
@@ -998,7 +1070,7 @@ int main(void) {
                 return_to_village(0);
             }
 
-            // Interagir com o Bau de Tesouro (Botao A)
+            // Interacao com o Bau de Tesouro (Botao A)
             if (chest.is_spawned && !chest.is_open && (pad_down & KEY_A)) {
                 s16 cdx = player.x - chest.x;
                 s16 cdy = player.y - chest.y;
@@ -1012,9 +1084,36 @@ int main(void) {
                 }
             }
 
-            // Passar para a Camara do Chefe pela porta ao Norte (x: 110-130, y <= 40)
-            if (dungeon_door_open && player.y <= 42 && player.x >= 110 && player.x <= 130) {
-                enter_boss_chamber();
+            // Interacao no Mercado (Sala 4): Balcao do Mercador
+            if (player.run_room_step == 4 && (pad_down & KEY_A)) {
+                s16 mdx = player.x - 120;
+                s16 mdy = player.y - 95;
+                if (mdx < 0) mdx = -mdx;
+                if (mdy < 0) mdy = -mdy;
+                if (mdx < 25 && mdy < 25) {
+                    current_state = STATE_SHOP_MENU;
+                    shop_feedback = "Selecione o que deseja comprar";
+                    clear_dialogue_box();
+                    hud_dirty = 1;
+                }
+            }
+
+            // Interacao no Pre-Chefe (Sala 6): Fonte de Cura
+            if (player.run_room_step == 6 && !fountain_used) {
+                s16 fdx = player.x - 120;
+                s16 fdy = player.y - 145;
+                if (fdx < 0) fdx = -fdx;
+                if (fdy < 0) fdy = -fdy;
+                if (fdx < 22 && fdy < 22) {
+                    fountain_used = 1;
+                    player.hp = player.max_hp; // Cura total no santuario!
+                    hud_dirty = 1;
+                }
+            }
+
+            // Avanco para a Proxima Sala pela Porta Norte (x: 110-130, y <= 40)
+            if (door_open && player.y <= 42 && player.x >= 110 && player.x <= 130) {
+                advance_to_next_room();
             }
 
             if (slime1.hit_flash > 0) slime1.hit_flash--;
@@ -1026,32 +1125,69 @@ int main(void) {
         // =========================================================================
         else if (current_state == STATE_CHEST_OPEN) {
             u8 new_t = chest.rolled_talent_id;
-            if (pad_down & KEY_Y) { // Equipar no Slot 1
+            if (pad_down & KEY_Y) {
                 player.talent_slots[0] = new_t;
                 if (new_t == 4) player.max_hp += 30;
                 current_state = STATE_DUNGEON_CHAMBER;
                 clear_dialogue_box();
                 hud_dirty = 1;
-            } else if (pad_down & KEY_X) { // Equipar no Slot 2
+            } else if (pad_down & KEY_X) {
                 player.talent_slots[1] = new_t;
                 if (new_t == 4) player.max_hp += 30;
                 current_state = STATE_DUNGEON_CHAMBER;
                 clear_dialogue_box();
                 hud_dirty = 1;
-            } else if (pad_down & KEY_A) { // Equipar no Slot 3
+            } else if (pad_down & KEY_A) {
                 player.talent_slots[2] = new_t;
                 if (new_t == 4) player.max_hp += 30;
                 current_state = STATE_DUNGEON_CHAMBER;
                 clear_dialogue_box();
                 hud_dirty = 1;
-            } else if (pad_down & KEY_B) { // Descartar
+            } else if (pad_down & KEY_B) {
                 current_state = STATE_DUNGEON_CHAMBER;
                 clear_dialogue_box();
                 hud_dirty = 1;
             }
         }
         // =========================================================================
-        // ESTADO 7: CAMARA DO GENERAL DA AGUA (Chefe)
+        // ESTADO 7: TELA DA LOJA DO MERCADOR (Mercado - Sala 4)
+        // =========================================================================
+        else if (current_state == STATE_SHOP_MENU) {
+            if (pad_down & KEY_Y) { // Pocao de Vida (40g)
+                if (player.gold >= 40) {
+                    player.gold -= 40;
+                    player.hp = (player.hp + 35 > player.max_hp) ? player.max_hp : player.hp + 35;
+                    shop_feedback = "Pocao comprada! +35 HP!   ";
+                } else {
+                    shop_feedback = "Ouro insuficiente! (40g)   ";
+                }
+                hud_dirty = 1;
+            } else if (pad_down & KEY_X) { // Bencao de Forca (60g)
+                if (player.gold >= 60) {
+                    player.gold -= 60;
+                    player.power += 4;
+                    shop_feedback = "Bencao comprada! +4 Poder! ";
+                } else {
+                    shop_feedback = "Ouro insuficiente! (60g)   ";
+                }
+                hud_dirty = 1;
+            } else if (pad_down & KEY_A) { // Bencao de Escudo (60g)
+                if (player.gold >= 60) {
+                    player.gold -= 60;
+                    player.defense += 4;
+                    shop_feedback = "Bencao comprada! +4 Defesa!";
+                } else {
+                    shop_feedback = "Ouro insuficiente! (60g)   ";
+                }
+                hud_dirty = 1;
+            } else if (pad_down & KEY_B) {
+                current_state = STATE_DUNGEON_CHAMBER;
+                clear_dialogue_box();
+                hud_dirty = 1;
+            }
+        }
+        // =========================================================================
+        // ESTADO 8: SALA 7/7 - CAMARA DO GENERAL DA AGUA (Chefe)
         // =========================================================================
         else if (current_state == STATE_BOSS_CHAMBER) {
             player.is_moving = 0;
@@ -1132,7 +1268,7 @@ int main(void) {
                         if (bdy < 0) bdy = -bdy;
                         if (bdx < 20 && bdy < 20) {
                             s16 dmg = player.power;
-                            if (boss.state == 2) dmg *= 2; // Vulneravel: Dano dobrado!
+                            if (boss.state == 2) dmg *= 2;
                             boss.hp -= dmg;
                             boss.hit_flash = 8;
                             hud_dirty = 1;
@@ -1141,7 +1277,6 @@ int main(void) {
                 }
             }
 
-            // Projetil do Jogador contra o Chefe
             if (player_proj.is_active) {
                 player_proj.x += player_proj.vx;
                 player_proj.y += player_proj.vy;
@@ -1166,9 +1301,8 @@ int main(void) {
                 }
             }
 
-            // IA do General da Agua (Padrao Sakurai de Fases e Telegraph)
+            // IA do General da Agua
             if (boss.is_alive) {
-                // Checa morte do Chefe
                 if (boss.hp <= 0) {
                     boss.hp = 0;
                     boss.is_alive = 0;
@@ -1176,16 +1310,14 @@ int main(void) {
                     boss_portal_open = 1;
                     hud_dirty = 1;
                 } else {
-                    // Estado 0: Patrulha e Disparos
                     if (boss.state == 0) {
                         boss.x += boss.dir_x;
                         if (boss.x < 50)  { boss.x = 50;  boss.dir_x = 1; }
                         if (boss.x > 190) { boss.x = 190; boss.dir_x = -1; }
 
-                        // Disparo periodico
                         if (boss.shoot_timer > 0) boss.shoot_timer--;
                         if (boss.shoot_timer == 0) {
-                            boss.shoot_timer = 80;
+                            boss.shoot_timer = 75;
                             enemy_proj1.is_active = 1;
                             enemy_proj1.x = boss.x;
                             enemy_proj1.y = boss.y + 8;
@@ -1194,25 +1326,21 @@ int main(void) {
                             enemy_proj1.damage = 15;
                         }
 
-                        // Risco x Recompensa: Se o jogador se aproximar a menos de 45px, aciona o Slam!
                         {
                             s16 pdx = player.x - boss.x;
                             s16 pdy = player.y - boss.y;
                             if (pdx < 0) pdx = -pdx;
                             if (pdy < 0) pdy = -pdy;
                             if (pdx < 45 && pdy < 45) {
-                                boss.state = 1; // Entra em Telegraph de Slam
+                                boss.state = 1;
                                 boss.slam_timer = 50;
                                 hud_dirty = 1;
                             }
                         }
-                    }
-                    // Estado 1: Telegraph do Slam (Pisca de alerta)
-                    else if (boss.state == 1) {
+                    } else if (boss.state == 1) {
                         if (boss.slam_timer > 0) boss.slam_timer--;
-                        boss.hit_flash = 2; // Pisca em alerta
+                        boss.hit_flash = 2;
                         if (boss.slam_timer == 0) {
-                            // Executa o Slam!
                             s16 pdx = player.x - boss.x;
                             s16 pdy = player.y - boss.y;
                             if (pdx < 0) pdx = -pdx;
@@ -1224,16 +1352,14 @@ int main(void) {
                                 player.invuln_timer = 40;
                                 hud_dirty = 1;
                             }
-                            boss.state = 2; // Fica Vulneravel!
+                            boss.state = 2;
                             boss.vuln_timer = 110;
                             hud_dirty = 1;
                         }
-                    }
-                    // Estado 2: Janela de Vulnerabilidade
-                    else if (boss.state == 2) {
+                    } else if (boss.state == 2) {
                         if (boss.vuln_timer > 0) boss.vuln_timer--;
                         if (boss.vuln_timer == 0) {
-                            boss.state = 0; // Retorna a patrulhar
+                            boss.state = 0;
                             boss.shoot_timer = 60;
                             hud_dirty = 1;
                         }
@@ -1241,7 +1367,6 @@ int main(void) {
                 }
             }
 
-            // Movimento do Projetil do Chefe
             if (enemy_proj1.is_active) {
                 enemy_proj1.x += enemy_proj1.vx;
                 enemy_proj1.y += enemy_proj1.vy;
@@ -1267,13 +1392,11 @@ int main(void) {
                 }
             }
 
-            // Morte do Heroi
             if (player.hp <= 0) {
                 player.hp = 0;
                 return_to_village(0);
             }
 
-            // Coleta do Orbe da Essencia
             if (essence_spawned && !essence_collected) {
                 s16 edx = player.x - 120;
                 s16 edy = player.y - 110;
@@ -1288,7 +1411,6 @@ int main(void) {
                 }
             }
 
-            // Portal de Retorno a Vila (ao tocar no topo)
             if (boss_portal_open && player.y <= 42 && player.x >= 110 && player.x <= 130) {
                 return_to_village(1);
             }
@@ -1318,10 +1440,9 @@ int main(void) {
 
             hero_pal = player.class_id;
             if (player.invuln_timer > 0 && (player.invuln_timer & 2)) {
-                hero_pal = 4; // Pisca em branco
+                hero_pal = 4;
             }
             if (player.def_timer > 0 && player.def_mode == DEF_STEALTH && (player.def_timer & 4)) {
-                // Invisivel pisca
                 hero_pal = 4;
             }
             oamSet(OAM_PLAYER, player.x, player.y, 3, spr_hflip, 0, spr_tile, hero_pal);
@@ -1365,7 +1486,7 @@ int main(void) {
             oamSet(OAM_PLAYER_PROJ, 0, 240, 0, 0, 0, 0, 0);
         }
 
-        // CENARIO 1: A VILA (Hub Seguro)
+        // CENARIO 1: A VILA
         if (current_state == STATE_VILLAGE || current_state == STATE_PORTAL_CONFIRM ||
             current_state == STATE_ALTAR_MENU || current_state == STATE_VICTORY) {
 
@@ -1378,7 +1499,6 @@ int main(void) {
             oamSet(OAM_ALTAR,     120, 75,  3, 0, 0, SPR_ALTAR, 0);
             oamSet(OAM_PORTAL,    120, 35,  3, 0, 0, SPR_PORTAL, 0);
 
-            // Oculta Masmorra
             oamSet(OAM_CHEST,       0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_SLIME1,      0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_SLIME2,      0, 240, 0, 0, 0, 0, 0);
@@ -1387,11 +1507,9 @@ int main(void) {
             oamSet(OAM_ENEMY_PROJ1, 0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_ENEMY_PROJ2, 0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_ESSENCE,     0, 240, 0, 0, 0, 0, 0);
-
         }
         // CENARIO 2: FICHA DE TALENTOS
         else if (current_state == STATE_TALENTS_MENU) {
-            // Oculta todos os outros sprites
             oamSet(OAM_PLAYER,      0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_DUMMY,       0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_PEDESTAL0,   0, 240, 0, 0, 0, 0, 0);
@@ -1409,18 +1527,34 @@ int main(void) {
             oamSet(OAM_ENEMY_PROJ2, 0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_ESSENCE,     0, 240, 0, 0, 0, 0, 0);
         }
-        // CENARIO 3: MASMORRA (Sala 1 de Mobs + Bau)
-        else if (current_state == STATE_DUNGEON_CHAMBER || current_state == STATE_CHEST_OPEN) {
-            // Oculta Vila e Chefe
-            oamSet(OAM_DUMMY,       0, 240, 0, 0, 0, 0, 0);
+        // CENARIO 3: SALAS DE 1 A 6 DA MASMORRA
+        else if (current_state == STATE_DUNGEON_CHAMBER || current_state == STATE_CHEST_OPEN || current_state == STATE_SHOP_MENU) {
             oamSet(OAM_PEDESTAL0,   0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_PEDESTAL1,   0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_PEDESTAL2,   0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_PEDESTAL3,   0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_ALTAR,       0, 240, 0, 0, 0, 0, 0);
-            oamSet(OAM_PORTAL,      0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_BOSS,        0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_ESSENCE,     0, 240, 0, 0, 0, 0, 0);
+
+            // Sala 4 (Mercado) ou Sala 6 (Pre-Chefe: Fonte)
+            if (player.run_room_step == 4) {
+                // Balcao do Mercador
+                oamSet(OAM_DUMMY, 120, 95, 3, 0, 0, SPR_TRAINING_DUMMY, 0);
+            } else if (player.run_room_step == 6) {
+                // Fonte de Cura Sagrada
+                u8 fountain_pal = (fountain_used) ? 0 : 5;
+                oamSet(OAM_DUMMY, 120, 145, 3, 0, 0, SPR_PEDESTAL, fountain_pal);
+            } else {
+                oamSet(OAM_DUMMY, 0, 240, 0, 0, 0, 0, 0);
+            }
+
+            // Portal de Saida ao Norte (desenhado no topo quando a porta abre)
+            if (door_open) {
+                oamSet(OAM_PORTAL, 120, 35, 3, 0, 0, SPR_PORTAL, 0);
+            } else {
+                oamSet(OAM_PORTAL, 0, 240, 0, 0, 0, 0, 0);
+            }
 
             // Slime 1
             if (slime1.is_alive) {
@@ -1461,11 +1595,9 @@ int main(void) {
                 oamSet(OAM_ENEMY_PROJ1, 0, 240, 0, 0, 0, 0, 0);
             }
             oamSet(OAM_ENEMY_PROJ2, 0, 240, 0, 0, 0, 0, 0);
-
         }
-        // CENARIO 4: CAMARA DO CHEFE (General da Agua)
+        // CENARIO 4: SALA 7/7 - CAMARA DO GENERAL DA AGUA
         else if (current_state == STATE_BOSS_CHAMBER) {
-            // Oculta Vila, Slimes e Bau
             oamSet(OAM_DUMMY,       0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_PEDESTAL0,   0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_PEDESTAL1,   0, 240, 0, 0, 0, 0, 0);
@@ -1477,17 +1609,15 @@ int main(void) {
             oamSet(OAM_SLIME2,      0, 240, 0, 0, 0, 0, 0);
             oamSet(OAM_ELEMENTAL,   0, 240, 0, 0, 0, 0, 0);
 
-            // General da Agua (Chefe)
             if (boss.is_alive) {
                 u8 boss_pal = 7;
                 u8 boss_hflip = (boss.dir_x < 0) ? 1 : 0;
-                if (boss.hit_flash > 0 || boss.state == 2) boss_pal = 4; // Flash ou Vulneravel
+                if (boss.hit_flash > 0 || boss.state == 2) boss_pal = 4;
                 oamSet(OAM_BOSS, boss.x, boss.y, 3, boss_hflip, 0, SPR_BOSS_ENEMY, boss_pal);
             } else {
                 oamSet(OAM_BOSS, 0, 240, 0, 0, 0, 0, 0);
             }
 
-            // Projetil do Chefe
             if (enemy_proj1.is_active) {
                 oamSet(OAM_ENEMY_PROJ1, enemy_proj1.x, enemy_proj1.y, 3, 0, 0, SPR_PROJECTILE, 5);
             } else {
@@ -1495,14 +1625,12 @@ int main(void) {
             }
             oamSet(OAM_ENEMY_PROJ2, 0, 240, 0, 0, 0, 0, 0);
 
-            // Orbe da Essencia
             if (essence_spawned && !essence_collected) {
                 oamSet(OAM_ESSENCE, 120, 110, 3, 0, 0, SPR_ESSENCE, 0);
             } else {
                 oamSet(OAM_ESSENCE, 0, 240, 0, 0, 0, 0, 0);
             }
 
-            // Portal de Retorno
             if (boss_portal_open) {
                 oamSet(OAM_PORTAL, 120, 35, 3, 0, 0, SPR_PORTAL, 0);
             } else {
@@ -1510,7 +1638,6 @@ int main(void) {
             }
         }
 
-        // Atualizacao do HUD apenas quando dirty (60 FPS fluidos)
         if (hud_dirty) {
             draw_hud();
             hud_dirty = 0;

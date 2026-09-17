@@ -14,6 +14,7 @@ typedef enum {
     STATE_TALENTS_MENU,
     STATE_DUNGEON_CHAMBER,
     STATE_CHEST_OPEN,
+    STATE_SHOP_MENU,
     STATE_BOSS_CHAMBER,
     STATE_VICTORY
 } GameState;
@@ -79,6 +80,10 @@ typedef struct {
     u8 invuln_timer;
     u8 is_moving;
     u8 essences_rescued; // 0 a 4
+    
+    // Ouro e Etapa das 7 Salas do Templo
+    u16 gold;
+    u8 run_room_step;    // 1 a 7: Exp1, Exp2, Arena, Loja, Exp3, Pre-Boss, Boss
     
     // 3 Slots de Talentos
     u8 talent_slots[3];
