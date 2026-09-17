@@ -1,4 +1,4 @@
-﻿{
+{
   "$GMProject":"v1",
   "%Name":"Fallen Hero",
   "AudioGroups":[
@@ -87,6 +87,13 @@
     {"id":{"name":"obj_wind_caster","path":"objects/obj_wind_caster/obj_wind_caster.yy",},},
     {"id":{"name":"obj_earth_slime","path":"objects/obj_earth_slime/obj_earth_slime.yy",},},
     {"id":{"name":"obj_earth_caster","path":"objects/obj_earth_caster/obj_earth_caster.yy",},},
+    {"id":{"name":"obj_village_altar","path":"objects/obj_village_altar/obj_village_altar.yy",},},
+    {"id":{"name":"obj_village_pedestal","path":"objects/obj_village_pedestal/obj_village_pedestal.yy",},},
+    {"id":{"name":"obj_training_dummy","path":"objects/obj_training_dummy/obj_training_dummy.yy",},},
+    {"id":{"name":"obj_village_portal","path":"objects/obj_village_portal/obj_village_portal.yy",},},
+    {"id":{"name":"obj_village_controller","path":"objects/obj_village_controller/obj_village_controller.yy",},},
+    {"id":{"name":"room_village","path":"rooms/room_village/room_village.yy",},},
+    {"id":{"name":"scr_village","path":"scripts/scr_village/scr_village.yy",},},
     {"id":{"name":"room_arena","path":"rooms/room_arena/room_arena.yy",},},
     {"id":{"name":"room_char_select","path":"rooms/room_char_select/room_char_select.yy",},},
     {"id":{"name":"room_exp2","path":"rooms/room_exp2/room_exp2.yy",},},
@@ -125,6 +132,7 @@
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
     {"roomId":{"name":"room_char_select","path":"rooms/room_char_select/room_char_select.yy",},},
+    {"roomId":{"name":"room_village","path":"rooms/room_village/room_village.yy",},},
     {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
     {"roomId":{"name":"room_exp2","path":"rooms/room_exp2/room_exp2.yy",},},
     {"roomId":{"name":"room_arena","path":"rooms/room_arena/room_arena.yy",},},

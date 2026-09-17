@@ -70,8 +70,8 @@ if (game_over) {
     }
     if (input_check_ui_confirm() || keyboard_check_pressed(ord("C")) || _touch_tap) {
         global.inrun_saved_stats = false;
-        global.char_select_direct = true;
-        room_goto(room_char_select);
+        global.char_select_direct = false;
+        room_goto(room_village);
     } else if (keyboard_check_pressed(ord("M"))) {
         global.inrun_saved_stats = false;
         global.char_select_direct = false;
@@ -103,8 +103,8 @@ if (global.run_victory || level_complete) {
         clear_save();
         global.run_victory = false;
         level_complete = false;
-        global.char_select_direct = true;
-        room_goto(room_char_select);
+        global.char_select_direct = false;
+        room_goto(room_village);
     }
     exit;
 }

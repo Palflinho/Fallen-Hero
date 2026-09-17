@@ -564,7 +564,7 @@ switch (state) {
                 global.temple_arena_layout = irandom(3);
                 global.temple_arena_biome = "water";
                 global.inrun_saved_stats = false;
-                room_goto(Room1);
+                room_goto(room_village);
             }
         }
 
@@ -590,7 +590,7 @@ switch (state) {
                 global.temple_arena_layout = irandom(3);
                 global.temple_arena_biome = "water";
                 global.inrun_saved_stats = false;
-                room_goto(Room1);
+                room_goto(room_village);
             }
         }
 

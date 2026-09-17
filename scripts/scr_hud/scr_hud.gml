@@ -707,7 +707,7 @@ function hud_draw_game_over(_gw, _gh, death_gold_earned, death_gold_lost, death_
         var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.006));
         var _is_mob = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
         draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-        var _cont_str = _is_mob ? "Toque na tela para Voltar a Selecao de Herois" : (input_get_btn_label("confirm") + " Voltar para Selecao de Personagem");
+        var _cont_str = _is_mob ? "Toque na tela para Retornar a Vila dos Sobreviventes" : (input_get_btn_label("confirm") + " Retornar a Vila dos Sobreviventes");
         draw_text(_bx + _box_w / 2, _ry, _cont_str);
         _ry += 26;
     
@@ -805,7 +805,7 @@ function hud_draw_victory(target, _gw, _gh) {
         var _b_pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
         var _is_mob_vic = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
         draw_set_color(merge_colour(c_yellow, c_white, _b_pulse));
-        var _vic_str = _is_mob_vic ? "Toque na tela para Retornar a Selecao de Herois" : (input_get_btn_label("confirm") + " Retornar a Selecao de Personagens");
+        var _vic_str = _is_mob_vic ? "Toque na tela para Retornar a Vila dos Sobreviventes" : (input_get_btn_label("confirm") + " Retornar a Vila dos Sobreviventes");
         draw_text(_bx + _box_w / 2, _sy, _vic_str);
     
         draw_set_halign(fa_left);
