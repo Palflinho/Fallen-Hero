@@ -295,6 +295,36 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
         // Piso de dano: todo ataque efetivo causa no minimo 25% do impacto base (minimo 1 de dano)
         var _min_hit = max(1, ceil(_amount * 0.25));
         _actual_dmg = max(_min_hit, round(_net));
+
+        // Afixo de Elite: Baluarte (absorve os primeiros 3 golpes)
+        if (variable_instance_exists(_inst, "bulwark_hits") && _inst.bulwark_hits > 0) {
+            _inst.bulwark_hits -= 1;
+            _actual_dmg = 0;
+            fx_spawn_damage_popup(_inst.x, _inst.y - 20, "BARREIRA ABSORVEU!", false, make_colour_rgb(60, 190, 255));
+            fx_spawn_sparks(_inst.x, _inst.y, make_colour_rgb(60, 190, 255), 8);
+        }
+
+        // Taticas de Bando: Alerta em cadeia para monstros aliados proximos
+        if (_actual_dmg > 0) {
+            with (obj_enemy_parent) {
+                if (id != _inst && point_distance(x, y, _inst.x, _inst.y) <= 160) {
+                    has_spotted_player = true;
+                    if (state == "patrol") state = "chase";
+                }
+            }
+        }
+
+        // Quebra de Postura (Stagger) ativada nos mobs a partir da Fase 3
+        if (_actual_dmg > 0 && variable_instance_exists(_inst, "has_poise") && _inst.has_poise && _inst.stagger_timer <= 0) {
+            _inst.poise_current -= 1;
+            if (_inst.poise_current <= 0) {
+                _inst.stagger_timer = 1.2;
+                _inst.poise_current = _inst.poise_max;
+                fx_spawn_damage_popup(_inst.x, _inst.y - 24, "POSTURA QUEBRADA!", true, c_yellow);
+                trigger_hitstop(0.08);
+                fx_spawn_sparks(_inst.x, _inst.y, c_yellow, 12);
+            }
+        }
     }
 
     _inst.hp -= _actual_dmg;

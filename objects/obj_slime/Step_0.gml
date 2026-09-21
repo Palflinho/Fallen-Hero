@@ -34,13 +34,26 @@ switch (state) {
             }
         }
 
-        if (_dist <= attack_range) {
+        var _eff_atk_range = attack_range + (variable_instance_exists(id, "is_enraged") && is_enraged ? 24 : 0);
+        if (_dist <= _eff_atk_range) {
             if (attack_cooldown_timer <= 0) {
                 state = "windup";
-                attack_windup_timer = attack_windup;
+                attack_windup_timer = attack_windup * (variable_instance_exists(id, "is_enraged") && is_enraged ? 0.70 : 1.0);
             }
         } else if (_player != noone) {
             var _dir = point_direction(x, y, _player.x, _player.y) + adaptive_ai_get_flank_offset(_player);
+
+            // Taticas de Bando: Guarda-Costas interpondo-se na frente de Casters
+            var _caster = instance_nearest(x, y, obj_frost_caster);
+            if (_caster == noone) _caster = instance_nearest(x, y, obj_magma_caster);
+            if (_caster != noone && point_distance(x, y, _caster.x, _caster.y) < 220) {
+                var _mid_x = (_caster.x + _player.x) * 0.5;
+                var _mid_y = (_caster.y + _player.y) * 0.5;
+                if (point_distance(x, y, _mid_x, _mid_y) > 30) {
+                    _dir = point_direction(x, y, _mid_x, _mid_y);
+                }
+            }
+
             ai_enemy_move(_dir, move_speed_effective, _dt);
         }
         break;

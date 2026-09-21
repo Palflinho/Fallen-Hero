@@ -82,6 +82,39 @@ if (!_is_boss && random(1) < 0.12) {
     exp_reward = round(exp_reward * 1.5);
 }
 
+// Afixos de Elite (Frenetico, Baluarte, Esporo)
+elite_affix = "none";
+bulwark_hits = 0;
+affix_colour = c_white;
+
+if (!_is_boss && random(1) < 0.22) {
+    var _affixes = ["frenzied", "bulwark", "spore"];
+    elite_affix = _affixes[irandom(2)];
+    if (elite_affix == "frenzied") {
+        move_speed *= 1.25;
+        move_speed_effective = move_speed;
+        affix_colour = make_colour_rgb(255, 70, 70); // Vermelho vivo
+    } else if (elite_affix == "bulwark") {
+        bulwark_hits = 3;
+        affix_colour = make_colour_rgb(60, 190, 255); // Azul etereo
+    } else if (elite_affix == "spore") {
+        affix_colour = make_colour_rgb(255, 170, 40); // Laranja venenoso
+    }
+    gold_reward = round(gold_reward * 2.0);
+    exp_reward = round(exp_reward * 1.5);
+}
+
+// Quebra de Postura (Stagger) e Modo Furia (Enrage) - Ativados nos mobs a partir da Fase 3
+var _is_phase3_or_higher = (variable_global_exists("run_biome") && (global.run_biome == "wind" || global.run_biome == "earth")) || (room == asset_get_index("Room5") || room == asset_get_index("Room6") || room == asset_get_index("Room7") || room == asset_get_index("Room8"));
+has_poise = (!_is_boss && _is_phase3_or_higher);
+poise_max = 3;
+poise_current = poise_max;
+stagger_timer = 0;
+
+can_enrage = (!_is_boss && _is_phase3_or_higher);
+is_enraged = false;
+repulsion_cooldown = 0;
+
 // Chance de ~18% de surgir como Variante Maior / Alfa (mobs simples mais resistentes e imponentes)
 var _is_simple = (object_index == obj_slime || object_index == obj_fire_slime || object_index == obj_elemental || object_index == obj_fire_elemental || (object_exists(asset_get_index("obj_wind_elemental")) && object_index == asset_get_index("obj_wind_elemental")) || (object_exists(asset_get_index("obj_earth_elemental")) && object_index == asset_get_index("obj_earth_elemental")) || (object_exists(asset_get_index("obj_wind_slime")) && object_index == asset_get_index("obj_wind_slime")) || (object_exists(asset_get_index("obj_earth_slime")) && object_index == asset_get_index("obj_earth_slime")));
 if (!_is_boss && !is_rare_mob && _is_simple && random(1) < 0.18) {

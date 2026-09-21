@@ -4,6 +4,22 @@ if (!stats_scaled) enemy_ensure_scaling(id);
 
 var _dt = delta_time / 1000000;
 
+// Quebra de Postura (Stagger): paralisia temporaria
+if (variable_instance_exists(id, "stagger_timer") && stagger_timer > 0) {
+    stagger_timer -= _dt;
+    scale_x = 1.15;
+    scale_y = 0.85;
+    exit;
+}
+
+// Modo Furia (Enrage) para Fase 3+ quando HP fica critico (< 30%)
+if (variable_instance_exists(id, "can_enrage") && can_enrage && !is_enraged && hp <= hp_max * 0.30) {
+    is_enraged = true;
+    move_speed *= 1.30;
+    fx_spawn_damage_popup(x, y - 24, "FURIA!", false, c_red);
+    fx_spawn_sparks(x, y, c_red, 14);
+}
+
 facing_x = lengthdir_x(1, facing_dir);
 facing_y = lengthdir_y(1, facing_dir);
 
@@ -102,6 +118,14 @@ if (hp <= 0) {
             var _chest = instance_create_layer(x, y, layer, obj_chest);
             fx_spawn_sparks(x, y, c_yellow, 30);
             fx_spawn_damage_popup(x, y - 24, "✦ BAU DE TALENTO RARO! ✦", false, c_yellow);
+        }
+    }
+
+    // Explosão póstuma de afixo de elite "spore"
+    if (variable_instance_exists(id, "elite_affix") && elite_affix == "spore") {
+        if (object_exists(asset_get_index("obj_lava_pool"))) {
+            instance_create_layer(x, y, layer, asset_get_index("obj_lava_pool"));
+            fx_spawn_sparks(x, y, c_orange, 15);
         }
     }
 

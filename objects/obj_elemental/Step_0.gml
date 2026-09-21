@@ -34,6 +34,19 @@ switch (state) {
             }
         }
 
+        if (variable_instance_exists(id, "repulsion_cooldown") && repulsion_cooldown > 0) repulsion_cooldown -= _dt;
+
+        // Onda de Repulsao (Ativada nos mobs a partir da Fase 3 se o jogador colar)
+        if (variable_instance_exists(id, "can_enrage") && can_enrage && _player != noone && _dist <= 52 && repulsion_cooldown <= 0) {
+            repulsion_cooldown = 5.0;
+            var _rep_dir = point_direction(x, y, _player.x, _player.y);
+            _player.knockback_vx = lengthdir_x(260, _rep_dir);
+            _player.knockback_vy = lengthdir_y(260, _rep_dir);
+            fx_spawn_sparks(x, y, c_aqua, 18);
+            fx_spawn_damage_popup(x, y - 20, "ONDA DE REPULSAO!", false, c_aqua);
+            trigger_hitstop(0.06);
+        }
+
         if (_dist <= attack_range && attack_cooldown_timer <= 0) {
             state = "windup";
             attack_windup_timer = attack_windup;

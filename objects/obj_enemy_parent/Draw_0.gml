@@ -58,6 +58,47 @@ if (variable_instance_exists(id, "is_greater_variant") && is_greater_variant) {
     draw_set_color(c_white);
 }
 
+// 1.86. Aura de Afixo de Elite
+if (variable_instance_exists(id, "elite_affix") && elite_affix != "none") {
+    var _epulse = 0.5 + 0.5 * sin(current_time * 0.01);
+    draw_set_alpha(0.25 + 0.15 * _epulse);
+    draw_set_color(affix_colour);
+    draw_circle(x, y, (body_radius + 8) * scale_x, false);
+    draw_set_alpha(0.7 + 0.3 * _epulse);
+    draw_circle(x, y, (body_radius + 9) * scale_x, true);
+    draw_set_alpha(1);
+}
+
+// 1.87. Escudo Protetor do Baluarte
+if (variable_instance_exists(id, "bulwark_hits") && bulwark_hits > 0) {
+    draw_set_alpha(0.40 + 0.20 * sin(current_time * 0.012));
+    draw_set_color(make_colour_rgb(80, 200, 255));
+    draw_circle(x, y, (body_radius + 6) * scale_x, true);
+    draw_circle(x, y, (body_radius + 7) * scale_x, true);
+    draw_set_alpha(1);
+}
+
+// 1.88. Efeito de Furia (Enrage) para Fase 3+
+if (variable_instance_exists(id, "is_enraged") && is_enraged) {
+    draw_set_alpha(0.35 + 0.25 * sin(current_time * 0.02));
+    draw_set_color(c_red);
+    draw_circle(x, y, (body_radius + 5) * scale_x, true);
+    draw_set_alpha(1);
+}
+
+// 1.89. Estrelas de Atordoamento / Quebra de Postura (Stagger)
+if (variable_instance_exists(id, "stagger_timer") && stagger_timer > 0) {
+    var _stars_y = y - body_radius * scale_y - 20;
+    var _star_ang = current_time * 0.01;
+    draw_set_color(c_yellow);
+    for (var _st = 0; _st < 3; _st++) {
+        var _sang = _star_ang + _st * (2 * pi / 3);
+        var _sx = x + cos(_sang) * 12;
+        var _sy = _stars_y + sin(_sang) * 5;
+        draw_circle(_sx, _sy, 3, false);
+    }
+}
+
 // 1.9. Anel Tático de Ameaça Sob os Pés (Feedback Lele / Sakurai: Identificação Imediata de Inimigo)
 var _seed = variable_instance_exists(id, "anim_seed") ? anim_seed : (x * 13 + y * 17);
 var _threat_pulse = 0.65 + 0.35 * abs(sin((current_time + _seed * 70) * 0.006));
