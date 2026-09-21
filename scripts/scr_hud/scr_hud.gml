@@ -444,6 +444,10 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
         var _header_h = 22;
         draw_set_color(make_colour_rgb(18, 24, 38));
         draw_rectangle(_map_x, _map_y, _map_x + _map_w, _map_y + _header_h, false);
+        var _elem_col = make_colour_rgb(80, 200, 255); // agua
+        if (target.element_affinity == "fire") _elem_col = make_colour_rgb(255, 120, 40);
+        else if (target.element_affinity == "wind") _elem_col = make_colour_rgb(160, 240, 230);
+        else if (target.element_affinity == "earth") _elem_col = make_colour_rgb(140, 220, 100);
         draw_set_color(_elem_col);
         draw_rectangle(_map_x, _map_y, _map_x + _map_w, _map_y + 2, false);
         draw_set_color(make_colour_rgb(50, 70, 100));
