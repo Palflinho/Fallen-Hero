@@ -10,9 +10,17 @@ if (!global.midrun_shop_open) {
         var _touch_open = touch_room_clicked(x - 50, y - 60, x + 50, y + 40)
             || (variable_global_exists("touch_attack_pressed") && global.touch_attack_pressed);
         if (input_check_ui_confirm() || _touch_open) {
-            global.midrun_shop_open = true;
             selected_index = 0;
             message_text = "";
+            if (!variable_global_exists("dialogue_shop_shown") || !global.dialogue_shop_shown) {
+                global.dialogue_shop_shown = true;
+                var _cls = (_player != noone) ? _player.character_class : "knight";
+                dialogue_start(dialogue_get_shop_lines(_cls), function() {
+                    global.midrun_shop_open = true;
+                });
+            } else {
+                global.midrun_shop_open = true;
+            }
         }
     } else {
         prompt_active = false;

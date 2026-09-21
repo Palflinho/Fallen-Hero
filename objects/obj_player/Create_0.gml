@@ -39,9 +39,9 @@ parry_flash_timer = 0;
 
 switch (character_class) {
     case "knight":
-        sprite_walk = -1;
-        sprite_attack = -1;
-        sprite_index = -1;
+        sprite_walk = spr_knight_walk;
+        sprite_attack = spr_knight_attack;
+        sprite_index = spr_knight_walk;
 
         switch (element_affinity) {
             case "water":

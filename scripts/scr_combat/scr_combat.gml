@@ -7,6 +7,11 @@ function trigger_hitstop(_duration) {
     input_rumble(_rumble_mag, _rumble_mag, _duration);
 }
 
+function trigger_camera_shake(_amount) {
+    if (!variable_global_exists("camera_shake")) global.camera_shake = 0;
+    global.camera_shake = max(global.camera_shake, _amount);
+}
+
 // -------------------------------------------------------------
 // SAKURAI JUICE: Combat FX, Floating Numbers, Sparks & Particles
 // -------------------------------------------------------------
@@ -300,6 +305,7 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
         if (variable_instance_exists(_inst, "bulwark_hits") && _inst.bulwark_hits > 0) {
             _inst.bulwark_hits -= 1;
             _actual_dmg = 0;
+            sfx_play("parry", 0.05);
             fx_spawn_damage_popup(_inst.x, _inst.y - 20, "BARREIRA ABSORVEU!", false, make_colour_rgb(60, 190, 255));
             fx_spawn_sparks(_inst.x, _inst.y, make_colour_rgb(60, 190, 255), 8);
         }
@@ -322,9 +328,16 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
                 _inst.poise_current = _inst.poise_max;
                 fx_spawn_damage_popup(_inst.x, _inst.y - 24, "POSTURA QUEBRADA!", true, c_yellow);
                 trigger_hitstop(0.08);
+                trigger_camera_shake(6);
+                sfx_play("stagger", 0.04);
                 fx_spawn_sparks(_inst.x, _inst.y, c_yellow, 12);
             }
         }
+    }
+
+    if (_actual_dmg > 0) {
+        sfx_play("hit", 0.08);
+        if (_is_crit) trigger_camera_shake(5);
     }
 
     _inst.hp -= _actual_dmg;
@@ -798,6 +811,16 @@ function player_perform_attack() {
     var _dmg = attack_damage * (_is_crit ? synth_crit_mult : 1);
 
     if (character_class == "knight") {
+        sfx_play("slash", 0.08);
+    } else if (character_class == "mage") {
+        sfx_play("magic", 0.08);
+    } else if (character_class == "archer") {
+        sfx_play("arrow", 0.08);
+    } else if (character_class == "assassin") {
+        sfx_play("dagger", 0.08);
+    }
+
+    if (character_class == "knight") {
         if (variable_instance_exists(id, "synth_lendario_avatar_elemental") && synth_lendario_avatar_elemental > 0) {
             _dmg *= 1.25;
         }
@@ -1262,6 +1285,8 @@ function player_take_damage(_amount, _damage_type) {
             _p.defend_timer = 0;
             _p.last_attack_was_crit = true;
             trigger_hitstop(0.12);
+            trigger_camera_shake(6);
+            sfx_play("parry", 0.04);
 
             // 31 Aparar em Cadeia: reseta cooldown do parry
             if (variable_instance_exists(_p, "synth_duelista_aparar_cadeia") && _p.synth_duelista_aparar_cadeia > 0) {
@@ -1466,6 +1491,8 @@ function player_take_damage(_amount, _damage_type) {
         if (_final > 0) {
             _p.state = "hurt";
             trigger_hitstop(0.05);
+            trigger_camera_shake(8);
+            sfx_play("hit", 0.06);
             input_rumble(0.6, 0.7, 0.22);
             global.screen_damage_flash = 0.35;
         }

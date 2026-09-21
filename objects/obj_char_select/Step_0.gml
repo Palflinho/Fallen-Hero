@@ -559,6 +559,9 @@ switch (state) {
                 }
 
                 save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
+                global.dialogue_intro_shown = false;
+                global.dialogue_shop_shown = false;
+                global.dialogue_boss_shown = false;
                 global.run_biome = "water";
                 global.run_room_step = 1;
                 global.temple_arena_layout = irandom(3);
@@ -585,6 +588,9 @@ switch (state) {
                 }
 
                 save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
+                global.dialogue_intro_shown = false;
+                global.dialogue_shop_shown = false;
+                global.dialogue_boss_shown = false;
                 global.run_biome = "water";
                 global.run_room_step = 1;
                 global.temple_arena_layout = irandom(3);

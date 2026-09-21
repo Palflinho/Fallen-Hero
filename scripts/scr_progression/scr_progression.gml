@@ -56,6 +56,8 @@ function player_gain_gold(_amount) {
     var _mult = get_mastery_gold_multiplier();
     var _final = round(_amount * _mult);
 
+    sfx_play("gold", 0.08);
+
     global.gold += _final;
     if (!variable_global_exists("run_gold_earned")) global.run_gold_earned = 0;
     global.run_gold_earned += _final;

@@ -1,3 +1,13 @@
+// Dispara Diálogo Narrativo de Confronto do Chefe ao entrar na arena
+if (!variable_global_exists("dialogue_boss_shown") || !global.dialogue_boss_shown) {
+    global.dialogue_boss_shown = true;
+    var _p = instance_find(obj_player, 0);
+    var _cls = (_p != noone) ? _p.character_class : "knight";
+    dialogue_start(dialogue_get_boss_intro_lines(_cls));
+}
+
+if (is_world_paused()) exit;
+
 event_inherited();
 var _dt = delta_time / 1000000;
 
@@ -101,6 +111,8 @@ if (vulnerable) {
                 scale_x = 1.45;
                 fx_spawn_sparks(x, y, c_aqua, 24);
                 trigger_hitstop(0.08);
+                trigger_camera_shake(14);
+                sfx_play("slam");
             }
             break;
     }

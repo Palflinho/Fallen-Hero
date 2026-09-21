@@ -10,13 +10,22 @@ touch_controls_update();
 if (global.hitstop_timer > 0) global.hitstop_timer -= delta_time / 1000000;
 if (!variable_global_exists("screen_damage_flash")) global.screen_damage_flash = 0;
 if (global.screen_damage_flash > 0) global.screen_damage_flash -= delta_time / 1000000;
+if (!variable_global_exists("camera_shake")) global.camera_shake = 0;
+if (global.camera_shake > 0) global.camera_shake = max(0, global.camera_shake - (delta_time / 1000000) * 30);
 
 if (!variable_global_exists("run_playtime")) global.run_playtime = 0;
 if (!is_world_paused()) global.run_playtime += delta_time / 1000000;
 
 var _player = instance_find(obj_player, 0);
 
-// Câmera Centralizada Suave no Jogador (Feedback Lele: Jogador sempre no centro da câmera)
+// Dispara Diálogo Narrativo de Introdução ao entrar na Sala 1
+if (room == Room1 && (!variable_global_exists("dialogue_intro_shown") || !global.dialogue_intro_shown)) {
+    global.dialogue_intro_shown = true;
+    var _char = (_player != noone) ? _player.character_class : (variable_global_exists("selected_character") ? global.selected_character : "knight");
+    dialogue_start(dialogue_get_intro_lines(_char));
+}
+
+// Câmera Centralizada Suave no Jogador (Feedback Lele: Jogador sempre no centro da câmera) + Shake
 if (view_enabled && view_visible[0] && _player != noone) {
     var _cam = view_camera[0];
     camera_set_view_target(_cam, noone);
@@ -29,7 +38,14 @@ if (view_enabled && view_visible[0] && _player != noone) {
     var _cur_cy = camera_get_view_y(_cam);
     var _new_cx = lerp(_cur_cx, _target_cx, 0.25);
     var _new_cy = lerp(_cur_cy, _target_cy, 0.25);
-    camera_set_view_pos(_cam, _new_cx, _new_cy);
+
+    var _shake_x = 0;
+    var _shake_y = 0;
+    if (global.camera_shake > 0) {
+        _shake_x = random_range(-global.camera_shake, global.camera_shake);
+        _shake_y = random_range(-global.camera_shake, global.camera_shake);
+    }
+    camera_set_view_pos(_cam, clamp(_new_cx + _shake_x, 0, max(0, room_width - _vw)), clamp(_new_cy + _shake_y, 0, max(0, room_height - _vh)));
 }
 
 if (!level_complete && boss_room && is_final_room && instance_number(obj_enemy_parent) == 0) {
