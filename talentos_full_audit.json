@@ -2810,8 +2810,8 @@
         "Variavel":  "synth_hp_reg",
         "Custo":  "0",
         "PerRank":  "1",
-        "Arquivos":  "objects\\obj_hud\\Draw_64.gml; objects\\obj_player\\Step_0.gml; objects\\obj_player\\Create_0.gml",
-        "Detalhes":  "synth_field (synth_hp_reg) in objects\\obj_hud\\Draw_64.gml; synth_field (synth_hp_reg) in objects\\obj_player\\Step_0.gml; synth_field (synth_hp_reg) in objects\\obj_player\\Create_0.gml"
+        "Arquivos":  "scripts\\scr_hud\\scr_hud.gml; objects\\obj_player\\Step_0.gml; objects\\obj_player\\Create_0.gml",
+        "Detalhes":  "synth_field (synth_hp_reg) in scripts\\scr_hud\\scr_hud.gml; synth_field (synth_hp_reg) in objects\\obj_player\\Step_0.gml; synth_field (synth_hp_reg) in objects\\obj_player\\Create_0.gml"
     },
     {
         "ID":  "general_fortuna",
@@ -2838,8 +2838,8 @@
         "Variavel":  "synth_dodge",
         "Custo":  "0",
         "PerRank":  "0.025",
-        "Arquivos":  "objects\\obj_hud\\Draw_64.gml; scripts\\scr_combat\\scr_combat.gml; objects\\obj_player\\Create_0.gml",
-        "Detalhes":  "synth_field (synth_dodge) in objects\\obj_hud\\Draw_64.gml; synth_field (synth_dodge) in scripts\\scr_combat\\scr_combat.gml; synth_field (synth_dodge) in objects\\obj_player\\Create_0.gml"
+        "Arquivos":  "scripts\\scr_combat\\scr_combat.gml; scripts\\scr_hud\\scr_hud.gml; objects\\obj_player\\Create_0.gml",
+        "Detalhes":  "synth_field (synth_dodge) in scripts\\scr_combat\\scr_combat.gml; synth_field (synth_dodge) in scripts\\scr_hud\\scr_hud.gml; synth_field (synth_dodge) in objects\\obj_player\\Create_0.gml"
     },
     {
         "ID":  "general_folego_extra",
@@ -2866,8 +2866,8 @@
         "Variavel":  "synth_cdr",
         "Custo":  "0",
         "PerRank":  "0.03",
-        "Arquivos":  "objects\\obj_hud\\Draw_64.gml; objects\\obj_player\\Create_0.gml; scripts\\scr_progression\\scr_progression.gml",
-        "Detalhes":  "synth_field (synth_cdr) in objects\\obj_hud\\Draw_64.gml; synth_field (synth_cdr) in objects\\obj_player\\Create_0.gml; synth_field (synth_cdr) in scripts\\scr_progression\\scr_progression.gml"
+        "Arquivos":  "scripts\\scr_hud\\scr_hud.gml; objects\\obj_player\\Create_0.gml; scripts\\scr_progression\\scr_progression.gml",
+        "Detalhes":  "synth_field (synth_cdr) in scripts\\scr_hud\\scr_hud.gml; synth_field (synth_cdr) in objects\\obj_player\\Create_0.gml; synth_field (synth_cdr) in scripts\\scr_progression\\scr_progression.gml"
     },
     {
         "ID":  "general_presteza",
@@ -2894,36 +2894,8 @@
         "Variavel":  "synth_crit_chance",
         "Custo":  "0",
         "PerRank":  "0.03",
-        "Arquivos":  "objects\\obj_hud\\Draw_64.gml; scripts\\scr_combat\\scr_combat.gml; objects\\obj_player\\Create_0.gml",
-        "Detalhes":  "synth_field (synth_crit_chance) in objects\\obj_hud\\Draw_64.gml; synth_field (synth_crit_chance) in scripts\\scr_combat\\scr_combat.gml; synth_field (synth_crit_chance) in objects\\obj_player\\Create_0.gml"
-    },
-    {
-        "ID":  "general_essencia",
-        "Classe":  "general",
-        "Afinidade":  "none",
-        "Nome":  "Essencia Arcana",
-        "Status":  "Implementado",
-        "Efeito":  "+3 de Poder Magico por rank.",
-        "Flavor":  "Canalizacao pura de forca arcana primordial ampliando magias.",
-        "Variavel":  "synth_pwr_magica",
-        "Custo":  "0",
-        "PerRank":  "3",
-        "Arquivos":  "objects\\obj_player\\Create_0.gml; scripts\\scr_progression\\scr_progression.gml",
-        "Detalhes":  "synth_field (synth_pwr_magica) in objects\\obj_player\\Create_0.gml; synth_field (synth_pwr_magica) in scripts\\scr_progression\\scr_progression.gml"
-    },
-    {
-        "ID":  "general_aura",
-        "Classe":  "general",
-        "Afinidade":  "none",
-        "Nome":  "Aura Protetora",
-        "Status":  "Implementado",
-        "Efeito":  "+3 de Defesa Magica por rank.",
-        "Flavor":  "Campo protetor etereo contra feiticos e elementos hostis.",
-        "Variavel":  "synth_def_magica",
-        "Custo":  "0",
-        "PerRank":  "3",
-        "Arquivos":  "scripts\\scr_combat\\scr_combat.gml; objects\\obj_player\\Create_0.gml",
-        "Detalhes":  "synth_field (synth_def_magica) in scripts\\scr_combat\\scr_combat.gml; synth_field (synth_def_magica) in objects\\obj_player\\Create_0.gml"
+        "Arquivos":  "scripts\\scr_combat\\scr_combat.gml; scripts\\scr_hud\\scr_hud.gml; objects\\obj_player\\Create_0.gml",
+        "Detalhes":  "synth_field (synth_crit_chance) in scripts\\scr_combat\\scr_combat.gml; synth_field (synth_crit_chance) in scripts\\scr_hud\\scr_hud.gml; synth_field (synth_crit_chance) in objects\\obj_player\\Create_0.gml"
     },
     {
         "ID":  "general_forca",
@@ -2931,12 +2903,54 @@
         "Afinidade":  "none",
         "Nome":  "Forca Bruta",
         "Status":  "Implementado",
-        "Efeito":  "+3 de Poder Fisico por rank.",
-        "Flavor":  "Aumento de musculatura e peso do impacto em combate direto.",
+        "Efeito":  "+3 de Poder Fisico (aumenta o dano do Auto-Ataque com a arma).",
+        "Flavor":  "Musculatura marcial e potencia do impacto com a arma basica.",
         "Variavel":  "synth_pwr_fisica",
         "Custo":  "0",
         "PerRank":  "3",
-        "Arquivos":  "objects\\obj_hud\\Draw_64.gml; objects\\obj_player\\Create_0.gml; scripts\\scr_progression\\scr_progression.gml",
-        "Detalhes":  "synth_field (synth_pwr_fisica) in objects\\obj_hud\\Draw_64.gml; synth_field (synth_pwr_fisica) in objects\\obj_player\\Create_0.gml; synth_field (synth_pwr_fisica) in scripts\\scr_progression\\scr_progression.gml"
+        "Arquivos":  "scripts\\scr_hud\\scr_hud.gml; objects\\obj_player\\Create_0.gml; scripts\\scr_progression\\scr_progression.gml",
+        "Detalhes":  "synth_field (synth_pwr_fisica) in scripts\\scr_hud\\scr_hud.gml; synth_field (synth_pwr_fisica) in objects\\obj_player\\Create_0.gml; synth_field (synth_pwr_fisica) in scripts\\scr_progression\\scr_progression.gml"
+    },
+    {
+        "ID":  "general_essencia",
+        "Classe":  "general",
+        "Afinidade":  "none",
+        "Nome":  "Essencia Arcana",
+        "Status":  "Implementado",
+        "Efeito":  "+3 de Poder Magico (amplifica Habilidades, Curas e Efeitos Elementais).",
+        "Flavor":  "Forca arcana primordial que intensifica habilidades especiais, auras e efeitos elementais.",
+        "Variavel":  "synth_pwr_magica",
+        "Custo":  "0",
+        "PerRank":  "3",
+        "Arquivos":  "scripts\\scr_combat\\scr_combat.gml; scripts\\scr_hud\\scr_hud.gml; objects\\obj_player\\Step_0.gml; objects\\obj_player\\Create_0.gml",
+        "Detalhes":  "synth_field (synth_pwr_magica) in scripts\\scr_combat\\scr_combat.gml; synth_field (synth_pwr_magica) in scripts\\scr_hud\\scr_hud.gml; synth_field (synth_pwr_magica) in objects\\obj_player\\Step_0.gml; synth_field (synth_pwr_magica) in objects\\obj_player\\Create_0.gml"
+    },
+    {
+        "ID":  "general_couraca",
+        "Classe":  "general",
+        "Afinidade":  "none",
+        "Nome":  "Couraca de Aco",
+        "Status":  "Implementado",
+        "Efeito":  "+3 de Defesa Fisica (mitiga dano corpo a corpo e armadilhas de contato).",
+        "Flavor":  "Placas reforcadas que absorvem o choque de impactos diretos e armadilhas mecânicas.",
+        "Variavel":  "synth_def_fisica",
+        "Custo":  "0",
+        "PerRank":  "3",
+        "Arquivos":  "scripts\\scr_combat\\scr_combat.gml; scripts\\scr_hud\\scr_hud.gml; objects\\obj_player\\Create_0.gml",
+        "Detalhes":  "synth_field (synth_def_fisica) in scripts\\scr_combat\\scr_combat.gml; synth_field (synth_def_fisica) in scripts\\scr_hud\\scr_hud.gml; synth_field (synth_def_fisica) in objects\\obj_player\\Create_0.gml"
+    },
+    {
+        "ID":  "general_aura",
+        "Classe":  "general",
+        "Afinidade":  "none",
+        "Nome":  "Aura Protetora",
+        "Status":  "Implementado",
+        "Efeito":  "+3 de Defesa Magica (mitiga projeteis a distancia e perigos de area).",
+        "Flavor":  "Campo protetor etereo que dissipa disparos a distancia e perigos em area.",
+        "Variavel":  "synth_def_magica",
+        "Custo":  "0",
+        "PerRank":  "3",
+        "Arquivos":  "scripts\\scr_combat\\scr_combat.gml; scripts\\scr_hud\\scr_hud.gml; objects\\obj_player\\Create_0.gml",
+        "Detalhes":  "synth_field (synth_def_magica) in scripts\\scr_combat\\scr_combat.gml; synth_field (synth_def_magica) in scripts\\scr_hud\\scr_hud.gml; synth_field (synth_def_magica) in objects\\obj_player\\Create_0.gml"
     }
 ]
