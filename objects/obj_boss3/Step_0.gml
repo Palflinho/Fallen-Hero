@@ -1,3 +1,9 @@
+// Dispara Diálogo Narrativo de Confronto do Chefe ao entrar na arena dos ventos
+if (!variable_global_exists("dialogue_boss3_shown") || !global.dialogue_boss3_shown) {
+    global.dialogue_boss3_shown = true;
+    dialogue_play_id("temple3_wind_boss");
+}
+
 event_inherited();
 if (is_world_paused()) exit;
 

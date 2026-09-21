@@ -6,8 +6,8 @@ pad = 20;
 
 level_complete = false;
 game_over = false;
-boss_room = (instance_number(obj_boss) > 0) || (instance_number(obj_boss2) > 0) || (object_exists(asset_get_index("obj_boss3")) && instance_number(asset_get_index("obj_boss3")) > 0) || (object_exists(asset_get_index("obj_boss4")) && instance_number(asset_get_index("obj_boss4")) > 0);
-is_final_room = (room_exists(asset_get_index("Room8")) && room == asset_get_index("Room8"));
+boss_room = (instance_number(obj_boss) > 0) || (instance_number(obj_boss2) > 0) || (object_exists(asset_get_index("obj_boss3")) && instance_number(asset_get_index("obj_boss3")) > 0) || (object_exists(asset_get_index("obj_boss4")) && instance_number(asset_get_index("obj_boss4")) > 0) || (object_exists(asset_get_index("obj_boss_human")) && instance_number(asset_get_index("obj_boss_human")) > 0);
+is_final_room = (room_exists(asset_get_index("room_temple5_boss")) && room == asset_get_index("room_temple5_boss")) || (room_exists(asset_get_index("Room8")) && room == asset_get_index("Room8"));
 mob_clear_chest_spawned = false;
 
 global.paused = false;

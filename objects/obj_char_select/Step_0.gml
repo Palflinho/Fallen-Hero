@@ -8,6 +8,13 @@ if (save_notice_timer > 0) save_notice_timer--;
 var _is_mobile_dev = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
 var _touch_dev = _is_mobile_dev && touch_room_clicked(12, 12, 280, 42);
 
+// Alternar Idioma com [L] ou Gamepad Select
+var _gp_lang = (gamepad_is_connected(0) && gamepad_button_check_pressed(0, gp_select));
+if (keyboard_check_pressed(ord("L")) || _gp_lang) {
+    loc_next_language();
+    sfx_play("menu_select", 0.05, 1.2);
+}
+
 if (keyboard_check_pressed(vk_f1) || keyboard_check_pressed(vk_f2) || _touch_dev) {
     global.dev_mode = !global.dev_mode;
     save_meta();
@@ -558,7 +565,7 @@ switch (state) {
                     global.chosen_talent_ids[i] = talent_selected_ids[i];
                 }
 
-                save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
+                save_checkpoint_fresh(global.selected_character, "room_village", global.selected_element);
                 global.dialogue_intro_shown = false;
                 global.dialogue_shop_shown = false;
                 global.dialogue_boss_shown = false;
@@ -567,7 +574,7 @@ switch (state) {
                 global.temple_arena_layout = irandom(3);
                 global.temple_arena_biome = "water";
                 global.inrun_saved_stats = false;
-                room_goto(Room1);
+                room_goto(asset_get_index("room_village"));
             }
         }
 
@@ -587,7 +594,7 @@ switch (state) {
                     global.chosen_talent_ids[i] = talent_selected_ids[i];
                 }
 
-                save_checkpoint_fresh(global.selected_character, "Room1", global.selected_element);
+                save_checkpoint_fresh(global.selected_character, "room_village", global.selected_element);
                 global.dialogue_intro_shown = false;
                 global.dialogue_shop_shown = false;
                 global.dialogue_boss_shown = false;
@@ -596,7 +603,7 @@ switch (state) {
                 global.temple_arena_layout = irandom(3);
                 global.temple_arena_biome = "water";
                 global.inrun_saved_stats = false;
-                room_goto(Room1);
+                room_goto(asset_get_index("room_village"));
             }
         }
 

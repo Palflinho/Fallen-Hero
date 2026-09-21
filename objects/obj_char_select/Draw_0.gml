@@ -46,11 +46,36 @@ if (save_notice_timer > 0) {
     draw_text(room_width / 2, _ty + 17, save_notice_text);
 }
 
+// Seletor de Idioma no Canto Superior Direito
+var _lang_str = "[L] " + loc("language", "Idioma") + ": " + loc_get_language_label();
+var _lw = string_width(_lang_str) + 20;
+var _lx = room_width - _lw - 16;
+var _ly = 12;
+
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);
+draw_set_alpha(0.85);
+draw_set_color(make_colour_rgb(14, 18, 28));
+draw_rectangle(_lx, _ly, _lx + _lw, _ly + 24, false);
+draw_set_alpha(1);
+draw_set_color(make_colour_rgb(70, 140, 220));
+draw_rectangle(_lx, _ly, _lx + _lw, _ly + 24, true);
+
+draw_set_color(make_colour_rgb(220, 240, 255));
+draw_text(_lx + 10, _ly + 4, _lang_str);
+
+if (mouse_check_button_pressed(mb_left)) {
+    if (mouse_x >= _lx && mouse_x <= _lx + _lw && mouse_y >= _ly && mouse_y <= _ly + 24) {
+        loc_next_language();
+        sfx_play("menu_select", 0.05, 1.2);
+    }
+}
+
 if (state != "main_menu" && state != "save_slots") {
     draw_set_halign(fa_right);
     draw_set_valign(fa_top);
     draw_set_color(c_yellow);
-    draw_text(room_width - 20, 20, "Ouro: " + string(global.gold));
+    draw_text(room_width - 20, 42, loc("gold_label", "Ouro") + ": " + string(global.gold));
     draw_set_color(c_white);
 }
 

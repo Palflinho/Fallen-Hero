@@ -14,10 +14,16 @@ if (!global.midrun_shop_open) {
             message_text = "";
             if (!variable_global_exists("dialogue_shop_shown") || !global.dialogue_shop_shown) {
                 global.dialogue_shop_shown = true;
-                var _cls = (_player != noone) ? _player.character_class : "knight";
-                dialogue_start(dialogue_get_shop_lines(_cls), function() {
-                    global.midrun_shop_open = true;
-                });
+                if (room == asset_get_index("room_temple5_shop")) {
+                    dialogue_play_id("temple5_shop_intro", function() {
+                        global.midrun_shop_open = true;
+                    });
+                } else {
+                    var _cls = (_player != noone) ? _player.character_class : "knight";
+                    dialogue_start(dialogue_get_shop_lines(_cls), function() {
+                        global.midrun_shop_open = true;
+                    });
+                }
             } else {
                 global.midrun_shop_open = true;
             }

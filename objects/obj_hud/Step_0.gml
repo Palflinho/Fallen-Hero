@@ -18,11 +18,22 @@ if (!is_world_paused()) global.run_playtime += delta_time / 1000000;
 
 var _player = instance_find(obj_player, 0);
 
-// Dispara Diálogo Narrativo de Introdução ao entrar na Sala 1
+// Dispara Diálogo Narrativo de Introdução ao entrar na Sala 1 (Templo da Água)
 if (room == Room1 && (!variable_global_exists("dialogue_intro_shown") || !global.dialogue_intro_shown)) {
     global.dialogue_intro_shown = true;
-    var _char = (_player != noone) ? _player.character_class : (variable_global_exists("selected_character") ? global.selected_character : "knight");
-    dialogue_start(dialogue_get_intro_lines(_char));
+    dialogue_play_id("temple1_water_intro");
+}
+
+// Dispara Diálogo Narrativo ao entrar na Sala 5 (Templo do Vento - Fase 3)
+if (room == Room5 && (!variable_global_exists("dialogue_wind_intro_shown") || !global.dialogue_wind_intro_shown)) {
+    global.dialogue_wind_intro_shown = true;
+    dialogue_play_id("temple3_wind_intro");
+}
+
+// Dispara Diálogo Narrativo ao entrar na Sala 5.1 (Mercado do Templo 5)
+if (room == asset_get_index("room_temple5_shop") && (!variable_global_exists("dialogue_temple5_shop_shown") || !global.dialogue_temple5_shop_shown)) {
+    global.dialogue_temple5_shop_shown = true;
+    dialogue_play_id("temple5_shop_intro");
 }
 
 // Câmera Centralizada Suave no Jogador (Feedback Lele: Jogador sempre no centro da câmera) + Shake

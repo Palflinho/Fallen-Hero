@@ -24,13 +24,27 @@ function audio_system_init() {
     global.sfx_map[$ "chest"] = audio_synth_fanfare(0.32, _sr, 0.7);
     global.sfx_map[$ "stagger"] = audio_synth_bell(0.30, 440, _sr, 0.8);
 
-    // Fonemas da Língua dos Bichinhos
+    // Efeitos de Ambiente da Vila e Portal
+    global.sfx_map[$ "bonfire_crackle"] = audio_synth_noise_sweep(0.18, 320, 110, _sr, 0.35);
+    global.sfx_map[$ "portal_hum"] = audio_synth_tone_sweep(0.30, 220, 330, "sine", _sr, 0.45);
+    global.sfx_map[$ "pedestal_light"] = audio_synth_chime(0.40, 523, 784, _sr, 0.75);
+
+    // Efeitos da Fase 3 (Vento)
+    global.sfx_map[$ "wind_gust"] = audio_synth_noise_sweep(0.24, 880, 240, _sr, 0.55);
+
+    // Efeitos do Boss Humano (Templo 5)
+    global.sfx_map[$ "laser_beam"] = audio_synth_tone_sweep(0.14, 1200, 320, "saw", _sr, 0.6);
+    global.sfx_map[$ "energy_shield"] = audio_synth_bell(0.25, 880, _sr, 0.65);
+
+    // Fonemas da Língua dos Bichinhos e Personagens
     global.sfx_map[$ "voice_tatu"] = audio_synth_tone_sweep(0.05, 200, 130, "saw", _sr, 0.4);
     global.sfx_map[$ "voice_lobo"] = audio_synth_tone_sweep(0.06, 560, 420, "sine", _sr, 0.4);
     global.sfx_map[$ "voice_lagarto"] = audio_synth_noise_sweep(0.04, 1300, 500, _sr, 0.35);
     global.sfx_map[$ "voice_urutau"] = audio_synth_tone_sweep(0.07, 740, 520, "sine", _sr, 0.45);
     global.sfx_map[$ "voice_general"] = audio_synth_tone_sweep(0.08, 160, 80, "saw", _sr, 0.6);
     global.sfx_map[$ "voice_merchant"] = audio_synth_chime(0.06, 680, 880, _sr, 0.4);
+    global.sfx_map[$ "voice_elder"] = audio_synth_tone_sweep(0.07, 140, 100, "saw", _sr, 0.45);
+    global.sfx_map[$ "voice_human"] = audio_synth_tone_sweep(0.06, 440, 320, "saw", _sr, 0.5);
 
     // Aliases por classe
     global.sfx_map[$ "voice_knight"] = global.sfx_map[$ "voice_tatu"];

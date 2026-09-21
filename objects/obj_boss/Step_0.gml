@@ -1,9 +1,7 @@
 // Dispara Diálogo Narrativo de Confronto do Chefe ao entrar na arena
 if (!variable_global_exists("dialogue_boss_shown") || !global.dialogue_boss_shown) {
     global.dialogue_boss_shown = true;
-    var _p = instance_find(obj_player, 0);
-    var _cls = (_p != noone) ? _p.character_class : "knight";
-    dialogue_start(dialogue_get_boss_intro_lines(_cls));
+    dialogue_play_id("temple1_water_boss");
 }
 
 if (is_world_paused()) exit;

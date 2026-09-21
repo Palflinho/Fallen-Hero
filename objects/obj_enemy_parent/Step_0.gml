@@ -129,17 +129,19 @@ if (hp <= 0) {
         }
     }
 
-    var _is_boss = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")));
+    var _is_boss = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) || (object_exists(asset_get_index("obj_boss_human")) && object_index == asset_get_index("obj_boss_human")));
     if (_is_boss) trigger_hitstop(0.25);
 
     var _killer_class = (instance_exists(obj_player) ? obj_player.character_class : (variable_global_exists("selected_character") ? global.selected_character : "knight"));
 
     if (object_index == obj_boss) {
         element_unlock("water", _killer_class);
+        reclaim_element("water");
         adaptive_ai_record_boss_defeat("water", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "water");
     } else if (object_index == obj_boss2) {
         element_unlock("fire", _killer_class);
+        reclaim_element("fire");
         adaptive_ai_record_boss_defeat("fire", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "fire");
         // Após derrotar General Magma (Fim do Bioma Fogo), abre portal para Fase do Vento (Room5)
@@ -151,6 +153,7 @@ if (hp <= 0) {
         _gate.gate_colour = make_colour_rgb(180, 240, 255);
     } else if (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) {
         element_unlock("wind", _killer_class);
+        reclaim_element("wind");
         adaptive_ai_record_boss_defeat("wind", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "wind");
         // Apos derrotar General Zephyrus (Sala 6), abre portal para Fase da Terra (Room7)
@@ -163,10 +166,22 @@ if (hp <= 0) {
         _gate.gate_colour = make_colour_rgb(120, 220, 100);
     } else if (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) {
         element_unlock("earth", _killer_class);
+        reclaim_element("earth");
         mastery_unlock(_killer_class, "earth");
         adaptive_ai_record_boss_defeat("earth", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "earth");
-        // Derrota do Chefe Final Supremo (Titã Monólito): Vitória Suprema!
+        // Derrota do Chefe Titã Monólito: abre portal de retorno à Vila Subterrânea para acessar o Templo 5
+        var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
+        _gate.trigger_mode = "clear_mobs";
+        _gate.target_room = asset_get_index("room_village");
+        _gate.reward_type = "heal";
+        _gate.gate_label = "Retorno Ancestral: Vila Subterranea (Abrir Templo 5)";
+        _gate.gate_colour = c_yellow;
+    } else if (object_exists(asset_get_index("obj_boss_human")) && object_index == asset_get_index("obj_boss_human")) {
+        // Conquista final: O Salvador foi vencido!
+        global.run_victory = true;
+        sfx_play("victory", 0.08, 1.0);
+        trigger_camera_shake(8);
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
         _gate.trigger_mode = "clear_mobs";
         _gate.reward_type = "victory";

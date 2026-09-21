@@ -359,16 +359,18 @@ function hud_draw_boss_bar(_gw, _gh, boss_room) {
         if (_boss == noone) _boss = instance_find(obj_boss2, 0);
         if (_boss == noone && object_exists(asset_get_index("obj_boss3"))) _boss = instance_find(asset_get_index("obj_boss3"), 0);
         if (_boss == noone && object_exists(asset_get_index("obj_boss4"))) _boss = instance_find(asset_get_index("obj_boss4"), 0);
+        if (_boss == noone && object_exists(asset_get_index("obj_boss_human"))) _boss = instance_find(asset_get_index("obj_boss_human"), 0);
         if (_boss != noone) {
             var _bw = 520;
             var _bh = 26;
             var _bx = _gw / 2 - _bw / 2;
             var _by = 24;
-            var _boss_name = "CHEFE";
-            if (_boss.object_index == obj_boss) _boss_name = "GENERAL GLACIAL (AGUA)";
+            var _boss_name = loc("boss", "CHEFE");
+            if (_boss.object_index == obj_boss) _boss_name = loc("boss_water_title", "GENERAL GLACIAL (AGUA)");
             else if (_boss.object_index == obj_boss2) _boss_name = "GENERAL MAGMA (FOGO)";
-            else if (object_exists(asset_get_index("obj_boss3")) && _boss.object_index == asset_get_index("obj_boss3")) _boss_name = "GENERAL ZEPHYRUS (VENTO)";
+            else if (object_exists(asset_get_index("obj_boss3")) && _boss.object_index == asset_get_index("obj_boss3")) _boss_name = loc("boss_wind_title", "GENERAL ZEPHYRUS (VENTO)");
             else if (object_exists(asset_get_index("obj_boss4")) && _boss.object_index == asset_get_index("obj_boss4")) _boss_name = "TITA MONOLITO (TERRA)";
+            else if (object_exists(asset_get_index("obj_boss_human")) && _boss.object_index == asset_get_index("obj_boss_human")) _boss_name = loc("boss_human_title", "O SALVADOR (HUMANO)");
     
             // Fundo do quadro do chefe
             draw_set_alpha(0.85);

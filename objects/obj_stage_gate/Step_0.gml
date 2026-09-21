@@ -3,12 +3,13 @@ if (is_world_paused()) exit;
 var _dt = delta_time / 1000000;
 
 var _ready = false;
-if (trigger_mode == "always_open" || room == asset_get_index("room_shop")) {
+if (trigger_mode == "always_open" || room == asset_get_index("room_shop") || room == asset_get_index("room_temple5_shop")) {
     _ready = true;
 } else if (trigger_mode == "boss_dead") {
     var _b3_clear = object_exists(asset_get_index("obj_boss3")) ? (instance_number(asset_get_index("obj_boss3")) == 0) : true;
     var _b4_clear = object_exists(asset_get_index("obj_boss4")) ? (instance_number(asset_get_index("obj_boss4")) == 0) : true;
-    _ready = (instance_number(obj_boss) == 0 && instance_number(obj_boss2) == 0 && _b3_clear && _b4_clear);
+    var _b_human_clear = object_exists(asset_get_index("obj_boss_human")) ? (instance_number(asset_get_index("obj_boss_human")) == 0) : true;
+    _ready = (instance_number(obj_boss) == 0 && instance_number(obj_boss2) == 0 && _b3_clear && _b4_clear && _b_human_clear);
 } else if (trigger_mode == "clear_mobs") {
     _ready = (instance_number(obj_enemy_parent) == 0);
 } else {
@@ -117,6 +118,13 @@ if (_ready) {
             global.temple_arena_biome = "earth";
             _dest = asset_get_index("Room7");
         } else if (room == Room8) {
+            // Conclusão da Fase 4 (Terra): Retorna à Vila Subterrânea para acessar o Templo 5
+            _dest = asset_get_index("room_village");
+        } else if (room == asset_get_index("room_temple5_shop")) {
+            global.run_biome = "human";
+            global.run_room_step = 2;
+            _dest = asset_get_index("room_temple5_boss");
+        } else if (room == asset_get_index("room_temple5_boss")) {
             global.run_victory = true;
             global.paused = true;
             exit;

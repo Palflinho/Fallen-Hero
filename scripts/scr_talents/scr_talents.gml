@@ -1097,6 +1097,14 @@ function load_meta_from_disk() {
         if (variable_struct_exists(_data, "dev_mode")) {
             global.dev_mode = _data.dev_mode;
         }
+        if (variable_struct_exists(_data, "reclaimed_elements") && is_struct(_data.reclaimed_elements)) {
+            global.reclaimed_elements = _data.reclaimed_elements;
+        } else {
+            global.reclaimed_elements = { water: false, fire: false, wind: false, earth: false };
+        }
+        if (variable_struct_exists(_data, "game_language")) {
+            global.game_language = _data.game_language;
+        }
     }
 
     // Sincroniza meta_mastery com meta_elements para que saves existentes herdem as insígnias desbloqueadas
@@ -1134,6 +1142,8 @@ function save_meta() {
             assassin: {water: false, fire: false, wind: false, earth: false},
             water: false, fire: false, wind: false, earth: false
         },
+        reclaimed_elements: variable_global_exists("reclaimed_elements") ? global.reclaimed_elements : { water: false, fire: false, wind: false, earth: false },
+        game_language: variable_global_exists("game_language") ? global.game_language : "pt",
         mastery: variable_global_exists("meta_mastery") ? global.meta_mastery : {},
         adaptive_ai: variable_global_exists("meta_adaptive_ai") ? global.meta_adaptive_ai : adaptive_ai_get_default_data(),
         dev_mode: variable_global_exists("dev_mode") ? global.dev_mode : false
@@ -1148,6 +1158,27 @@ function save_meta() {
         buffer_save(_buf, "meta.json");
     }
     buffer_delete(_buf);
+}
+
+function reclaim_element(_elem) {
+    ensure_meta_loaded();
+    if (!variable_global_exists("reclaimed_elements") || !is_struct(global.reclaimed_elements)) {
+        global.reclaimed_elements = { water: false, fire: false, wind: false, earth: false };
+    }
+    global.reclaimed_elements[$ _elem] = true;
+    sfx_play("pedestal_light", 0.04);
+    save_meta();
+}
+
+function element_is_reclaimed(_elem) {
+    ensure_meta_loaded();
+    if (!variable_global_exists("reclaimed_elements") || !is_struct(global.reclaimed_elements)) return false;
+    return (variable_struct_exists(global.reclaimed_elements, _elem) && global.reclaimed_elements[$ _elem]);
+}
+
+function all_elements_reclaimed() {
+    ensure_meta_loaded();
+    return element_is_reclaimed("water") && element_is_reclaimed("fire") && element_is_reclaimed("wind") && element_is_reclaimed("earth");
 }
 
 function mastery_unlock(_class, _element) {
