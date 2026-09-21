@@ -53,7 +53,7 @@ switch (state) {
         scale_y = 1.25 + 0.05 * sin(current_time * 0.03);
         if (attack_windup_timer <= 0) {
             if (_player != noone && !_player.invisible) {
-                var _pdir = point_direction(x, y, _player.x, _player.y);
+                var _pdir = adaptive_ai_get_lead_aim_dir(x, y, _player, projectile_speed, 0.75);
                 var _p = instance_create_layer(x, y, layer, obj_enemy_projectile);
                 _p.owner = id;
                 _p.damage = projectile_damage;

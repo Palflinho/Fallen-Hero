@@ -112,9 +112,11 @@ if (hp <= 0) {
 
     if (object_index == obj_boss) {
         element_unlock("water", _killer_class);
+        adaptive_ai_record_boss_defeat("water", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "water");
     } else if (object_index == obj_boss2) {
         element_unlock("fire", _killer_class);
+        adaptive_ai_record_boss_defeat("fire", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "fire");
         // Após derrotar General Magma (Fim do Bioma Fogo), abre portal para Fase do Vento (Room5)
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
@@ -125,6 +127,7 @@ if (hp <= 0) {
         _gate.gate_colour = make_colour_rgb(180, 240, 255);
     } else if (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) {
         element_unlock("wind", _killer_class);
+        adaptive_ai_record_boss_defeat("wind", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "wind");
         // Apos derrotar General Zephyrus (Sala 6), abre portal para Fase da Terra (Room7)
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
@@ -137,6 +140,7 @@ if (hp <= 0) {
     } else if (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) {
         element_unlock("earth", _killer_class);
         mastery_unlock(_killer_class, "earth");
+        adaptive_ai_record_boss_defeat("earth", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "earth");
         // Derrota do Chefe Final Supremo (Titã Monólito): Vitória Suprema!
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);

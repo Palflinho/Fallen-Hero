@@ -1044,6 +1044,7 @@ function load_meta_from_disk() {
         water: false, fire: false, wind: false, earth: false
     };
     global.meta_mastery = {};
+    global.meta_adaptive_ai = adaptive_ai_get_default_data();
     if (!variable_global_exists("dev_mode")) global.dev_mode = false;
 
     var _fname = get_meta_file_read_name();
@@ -1088,6 +1089,11 @@ function load_meta_from_disk() {
         if (variable_struct_exists(_data, "mastery") && is_struct(_data.mastery)) {
             global.meta_mastery = _data.mastery;
         }
+        if (variable_struct_exists(_data, "adaptive_ai") && is_struct(_data.adaptive_ai)) {
+            global.meta_adaptive_ai = _data.adaptive_ai;
+        } else {
+            global.meta_adaptive_ai = adaptive_ai_get_default_data();
+        }
         if (variable_struct_exists(_data, "dev_mode")) {
             global.dev_mode = _data.dev_mode;
         }
@@ -1129,6 +1135,7 @@ function save_meta() {
             water: false, fire: false, wind: false, earth: false
         },
         mastery: variable_global_exists("meta_mastery") ? global.meta_mastery : {},
+        adaptive_ai: variable_global_exists("meta_adaptive_ai") ? global.meta_adaptive_ai : adaptive_ai_get_default_data(),
         dev_mode: variable_global_exists("dev_mode") ? global.dev_mode : false
     };
     var _str = json_stringify(_data);

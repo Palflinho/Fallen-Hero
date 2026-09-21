@@ -1,4 +1,4 @@
-﻿{
+{
   "$GMProject":"v1",
   "%Name":"Fallen Hero",
   "AudioGroups":[
@@ -101,6 +101,7 @@
     {"id":{"name":"Room6","path":"rooms/Room6/Room6.yy",},},
     {"id":{"name":"Room7","path":"rooms/Room7/Room7.yy",},},
     {"id":{"name":"Room8","path":"rooms/Room8/Room8.yy",},},
+    {"id":{"name":"scr_adaptive_ai","path":"scripts/scr_adaptive_ai/scr_adaptive_ai.yy",},},
     {"id":{"name":"scr_ai","path":"scripts/scr_ai/scr_ai.yy",},},
     {"id":{"name":"scr_combat","path":"scripts/scr_combat/scr_combat.yy",},},
     {"id":{"name":"scr_dungeon_gen","path":"scripts/scr_dungeon_gen/scr_dungeon_gen.yy",},},

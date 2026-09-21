@@ -37,7 +37,7 @@ switch (state) {
 
         if (attack_windup_timer <= 0) {
             if (_player != noone) {
-                var _pdir = point_direction(x, y, _player.x, _player.y);
+                var _pdir = adaptive_ai_get_lead_aim_dir(x, y, _player, 220, 0.70);
                 var _proj = instance_create_layer(x, y, layer, obj_enemy_projectile);
                 _proj.owner = id;
                 _proj.damage = 14;

@@ -40,7 +40,7 @@ switch (state) {
                 attack_windup_timer = attack_windup;
             }
         } else if (_player != noone) {
-            var _dir = point_direction(x, y, _player.x, _player.y);
+            var _dir = point_direction(x, y, _player.x, _player.y) + adaptive_ai_get_flank_offset(_player);
             ai_enemy_move(_dir, move_speed_effective, _dt);
         }
         break;

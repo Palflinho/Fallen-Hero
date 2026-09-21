@@ -377,10 +377,32 @@ switch (state) {
             }
         }
 
+        // Banner de Inteligência Adaptativa do Chefe
+        var _boss_adapt = adaptive_ai_get_boss_adaptation("water");
+        if (_boss_adapt.active) {
+            var _rep_w = 640;
+            var _rep_h = 30;
+            var _rep_x = (room_width - _rep_w) / 2;
+            var _rep_y = room_height - 128;
+            
+            draw_set_alpha(0.85);
+            draw_set_color(make_colour_rgb(28, 20, 20));
+            draw_rectangle(_rep_x, _rep_y, _rep_x + _rep_w, _rep_y + _rep_h, false);
+            draw_set_alpha(1.0);
+            
+            draw_set_color(_boss_adapt.aura_colour);
+            draw_rectangle(_rep_x, _rep_y, _rep_x + _rep_w, _rep_y + _rep_h, true);
+            
+            draw_set_halign(fa_center);
+            draw_set_valign(fa_middle);
+            draw_text(_rep_x + _rep_w / 2, _rep_y + _rep_h / 2, "ALERTA TÁTICO: General da Água adaptou \"" + _boss_adapt.title + "\"! (Contra-ataque: " + string_upper(_boss_adapt.recommended_class) + ")");
+        }
+
         // Exibição do Bônus Geral de Maestria
         var _mult = get_mastery_gold_multiplier();
         var _bonus_pct = round((_mult - 1.0) * 100);
         draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
         draw_set_color(_bonus_pct > 0 ? c_yellow : c_ltgray);
         draw_text(room_width / 2, room_height - 95, "Insignias: [A]gua [F]ogo [V]ento [T]erra   |   Bonus de Maestria: +" + string(_bonus_pct) + "% Ouro Permanente");
 

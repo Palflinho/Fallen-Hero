@@ -59,4 +59,12 @@ recover_timer = 0;
 exp_reward = 300;
 gold_reward = 25;
 
+// IA Adaptativa: Carrega mutação de contra-ataque do General da Água
+adaptation = adaptive_ai_get_boss_adaptation("water");
+if (adaptation.active) {
+    if (adaptation.extra_projectile_speed > 0) {
+        projectile_speed += adaptation.extra_projectile_speed;
+    }
+}
+
 state = "barrage";

@@ -265,7 +265,25 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
             _actual_dmg = 0;
             fx_spawn_sparks(_inst.x, _inst.y, c_ltgray, 4);
         } else {
-            _actual_dmg = _amount * _inst.damage_reduction;
+            var _mult = _inst.damage_reduction;
+            // IA Adaptativa: aplica modificadores de resistencia e fraqueza da mutacao
+            if (variable_instance_exists(_inst, "adaptation") && is_struct(_inst.adaptation) && _inst.adaptation.active) {
+                var _p = instance_find(obj_player, 0);
+                if (_p != noone) {
+                    var _is_magic = (_p.character_class == "mage");
+                    if (_is_magic) {
+                        _mult *= (1 - _inst.adaptation.magic_damage_reduction) * _inst.adaptation.magic_damage_vulnerability;
+                    } else {
+                        _mult *= (1 - _inst.adaptation.phys_damage_reduction) * _inst.adaptation.phys_damage_vulnerability;
+                        // Retaliação de espinhos colados se tiver mutação anti-cavaleiro
+                        if (_inst.adaptation.thorns_reflect_damage > 0 && point_distance(_inst.x, _inst.y, _p.x, _p.y) <= 70) {
+                            player_take_damage(_p, _inst.adaptation.thorns_reflect_damage, _inst.x, _inst.y, 80);
+                            fx_spawn_sparks(_p.x, _p.y, c_red, 4);
+                        }
+                    }
+                }
+            }
+            _actual_dmg = max(1, round(_amount * _mult));
         }
     } else {
         var _def = variable_instance_exists(_inst, "defense") ? _inst.defense : 0;

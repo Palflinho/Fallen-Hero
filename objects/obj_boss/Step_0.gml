@@ -5,7 +5,8 @@ var _player = instance_find(obj_player, 0);
 var _dist = (_player != noone) ? point_distance(x, y, _player.x, _player.y) : infinity;
 
 if (_player != noone && !_player.invisible && state != "slam_windup") {
-    facing_dir = point_direction(x, y, _player.x, _player.y);
+    var _lead_acc = (variable_instance_exists(id, "adaptation") && is_struct(adaptation)) ? adaptation.barrage_lead_accuracy : 0.40;
+    facing_dir = adaptive_ai_get_lead_aim_dir(x, y, _player, projectile_speed, _lead_acc);
 }
 
 if (vulnerable) {
@@ -42,6 +43,13 @@ if (vulnerable) {
             if (_dist <= melee_trigger_dist) {
                 state = "slam_windup";
                 slam_windup_timer = slam_windup;
+                // IA Adaptativa: I-Frame Baiting (atraso tático para punir rolamento antecipado)
+                if (variable_instance_exists(id, "adaptation") && is_struct(adaptation) && adaptation.slam_bait_chance > 0) {
+                    if (random(1) < adaptation.slam_bait_chance) {
+                        slam_windup_timer += 0.35;
+                        fx_spawn_sparks(x, y - 40, c_yellow, 6);
+                    }
+                }
                 break;
             }
 
