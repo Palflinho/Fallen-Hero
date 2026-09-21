@@ -1501,7 +1501,10 @@ function player_recompute_synthetics(_p) {
     // Atributos derivados diretos do Cavaleiro
     if (_p.synth_fio_carrasco > 0) _p.synth_execute_bonus += _p.synth_fio_carrasco;
     if (_p.synth_duelista_reflexos_celere > 0) _p.synth_dodge += _p.synth_duelista_reflexos_celere;
-    if (_p.synth_guardiao_carapaca_granito > 0) _p.synth_def_fisica += _p.synth_guardiao_carapaca_granito;
+    if (_p.synth_guardiao_carapaca_granito > 0) {
+        _p.synth_def_fisica += _p.synth_guardiao_carapaca_granito;
+        _p.synth_move_spd_bonus -= _p.move_speed * 0.10;
+    }
     if (_p.synth_paladino_bencao_mare > 0) _p.synth_hp_reg += _p.synth_paladino_bencao_mare;
     if (_p.synth_aco_temperado > 0) {
         var _gold = variable_global_exists("gold") ? global.gold : 0;

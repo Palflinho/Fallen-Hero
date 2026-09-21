@@ -8,3 +8,5 @@ body_radius = 7;
 hit_list = [];
 pierce_remaining = 0;
 should_destroy = false;
+dist_traveled = 0;
+is_condensed = false;

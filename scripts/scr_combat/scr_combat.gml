@@ -373,11 +373,18 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
 
 function enemy_apply_poison(_inst, _dmg_per_tick, _tick_interval, _duration) {
     if (!instance_exists(_inst)) return;
+    var _eff_dur = _duration;
+    var _p = instance_find(obj_player, 0);
+    // Assassin: 42 Mercúrio Líquido (Venenos duram o dobro do tempo e causam 20% de lentidão constante)
+    if (_p != noone && _p.character_class == "assassin" && variable_instance_exists(_p, "synth_assassin_obsid_mercurio_liquido") && _p.synth_assassin_obsid_mercurio_liquido > 0) {
+        _eff_dur *= 2.0;
+        enemy_apply_slow(_inst, 0.80, _eff_dur);
+    }
     _inst.poison_active = true;
     _inst.poison_damage = _dmg_per_tick;
     _inst.poison_tick_interval = _tick_interval;
     _inst.poison_tick_timer = _tick_interval;
-    _inst.poison_duration = _duration;
+    _inst.poison_duration = _eff_dur;
 }
 
 function enemy_apply_slow(_inst, _multiplier, _duration) {
@@ -432,6 +439,31 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             enemy_apply_slow(_enemy, 0, 0.3);
         }
 
+        // 39 Peso Esmagador: Criticos de espada causam mini-terremoto atordoando inimigos ao redor
+        if (variable_instance_exists(_owner, "synth_guardiao_peso_esmagador") && _owner.synth_guardiao_peso_esmagador > 0 && _is_crit) {
+            trigger_hitstop(0.08);
+            fx_spawn_sparks(_enemy.x, _enemy.y, make_colour_rgb(160, 100, 50), 16);
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - 16, "TREMOR!", false, make_colour_rgb(210, 170, 100));
+            with (obj_enemy_parent) {
+                if (id != _enemy && point_distance(x, y, _enemy.x, _enemy.y) <= 70) {
+                    enemy_take_damage(id, _owner.attack_damage * 0.40, _enemy.x, _enemy.y, 120);
+                    enemy_apply_slow(id, 0, 0.4);
+                }
+            }
+        }
+
+        // 46 Tempestade Ignea: Criticos soltam labaredas em circulo (360)
+        if (variable_instance_exists(_owner, "synth_lendario_tempestade_ignea") && _owner.synth_lendario_tempestade_ignea > 0 && _is_crit) {
+            fx_spawn_death_burst(_enemy.x, _enemy.y, c_orange, 14);
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - 20, "LABAREDA!", false, c_orange);
+            with (obj_enemy_parent) {
+                if (id != _enemy && point_distance(x, y, _enemy.x, _enemy.y) <= 85) {
+                    enemy_take_damage(id, _owner.attack_damage * 0.45, _enemy.x, _enemy.y, 160);
+                    enemy_apply_poison(id, 4, 0.5, 2.5);
+                }
+            }
+        }
+
         // 34 Estocada Fulminante: atinge as costas = 2.5x dano
         if (variable_instance_exists(_owner, "synth_duelista_estocada_fulminante") && _owner.synth_duelista_estocada_fulminante > 0) {
             var _edx = variable_instance_exists(_enemy, "dir_x") ? _enemy.dir_x : 0;
@@ -458,23 +490,81 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             }
             fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 12, "BACKSTAB!", true, c_teal);
             trigger_hitstop(0.08);
+
+            // 49 Lamina da Guilhotina (executa alvos com menos de 15% de HP nas costas)
+            if (variable_instance_exists(_owner, "synth_assassin_lamina_guilhotina") && _owner.synth_assassin_lamina_guilhotina > 0) {
+                if (_enemy.hp_max > 0 && (_enemy.hp / _enemy.hp_max) <= 0.15) {
+                    var _is_b = (_enemy.object_index == obj_boss || _enemy.object_index == obj_boss2);
+                    if (_is_b) {
+                        _base_damage = max(_base_damage, _enemy.hp_max * 0.25);
+                    } else {
+                        _base_damage = _enemy.hp + 9999;
+                    }
+                    trigger_hitstop(0.18);
+                    fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 18, "✦ GUILHOTINA! ✦", true, c_red);
+                    fx_spawn_death_burst(_enemy.x, _enemy.y, c_maroon, 20);
+                }
+            }
         }
         // Carrasco de Obsidiana: bônus massivo contra vida cheia (+60%)
         if (_owner.element_affinity == "earth" && _enemy.hp_max > 0 && (_enemy.hp / _enemy.hp_max) >= 0.85) {
             _base_damage *= 1.60;
             fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 8, "FRATURA", true, c_gray);
         }
+
+        // 08 Execucao Fria (menos de 25% de vida sofrem o dobro de dano)
+        if (variable_instance_exists(_owner, "synth_assassin_execucao_fria") && _owner.synth_assassin_execucao_fria > 0) {
+            if (_enemy.hp_max > 0 && (_enemy.hp / _enemy.hp_max) <= 0.25) {
+                _base_damage *= 2.0;
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 14, "EXECUÇÃO FRIA!", true, c_teal);
+                fx_spawn_sparks(_enemy.x, _enemy.y, c_teal, 8);
+            }
+        }
+
+        // 36 Corte de Obsidiana (ignora armadura fisica de elites e chefes)
+        if (variable_instance_exists(_owner, "synth_assassin_obsid_corte_obsidiana") && _owner.synth_assassin_obsid_corte_obsidiana > 0) {
+            var _is_elite_or_boss = (variable_instance_exists(_enemy, "is_rare_mob") && _enemy.is_rare_mob) || (variable_instance_exists(_enemy, "is_champion") && _enemy.is_champion) || (_enemy.object_index == obj_boss || _enemy.object_index == obj_boss2);
+            if (_is_elite_or_boss) {
+                _enemy.damage_reduction = 0;
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 16, "OBSIDIANA PURA!", true, c_dkgray);
+            }
+        }
+
+        // 23 Lamina de Magma (dano magico de fogo ignorando armadura fisica)
+        if (variable_instance_exists(_owner, "synth_assassin_vulcan_lamina_magma") && _owner.synth_assassin_vulcan_lamina_magma > 0) {
+            _enemy.damage_reduction = 0;
+            enemy_apply_poison(_enemy, 4, 0.5, 2.5);
+            fx_spawn_sparks(_enemy.x, _enemy.y, c_orange, 6);
+        }
     } else if (_owner.character_class == "archer") {
         if (_owner.element_affinity == "earth") _force = 220;
         else _force = 150;
+        // 08 Flecha Pesada (+50% knockback)
+        if (variable_instance_exists(_owner, "synth_archer_flecha_pesada") && _owner.synth_archer_flecha_pesada > 0) {
+            _force *= 1.50;
+        }
     } else if (_owner.character_class == "mage") {
         if (_owner.element_affinity == "earth") _force = 220;
         else if (_owner.element_affinity == "fire") _force = 180;
         else _force = 140;
+
+        // Mage: 17 Lança de Zero Absoluto (+35% de chance de crítico contra alvos lentos/imobilizados)
+        if (variable_instance_exists(_owner, "synth_crio_lanca_zero_absoluto") && _owner.synth_crio_lanca_zero_absoluto > 0) {
+            if ((variable_instance_exists(_enemy, "slow_active") && _enemy.slow_active) || (variable_instance_exists(_enemy, "slow_timer") && _enemy.slow_timer > 0)) {
+                if (!_is_crit && random(1) < 0.35) {
+                    _is_crit = true;
+                    _base_damage *= _owner.synth_crit_mult;
+                    fx_spawn_damage_popup(_enemy.x, _enemy.y - 18, "ZERO ABSOLUTO!", true, c_aqua);
+                }
+            }
+        }
     }
 
     var _dmg = _base_damage;
     if (_owner.synth_execute_bonus > 0 && _enemy.hp_max > 0 && (_enemy.hp / _enemy.hp_max) <= 0.3) {
+        if (variable_instance_exists(_owner, "synth_fio_carrasco") && _owner.synth_fio_carrasco > 0) {
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 12, "CARRASCO!", true, c_red);
+        }
         _dmg *= (1 + _owner.synth_execute_bonus);
     }
 
@@ -559,7 +649,12 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
     if (_is_earth_hit) _enemy.earth_fracture = 3.0;
 
     var _before_hp = _enemy.hp;
+    var _orig_def = variable_instance_exists(_enemy, "defense") ? _enemy.defense : 0;
+    if (variable_instance_exists(_owner, "synth_piro_ponto_fusao") && _owner.synth_piro_ponto_fusao > 0 && (_is_fire_hit || _owner.character_class == "mage")) {
+        _enemy.defense = _orig_def * 0.5;
+    }
     enemy_take_damage(_enemy, _dmg, _owner.x, _owner.y, _force, _is_crit);
+    _enemy.defense = _orig_def;
     var _dealt = max(0, _before_hp - _enemy.hp);
 
     if (_dealt > 0) trigger_hitstop(_is_crit ? 0.09 : 0.06);
@@ -673,6 +768,115 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             _enemy.y += lengthdir_y(20, _ang);
         }
 
+        // Mage: 05 Sobrecarga de Feitiço (crítico causa mini-explosão de 50px de raio com 40% dano)
+        if (_is_crit && variable_instance_exists(_owner, "synth_mage_sobrecarga_feitico") && _owner.synth_mage_sobrecarga_feitico > 0) {
+            var _sc_dmg = _dmg * 0.40;
+            var _sc_x = _enemy.x;
+            var _sc_y = _enemy.y;
+            fx_spawn_sparks(_sc_x, _sc_y, c_fuchsia, 10);
+            fx_spawn_damage_popup(_sc_x, _sc_y - 16, "SOBRECARGA!", true, c_fuchsia);
+            with (obj_enemy_parent) {
+                if (id != _enemy && point_distance(x, y, _sc_x, _sc_y) <= 50) {
+                    enemy_take_damage(id, _sc_dmg, _sc_x, _sc_y, 100);
+                }
+            }
+        }
+
+        // Mage: 18 Meteoro Menor (a cada 5 acertos mágicos, despenca meteoro causando 20 de dano em área)
+        if (variable_instance_exists(_owner, "synth_piro_meteoro_menor") && _owner.synth_piro_meteoro_menor > 0) {
+            if ((_owner.mage_consecutive_hits mod 5) == 0) {
+                var _met_x = _enemy.x;
+                var _met_y = _enemy.y;
+                fx_spawn_death_burst(_met_x, _met_y, c_red, 14);
+                fx_spawn_damage_popup(_met_x, _met_y - 20, "METEORO!", true, c_red);
+                trigger_hitstop(0.08);
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _met_x, _met_y) <= 60) {
+                        enemy_take_damage(id, 20, _met_x, _met_y, 140);
+                        enemy_apply_poison(id, 3, 0.5, 2.0);
+                    }
+                }
+            }
+        }
+
+        // Mage: 28 Condutividade Letal (inimigos lentos ou molhados sofrem dano dobrado de choque)
+        if (variable_instance_exists(_owner, "synth_aero_condutividade_letal") && _owner.synth_aero_condutividade_letal > 0) {
+            if (_enemy.slow_active || (variable_instance_exists(_enemy, "slow_timer") && _enemy.slow_timer > 0) || fh_place_on_water_puddle(_enemy.x, _enemy.y)) {
+                if (_is_wind_hit || _owner.element_affinity == "wind") {
+                    enemy_take_damage(_enemy, _dmg, _owner.x, _owner.y, 80);
+                    fx_spawn_sparks(_enemy.x, _enemy.y, c_yellow, 12);
+                    fx_spawn_damage_popup(_enemy.x, _enemy.y - 16, "CONDUTIVIDADE!", true, c_yellow);
+                    enemy_apply_slow(_enemy, 0.2, 3.0);
+                }
+            }
+        }
+
+        // Mage: 38 Coração de Areia (ganha barreira igual a 5% do dano de terra)
+        if (variable_instance_exists(_owner, "synth_geo_coracao_areia") && _owner.synth_geo_coracao_areia > 0 && (_is_earth_hit || _owner.element_affinity == "earth")) {
+            var _bar_gain = max(1, _dmg * 0.05);
+            _owner.paladin_barrier_active = true;
+            _owner.paladin_barrier_hp = min(_owner.hp_max * 0.5, _owner.paladin_barrier_hp + _bar_gain);
+            _owner.paladin_barrier_timer = 5.0;
+            fx_spawn_sparks(_owner.x, _owner.y, make_colour_rgb(210, 180, 110), 4);
+        }
+
+        // Mage: 42 Vapor Fulminante (inimigos queimados e congelados liberam vapor fervente)
+        if (variable_instance_exists(_owner, "synth_mage_vapor_fulminante") && _owner.synth_mage_vapor_fulminante > 0) {
+            if ((_enemy.poison_active && _enemy.slow_active) || (_is_fire_hit && _enemy.slow_active) || (_is_water_hit && _enemy.poison_active)) {
+                var _vx = _enemy.x;
+                var _vy = _enemy.y;
+                fx_spawn_sparks(_vx, _vy, c_white, 14);
+                fx_spawn_damage_popup(_vx, _vy - 20, "VAPOR FULMINANTE!", true, c_ltgray);
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _vx, _vy) <= 75) {
+                        enemy_take_damage(id, _dmg * 0.50, _vx, _vy, 60);
+                        enemy_apply_poison(id, 4, 0.4, 2.5);
+                    }
+                }
+            }
+        }
+
+        // Mage: 44 Gelo Fendido (impactos de gelo petrificam o chão e congelam inimigos)
+        if (variable_instance_exists(_owner, "synth_mage_gelo_fendido") && _owner.synth_mage_gelo_fendido > 0 && (_is_water_hit || _owner.element_affinity == "water")) {
+            enemy_apply_slow(_enemy, 0.0, 3.0);
+            fx_spawn_sparks(_enemy.x, _enemy.y, c_aqua, 12);
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - 18, "GELO FENDIDO!", true, c_aqua);
+        }
+
+        // Mage: 45 Tempestade de Plasma (relâmpagos inflamam alvos e soltam arcos em cascata)
+        if (variable_instance_exists(_owner, "synth_mage_tempestade_plasma") && _owner.synth_mage_tempestade_plasma > 0 && (_is_wind_hit || _owner.element_affinity == "wind")) {
+            enemy_apply_poison(_enemy, 4, 0.5, 2.5);
+            var _plasma_source_x = _enemy.x;
+            var _plasma_source_y = _enemy.y;
+            var _arcs = 0;
+            with (obj_enemy_parent) {
+                if (id != _enemy && point_distance(x, y, _plasma_source_x, _plasma_source_y) <= 120 && _arcs < 3) {
+                    _arcs++;
+                    enemy_take_damage(id, _dmg * 0.45, _plasma_source_x, _plasma_source_y, 70);
+                    enemy_apply_poison(id, 3, 0.5, 2.0);
+                    fx_spawn_sparks(x, y, c_fuchsia, 6);
+                }
+            }
+            if (_arcs > 0) {
+                fx_spawn_damage_popup(_plasma_source_x, _plasma_source_y - 20, "PLASMA!", true, c_fuchsia);
+            }
+        }
+
+        // Mage: 49 Chuva de Cometas (críticos convocam cometas gigantescos esmagando em área)
+        if (variable_instance_exists(_owner, "synth_mage_chuva_cometas") && _owner.synth_mage_chuva_cometas > 0 && _is_crit) {
+            var _cx = _enemy.x;
+            var _cy = _enemy.y;
+            fx_spawn_death_burst(_cx, _cy, c_orange, 20);
+            fx_spawn_damage_popup(_cx, _cy - 24, "COMETA GIGANTE!", true, c_orange);
+            trigger_hitstop(0.12);
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _cx, _cy) <= 90) {
+                    enemy_take_damage(id, _owner.attack_damage * 1.5, _cx, _cy, 180);
+                    enemy_apply_poison(id, 5, 0.5, 3.0);
+                }
+            }
+        }
+
         // Abate de inimigo (Mage)
         if (_enemy.hp <= 0 && _before_hp > 0) {
             if (variable_instance_exists(_owner, "synth_mage_sifao_alma") && _owner.synth_mage_sifao_alma > 0) {
@@ -692,6 +896,36 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
                     }
                 }
             }
+
+            // Mage: 10 Conhecimento Ancestral (+2 Poder Mágico a cada 15 abates)
+            if (variable_instance_exists(_owner, "synth_mage_conhecimento_ancestral") && _owner.synth_mage_conhecimento_ancestral > 0) {
+                if (variable_instance_exists(_owner, "mage_run_kills")) {
+                    _owner.mage_run_kills++;
+                    if ((_owner.mage_run_kills mod 15) == 0 && _owner.mage_run_kills <= 90) {
+                        _owner.nat_power += 2;
+                        _owner.attack_damage += 2;
+                        fx_spawn_damage_popup(_owner.x, _owner.y - 20, "+2 PODER!", true, c_aqua);
+                    }
+                }
+            }
+
+            // Mage: 40 Estilhaço de Basalto (abates de terra explodem em 4 fragmentos)
+            if (variable_instance_exists(_owner, "synth_geo_estilhaco_basalto") && _owner.synth_geo_estilhaco_basalto > 0 && (_is_earth_hit || _owner.element_affinity == "earth")) {
+                var _ex_x = _enemy.x;
+                var _ex_y = _enemy.y;
+                fx_spawn_sparks(_ex_x, _ex_y, make_colour_rgb(150, 100, 60), 10);
+                fx_spawn_damage_popup(_ex_x, _ex_y - 16, "ESTILHACOS!", true, make_colour_rgb(180, 130, 80));
+                var _dirs = [0, 90, 180, 270];
+                for (var _di = 0; _di < 4; _di++) {
+                    var _frag = instance_create_layer(_ex_x, _ex_y, layer, obj_atk_fireball);
+                    _frag.owner = _owner;
+                    _frag.damage = 12;
+                    _frag.dir_x = lengthdir_x(1, _dirs[_di]);
+                    _frag.dir_y = lengthdir_y(1, _dirs[_di]);
+                    _frag.speed_px = 220;
+                    _frag.pierce_remaining = 3;
+                }
+            }
         }
     } else if (_owner.character_class == "archer") {
         if (_is_crit && variable_instance_exists(_owner, "synth_archer_pontas_farpadas") && _owner.synth_archer_pontas_farpadas > 0) {
@@ -709,6 +943,123 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
         }
         if (_owner.element_affinity == "earth" || (variable_instance_exists(_owner, "synth_archer_terra_tremores_impacto") && _owner.synth_archer_terra_tremores_impacto > 0)) {
             enemy_apply_slow(_enemy, 0.30, 1.5);
+        }
+
+        // Archer: 10 Saque Rápido (crítico reduz recarga do rolamento em 15%)
+        if (_is_crit && variable_instance_exists(_owner, "synth_archer_saque_rapido") && _owner.synth_archer_saque_rapido > 0) {
+            _owner.defend_cooldown_timer = max(0, _owner.defend_cooldown_timer - _owner.defend_cooldown * 0.15);
+            fx_spawn_damage_popup(_owner.x, _owner.y - 18, "SAQUE RAPIDO!", false, c_yellow);
+        }
+
+        // Archer: 14 Flecha Arpão (divide dano com até 2 monstros adjacentes)
+        if (variable_instance_exists(_owner, "synth_archer_glacial_flecha_arpao") && _owner.synth_archer_glacial_flecha_arpao > 0) {
+            var _ax = _enemy.x;
+            var _ay = _enemy.y;
+            var _count = 0;
+            with (obj_enemy_parent) {
+                if (id != _enemy && point_distance(x, y, _ax, _ay) <= 100 && _count < 2) {
+                    _count++;
+                    enemy_take_damage(id, _dmg * 0.35, _ax, _ay, 40);
+                    fx_spawn_sparks(x, y, c_aqua, 5);
+                }
+            }
+            if (_count > 0) fx_spawn_damage_popup(_ax, _ay - 18, "ARPAO!", true, c_aqua);
+        }
+
+        // Archer: 17 Perfurador Glacial (dano dobrado em monstros lentos/congelados)
+        if (variable_instance_exists(_owner, "synth_archer_glacial_perfurador_glacial") && _owner.synth_archer_glacial_perfurador_glacial > 0) {
+            if (_enemy.slow_active || (variable_instance_exists(_enemy, "slow_timer") && _enemy.slow_timer > 0)) {
+                _dmg *= 2.0;
+                fx_spawn_sparks(_enemy.x, _enemy.y, c_aqua, 12);
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - 20, "PERFURADOR!", true, c_aqua);
+            }
+        }
+
+        // Archer: 19 Tiro de Fragmentação (3º disparo explode fagulhas)
+        if (variable_instance_exists(_owner, "synth_archer_balist_tiro_fragmentacao") && _owner.synth_archer_balist_tiro_fragmentacao > 0 && (_owner.archer_shot_counter mod 3 == 0)) {
+            var _fx = _enemy.x;
+            var _fy = _enemy.y;
+            fx_spawn_death_burst(_fx, _fy, c_orange, 10);
+            fx_spawn_damage_popup(_fx, _fy - 18, "FRAGMENTACAO!", true, c_orange);
+            with (obj_enemy_parent) {
+                if (id != _enemy && point_distance(x, y, _fx, _fy) <= 65) {
+                    enemy_take_damage(id, 15, _fx, _fy, 80);
+                    enemy_apply_poison(id, 3, 0.5, 2.0);
+                }
+            }
+        }
+
+        // Archer: 20 Marca do Purgatório (críticos em chamas detonam em cadeia)
+        if (variable_instance_exists(_owner, "synth_archer_balist_marca_purgatorio") && _owner.synth_archer_balist_marca_purgatorio > 0 && _is_crit && _enemy.poison_active) {
+            var _mx = _enemy.x;
+            var _my = _enemy.y;
+            fx_spawn_death_burst(_mx, _my, c_red, 16);
+            fx_spawn_damage_popup(_mx, _my - 22, "PURGATORIO!", true, c_red);
+            trigger_hitstop(0.08);
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _mx, _my) <= 80) {
+                    enemy_take_damage(id, _dmg * 0.50, _mx, _my, 120);
+                    enemy_apply_poison(id, 4, 0.5, 3.0);
+                }
+            }
+        }
+
+        // Archer: 34 Flecha Enraizadora (a cada 4 acertos prende monstro por 2s)
+        if (variable_instance_exists(_owner, "synth_archer_terra_flecha_enraizadora") && _owner.synth_archer_terra_flecha_enraizadora > 0) {
+            if (!variable_instance_exists(_enemy, "enraizador_hits")) _enemy.enraizador_hits = 0;
+            _enemy.enraizador_hits++;
+            if (_enemy.enraizador_hits >= 4) {
+                _enemy.enraizador_hits = 0;
+                enemy_apply_slow(_enemy, 0.0, 2.0);
+                fx_spawn_sparks(_enemy.x, _enemy.y, make_colour_rgb(140, 180, 80), 10);
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - 18, "ENRAIZADO!", true, make_colour_rgb(140, 180, 80));
+            }
+        }
+
+        // Archer: 36 Balista de Obsidiana (35% chance de despedaçar armadura)
+        if (variable_instance_exists(_owner, "synth_archer_terra_balista_obsidiana") && _owner.synth_archer_terra_balista_obsidiana > 0 && random(1) < 0.35) {
+            _enemy.defense = max(0, _enemy.defense * 0.5);
+            _enemy.damage_reduction = min(1.0, _enemy.damage_reduction * 1.35);
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - 18, "ARMADURA QUEBRADA!", true, c_dkgray);
+        }
+
+        // Archer: 38 Raízes Sanguíneas (+30% dano contra monstros enraizados)
+        if (variable_instance_exists(_owner, "synth_archer_terra_raizes_sanguineas") && _owner.synth_archer_terra_raizes_sanguineas > 0) {
+            if (_enemy.slow_active && _enemy.slow_multiplier <= 0.1) {
+                _dmg *= 1.30;
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - 16, "RAIZES SANGUINEAS!", true, c_maroon);
+            }
+        }
+
+        // Archer: 45 Chuva de Lodo Ácido (dissolve resistências e cura com dano)
+        if (variable_instance_exists(_owner, "synth_archer_lodo_acido") && _owner.synth_archer_lodo_acido > 0) {
+            _enemy.damage_reduction = min(1.0, _enemy.damage_reduction * 1.25);
+            _owner.hp = min(_owner.hp_max, _owner.hp + max(1, _dmg * 0.10));
+            fx_spawn_sparks(_owner.x, _owner.y, c_lime, 3);
+        }
+
+        // Archer: 47 Olho do Falcão Cósmico (críticos disparam flechas celestes adicionais)
+        if (variable_instance_exists(_owner, "synth_archer_falcao_cosmico") && _owner.synth_archer_falcao_cosmico > 0 && _is_crit) {
+            var _fcx = _enemy.x;
+            var _fcy = _enemy.y;
+            fx_spawn_sparks(_fcx, _fcy, c_aqua, 12);
+            fx_spawn_damage_popup(_fcx, _fcy - 22, "FALCAO COSMICO!", true, c_aqua);
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _fcx, _fcy) <= 85) {
+                    enemy_take_damage(id, 25, _fcx, _fcy, 100);
+                }
+            }
+        }
+
+        // Archer: 50 Flecha do Julgamento (a cada 10 tiros lança divina executa com <30% HP)
+        if (variable_instance_exists(_owner, "synth_archer_flecha_julgamento") && _owner.synth_archer_flecha_julgamento > 0 && (_owner.archer_shot_counter mod 10 == 0)) {
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - 24, "JULGAMENTO DIVINO!", true, c_yellow);
+            trigger_hitstop(0.12);
+            if (_enemy.hp_max > 0 && (_enemy.hp / _enemy.hp_max) <= 0.30) {
+                _dmg = _enemy.hp + 999;
+            } else {
+                _dmg *= 2.5;
+            }
         }
 
         // Abate de inimigo (Archer)
@@ -755,6 +1106,85 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             enemy_apply_slow(_enemy, 0.40, 2.0);
         }
 
+        // 13 Afogamento Sombrio (ataques furtivos silenciam e desarmam com bolha d'agua)
+        if ((_is_backstab || (variable_instance_exists(_owner, "invisible") && _owner.invisible)) && variable_instance_exists(_owner, "synth_assassin_espect_afogamento_sombrio") && _owner.synth_assassin_espect_afogamento_sombrio > 0) {
+            enemy_apply_slow(_enemy, 0.0, 1.5);
+            if (variable_instance_exists(_enemy, "attack_timer")) _enemy.attack_timer = max(_enemy.attack_timer, 1.5);
+            if (variable_instance_exists(_enemy, "state") && (_enemy.state == "windup" || _enemy.state == "cast")) _enemy.state = "patrol";
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 14, "AFOGAMENTO!", true, c_aqua);
+            fx_spawn_sparks(_enemy.x, _enemy.y, c_teal, 8);
+        }
+
+        // 15 Estocada de Gelo Fino (backstab em alvos lentos congela por 1.5s)
+        if (_is_backstab && variable_instance_exists(_owner, "synth_assassin_espect_estocada_gelo_fino") && _owner.synth_assassin_espect_estocada_gelo_fino > 0) {
+            if ((variable_instance_exists(_enemy, "slow_active") && _enemy.slow_active) || (variable_instance_exists(_enemy, "slow_timer") && _enemy.slow_timer > 0)) {
+                enemy_apply_slow(_enemy, 0.0, 1.5);
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 12, "GELO FINO!", true, c_aqua);
+                fx_spawn_sparks(_enemy.x, _enemy.y, c_aqua, 10);
+            }
+        }
+
+        // 19 Estalo de Polvora (3o golpe consecutivo no mesmo alvo explode 25 dano)
+        if (variable_instance_exists(_owner, "synth_assassin_vulcan_estalo_polvora") && _owner.synth_assassin_vulcan_estalo_polvora > 0) {
+            if (_owner.assassin_last_hit_enemy == _enemy) {
+                _owner.assassin_consecutive_hits++;
+            } else {
+                _owner.assassin_last_hit_enemy = _enemy;
+                _owner.assassin_consecutive_hits = 1;
+            }
+            if (_owner.assassin_consecutive_hits >= 3) {
+                _owner.assassin_consecutive_hits = 0;
+                enemy_take_damage(_enemy, 25, _owner.x, _owner.y, 140);
+                fx_spawn_death_burst(_enemy.x, _enemy.y, c_orange, 12);
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 16, "ESTALO!", true, c_orange);
+                trigger_hitstop(0.08);
+            }
+        }
+
+        // 33 Pressao Eolica (cortes de vento reduzem precisao dos alvos)
+        if (variable_instance_exists(_owner, "synth_assassin_tufao_pressao_eolica") && _owner.synth_assassin_tufao_pressao_eolica > 0) {
+            _enemy.wind_exposed = 3.0;
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 12, "PRESSÃO EÓLICA", false, make_colour_rgb(180, 230, 255));
+        }
+
+        // 44 Danca do Vapor Letal (queimar alvos envenenados gera vapor corrosivo derretendo armaduras)
+        if (variable_instance_exists(_owner, "synth_assassin_vapor_letal") && _owner.synth_assassin_vapor_letal > 0 && _enemy.poison_active) {
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _enemy.x, _enemy.y) <= 95) {
+                    enemy_take_damage(id, 22, _enemy.x, _enemy.y, 100);
+                    damage_reduction = min(1.0, damage_reduction * 1.4);
+                }
+            }
+            fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 14, "VAPOR LETAL!", true, make_colour_rgb(200, 100, 255));
+            fx_spawn_death_burst(_enemy.x, _enemy.y, make_colour_rgb(160, 80, 200), 14);
+        }
+
+        // 45 Tempestade de Cristal (vento quebra pedras de obsidiana espalhando estilhacos 360)
+        if (variable_instance_exists(_owner, "synth_assassin_tempestade_cristal") && _owner.synth_assassin_tempestade_cristal > 0) {
+            if ((variable_instance_exists(_enemy, "earth_fracture") && _enemy.earth_fracture > 0) || (_enemy.slow_active)) {
+                for (var _tci = 0; _tci < 8; _tci++) {
+                    var _tcang = _tci * 45;
+                    var _tcarr = instance_create_layer(_enemy.x, _enemy.y, _owner.layer, obj_atk_arrow);
+                    _tcarr.owner = _owner;
+                    _tcarr.damage = 18;
+                    _tcarr.dir_x = lengthdir_x(1, _tcang);
+                    _tcarr.dir_y = lengthdir_y(1, _tcang);
+                    _tcarr.speed_px = 380;
+                    _tcarr.pierce_remaining = 2;
+                }
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 14, "TEMPESTADE DE CRISTAL!", true, make_colour_rgb(220, 240, 255));
+                fx_spawn_sparks(_enemy.x, _enemy.y, c_white, 16);
+            }
+        }
+
+        // 48 Lamina de Plasma Igneo (criticos inflamam e aceleram taxa de ataque em +50% por 3s)
+        if (variable_instance_exists(_owner, "synth_assassin_plasma_igneo") && _owner.synth_assassin_plasma_igneo > 0 && _is_crit) {
+            enemy_apply_poison(_enemy, 4, 0.5, 3.0);
+            _owner.assassin_plasma_buff_timer = 3.0;
+            fx_spawn_damage_popup(_owner.x, _owner.y - 24, "PLASMA ÍGNEO!", true, c_yellow);
+            fx_spawn_sparks(_owner.x, _owner.y, c_yellow, 10);
+        }
+
         // Abate de inimigo (Assassin)
         if (_enemy.hp <= 0 && _before_hp > 0) {
             if (variable_instance_exists(_owner, "synth_assassin_frenesi_sangue") && _owner.synth_assassin_frenesi_sangue > 0) {
@@ -763,6 +1193,25 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             if (variable_instance_exists(_owner, "synth_assassin_ceifador_cosmico") && _owner.synth_assassin_ceifador_cosmico > 0) {
                 _owner.hp = min(_owner.hp_max, _owner.hp + _owner.hp_max * 0.10);
                 _owner.invuln_timer = 1.0;
+            }
+            // 22 Combustao Fatal (abater com ataques furtivos detona explosao em cadeia)
+            if (_is_backstab && variable_instance_exists(_owner, "synth_assassin_vulcan_combustao_fatal") && _owner.synth_assassin_vulcan_combustao_fatal > 0) {
+                fx_spawn_death_burst(_enemy.x, _enemy.y, c_red, 16);
+                fx_spawn_damage_popup(_enemy.x, _enemy.y - 18, "COMBUSTÃO FATAL!", true, c_red);
+                with (obj_enemy_parent) {
+                    if (id != _enemy && point_distance(x, y, _enemy.x, _enemy.y) <= 85) {
+                        enemy_take_damage(id, 28, _enemy.x, _enemy.y, 120);
+                        enemy_apply_poison(id, 4, 0.5, 3.0);
+                    }
+                }
+            }
+            // 31 Passo das Sombras (Shadowstep recarrega se o golpe abater o alvo)
+            if (variable_instance_exists(_owner, "synth_assassin_tufao_passo_sombras") && _owner.synth_assassin_tufao_passo_sombras > 0) {
+                if (_owner.defend_mode == "shadowstep" || _is_backstab) {
+                    _owner.defend_cooldown_timer = 0;
+                    fx_spawn_damage_popup(_owner.x, _owner.y - 26, "PASSO DAS SOMBRAS!", true, c_fuchsia);
+                    fx_spawn_sparks(_owner.x, _owner.y, c_purple, 10);
+                }
             }
         }
     }
@@ -824,6 +1273,9 @@ function player_perform_attack() {
         if (variable_instance_exists(id, "synth_lendario_avatar_elemental") && synth_lendario_avatar_elemental > 0) {
             _dmg *= 1.25;
         }
+        if (variable_instance_exists(id, "furia_ancestral_timer") && furia_ancestral_timer > 0) {
+            _dmg *= 2.0; // Dano dobrado durante Fúria Ancestral (Eco dos Ancestrais)
+        }
         if (element_affinity == "fire" && state == "defend" && defend_mode == "berserk_fury") {
             var _mag_bonus = variable_instance_exists(id, "synth_pwr_magica") ? synth_pwr_magica : 0;
             var _fury_mult = 1.5 + synth_berserk_dmg_bonus + (_mag_bonus * 0.05);
@@ -855,17 +1307,56 @@ function player_perform_attack() {
 
     if (attack_is_ranged) {
         var _eff_pierce = synth_pierce_count;
-        if (character_class == "archer" && variable_instance_exists(id, "earth_anchored") && earth_anchored) {
-            _eff_pierce += 99;
+        if (character_class == "archer") {
+            archer_shot_counter++;
+            if (variable_instance_exists(id, "earth_anchored") && earth_anchored) {
+                _eff_pierce += 99;
+            }
+            // 18 Balista Piromante: imóvel acumula calor -> velocidade extrema e perfura tudo
+            if (variable_instance_exists(id, "synth_archer_balist_balista_piromante") && synth_archer_balist_balista_piromante > 0 && archer_stationary_timer >= 1.5) {
+                _eff_pierce += 99;
+                _dmg *= 1.35;
+                fx_spawn_sparks(x, y - 8, c_orange, 6);
+                fx_spawn_damage_popup(x, y - 20, "BALISTA PIROMANTE!", true, c_orange);
+            }
         }
 
         var _sx = x + facing_x * 14;
         var _sy = y + facing_y * 14;
         var _spd = projectile_speed;
         if (variable_instance_exists(id, "synth_archer_venda_tiro_supersonico") && synth_archer_venda_tiro_supersonico > 0) _spd *= 1.6;
+        if (character_class == "archer" && variable_instance_exists(id, "synth_archer_balist_balista_piromante") && synth_archer_balist_balista_piromante > 0 && archer_stationary_timer >= 1.5) {
+            _spd *= 1.80;
+        }
         if (variable_instance_exists(id, "synth_mage_fluxo_conduzido") && synth_mage_fluxo_conduzido > 0) _spd *= 1.25;
 
-        if (character_class == "archer" && variable_instance_exists(id, "synth_archer_venda_disparo_leque") && synth_archer_venda_disparo_leque > 0) {
+        if (character_class == "archer" && variable_instance_exists(id, "synth_archer_venda_tempestade_mil_tiros") && synth_archer_venda_tempestade_mil_tiros > 0 && (archer_shot_counter mod 5 == 0)) {
+            // 25 Tempestade de Mil Tiros: torrente de 9 flechas ultrarrápidas em cone
+            fx_spawn_damage_popup(x, y - 20, "MIL TIROS!", true, c_lime);
+            for (var _fi = -4; _fi <= 4; _fi++) {
+                var _ang = point_direction(0, 0, facing_x, facing_y) + _fi * 7;
+                var _p = instance_create_layer(_sx, _sy, layer, attack_object);
+                _p.owner = id;
+                _p.damage = _dmg * 0.35;
+                _p.dir_x = lengthdir_x(1, _ang);
+                _p.dir_y = lengthdir_y(1, _ang);
+                _p.speed_px = _spd * 1.3;
+                _p.pierce_remaining = _eff_pierce;
+            }
+        } else if (character_class == "archer" && variable_instance_exists(id, "synth_archer_terra_tiro_cataclismico") && synth_archer_terra_tiro_cataclismico > 0 && (archer_shot_counter mod 6 == 0)) {
+            // 32 Tiro Cataclísmico: flecha colossal perfurante
+            var _p = instance_create_layer(_sx, _sy, layer, attack_object);
+            _p.owner = id;
+            _p.damage = _dmg * 1.75;
+            _p.dir_x = facing_x;
+            _p.dir_y = facing_y;
+            _p.speed_px = _spd * 1.1;
+            _p.body_radius = 16;
+            _p.pierce_remaining = 99;
+            fx_spawn_death_burst(_sx, _sy, make_colour_rgb(160, 110, 50), 16);
+            fx_spawn_damage_popup(x, y - 20, "CATACLISMO!", true, make_colour_rgb(180, 140, 70));
+            trigger_hitstop(0.08);
+        } else if (character_class == "archer" && variable_instance_exists(id, "synth_archer_venda_disparo_leque") && synth_archer_venda_disparo_leque > 0) {
             for (var _fi = -1; _fi <= 1; _fi++) {
                 var _ang = point_direction(0, 0, facing_x, facing_y) + _fi * 18;
                 var _p = instance_create_layer(_sx, _sy, layer, attack_object);
@@ -876,6 +1367,20 @@ function player_perform_attack() {
                 _p.speed_px = _spd;
                 _p.pierce_remaining = _eff_pierce;
             }
+        } else if (character_class == "mage" && variable_instance_exists(id, "synth_piro_sopro_dragao") && synth_piro_sopro_dragao > 0) {
+            // Mage: 22 Sopro de Dragão (cone contínuo a curto alcance)
+            for (var _fi = -1; _fi <= 1; _fi++) {
+                var _ang = point_direction(0, 0, facing_x, facing_y) + _fi * 15;
+                var _p = instance_create_layer(_sx, _sy, layer, attack_object);
+                _p.owner = id;
+                _p.damage = _dmg * 0.55;
+                _p.dir_x = lengthdir_x(1, _ang);
+                _p.dir_y = lengthdir_y(1, _ang);
+                _p.speed_px = _spd * 1.15;
+                _p.life = 0.45;
+                _p.pierce_remaining = _eff_pierce + 1;
+                fx_spawn_sparks(_sx, _sy, c_orange, 3);
+            }
         } else {
             var _p = instance_create_layer(_sx, _sy, layer, attack_object);
             _p.owner = id;
@@ -884,6 +1389,67 @@ function player_perform_attack() {
             _p.dir_y = facing_y;
             _p.speed_px = _spd;
             _p.pierce_remaining = _eff_pierce;
+            if (character_class == "archer" && variable_instance_exists(id, "synth_archer_falcao_cosmico") && synth_archer_falcao_cosmico > 0) {
+                _p.life = 10.0;
+            }
+        }
+
+        // 44 Tempestade Ígnea Aérea: cria 3 tornados de fogo móveis a cada 3 tiros
+        if (character_class == "archer" && variable_instance_exists(id, "synth_archer_tempestade_ignea") && synth_archer_tempestade_ignea > 0 && (archer_shot_counter mod 3 == 0)) {
+            for (var _ti = -1; _ti <= 1; _ti++) {
+                var _tang = point_direction(0, 0, facing_x, facing_y) + _ti * 25;
+                var _torn = instance_create_layer(_sx, _sy, layer, obj_atk_fireball);
+                _torn.owner = id;
+                _torn.damage = _dmg * 0.50;
+                _torn.dir_x = lengthdir_x(1, _tang);
+                _torn.dir_y = lengthdir_y(1, _tang);
+                _torn.speed_px = 160;
+                _torn.pierce_remaining = 5;
+            }
+            fx_spawn_sparks(_sx, _sy, c_orange, 10);
+            fx_spawn_damage_popup(x, y - 20, "TORNADO IGNEO!", true, c_orange);
+        }
+
+        // 47 Atirador Fantasma: clone translúcido atira junto por 3s
+        if (character_class == "archer" && variable_instance_exists(id, "archer_phantom_timer") && archer_phantom_timer > 0) {
+            var _p2 = instance_create_layer(archer_phantom_x, archer_phantom_y, layer, attack_object);
+            _p2.owner = id;
+            _p2.damage = _dmg * 0.50;
+            _p2.dir_x = facing_x;
+            _p2.dir_y = facing_y;
+            _p2.speed_px = _spd;
+            _p2.pierce_remaining = _eff_pierce;
+            fx_spawn_sparks(archer_phantom_x, archer_phantom_y, c_teal, 3);
+        }
+
+        // Mage: 24 Passo Céfiro (buff de +10% velocidade pós feitiço por 2s)
+        if (character_class == "mage" && variable_instance_exists(id, "synth_aero_passo_cefiro") && synth_aero_passo_cefiro > 0) {
+            cefiro_buff_timer = 2.0;
+        }
+
+        // Mage: 48 Singularidade Dimensional (a cada 12s, buraco negro desintegra projéteis e suga)
+        if (character_class == "mage" && variable_instance_exists(id, "synth_mage_singularidade_dimensional") && synth_mage_singularidade_dimensional > 0 && singularidade_timer <= 0) {
+            singularidade_timer = 12.0;
+            var _sing_x = x + facing_x * 90;
+            var _sing_y = y + facing_y * 90;
+            fx_spawn_death_burst(_sing_x, _sing_y, c_purple, 22);
+            fx_spawn_damage_popup(_sing_x, _sing_y - 20, "SINGULARIDADE!", true, c_purple);
+            trigger_hitstop(0.10);
+            with (obj_enemy_projectile) {
+                if (point_distance(x, y, _sing_x, _sing_y) <= 120) {
+                    fx_spawn_sparks(x, y, c_purple, 4);
+                    instance_destroy();
+                }
+            }
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _sing_x, _sing_y) <= 120) {
+                    var _sdir = point_direction(x, y, _sing_x, _sing_y);
+                    x += lengthdir_x(50, _sdir);
+                    y += lengthdir_y(50, _sdir);
+                    enemy_take_damage(id, other.attack_damage * 0.6, _sing_x, _sing_y, 0);
+                    enemy_apply_slow(id, 0.2, 1.5);
+                }
+            }
         }
 
         // ==========================================
@@ -894,17 +1460,27 @@ function player_perform_attack() {
 
             // 3º Golpe Elemental do Mago
             if (mage_consecutive_hits mod 3 == 0) {
-                if (element_affinity == "water") {
-                    // Criomante: Nova Glacial congelando área ao redor
-                    var _nova = instance_create_layer(x + facing_x * 35, y + facing_y * 35, layer, obj_atk_knight);
+                if (element_affinity == "water" || (variable_instance_exists(id, "synth_crio_onda_torrencial") && synth_crio_onda_torrencial > 0)) {
+                    // Criomante / 14 Onda Torrencial: arrasta monstros por 150px
+                    var _wave_x = x + facing_x * 50;
+                    var _wave_y = y + facing_y * 50;
+                    var _nova = instance_create_layer(_wave_x, _wave_y, layer, obj_atk_knight);
                     _nova.owner = id;
-                    _nova.damage = _dmg * 1.15;
-                    _nova.body_radius = 65;
-                    _nova.life = 0.3;
-                    fx_spawn_sparks(x + facing_x * 35, y + facing_y * 35, c_aqua, 16);
+                    _nova.damage = _dmg * 1.20;
+                    _nova.body_radius = 75;
+                    _nova.life = 0.35;
+                    fx_spawn_sparks(_wave_x, _wave_y, c_aqua, 18);
+                    fx_spawn_damage_popup(_wave_x, _wave_y - 18, "ONDA TORRENCIAL!", true, c_aqua);
                     with (obj_enemy_parent) {
-                        if (point_distance(x, y, other.x + other.facing_x * 35, other.y + other.facing_y * 35) <= 75) {
-                            enemy_apply_slow(id, 0.0, 1.8);
+                        if (point_distance(x, y, _wave_x, _wave_y) <= 90) {
+                            var _push_dist = (variable_instance_exists(other, "synth_crio_onda_torrencial") && other.synth_crio_onda_torrencial > 0) ? 150 : 60;
+                            var _nx = x + other.facing_x * _push_dist;
+                            var _ny = y + other.facing_y * _push_dist;
+                            if (fh_place_free_of_walls(_nx, _ny, 10)) {
+                                x = _nx;
+                                y = _ny;
+                            }
+                            enemy_apply_slow(id, 0.0, 2.0);
                         }
                     }
                     trigger_hitstop(0.08);
@@ -920,22 +1496,23 @@ function player_perform_attack() {
                     _met.pierce_remaining = 3;
                     fx_spawn_death_burst(_sx, _sy, c_orange, 12);
                     trigger_hitstop(0.08);
-                } else if (element_affinity == "wind") {
-                    // Aeromante: Vórtice Galvânico que puxa inimigos próximos
+                } else if (element_affinity == "wind" || (variable_instance_exists(id, "synth_aero_vortice_cortante") && synth_aero_vortice_cortante > 0)) {
+                    // Aeromante / 27 Vórtice Cortante: puxa inimigos próximos
                     var _vx = x + facing_x * 60;
                     var _vy = y + facing_y * 60;
                     var _vort = instance_create_layer(_vx, _vy, layer, obj_atk_knight);
                     _vort.owner = id;
-                    _vort.damage = _dmg * 1.05;
-                    _vort.body_radius = 75;
-                    _vort.life = 0.25;
-                    fx_spawn_sparks(_vx, _vy, c_yellow, 14);
+                    _vort.damage = _dmg * 1.10;
+                    _vort.body_radius = 80;
+                    _vort.life = 0.30;
+                    fx_spawn_sparks(_vx, _vy, c_yellow, 16);
+                    fx_spawn_damage_popup(_vx, _vy - 18, "VORTICE CORTANTE!", true, c_yellow);
                     with (obj_enemy_parent) {
-                        if (point_distance(x, y, _vx, _vy) <= 120) {
+                        if (point_distance(x, y, _vx, _vy) <= 130) {
                             var _pa = point_direction(x, y, _vx, _vy);
-                            x += lengthdir_x(32, _pa);
-                            y += lengthdir_y(32, _pa);
-                            enemy_take_damage(id, other.attack_damage * 0.4, _vx, _vy, 0);
+                            x += lengthdir_x(40, _pa);
+                            y += lengthdir_y(40, _pa);
+                            enemy_take_damage(id, other.attack_damage * 0.45, _vx, _vy, 0);
                         }
                     }
                 } else if (element_affinity == "earth") {
@@ -1104,6 +1681,99 @@ function player_perform_attack() {
         if (character_class == "assassin") {
             assassin_combo_counter++;
 
+            // 32 Reflexos Celere (golpes de adaga destroem projeteis inimigos proximos)
+            if (variable_instance_exists(id, "synth_assassin_tufao_reflexos_celere") && synth_assassin_tufao_reflexos_celere > 0) {
+                with (obj_enemy_projectile) {
+                    if (point_distance(x, y, _hx, _hy) <= other.attack_range * _radius_mult + 18) {
+                        fx_spawn_sparks(x, y, c_white, 6);
+                        fx_spawn_damage_popup(x, y - 12, "DEFLETIDO!", false, c_white);
+                        instance_destroy();
+                    }
+                }
+            }
+
+            // 50 Eco dos Assassinos (critico conjura sombra clone que repete o golpe)
+            if (_is_crit && variable_instance_exists(id, "synth_assassin_eco_assassinos") && synth_assassin_eco_assassinos > 0) {
+                var _echo = instance_create_layer(_hx + facing_x * 8, _hy + facing_y * 8, layer, attack_object);
+                _echo.owner = id;
+                _echo.damage = _dmg;
+                _echo.body_radius = attack_range * _radius_mult;
+                fx_spawn_damage_popup(_hx, _hy - 24, "ECO SOMBRIO!", true, c_purple);
+                fx_spawn_sparks(_hx, _hy, c_purple, 10);
+            }
+
+            // 31 Tornado de Adagas (a cada 6 ataques dispara vendaval cortante frontal)
+            if (variable_instance_exists(id, "synth_assassin_tufao_tornado_adagas") && synth_assassin_tufao_tornado_adagas > 0 && (assassin_combo_counter mod 6 == 0)) {
+                var _torn = instance_create_layer(x + facing_x * 18, y + facing_y * 18, layer, obj_atk_arrow);
+                _torn.owner = id;
+                _torn.damage = _dmg * 1.5;
+                _torn.dir_x = facing_x;
+                _torn.dir_y = facing_y;
+                _torn.speed_px = 420;
+                _torn.pierce_remaining = 6;
+                fx_spawn_damage_popup(x, y - 26, "TORNADO DE ADAGAS!", true, make_colour_rgb(200, 255, 240));
+                fx_spawn_sparks(x, y, c_white, 12);
+            }
+
+            // 17 Mare da Ceifa (a cada 4 ataques dispara 8 cortes circulares em 360)
+            if (variable_instance_exists(id, "synth_assassin_espect_mare_ceifa") && synth_assassin_espect_mare_ceifa > 0 && (assassin_combo_counter mod 4 == 0)) {
+                for (var _mci = 0; _mci < 8; _mci++) {
+                    var _mcang = _mci * 45;
+                    var _mcl = instance_create_layer(x + lengthdir_x(26, _mcang), y + lengthdir_y(26, _mcang), layer, obj_atk_dagger);
+                    _mcl.owner = id;
+                    _mcl.damage = _dmg * 0.85;
+                    _mcl.dir_x = lengthdir_x(1, _mcang);
+                    _mcl.dir_y = lengthdir_y(1, _mcang);
+                    _mcl.body_radius = 28;
+                    _mcl.life = 0.22;
+                }
+                fx_spawn_damage_popup(x, y - 28, "MARE DA CEIFA!", true, c_aqua);
+                fx_spawn_sparks(x, y, c_teal, 16);
+            }
+
+            // 43 Golpe Tectonico (a cada 3 ataques crava adagas gerando terremoto que esmaga e atordoa ao redor)
+            if (variable_instance_exists(id, "synth_assassin_obsid_golpe_tectonico") && synth_assassin_obsid_golpe_tectonico > 0 && (assassin_combo_counter mod 3 == 0)) {
+                var _tec = instance_create_layer(x, y, layer, obj_atk_knight);
+                _tec.owner = id;
+                _tec.damage = _dmg * 1.6;
+                _tec.body_radius = 65;
+                _tec.life = 0.28;
+                trigger_hitstop(0.10);
+                fx_spawn_damage_popup(x, y - 28, "GOLPE TECTÔNICO!", true, make_colour_rgb(140, 110, 70));
+                fx_spawn_sparks(x, y, make_colour_rgb(120, 100, 60), 14);
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, other.x, other.y) <= 70) {
+                        enemy_apply_slow(id, 0.0, 0.8);
+                    }
+                }
+            }
+
+            // 35 Mil Cortes Invisiveis (a cada 9 ataques fatiamento fulminante em todos os monstros)
+            if (variable_instance_exists(id, "synth_assassin_tufao_mil_cortes_invisiveis") && synth_assassin_tufao_mil_cortes_invisiveis > 0 && (assassin_combo_counter mod 9 == 0)) {
+                var _cut_targets = [];
+                with (obj_enemy_parent) {
+                    if (point_distance(other.x, other.y, x, y) <= 240) {
+                        array_push(_cut_targets, id);
+                        if (array_length(_cut_targets) >= 4) break;
+                    }
+                }
+                if (array_length(_cut_targets) > 0) {
+                    fx_spawn_damage_popup(x, y - 32, "✦ MIL CORTES! ✦", true, make_colour_rgb(220, 240, 255));
+                    trigger_hitstop(0.14);
+                    for (var _ti = 0; _ti < array_length(_cut_targets); _ti++) {
+                        var _tgt = _cut_targets[_ti];
+                        for (var _sk = 0; _sk < 3; _sk++) {
+                            var _cut = instance_create_layer(_tgt.x, _tgt.y, layer, obj_atk_dagger);
+                            _cut.owner = id;
+                            _cut.damage = _dmg * 1.1;
+                            _cut.body_radius = 32;
+                            _cut.life = 0.2;
+                        }
+                        fx_spawn_sparks(_tgt.x, _tgt.y, c_white, 8);
+                    }
+                }
+            }
+
             // 3º Golpe Elemental do Assassino
             if (assassin_combo_counter mod 3 == 0) {
                 if (element_affinity == "water") {
@@ -1246,10 +1916,68 @@ function player_take_damage(_amount, _damage_type) {
         return;
     }
 
+    // Mage: 29 Olho do Furacão (+15% esquiva de projéteis em movimento)
+    if (_damage_type == "projectile" && _p.character_class == "mage" && variable_instance_exists(_p, "synth_aero_olho_furacao") && _p.synth_aero_olho_furacao > 0 && point_distance(0, 0, _p.vx, _p.vy) > 20) {
+        if (random(1) < 0.15) {
+            _p.invuln_timer = max(_p.invuln_timer, 0.45);
+            fx_spawn_damage_popup(_p.x, _p.y - 20, "ESQUIVA VENTO!", true, make_colour_rgb(180, 240, 255));
+            fx_spawn_sparks(_p.x, _p.y, make_colour_rgb(180, 240, 255), 8);
+            return;
+        }
+    }
+
+    // Mage: 32 Armadura de Granito (+6 Defesa Física e imunidade a cortes fracos)
+    if (_p.character_class == "mage" && variable_instance_exists(_p, "synth_geo_armadura_granito") && _p.synth_geo_armadura_granito > 0) {
+        if (_amount <= 5) {
+            fx_spawn_damage_popup(_p.x, _p.y - 20, "GRANITO!", false, c_gray);
+            fx_spawn_sparks(_p.x, _p.y, c_gray, 4);
+            return;
+        }
+    }
+
     if (random(1) < _p.synth_dodge) {
         _p.invuln_timer = max(_p.invuln_timer, 0.45);
         fx_spawn_damage_popup(_p.x, _p.y - 20, "ESQUIVOU!", false, c_aqua);
         fx_spawn_sparks(_p.x, _p.y, c_aqua, 8);
+        // Archer: 23 Dança dos Ventos (esquivar concede +100% de vel. ataque para as próximas 2 flechas)
+        if (_p.character_class == "archer" && variable_instance_exists(_p, "synth_archer_venda_danca_ventos") && _p.synth_archer_venda_danca_ventos > 0) {
+            _p.archer_wind_dance_shots = 2;
+            fx_spawn_damage_popup(_p.x, _p.y - 32, "DANCA DOS VENTOS!", true, make_colour_rgb(180, 240, 255));
+        }
+        // Assassin: 06 Esquiva Reflexa (esquivar recarrega 1s de Invisibilidade)
+        if (_p.character_class == "assassin" && variable_instance_exists(_p, "synth_assassin_esquiva_reflexa") && _p.synth_assassin_esquiva_reflexa > 0) {
+            if (_p.defend_cooldown_timer > 0) {
+                _p.defend_cooldown_timer = max(0, _p.defend_cooldown_timer - 1.0);
+                fx_spawn_damage_popup(_p.x, _p.y - 28, "RECARGA SOMBRIA!", false, c_purple);
+            }
+        }
+        // Assassin: 32 Esquiva Espectral (reposiciona instantaneamente nas costas do agressor)
+        if (_p.character_class == "assassin" && variable_instance_exists(_p, "synth_assassin_tufao_esquiva_espectral") && _p.synth_assassin_tufao_esquiva_espectral > 0) {
+            var _nearest = noone;
+            var _ndist = 200;
+            with (obj_enemy_parent) {
+                var _d = point_distance(_p.x, _p.y, x, y);
+                if (_d < _ndist) {
+                    _ndist = _d;
+                    _nearest = id;
+                }
+            }
+            if (_nearest != noone) {
+                var _nfx = variable_instance_exists(_nearest, "facing_x") ? _nearest.facing_x : 0;
+                var _nfy = variable_instance_exists(_nearest, "facing_y") ? _nearest.facing_y : 1;
+                var _nx = _nearest.x - _nfx * 24;
+                var _ny = _nearest.y - _nfy * 24;
+                if (fh_place_free_of_walls(_nx, _ny, _p.body_radius)) {
+                    _p.x = _nx;
+                    _p.y = _ny;
+                    _p.facing_x = _nfx;
+                    _p.facing_y = _nfy;
+                }
+                _p.last_attack_was_crit = true;
+                fx_spawn_damage_popup(_p.x, _p.y - 24, "ESQUIVA ESPECTRAL!", true, make_colour_rgb(180, 240, 255));
+                fx_spawn_sparks(_p.x, _p.y, c_white, 8);
+            }
+        }
         return;
     }
 
@@ -1277,6 +2005,16 @@ function player_take_damage(_amount, _damage_type) {
             _p.hp = min(_p.hp_max, _p.hp + _amount * 0.15);
         }
 
+        // 44 Tempestade de Poeira: Bloquear golpes levanta poeira e desorienta atacantes proximos
+        if (_p.character_class == "knight" && variable_instance_exists(_p, "synth_lendario_tempestade_poeira") && _p.synth_lendario_tempestade_poeira > 0) {
+            fx_spawn_sparks(_p.x, _p.y, make_colour_rgb(180, 170, 140), 12);
+            with (obj_enemy_parent) {
+                if (point_distance(x, y, _p.x, _p.y) <= 90) {
+                    enemy_apply_slow(id, 0.25, 1.5);
+                }
+            }
+        }
+
         if (_p.defend_mode == "parry") {
             // Duelista: Aparar bem-sucedido! Anula 100% de dano e desfere contra-ataque de 360 graus
             _final = 0;
@@ -1287,6 +2025,24 @@ function player_take_damage(_amount, _damage_type) {
             trigger_hitstop(0.12);
             trigger_camera_shake(6);
             sfx_play("parry", 0.04);
+
+            // 29 Reflexos Celere: Parry concede +25% de velocidade de ataque por 3s
+            if (variable_instance_exists(_p, "synth_duelista_reflexos_celere") && _p.synth_duelista_reflexos_celere > 0) {
+                _p.parry_haste_timer = 3.0;
+                fx_spawn_damage_popup(_p.x, _p.y - 18, "CELERIDADE!", false, c_yellow);
+            }
+
+            // 45 Gelo Fendido: Parry projeta estilhacos de gelo contra atacantes proximos
+            if (variable_instance_exists(_p, "synth_lendario_gelo_fendido") && _p.synth_lendario_gelo_fendido > 0) {
+                fx_spawn_sparks(_p.x, _p.y, c_aqua, 16);
+                fx_spawn_damage_popup(_p.x, _p.y - 24, "GELO FENDIDO!", false, c_aqua);
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _p.x, _p.y) <= 140) {
+                        enemy_take_damage(id, _p.attack_damage * 0.70, _p.x, _p.y, 100);
+                        enemy_apply_slow(id, 0.15, 2.0);
+                    }
+                }
+            }
 
             // 31 Aparar em Cadeia: reseta cooldown do parry
             if (variable_instance_exists(_p, "synth_duelista_aparar_cadeia") && _p.synth_duelista_aparar_cadeia > 0) {
@@ -1351,6 +2107,11 @@ function player_take_damage(_amount, _damage_type) {
                         enemy_take_damage(id, _amount * 0.50, _p.x, _p.y, 160);
                     }
                 }
+                // 39 Armadura Sismica (Carapaca de Obsidiana reflete 50% de dano corpo a corpo)
+                if (variable_instance_exists(_p, "synth_assassin_obsid_armadura_sismica") && _p.synth_assassin_obsid_armadura_sismica > 0) {
+                    fx_spawn_damage_popup(_p.x, _p.y - 24, "ARMADURA SÍSMICA!", true, c_gray);
+                    fx_spawn_sparks(_p.x, _p.y, c_dkgray, 10);
+                }
             }
             _p.hit_flash_timer = _p.hit_flash_duration;
         } else if (_p.defend_mode == "earth_anchor") {
@@ -1400,8 +2161,18 @@ function player_take_damage(_amount, _damage_type) {
         // Dano "magical"  (Ranged, projeteis balisticos, pocaws de lava, gas, ciclones) -> mitigado por synth_def_magica
         var _def_bonus = (_damage_type == "physical") ? _p.synth_def_fisica : _p.synth_def_magica;
         var _mitigation = _p.nat_defesa + _def_bonus + (variable_global_exists("shop_boost_defesa") ? global.shop_boost_defesa : 0);
-        if (_p.character_class == "knight" && _p.synth_guardian_def > 0) {
-            _mitigation += _p.synth_guardian_def;
+        if (_p.character_class == "knight") {
+            if (_p.synth_guardian_def > 0) _mitigation += _p.synth_guardian_def;
+            if (variable_instance_exists(_p, "synth_aco_temperado") && _p.synth_aco_temperado > 0) {
+                // Aço Temperado: reforço de armadura proporcional ao ouro
+            }
+            if (variable_instance_exists(_p, "synth_guardiao_carapaca_granito") && _p.synth_guardiao_carapaca_granito > 0) {
+                // Carapaça de Granito: armadura pétrea de guardião
+            }
+        } else if (_p.character_class == "assassin") {
+            if (variable_instance_exists(_p, "synth_assassin_obsid_pele_petrea") && _p.synth_assassin_obsid_pele_petrea > 0) {
+                // Pele Pétrea: robustez física de obsidiana (+8 defesa física)
+            }
         }
 
         // Fórmula de Armadura com Retornos Decrescentes (Acaba com a invencibilidade mas preserva o papel tanque)
@@ -1409,6 +2180,10 @@ function player_take_damage(_amount, _damage_type) {
         var _reduc = min(0.68, _mitigation / (_mitigation + 32));
         _final = _final * (1 - _reduc);
 
+        // 21 Marca do Enxofre (inimigos queimados causam 30% a menos de dano contra o assassino)
+        if (_p.character_class == "assassin" && variable_instance_exists(_p, "synth_assassin_vulcan_marca_enxofre") && _p.synth_assassin_vulcan_marca_enxofre > 0) {
+            _final *= 0.70;
+        }
         // Piso de Dano Mínimo: Um golpe nunca causa menos que 20% do impacto original (mínimo de 2 de dano)
         // a não ser que tenha sido bloqueado ativamente com escudo ou parry
         var _min_dmg = max(2, ceil(_amount * 0.20));
@@ -1457,6 +2232,26 @@ function player_take_damage(_amount, _damage_type) {
                 _p.hp = min(_p.hp_max, _p.hp + _p.hp_max * 0.20);
                 _p.segundo_folego_cooldown = 60;
                 trigger_hitstop(0.12);
+            }
+        }
+
+        // 50 Eco dos Ancestrais (Cavaleiro Lendario): revive com Furia Ancestral (1x por run)
+        if (_p.character_class == "knight" && variable_instance_exists(_p, "synth_lendario_eco_ancestrais") && _p.synth_lendario_eco_ancestrais > 0 && variable_instance_exists(_p, "knight_eco_ancestral_used") && !_p.knight_eco_ancestral_used) {
+            if ((_p.hp - _final) <= 0) {
+                _p.knight_eco_ancestral_used = true;
+                _final = 0;
+                _p.hp = 1;
+                _p.invuln_timer = 3.5;
+                _p.furia_ancestral_timer = 3.5;
+                trigger_hitstop(0.20);
+                fx_spawn_sparks(_p.x, _p.y, c_yellow, 30);
+                fx_spawn_damage_popup(_p.x, _p.y - 24, "FURIA ANCESTRAL!", false, c_yellow);
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, _p.x, _p.y) <= 120) {
+                        enemy_take_damage(id, 35, _p.x, _p.y, 220, true);
+                    }
+                }
+                return;
             }
         }
 

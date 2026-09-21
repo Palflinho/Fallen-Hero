@@ -36,6 +36,9 @@ paladin_barrier_active = 0;
 duelist_combo_count = 0;
 duelist_combo_timer = 0;
 parry_flash_timer = 0;
+parry_haste_timer = 0;
+furia_ancestral_timer = 0;
+knight_eco_ancestral_used = false;
 
 switch (character_class) {
     case "knight":
@@ -108,6 +111,12 @@ switch (character_class) {
         projectile_speed = 260;
         sprite_walk = -1;
         sprite_attack = -1;
+        mage_run_kills = 0;
+        estatica_charge = 0;
+        conflagracao_timer = 0;
+        cefiro_buff_timer = 0;
+        singularidade_timer = 12.0;
+        mage_fire_hits = 0;
 
         switch (element_affinity) {
             case "water":
@@ -389,12 +398,21 @@ archer_stationary_timer = 0;
 archer_shot_counter = 0;
 archer_anchor_active = false;
 archer_recuo_cooldown = 0;
+archer_hunter_reflex_timer = 0;
+archer_wind_dance_shots = 0;
+archer_phantom_timer = 0;
+archer_phantom_x = 0;
+archer_phantom_y = 0;
 
 // Variáveis de controle de combate para talentos do Assassino
 assassin_combo_counter = 0;
 assassin_smoke_timer = 0;
 assassin_entered_room_timer = 2.0;
 assassin_free_evade_cooldown = 0;
+assassin_last_hit_enemy = noone;
+assassin_consecutive_hits = 0;
+assassin_plasma_buff_timer = 0;
+assassin_adrenalina_spd = 0;
 
 hp_max = 0;
 hp = 0;

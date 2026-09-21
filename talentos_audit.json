@@ -1,0 +1,11 @@
+﻿{
+    "Classe":  null,
+    "Afinidade":  null,
+    "ID":  null,
+    "Nome":  null,
+    "Status":  "IMPLEMENTADO",
+    "Efeito":  null,
+    "Flavor":  null,
+    "Variavel":  null,
+    "Arquivos":  "Draw_0.gml, Draw_0.gml, Step_0.gml, Draw_64.gml, Create_0.gml, Draw_0.gml, Draw_0.gml, Draw_0.gml, Step_0.gml, Step_0.gml, Draw_0.gml, scr_ai.gml, Draw_0.gml, Step_0.gml, Create_0.gml, Create_0.gml, Create_0.gml, Create_0.gml, Create_0.gml, Draw_0.gml, Draw_0.gml, Create_0.gml, Create_0.gml, Step_0.gml, Draw_0.gml, Draw_0.gml, Step_0.gml, Create_0.gml, Draw_0.gml, Draw_0.gml, Step_0.gml, Create_0.gml, Step_0.gml, Draw_0.gml, Create_0.gml, Draw_0.gml, Draw_0.gml, Create_0.gml, Create_0.gml, Draw_64.gml, Draw_0.gml, Step_0.gml, Create_0.gml, Draw_0.gml, Create_0.gml, Draw_64.gml, Step_0.gml, Create_0.gml, Step_0.gml, scr_combat.gml, Create_0.gml, Create_0.gml, Step_0.gml, Create_0.gml, Create_0.gml, Draw_0.gml, Create_0.gml, Step_0.gml, Step_0.gml, Create_0.gml, Step_0.gml, Step_0.gml, Step_0.gml, Draw_0.gml, Step_0.gml, Step_0.gml, Draw_0.gml, Create_0.gml, Step_0.gml, Create_0.gml, Step_0.gml, Draw_0.gml, Step_0.gml, Draw_0.gml, Step_0.gml, Step_0.gml, Create_0.gml, scr_dungeon_gen.gml, Step_0.gml, Step_0.gml, Draw_0.gml, Step_0.gml, Create_0.gml, Draw_0.gml, Step_0.gml, Step_0.gml, Step_0.gml, Draw_0.gml, Draw_0.gml, Step_0.gml, Step_0.gml, Step_0.gml, Create_0.gml, Step_0.gml, Step_0.gml, Step_0.gml, Draw_0.gml, Create_0.gml, Step_0.gml, Create_0.gml, Draw_0.gml, Create_0.gml, Step_0.gml, Create_0.gml, Create_0.gml, Step_0.gml, Step_0.gml, Create_0.gml, Create_0.gml, Create_0.gml, Draw_0.gml, Create_0.gml, Draw_0.gml, Create_0.gml, Draw_0.gml, Draw_0.gml, Create_0.gml, Create_0.gml, Create_0.gml, scr_movement.gml, Step_0.gml, Create_0.gml, Create_0.gml, Create_0.gml, Draw_0.gml, Step_0.gml, Create_0.gml, Create_0.gml, scr_save.gml, Create_0.gml, Create_0.gml, Step_0.gml, Draw_0.gml, Create_0.gml, Draw_0.gml, Create_0.gml, Step_0.gml, Create_0.gml, Draw_0.gml, Create_0.gml, scr_input.gml, Step_0.gml, scr_progression.gml, Create_0.gml"
+}

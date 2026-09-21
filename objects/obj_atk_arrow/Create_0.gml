@@ -8,3 +8,6 @@ body_radius = 5;
 hit_list = [];
 pierce_remaining = 0;
 should_destroy = false;
+dist_traveled = 0;
+is_homing = false;
+is_fenix = false;

@@ -34,7 +34,9 @@ function ai_detect_player(_vision_range, _vision_angle, _spider_range) {
     // 2. SENTIDO ARANHA LATERAL: Jogador muito proximo pelos flancos laterais
     // O inimigo pressente a aproximacao lateral (entre o cone frontal e 125 graus),
     // vira rapidamente na direcao do jogador e passa a detecta-lo!
-    if (_dist <= _spider_range && _angle_diff > (_vision_angle * 0.5) && _angle_diff <= 125) {
+    // (Passo Silencioso do Assassino: passos incorpóreos não alertam inimigos fora da visão frontal direta!)
+    var _silent_step = (_player.character_class == "assassin" && variable_instance_exists(_player, "synth_assassin_passo_silencioso") && _player.synth_assassin_passo_silencioso > 0);
+    if (!_silent_step && _dist <= _spider_range && _angle_diff > (_vision_angle * 0.5) && _angle_diff <= 125) {
         has_spotted_player = true;
         facing_dir = _dir_to_player;
         facing_x = lengthdir_x(1, facing_dir);

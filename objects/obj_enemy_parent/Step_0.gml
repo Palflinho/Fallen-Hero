@@ -54,7 +54,24 @@ if (_p_inst != noone && _p_inst.invisible) {
 if (abs(knockback_vx) > 1 || abs(knockback_vy) > 1) {
     var _on_ice = fh_place_on_ice(x, y);
     var _eff_friction = _on_ice ? 0.985 : knockback_friction;
+    var _old_x = x;
+    var _old_y = y;
     fh_move_and_collide(knockback_vx * _dt, knockback_vy * _dt);
+    // Mage: 37 Espinhos Telúricos (impacto em paredes causa dano dobrado)
+    if (point_distance(_old_x, _old_y, x, y) < point_distance(0, 0, knockback_vx * _dt, knockback_vy * _dt) * 0.3) {
+        var _p = instance_find(obj_player, 0);
+        if (instance_exists(_p) && variable_instance_exists(_p, "synth_geo_espinhos_teluricos") && _p.synth_geo_espinhos_teluricos > 0) {
+            enemy_take_damage(id, 14, x, y, 0);
+            fx_spawn_sparks(x, y, make_colour_rgb(160, 110, 60), 8);
+            fx_spawn_damage_popup(x, y - 16, "ESPINHOS TELURICOS!", true, make_colour_rgb(200, 150, 80));
+        }
+        // Archer: 33 Flecha Arpão de Pedra (empurrão até parede causa atordoamento de 1s)
+        if (instance_exists(_p) && variable_instance_exists(_p, "synth_archer_terra_flecha_arpao_pedra") && _p.synth_archer_terra_flecha_arpao_pedra > 0) {
+            enemy_apply_slow(id, 0.0, 1.0);
+            fx_spawn_damage_popup(x, y - 18, "ATORDOADO!", true, make_colour_rgb(180, 150, 90));
+            fx_spawn_sparks(x, y, make_colour_rgb(180, 150, 90), 6);
+        }
+    }
     knockback_vx *= power(_eff_friction, _dt * 60);
     knockback_vy *= power(_eff_friction, _dt * 60);
     if (_on_ice && random(1) < 0.25) {
@@ -81,7 +98,15 @@ if (hp_lag > hp) {
 
 if (poison_active) {
     poison_duration -= _dt;
-    poison_tick_timer -= _dt;
+    var _tick_mult = 1.0;
+    var _p = instance_find(obj_player, 0);
+    // Assassin: 47 Gelo Venenoso (Monstros congelados sofrem dano de veneno 3x mais rápido sem descongelar)
+    if (_p != noone && variable_instance_exists(_p, "synth_assassin_gelo_venenoso") && _p.synth_assassin_gelo_venenoso > 0) {
+        if (slow_active && slow_multiplier <= 0.5) {
+            _tick_mult = 3.0;
+        }
+    }
+    poison_tick_timer -= _dt * _tick_mult;
     if (poison_tick_timer <= 0) {
         hp -= poison_damage;
         poison_tick_timer = poison_tick_interval;
@@ -89,6 +114,18 @@ if (poison_active) {
         hp_bar_timer = hp_bar_duration;
         fx_spawn_damage_popup(x, y - body_radius, poison_damage, false, c_lime);
         fx_spawn_sparks(x, y, c_lime, 3);
+
+        // Assassin: 38 Veneno Petrificante (Inimigos envenenados acumulam toxina até ficarem petrificados por 2s)
+        if (_p != noone && variable_instance_exists(_p, "synth_assassin_obsid_veneno_petrificante") && _p.synth_assassin_obsid_veneno_petrificante > 0) {
+            if (!variable_instance_exists(id, "petrify_stacks")) petrify_stacks = 0;
+            petrify_stacks++;
+            if (petrify_stacks >= 3) {
+                petrify_stacks = 0;
+                enemy_apply_slow(id, 0.0, 2.0);
+                fx_spawn_damage_popup(x, y - body_radius - 14, "PETRIFICADO!", true, c_gray);
+                fx_spawn_sparks(x, y, c_dkgray, 10);
+            }
+        }
     }
     if (poison_duration <= 0) poison_active = false;
 }
