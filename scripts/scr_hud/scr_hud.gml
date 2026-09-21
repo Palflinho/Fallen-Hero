@@ -627,9 +627,6 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
 }
 
 function hud_draw_game_over(_gw, _gh, death_gold_earned, death_gold_lost, death_gold_kept) {
-        var _gw = display_get_gui_width();
-        var _gh = display_get_gui_height();
-    
         // Fundo escurecido com tom avermelhado
         draw_set_alpha(0.88);
         draw_set_color(make_colour_rgb(18, 10, 14));
@@ -721,9 +718,6 @@ function hud_draw_game_over(_gw, _gh, death_gold_earned, death_gold_lost, death_
 }
 
 function hud_draw_victory(target, _gw, _gh) {
-        var _gw = display_get_gui_width();
-        var _gh = display_get_gui_height();
-    
         draw_set_alpha(0.88);
         draw_set_color(make_colour_rgb(10, 14, 24));
         draw_rectangle(0, 0, _gw, _gh, false);
@@ -813,9 +807,6 @@ function hud_draw_victory(target, _gw, _gh) {
 }
 
 function hud_draw_chest_reward(_hud, target, _gw, _gh) {
-        var _gw = display_get_gui_width();
-        var _gh = display_get_gui_height();
-    
         // Fundo escurecido semitransparente permitindo ver o jogo congelado
         draw_set_alpha(0.86);
         draw_set_color(make_colour_rgb(10, 14, 22));
@@ -1049,9 +1040,6 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
 }
 
 function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
-        var _gw = display_get_gui_width();
-        var _gh = display_get_gui_height();
-    
         // Fundo semitransparente escurecido permitindo vislumbre do jogo pausado
         draw_set_alpha(0.86);
         draw_set_color(make_colour_rgb(10, 14, 22));
