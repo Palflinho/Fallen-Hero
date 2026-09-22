@@ -126,7 +126,8 @@ for (var _s = 0; _s < max_equipped_slots; _s++) {
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
         draw_set_colour(c_white);
-        draw_text(_sbx + 48, _sby + 10, _t_def.name);
+        var _slot_name = variable_struct_exists(_t_def, "label") ? _t_def.label : (variable_struct_exists(_t_def, "name") ? _t_def.name : "Talento");
+        draw_text(_sbx + 48, _sby + 10, _slot_name);
 
         draw_set_colour(make_colour_rgb(130, 190, 220));
         draw_text(_sbx + 48, _sby + 28, "[Slot " + string(_s + 1) + "] Clique p/ Remover");
@@ -226,12 +227,14 @@ if (_n_talents == 0) {
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
         draw_set_colour(_is_selected ? c_white : (_is_equipped ? make_colour_rgb(200, 255, 220) : make_colour_rgb(210, 215, 225)));
-        draw_text(_cx + 44, _cy + 8, _t.name);
+        var _t_name = variable_struct_exists(_t, "label") ? _t.label : (variable_struct_exists(_t, "name") ? _t.name : "Talento");
+        draw_text(_cx + 44, _cy + 8, _t_name);
 
-        // Ramo / Afinidade
+        // Afinidade
         draw_set_colour(make_colour_rgb(130, 155, 185));
-        var _branch_txt = variable_struct_exists(_t, "branch") ? _t.branch : "Talento";
-        draw_text(_cx + 44, _cy + 26, _branch_txt);
+        var _aff_raw = variable_struct_exists(_t, "affinity") ? _t.affinity : "none";
+        var _aff_txt = (_aff_raw == "water" ? "Agua" : (_aff_raw == "fire" ? "Fogo" : (_aff_raw == "wind" ? "Vento" : (_aff_raw == "earth" ? "Terra" : "Neutro"))));
+        draw_text(_cx + 44, _cy + 26, "Afinidade: " + _aff_txt);
 
         // Selo de Equipado
         if (_is_equipped) {
@@ -269,21 +272,26 @@ if (_n_talents > 0 && talent_cursor < _n_talents) {
 
     draw_talent_icon(talent_get_icon_type(_cur_t), _ibx + 30, _iby + 30, 36, c_yellow);
 
-    // Título e Ramo
+    // Título e Afinidade
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_set_colour(make_colour_rgb(255, 220, 80));
-    draw_text(_det_x + 86, _det_y + 12, _cur_t.name);
+    var _cur_name = variable_struct_exists(_cur_t, "label") ? _cur_t.label : (variable_struct_exists(_cur_t, "name") ? _cur_t.name : "Talento");
+    draw_text(_det_x + 86, _det_y + 12, _cur_name);
 
-    var _cur_branch = variable_struct_exists(_cur_t, "branch") ? _cur_t.branch : "Talento";
-    var _cur_aff = variable_struct_exists(_cur_t, "affinity") ? string_upper(_cur_t.affinity) : "NEUTRO";
+    var _cur_aff_raw = variable_struct_exists(_cur_t, "affinity") ? _cur_t.affinity : "none";
+    var _cur_aff_txt = (_cur_aff_raw == "water" ? "Agua" : (_cur_aff_raw == "fire" ? "Fogo" : (_cur_aff_raw == "wind" ? "Vento" : (_cur_aff_raw == "earth" ? "Terra" : "Neutro"))));
     draw_set_colour(make_colour_rgb(100, 200, 255));
-    draw_text(_det_x + 86, _det_y + 30, "Ramo: " + _cur_branch + "  |  Afinidade: " + _cur_aff);
+    draw_text(_det_x + 86, _det_y + 30, "Afinidade: " + _cur_aff_txt);
 
     // Descrição Completa
     draw_set_colour(make_colour_rgb(220, 230, 240));
-    var _desc = variable_struct_exists(_cur_t, "description") ? _cur_t.description : "";
-    draw_text_ext(_det_x + 86, _det_y + 54, _desc, 18, _det_w - 100);
+    var _desc = variable_struct_exists(_cur_t, "desc_value") ? _cur_t.desc_value : (variable_struct_exists(_cur_t, "description") ? _cur_t.description : "");
+    if (variable_struct_exists(_cur_t, "desc_flavor") && _cur_t.desc_flavor != "") {
+        _desc = _desc + " (" + _cur_t.desc_flavor + ")";
+    }
+    draw_text_ext(_det_x + 86, _det_y + 50, _desc, 15, _det_w - 100);
+
 
     // Status de Equipamento
     var _cur_is_eq = false;
