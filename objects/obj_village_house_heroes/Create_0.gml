@@ -41,14 +41,11 @@ function refresh_talents_list() {
 
     if (element_is_unlocked(_elem, _char)) {
         var _unlocked = [];
-        var _all_ids = meta_get_talents_for_subarchetype(_char, _elem);
-        for (var _i = 0; _i < array_length(_all_ids); _i++) {
-            var _tid = _all_ids[_i];
-            if (meta_is_talent_unlocked(_tid)) {
-                var _t_def = talent_get_def(_tid);
-                if (!is_undefined(_t_def)) {
-                    array_push(_unlocked, _t_def);
-                }
+        var _all = get_talents_for_character_and_affinity(_char, _elem);
+        for (var _i = 0; _i < array_length(_all); _i++) {
+            var _t = _all[_i];
+            if (talent_is_unlocked(_t.id)) {
+                array_push(_unlocked, _t);
             }
         }
         talent_select_list = _unlocked;
