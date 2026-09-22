@@ -27,6 +27,21 @@ if (_ready) {
 
     var _player = instance_find(obj_player, 0);
     if (_player != noone && point_distance(x, y, _player.x, _player.y) <= radius + _player.body_radius) {
+        // Retorno triunfante à Vila com 100% do ouro
+        if (reward_type == "village_return" || target_room == asset_get_index("room_village")) {
+            ensure_meta_loaded();
+            save_meta();
+            if (variable_global_exists("run_gold_earned") && global.run_gold_earned > 0) {
+                fx_spawn_damage_popup(_player.x, _player.y - 24, "+" + string(global.run_gold_earned) + " OURO SALVO!", false, c_yellow);
+                global.run_gold_earned = 0;
+            }
+            clear_save();
+            global.inrun_saved_stats = false;
+            sfx_play("magic", 0.05, 0.8);
+            room_goto(room_village);
+            exit;
+        }
+
         // Concede a recompensa do portal estilo Hades ao cruzar
         if (reward_type == "gold") {
             player_gain_gold(reward_value);
@@ -98,28 +113,28 @@ if (_ready) {
             else if (global.run_biome == "wind") _dest = asset_get_index("Room6");
             else if (global.run_biome == "earth") _dest = asset_get_index("Room8");
         }
-        // Sala 6 (Chefe da Fase) -> Proximo Bioma Sala 1 ou Vitoria
+        // Sala 6 (Chefe da Fase) -> Proximo Bioma Sala 1 ou Retorno à Vila
         else if (room == Room2) {
             global.run_biome = "fire";
             global.run_room_step = 1;
             global.temple_arena_layout = irandom(3);
             global.temple_arena_biome = "fire";
-            _dest = asset_get_index("Room3");
+            _dest = (target_room != noone) ? target_room : asset_get_index("Room3");
         } else if (room == Room4) {
             global.run_biome = "wind";
             global.run_room_step = 1;
             global.temple_arena_layout = irandom(3);
             global.temple_arena_biome = "wind";
-            _dest = asset_get_index("Room5");
+            _dest = (target_room != noone) ? target_room : asset_get_index("Room5");
         } else if (room == Room6) {
             global.run_biome = "earth";
             global.run_room_step = 1;
             global.temple_arena_layout = irandom(3);
             global.temple_arena_biome = "earth";
-            _dest = asset_get_index("Room7");
+            _dest = (target_room != noone) ? target_room : asset_get_index("Room7");
         } else if (room == Room8) {
             // Conclusão da Fase 4 (Terra): Retorna à Vila Subterrânea para acessar o Templo 5
-            _dest = asset_get_index("room_village");
+            _dest = (target_room != noone) ? target_room : asset_get_index("room_village");
         } else if (room == asset_get_index("room_temple5_shop")) {
             global.run_biome = "human";
             global.run_room_step = 2;

@@ -176,51 +176,145 @@ if (hp <= 0) {
         reclaim_element("water");
         adaptive_ai_record_boss_defeat("water", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "water");
+
+        with (obj_stage_gate) instance_destroy();
+        with (obj_stage_gate2) instance_destroy();
+
+        // 1. Portal de Retorno à Vila (Esquerda)
+        var _g_ret = instance_create_layer(x - 110, y, layer, obj_stage_gate);
+        _g_ret.trigger_mode = "always_open";
+        _g_ret.target_room = asset_get_index("room_village");
+        _g_ret.reward_type = "village_return";
+        _g_ret.gate_label = "[RETORNO] Vila Subterranea (100% Ouro)";
+        _g_ret.gate_colour = c_yellow;
+
+        // 2. Portal de Avanço para o Próximo Templo (Direita)
+        var _g_adv = instance_create_layer(x + 110, y, layer, obj_stage_gate);
+        _g_adv.trigger_mode = "always_open";
+        _g_adv.target_room = asset_get_index("Room3");
+        _g_adv.reward_type = "heal";
+        _g_adv.gate_label = "[AVANCO] Templo do Fogo (Cura 40% HP)";
+        _g_adv.gate_colour = make_colour_rgb(255, 110, 60);
+
+        with (obj_hud) {
+            room_banner_title = "✦ GENERAL GLACIAL DERROTADO! ✦";
+            room_banner_sub = "Escolha seu destino nos portais da arena!";
+            room_banner_color = c_yellow;
+            room_banner_timer = 3.5;
+            room_banner_flash = 0.45;
+        }
+        sfx_play("victory", 0.08, 1.0);
+        trigger_camera_shake(6);
     } else if (object_index == obj_boss2) {
         element_unlock("fire", _killer_class);
         reclaim_element("fire");
         adaptive_ai_record_boss_defeat("fire", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "fire");
-        // Após derrotar General Magma (Fim do Bioma Fogo), abre portal para Fase do Vento (Room5)
-        var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
-        _gate.trigger_mode = "clear_mobs";
-        _gate.target_room = asset_get_index("Room5");
-        _gate.reward_type = "heal";
-        _gate.gate_label = "Avanco: Ruinas dos Ventos (Fase 3 - Cura 40% HP)";
-        _gate.gate_colour = make_colour_rgb(180, 240, 255);
+
+        with (obj_stage_gate) instance_destroy();
+        with (obj_stage_gate2) instance_destroy();
+
+        // 1. Portal de Retorno à Vila (Esquerda)
+        var _g_ret = instance_create_layer(x - 110, y, layer, obj_stage_gate);
+        _g_ret.trigger_mode = "always_open";
+        _g_ret.target_room = asset_get_index("room_village");
+        _g_ret.reward_type = "village_return";
+        _g_ret.gate_label = "[RETORNO] Vila Subterranea (100% Ouro)";
+        _g_ret.gate_colour = c_yellow;
+
+        // 2. Portal de Avanço para o Próximo Templo (Direita)
+        var _g_adv = instance_create_layer(x + 110, y, layer, obj_stage_gate);
+        _g_adv.trigger_mode = "always_open";
+        _g_adv.target_room = asset_get_index("Room5");
+        _g_adv.reward_type = "heal";
+        _g_adv.gate_label = "[AVANCO] Ruinas dos Ventos (Cura 40% HP)";
+        _g_adv.gate_colour = make_colour_rgb(180, 240, 255);
+
+        with (obj_hud) {
+            room_banner_title = "✦ GENERAL MAGMA DERROTADO! ✦";
+            room_banner_sub = "Escolha seu destino nos portais da arena!";
+            room_banner_color = c_yellow;
+            room_banner_timer = 3.5;
+            room_banner_flash = 0.45;
+        }
+        sfx_play("victory", 0.08, 1.0);
+        trigger_camera_shake(6);
     } else if (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) {
         element_unlock("wind", _killer_class);
         reclaim_element("wind");
         adaptive_ai_record_boss_defeat("wind", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "wind");
-        // Apos derrotar General Zephyrus (Sala 6), abre portal para Fase da Terra (Room7)
-        var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
-        _gate.trigger_mode = "clear_mobs";
-        _gate.target_room = asset_get_index("Room7");
-        _gate.reward_type = "heal";
-        _gate.reward_value = 0;
-        _gate.gate_label = "Avanco: Santuario da Terra (Fase 4 - Cura 40% HP)";
-        _gate.gate_colour = make_colour_rgb(120, 220, 100);
+
+        with (obj_stage_gate) instance_destroy();
+        with (obj_stage_gate2) instance_destroy();
+
+        // 1. Portal de Retorno à Vila (Esquerda)
+        var _g_ret = instance_create_layer(x - 110, y, layer, obj_stage_gate);
+        _g_ret.trigger_mode = "always_open";
+        _g_ret.target_room = asset_get_index("room_village");
+        _g_ret.reward_type = "village_return";
+        _g_ret.gate_label = "[RETORNO] Vila Subterranea (100% Ouro)";
+        _g_ret.gate_colour = c_yellow;
+
+        // 2. Portal de Avanço para o Próximo Templo (Direita)
+        var _g_adv = instance_create_layer(x + 110, y, layer, obj_stage_gate);
+        _g_adv.trigger_mode = "always_open";
+        _g_adv.target_room = asset_get_index("Room7");
+        _g_adv.reward_type = "heal";
+        _g_adv.gate_label = "[AVANCO] Santuario da Terra (Cura 40% HP)";
+        _g_adv.gate_colour = make_colour_rgb(120, 220, 100);
+
+        with (obj_hud) {
+            room_banner_title = "✦ GENERAL ZEPHYRUS DERROTADO! ✦";
+            room_banner_sub = "Escolha seu destino nos portais da arena!";
+            room_banner_color = c_yellow;
+            room_banner_timer = 3.5;
+            room_banner_flash = 0.45;
+        }
+        sfx_play("victory", 0.08, 1.0);
+        trigger_camera_shake(6);
     } else if (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) {
         element_unlock("earth", _killer_class);
         reclaim_element("earth");
         mastery_unlock(_killer_class, "earth");
         adaptive_ai_record_boss_defeat("earth", _killer_class);
         fx_spawn_element_unlocked_popup(x, y, "earth");
-        // Derrota do Chefe Titã Monólito: abre portal de retorno à Vila Subterrânea para acessar o Templo 5
-        var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
-        _gate.trigger_mode = "clear_mobs";
-        _gate.target_room = asset_get_index("room_village");
-        _gate.reward_type = "heal";
-        _gate.gate_label = "Retorno Ancestral: Vila Subterranea (Abrir Templo 5)";
-        _gate.gate_colour = c_yellow;
+
+        with (obj_stage_gate) instance_destroy();
+        with (obj_stage_gate2) instance_destroy();
+
+        // 1. Portal de Retorno à Vila (Esquerda)
+        var _g_ret = instance_create_layer(x - 110, y, layer, obj_stage_gate);
+        _g_ret.trigger_mode = "always_open";
+        _g_ret.target_room = asset_get_index("room_village");
+        _g_ret.reward_type = "village_return";
+        _g_ret.gate_label = "[RETORNO] Vila Subterranea (100% Ouro)";
+        _g_ret.gate_colour = c_yellow;
+
+        // 2. Portal Direto para o Templo 5 (O Humano) se tudo estiver conquistado
+        var _g_adv = instance_create_layer(x + 110, y, layer, obj_stage_gate);
+        _g_adv.trigger_mode = "always_open";
+        _g_adv.target_room = asset_get_index("room_temple5_shop");
+        _g_adv.reward_type = "heal";
+        _g_adv.gate_label = "[ORBITA] Santuario Humano (Templo 5)";
+        _g_adv.gate_colour = make_colour_rgb(255, 230, 120);
+
+        with (obj_hud) {
+            room_banner_title = "✦ TITA MONOLITO DERROTADO! ✦";
+            room_banner_sub = "As 4 Essencias foram reunidas!";
+            room_banner_color = c_yellow;
+            room_banner_timer = 3.5;
+            room_banner_flash = 0.45;
+        }
+        sfx_play("victory", 0.08, 1.0);
+        trigger_camera_shake(6);
     } else if (object_exists(asset_get_index("obj_boss_human")) && object_index == asset_get_index("obj_boss_human")) {
         // Conquista final: O Salvador foi vencido!
         global.run_victory = true;
         sfx_play("victory", 0.08, 1.0);
         trigger_camera_shake(8);
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
-        _gate.trigger_mode = "clear_mobs";
+        _gate.trigger_mode = "always_open";
         _gate.reward_type = "victory";
         _gate.gate_label = "TRIUNFO SUPREMO: Concluir Expedicao (Vitoria)";
         _gate.gate_colour = c_yellow;

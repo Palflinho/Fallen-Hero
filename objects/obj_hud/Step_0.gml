@@ -70,6 +70,51 @@ if (!boss_room && !mob_clear_chest_spawned && instance_number(obj_enemy_parent) 
     mob_clear_chest_spawned = true;
 }
 
+// -------------------------------------------------------------------------
+// Banner e Flash Sensorial: "Sala Conquistada" / "Portal Aberto"
+// -------------------------------------------------------------------------
+var _dt_hud = delta_time / 1000000;
+if (room_banner_timer > 0) room_banner_timer -= _dt_hud;
+if (room_banner_flash > 0) room_banner_flash -= _dt_hud;
+
+if (room != room_village && room != room_title && room != room_save_slots) {
+    // 1. Salas com Monstros
+    if (instance_number(obj_enemy_parent) > 0) {
+        room_had_enemies = true;
+    }
+
+    if (room_had_enemies && !room_cleared_event_done && instance_number(obj_enemy_parent) == 0) {
+        room_cleared_event_done = true;
+        if (room == asset_get_index("room_arena")) {
+            room_banner_title = "✦ ARENA CONQUISTADA! ✦";
+            room_banner_sub = "O bau do campeao e o portal foram liberados!";
+            room_banner_color = make_colour_rgb(255, 220, 80);
+            room_banner_timer = 3.0;
+            room_banner_flash = 0.35;
+            sfx_play("magic", 0.05, 1.25);
+        } else if (!boss_room) {
+            room_banner_title = "✦ SALA CONQUISTADA! ✦";
+            room_banner_sub = "O caminho esta desimpedido!";
+            room_banner_color = make_colour_rgb(100, 240, 180);
+            room_banner_timer = 2.4;
+            room_banner_flash = 0.30;
+            sfx_play("magic", 0.05, 1.20);
+        }
+    }
+
+    // 2. Salas com Botões de Destrancamento de Portal
+    if (!buttons_cleared_event_done && instance_number(obj_boss_button) > 0 && global.boss_buttons_pressed >= 4) {
+        buttons_cleared_event_done = true;
+        room_banner_title = "✦ PORTAL ABERTO! ✦";
+        room_banner_sub = "Todos os selos arcanos foram rompidos!";
+        room_banner_color = make_colour_rgb(80, 210, 255);
+        room_banner_timer = 2.8;
+        room_banner_flash = 0.40;
+        sfx_play("door_open");
+        trigger_camera_shake(4);
+    }
+}
+
 if (!game_over && _player != noone && _player.state == "dead") {
     game_over = true;
     input_rumble_stop();
