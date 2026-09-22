@@ -23,7 +23,7 @@ switch (state) {
             var _dir = point_direction(x, y, _player.x, _player.y);
             ai_enemy_move(_dir, move_speed_effective, _dt);
 
-            if (attack_cooldown_timer <= 0 && point_distance(x, y, _player.x, _player.y) <= attack_range) {
+            if (attack_cooldown_timer <= 0 && point_distance(x, y, _player.x, _player.y) <= attack_range && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
                 state = "windup";
                 attack_windup_timer = attack_windup;
             }

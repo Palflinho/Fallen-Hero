@@ -31,7 +31,7 @@ switch (state) {
                 }
             }
 
-            if (stomp_cooldown_timer <= 0 && point_distance(x, y, _player.x, _player.y) <= 260) {
+            if (stomp_cooldown_timer <= 0 && point_distance(x, y, _player.x, _player.y) <= 260 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
                 state = "windup";
                 stomp_windup_timer = stomp_windup;
             }
@@ -68,7 +68,7 @@ switch (state) {
             }
 
             // Dano de impacto direto no solo
-            if (_player != noone && point_distance(x, y, _player.x, _player.y) <= stomp_hit_radius) {
+            if (_player != noone && point_distance(x, y, _player.x, _player.y) <= stomp_hit_radius && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
                 player_take_damage(stomp_damage, "physical");
             }
 

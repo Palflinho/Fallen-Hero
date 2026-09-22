@@ -47,7 +47,7 @@ switch (state) {
             trigger_hitstop(0.06);
         }
 
-        if (_dist <= attack_range && attack_cooldown_timer <= 0) {
+        if (_dist <= attack_range && attack_cooldown_timer <= 0 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "windup";
             attack_windup_timer = attack_windup;
         } else if (_player != noone && _dist < preferred_range - 20) {

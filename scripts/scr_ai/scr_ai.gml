@@ -5,18 +5,18 @@ function ai_detect_player(_vision_range, _vision_angle, _spider_range) {
         return noone;
     }
 
-    // Se ja avistou o jogador e esta em combate, mantem o foco continuo
-    if (variable_instance_exists(id, "has_spotted_player") && has_spotted_player) {
-        return _player;
-    }
-
     var _dist = point_distance(x, y, _player.x, _player.y);
     var _max_range = max(_vision_range, _spider_range);
     if (_dist > _max_range) return noone;
 
-    // Linha de visao bloqueada por paredes (nao enxerga atraves de paredes)
-    if (collision_line(x, y, _player.x, _player.y, obj_wall, false, true) != noone) {
+    // Linha de visao bloqueada por paredes (NUNCA enxerga atraves de paredes!)
+    if (fh_line_intersects_wall(x, y, _player.x, _player.y)) {
         return noone;
+    }
+
+    // Se ja avistou o jogador, esta em combate e NAO ha parede no caminho, mantem o foco visual
+    if (variable_instance_exists(id, "has_spotted_player") && has_spotted_player) {
+        return _player;
     }
 
     var _dir_to_player = point_direction(x, y, _player.x, _player.y);
@@ -34,7 +34,7 @@ function ai_detect_player(_vision_range, _vision_angle, _spider_range) {
     // 2. SENTIDO ARANHA LATERAL: Jogador muito proximo pelos flancos laterais
     // O inimigo pressente a aproximacao lateral (entre o cone frontal e 125 graus),
     // vira rapidamente na direcao do jogador e passa a detecta-lo!
-    // (Passo Silencioso do Assassino: passos incorpóreos não alertam inimigos fora da visão frontal direta!)
+    // (Passo Silencioso do Assassino: passos incorporeos nao alertam inimigos fora da visao frontal direta!)
     var _silent_step = (_player.character_class == "assassin" && variable_instance_exists(_player, "synth_assassin_passo_silencioso") && _player.synth_assassin_passo_silencioso > 0);
     if (!_silent_step && _dist <= _spider_range && _angle_diff > (_vision_angle * 0.5) && _angle_diff <= 125) {
         has_spotted_player = true;
@@ -78,21 +78,22 @@ function ai_enemy_move(_target_dir, _spd, _dt) {
             facing_x = lengthdir_x(1, facing_dir);
             facing_y = lengthdir_y(1, facing_dir);
             
-            // Só cancela a manobra se o caminho direto para o alvo estiver realmente livre por distância segura
+            // So cancela a manobra se o caminho direto para o alvo estiver realmente livre por distancia segura
             var _check_dist = max(_rad * 2.0, _step * 4);
             if (fh_place_free_of_walls(x + lengthdir_x(_check_dist, _target_dir), y + lengthdir_y(_check_dist, _target_dir), _rad)) {
                 var _player = instance_find(obj_player, 0);
-                if (_player != noone && collision_line(x, y, _player.x, _player.y, obj_wall, false, true) == noone) {
+                if (_player != noone && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
                     wall_avoid_timer = 0;
                 }
             }
             return true;
         } else {
-            // Se encontrou quina durante a manobra, ajusta o ângulo mantendo o mesmo sentido de contorno
+            // Se encontrou quina durante a manobra, ajusta o angulo mantendo o mesmo sentido de contorno
             wall_avoid_heading = (wall_avoid_heading + wall_avoid_bias * 45 + 360) % 360;
             wall_avoid_timer = max(wall_avoid_timer, 0.40);
         }
     }
+
     
     // 2. Movimento direto desimpedido na direção desejada
     var _dx = lengthdir_x(_step, _target_dir);

@@ -35,7 +35,7 @@ switch (state) {
         }
 
         var _eff_atk_range = attack_range + (variable_instance_exists(id, "is_enraged") && is_enraged ? 24 : 0);
-        if (_dist <= _eff_atk_range) {
+        if (_dist <= _eff_atk_range && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             if (attack_cooldown_timer <= 0) {
                 state = "windup";
                 attack_windup_timer = attack_windup * (variable_instance_exists(id, "is_enraged") && is_enraged ? 0.70 : 1.0);

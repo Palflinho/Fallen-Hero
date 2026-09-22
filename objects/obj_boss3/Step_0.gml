@@ -55,7 +55,7 @@ switch (state) {
             fh_move_and_collide(lengthdir_x(move_speed * _dt, _dir), lengthdir_y(move_speed * _dt, _dir));
             facing_dir = _dir;
 
-            if (attack_cooldown_timer <= 0 && point_distance(x, y, _player.x, _player.y) <= 360) {
+            if (attack_cooldown_timer <= 0 && point_distance(x, y, _player.x, _player.y) <= 360 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
                 state = "windup";
                 dash_windup_timer = dash_windup;
                 var _pdir = point_direction(x, y, _player.x, _player.y);
@@ -105,7 +105,7 @@ switch (state) {
             fx_spawn_sparks(x, y, make_colour_rgb(200, 245, 255), 2);
         }
 
-        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius) {
+        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             player_take_damage(contact_damage, "physical");
         }
 

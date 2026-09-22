@@ -1,5 +1,5 @@
 // =========================================================================
-// DRAW_64: PORTAL DA FENDA & MODAL DE PREPARAÇÃO DA EXPEDIÇÃO
+// DRAW_64: PORTAL DA FENDA & MODAL DE PREPARAÇÃO DE TALENTOS DA RUN
 // =========================================================================
 
 var _player = instance_find(obj_player, 0);
@@ -50,209 +50,294 @@ if (!modal_open) {
 }
 
 // -------------------------------------------------------------------------
-// 2. MODAL DEDICADO DE SELEÇÃO AO INICIAR A RUN
+// 2. MODAL DEDICADO DE SELEÇÃO DE TALENTOS PARA A RUN
 // -------------------------------------------------------------------------
 
 // Fundo Escurecido Translúcido (Backdrop)
 draw_set_colour(c_black);
-draw_set_alpha(0.82);
+draw_set_alpha(0.84);
 draw_rectangle(0, 0, _gw, _gh, false);
 draw_set_alpha(1.0);
 
 // Painel Central Arcano
 var _mw = min(1040, _gw - 60);
-var _mh = 530;
+var _mh = 540;
 var _mx = round((_gw - _mw) * 0.5);
 var _my = round((_gh - _mh) * 0.5);
 
 // Fundo do Painel
-draw_set_colour(make_colour_rgb(10, 14, 24));
+draw_set_colour(make_colour_rgb(12, 16, 26));
 draw_rectangle(_mx, _my, _mx + _mw, _my + _mh, false);
 
-// Borda Mística / Dimensional
+// Bordas Dimensionais
 draw_set_colour(make_colour_rgb(35, 75, 120));
 draw_rectangle(_mx, _my, _mx + _mw, _my + _mh, true);
 draw_set_colour(make_colour_rgb(80, 190, 255));
-draw_rectangle(_mx + 4, _my + 4, _mx + _mw - 4, _my + _mh - 4, true);
+draw_rectangle(_mx + 3, _my + 3, _mx + _mw - 3, _my + _mh - 3, true);
 
-// Cabeçalho
+// Cabeçalho Principal
 draw_set_font(-1);
 draw_set_halign(fa_center);
 draw_set_valign(fa_top);
 
-draw_set_colour(make_colour_rgb(255, 220, 80));
-draw_text_transformed(_gw * 0.5, _my + 14, "PORTAL DA FENDA - PREPARACAO DA EXPEDICAO", 1.35, 1.35, 0);
+draw_set_colour(make_colour_rgb(255, 220, 100));
+draw_text(_mx + _mw * 0.5, _my + 12, "PORTAL DA FENDA - PREPARACAO DA EXPEDICAO");
 
-draw_set_colour(make_colour_rgb(180, 220, 245));
-draw_text(_gw * 0.5, _my + 38, "Selecione o Campeao e a Afinidade Elemental para descer as catacumbas:");
+var _p_char = variable_global_exists("selected_character") ? global.selected_character : "knight";
+var _p_elem = variable_global_exists("selected_element") ? global.selected_element : "none";
 
-// Divisor Superior
-draw_set_colour(make_colour_rgb(40, 80, 120));
-draw_line(_mx + 20, _my + 58, _mx + _mw - 20, _my + 58);
+var _char_label = (_p_char == "knight" ? "Cavaleiro" : (_p_char == "mage" ? "Mago" : (_p_char == "archer" ? "Arqueiro" : "Assassino")));
+var _elem_label = (_p_elem == "none" ? "Neutro" : (_p_elem == "water" ? "Agua" : (_p_elem == "fire" ? "Fogo" : (_p_elem == "wind" ? "Vento" : "Terra"))));
+
+draw_set_colour(make_colour_rgb(170, 200, 230));
+draw_text(_mx + _mw * 0.5, _my + 32, "Heroi Ativo: " + _char_label + "  |  Afinidade: " + _elem_label + "  (Troque na Casa dos Herois)");
 
 // -------------------------------------------------------------------------
-// Cards das 4 Classes
+// 3. SEÇÃO SUPERIOR: OS 3 SLOTS DE TALENTOS EQUIPADOS DA RUN
 // -------------------------------------------------------------------------
-var _card_y = _my + 70;
-var _card_h = 280;
-var _gap = 16;
-var _card_w = floor((_mw - 60 - 3 * _gap) / 4);
+var _slot_w = 260;
+var _slot_h = 56;
+var _slots_total_w = 3 * _slot_w + 2 * 20;
+var _slots_x0 = _mx + (_mw - _slots_total_w) * 0.5;
+var _slots_y0 = _my + 56;
 
-for (var _i = 0; _i < 4; _i++) {
-    var _cx = _mx + 30 + _i * (_card_w + _gap);
-    var _is_sel = (_i == selected_class_idx);
-    var _c_name = classes[_i];
+for (var _s = 0; _s < max_equipped_slots; _s++) {
+    var _sbx = _slots_x0 + _s * (_slot_w + 20);
+    var _sby = _slots_y0;
 
-    // Clique direto no card
-    if (touch_gui_clicked(_cx, _card_y, _cx + _card_w, _card_y + _card_h)) {
-        selected_class_idx = _i;
-        sfx_play("menu_move");
+    var _has_talent = (_s < array_length(talent_selected_ids));
+    var _t_def = undefined;
+    if (_has_talent) {
+        _t_def = talent_get_def(talent_selected_ids[_s]);
     }
 
-    // Fundo do Card
-    draw_set_colour(_is_sel ? make_colour_rgb(20, 42, 70) : make_colour_rgb(13, 18, 30));
-    draw_rectangle(_cx, _card_y, _cx + _card_w, _card_y + _card_h, false);
+    if (_has_talent && !is_undefined(_t_def)) {
+        // Slot Equipado
+        draw_set_colour(make_colour_rgb(18, 38, 54));
+        draw_rectangle(_sbx, _sby, _sbx + _slot_w, _sby + _slot_h, false);
 
-    // Borda do Card
-    draw_set_colour(_is_sel ? make_colour_rgb(255, 215, 80) : make_colour_rgb(45, 65, 95));
-    draw_rectangle(_cx, _card_y, _cx + _card_w, _card_y + _card_h, true);
-    if (_is_sel) {
-        draw_rectangle(_cx + 2, _card_y + 2, _cx + _card_w - 2, _card_y + _card_h - 2, true);
-    }
+        draw_set_colour(make_colour_rgb(90, 210, 255));
+        draw_rectangle(_sbx, _sby, _sbx + _slot_w, _sby + _slot_h, true);
 
-    // Nome da Classe
-    draw_set_halign(fa_center);
-    draw_set_valign(fa_top);
-    draw_set_colour(_is_sel ? c_yellow : c_white);
-    draw_text_transformed(_cx + _card_w * 0.5, _card_y + 10, class_labels[_i], 1.25, 1.25, 0);
+        // Ícone do Talento
+        draw_talent_icon(talent_get_icon_type(_t_def), _sbx + 24, _sby + _slot_h * 0.5, 24, c_yellow);
 
-    // Retrato Chibi
-    var _chibi_cx = _cx + _card_w * 0.5;
-    var _chibi_cy = _card_y + 98;
-    var _spr = asset_get_index("spr_portrait_" + _c_name);
-    if (_spr != -1 && sprite_exists(_spr)) {
-        var _sw = sprite_get_width(_spr);
-        var _sh = sprite_get_height(_spr);
-        var _max_w = _card_w - 32;
-        var _max_h = 100;
-        var _scale = min(_max_w / max(1, _sw), _max_h / max(1, _sh));
-        draw_sprite_ext(_spr, 0, _chibi_cx, _chibi_cy, _scale, _scale, 0, c_white, 1.0);
+        // Textos do Slot
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        draw_set_colour(c_white);
+        draw_text(_sbx + 48, _sby + 10, _t_def.name);
+
+        draw_set_colour(make_colour_rgb(130, 190, 220));
+        draw_text(_sbx + 48, _sby + 28, "[Slot " + string(_s + 1) + "] Clique p/ Remover");
     } else {
-        draw_set_colour(class_colors[_i]);
-        draw_circle(_chibi_cx, _chibi_cy, 36, false);
-        draw_set_colour(c_black);
-        draw_text(_chibi_cx, _chibi_cy - 8, string_copy(_c_name, 1, 3));
+        // Slot Vazio
+        draw_set_colour(make_colour_rgb(16, 22, 32));
+        draw_rectangle(_sbx, _sby, _sbx + _slot_w, _sby + _slot_h, false);
+
+        draw_set_colour(make_colour_rgb(45, 65, 90));
+        draw_rectangle(_sbx, _sby, _sbx + _slot_w, _sby + _slot_h, true);
+
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_set_colour(make_colour_rgb(120, 140, 170));
+        draw_text(_sbx + _slot_w * 0.5, _sby + _slot_h * 0.5 - 6, "[ Slot " + string(_s + 1) + " Vazio ]");
+        draw_set_colour(make_colour_rgb(80, 100, 130));
+        draw_text(_sbx + _slot_w * 0.5, _sby + _slot_h * 0.5 + 12, "(Selecione na lista abaixo)");
+    }
+}
+
+// Divisor Sutil
+draw_set_colour(make_colour_rgb(35, 60, 95));
+draw_line(_mx + 30, _my + 126, _mx + _mw - 30, _my + 126);
+
+// -------------------------------------------------------------------------
+// 4. SEÇÃO CENTRAL: GRADE DE TALENTOS DESBLOQUEADOS (3x3)
+// -------------------------------------------------------------------------
+var _cols = 3;
+var _card_w = 270;
+var _card_h = 50;
+var _cgap_x = 16;
+var _cgap_y = 10;
+var _grid_x0 = _mx + (_mw - (_cols * _card_w + (_cols - 1) * _cgap_x)) * 0.5;
+var _grid_y0 = _my + 140;
+
+var _n_talents = array_length(talent_select_list);
+
+if (_n_talents == 0) {
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_colour(make_colour_rgb(220, 180, 100));
+    draw_text(_mx + _mw * 0.5, _grid_y0 + 50, "Nenhum talento desbloqueado para esta afinidade!");
+    draw_set_colour(make_colour_rgb(160, 175, 195));
+    draw_text(_mx + _mw * 0.5, _grid_y0 + 74, "Desbloqueie talentos permanentes no Emporio da Fenda (Loja) na Vila com Ouro.");
+    draw_text(_mx + _mw * 0.5, _grid_y0 + 96, "Voce ainda pode descer as catacumbas e encontrar talentos em baus durante a run!");
+} else {
+    var _visible_start = scroll_row * _cols;
+    var _visible_end = min(_n_talents, _visible_start + 9);
+
+    for (var _i = _visible_start; _i < _visible_end; _i++) {
+        var _local_idx = _i - _visible_start;
+        var _col = _local_idx mod _cols;
+        var _r = floor(_local_idx / _cols);
+        var _cx = _grid_x0 + _col * (_card_w + _cgap_x);
+        var _cy = _grid_y0 + _r * (_card_h + _cgap_y);
+
+        var _t = talent_select_list[_i];
+        var _is_selected = (_i == talent_cursor);
+
+        // Verifica se está equipado
+        var _is_equipped = false;
+        for (var _eq = 0; _eq < array_length(talent_selected_ids); _eq++) {
+            if (talent_selected_ids[_eq] == _t.id) {
+                _is_equipped = true;
+                break;
+            }
+        }
+
+        // Fundo do Card
+        if (_is_equipped) {
+            draw_set_colour(make_colour_rgb(16, 42, 50));
+        } else if (_is_selected) {
+            draw_set_colour(make_colour_rgb(24, 34, 52));
+        } else {
+            draw_set_colour(make_colour_rgb(16, 22, 34));
+        }
+        draw_rectangle(_cx, _cy, _cx + _card_w, _cy + _card_h, false);
+
+        // Borda do Card
+        if (_is_selected) {
+            draw_set_colour(make_colour_rgb(255, 220, 80));
+            draw_rectangle(_cx, _cy, _cx + _card_w, _cy + _card_h, true);
+            draw_set_colour(make_colour_rgb(80, 200, 255));
+            draw_rectangle(_cx + 1, _cy + 1, _cx + _card_w - 1, _cy + _card_h - 1, true);
+        } else if (_is_equipped) {
+            draw_set_colour(make_colour_rgb(70, 210, 180));
+            draw_rectangle(_cx, _cy, _cx + _card_w, _cy + _card_h, true);
+        } else {
+            draw_set_colour(make_colour_rgb(40, 56, 80));
+            draw_rectangle(_cx, _cy, _cx + _card_w, _cy + _card_h, true);
+        }
+
+        // Ícone
+        draw_talent_icon(talent_get_icon_type(_t), _cx + 22, _cy + _card_h * 0.5, 20, _is_equipped ? c_lime : c_yellow);
+
+        // Nome do Talento
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        draw_set_colour(_is_selected ? c_white : (_is_equipped ? make_colour_rgb(200, 255, 220) : make_colour_rgb(210, 215, 225)));
+        draw_text(_cx + 44, _cy + 8, _t.name);
+
+        // Ramo / Afinidade
+        draw_set_colour(make_colour_rgb(130, 155, 185));
+        var _branch_txt = variable_struct_exists(_t, "branch") ? _t.branch : "Talento";
+        draw_text(_cx + 44, _cy + 26, _branch_txt);
+
+        // Selo de Equipado
+        if (_is_equipped) {
+            draw_set_halign(fa_right);
+            draw_set_colour(make_colour_rgb(70, 230, 150));
+            draw_text(_cx + _card_w - 8, _cy + 26, "✓ EQUIPADO");
+        }
+    }
+}
+
+// -------------------------------------------------------------------------
+// 5. SEÇÃO INFERIOR: PAINEL DE DETALHES DO TALENTO EM FOCO
+// -------------------------------------------------------------------------
+var _det_y = _my + 328;
+var _det_h = 138;
+var _det_w = _mw - 60;
+var _det_x = _mx + 30;
+
+draw_set_colour(make_colour_rgb(10, 15, 25));
+draw_rectangle(_det_x, _det_y, _det_x + _det_w, _det_y + _det_h, false);
+
+draw_set_colour(make_colour_rgb(38, 65, 100));
+draw_rectangle(_det_x, _det_y, _det_x + _det_w, _det_y + _det_h, true);
+
+if (_n_talents > 0 && talent_cursor < _n_talents) {
+    var _cur_t = talent_select_list[talent_cursor];
+
+    // Caixa do Ícone Grande
+    var _ibx = _det_x + 14;
+    var _iby = _det_y + 14;
+    draw_set_colour(make_colour_rgb(18, 28, 44));
+    draw_rectangle(_ibx, _iby, _ibx + 60, _iby + 60, false);
+    draw_set_colour(make_colour_rgb(60, 120, 180));
+    draw_rectangle(_ibx, _iby, _ibx + 60, _iby + 60, true);
+
+    draw_talent_icon(talent_get_icon_type(_cur_t), _ibx + 30, _iby + 30, 36, c_yellow);
+
+    // Título e Ramo
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_colour(make_colour_rgb(255, 220, 80));
+    draw_text(_det_x + 86, _det_y + 12, _cur_t.name);
+
+    var _cur_branch = variable_struct_exists(_cur_t, "branch") ? _cur_t.branch : "Talento";
+    var _cur_aff = variable_struct_exists(_cur_t, "affinity") ? string_upper(_cur_t.affinity) : "NEUTRO";
+    draw_set_colour(make_colour_rgb(100, 200, 255));
+    draw_text(_det_x + 86, _det_y + 30, "Ramo: " + _cur_branch + "  |  Afinidade: " + _cur_aff);
+
+    // Descrição Completa
+    draw_set_colour(make_colour_rgb(220, 230, 240));
+    var _desc = variable_struct_exists(_cur_t, "description") ? _cur_t.description : "";
+    draw_text_ext(_det_x + 86, _det_y + 54, _desc, 18, _det_w - 100);
+
+    // Status de Equipamento
+    var _cur_is_eq = false;
+    for (var _k = 0; _k < array_length(talent_selected_ids); _k++) {
+        if (talent_selected_ids[_k] == _cur_t.id) { _cur_is_eq = true; break; }
     }
 
-    // Divisor interno
-    draw_set_colour(make_colour_rgb(35, 60, 90));
-    draw_line(_cx + 10, _card_y + 155, _cx + _card_w - 10, _card_y + 155);
-
-    // Arma e Função
-    draw_set_colour(make_colour_rgb(255, 205, 90));
-    draw_text(_cx + _card_w * 0.5, _card_y + 162, class_weapons[_i]);
-
-    draw_set_colour(make_colour_rgb(130, 210, 255));
-    draw_text(_cx + _card_w * 0.5, _card_y + 180, class_roles[_i]);
-
-    // Descrição
-    draw_set_colour(make_colour_rgb(170, 190, 215));
-    draw_text_ext(_cx + _card_w * 0.5, _card_y + 204, class_subtitles[_i], 14, _card_w - 16);
-
-    // Distintivo de Seleção
-    draw_set_colour(_is_sel ? c_lime : make_colour_rgb(90, 110, 135));
-    draw_text(_cx + _card_w * 0.5, _card_y + 258, _is_sel ? "[ SELECIONADO ]" : "[ Clique p/ Escolher ]");
+    draw_set_halign(fa_right);
+    if (_cur_is_eq) {
+        draw_set_colour(make_colour_rgb(80, 255, 170));
+        draw_text(_det_x + _det_w - 16, _det_y + 14, "[✓ TALENTO EQUIPADO]");
+    } else {
+        draw_set_colour(make_colour_rgb(140, 180, 220));
+        draw_text(_det_x + _det_w - 16, _det_y + 14, "[Pressione ESPACO para Equipar]");
+    }
 }
 
 // -------------------------------------------------------------------------
-// Seletor de Afinidade Elemental
+// 6. RODAPÉ E BOTÕES DE AÇÃO
 // -------------------------------------------------------------------------
-var _cur_char = classes[selected_class_idx];
-var _cur_elem = elements[selected_element_idx];
-var _elem_unlocked = element_is_unlocked(_cur_elem, _cur_char);
-var _bar_y = _card_y + _card_h + 14;
-var _bar_h = 60;
 
-draw_set_colour(make_colour_rgb(12, 18, 30));
-draw_rectangle(_mx + 30, _bar_y, _mx + _mw - 30, _bar_y + _bar_h, false);
-draw_set_colour(element_colors[selected_element_idx]);
-draw_rectangle(_mx + 30, _bar_y, _mx + _mw - 30, _bar_y + _bar_h, true);
-
-// Setas clicáveis
-if (touch_gui_clicked(_mx + 35, _bar_y + 6, _mx + 95, _bar_y + _bar_h - 6)) {
-    selected_element_idx = (selected_element_idx - 1 + array_length(elements)) mod array_length(elements);
-    sfx_play("menu_move");
-}
-if (touch_gui_clicked(_mx + _mw - 95, _bar_y + 6, _mx + _mw - 35, _bar_y + _bar_h - 6)) {
-    selected_element_idx = (selected_element_idx + 1) mod array_length(elements);
-    sfx_play("menu_move");
-}
-
-draw_set_halign(fa_center);
-draw_set_valign(fa_middle);
-draw_set_colour(c_yellow);
-draw_text(_mx + 65, _bar_y + _bar_h * 0.5, "< [Q]");
-draw_text(_mx + _mw - 65, _bar_y + _bar_h * 0.5, "[E] >");
-
-var _status_txt = _elem_unlocked ? "[LIBERADO]" : "[BLOQUEADO - Conquiste na Masmorra]";
-var _status_col = _elem_unlocked ? c_lime : make_colour_rgb(245, 85, 85);
-var _arch_label = get_hero_archetype_label(_cur_char, _cur_elem);
-
-draw_set_valign(fa_top);
-draw_set_colour(c_white);
-draw_text(_gw * 0.5, _bar_y + 10, "Afinidade Elemental: " + element_labels[selected_element_idx] + "  -  Arquetipo: " + _arch_label);
-
-draw_set_colour(_status_col);
-draw_text(_gw * 0.5, _bar_y + 34, _status_txt);
-
-// -------------------------------------------------------------------------
-// Rodapé com Ações de Confirmação & Alertas
-// -------------------------------------------------------------------------
+// Aviso flutuante
 if (notice_timer > 0 && notice_text != "") {
     draw_set_halign(fa_center);
     draw_set_valign(fa_top);
-    draw_set_colour(make_colour_rgb(255, 90, 90));
-    draw_text(_gw * 0.5, _bar_y + _bar_h + 10, notice_text);
+    draw_set_colour(make_colour_rgb(255, 120, 80));
+    draw_text(_mx + _mw * 0.5, _my + _mh - 62, notice_text);
 }
 
-var _btn_y = _my + _mh - 56;
-var _btn_h = 42;
+// Botão Central de Ação: "Descer às Catacumbas!"
+var _btn_w = 320;
+var _btn_h = 38;
+var _btn_x = _mx + (_mw - _btn_w) * 0.5;
+var _btn_y = _my + _mh - 46;
 
-// Botão Iniciar Expedição
-var _btn_c_w = 280;
-var _btn_c_x = _gw * 0.5 - _btn_c_w - 15;
-var _c_hover = touch_gui_clicked(_btn_c_x, _btn_y, _btn_c_x + _btn_c_w, _btn_y + _btn_h);
-
-draw_set_colour(_elem_unlocked ? make_colour_rgb(20, 75, 45) : make_colour_rgb(50, 50, 50));
-draw_rectangle(_btn_c_x, _btn_y, _btn_c_x + _btn_c_w, _btn_y + _btn_h, false);
-draw_set_colour(_elem_unlocked ? c_lime : c_gray);
-draw_rectangle(_btn_c_x, _btn_y, _btn_c_x + _btn_c_w, _btn_y + _btn_h, true);
+draw_set_colour(make_colour_rgb(30, 60, 40));
+draw_rectangle(_btn_x, _btn_y, _btn_x + _btn_w, _btn_y + _btn_h, false);
+draw_set_colour(make_colour_rgb(90, 220, 120));
+draw_rectangle(_btn_x, _btn_y, _btn_x + _btn_w, _btn_y + _btn_h, true);
 
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
-draw_set_colour(_elem_unlocked ? c_white : c_gray);
-draw_text(_btn_c_x + _btn_c_w * 0.5, _btn_y + _btn_h * 0.5, "[Z / Enter] Descer as Catacumbas!");
+draw_set_colour(make_colour_rgb(230, 255, 230));
+draw_text(_btn_x + _btn_w * 0.5, _btn_y + _btn_h * 0.5, "[Z / Enter] Descer as Catacumbas!");
 
-// Botão Permanecer na Vila
-var _btn_x_w = 180;
-var _btn_x_x = _gw * 0.5 + 15;
-var _x_hover = touch_gui_clicked(_btn_x_x, _btn_y, _btn_x_x + _btn_x_w, _btn_y + _btn_h);
+// Botão / Dica Esquerda: Equipar / Desequipar
+draw_set_halign(fa_left);
+draw_set_colour(make_colour_rgb(160, 190, 220));
+draw_text(_mx + 30, _btn_y + _btn_h * 0.5, "[Espaco / A] Equipar / Desequipar");
 
-draw_set_colour(make_colour_rgb(45, 20, 24));
-draw_rectangle(_btn_x_x, _btn_y, _btn_x_x + _btn_x_w, _btn_y + _btn_h, false);
-draw_set_colour(make_colour_rgb(220, 75, 75));
-draw_rectangle(_btn_x_x, _btn_y, _btn_x_x + _btn_x_w, _btn_y + _btn_h, true);
-
-draw_set_colour(c_white);
-draw_text(_btn_x_x + _btn_x_w * 0.5, _btn_y + _btn_h * 0.5, "[Esc] Ficar na Vila");
-
-// Eventos de clique nos botões
-if (_c_hover) {
-    start_expedition();
-}
-if (_x_hover) {
-    close_portal_modal();
-}
+// Botão / Dica Direita: Ficar na Vila
+draw_set_halign(fa_right);
+draw_set_colour(make_colour_rgb(200, 140, 140));
+draw_text(_mx + _mw - 30, _btn_y + _btn_h * 0.5, "[Esc / B] Ficar na Vila");
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);

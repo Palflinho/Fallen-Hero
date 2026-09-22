@@ -33,7 +33,7 @@ switch (state) {
             }
         }
 
-        if (attack_cooldown_timer <= 0) {
+        if (attack_cooldown_timer <= 0 && _player != noone && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "cast";
             cast_target_x = _player.x;
             cast_target_y = _player.y;
@@ -49,7 +49,7 @@ switch (state) {
         scale_y = 1.30;
         scale_x = 0.80;
         if (cast_timer <= 0) {
-            if (_player != noone && !_player.invisible && point_distance(cast_target_x, cast_target_y, _player.x, _player.y) <= aoe_radius) {
+            if (_player != noone && !_player.invisible && point_distance(cast_target_x, cast_target_y, _player.x, _player.y) <= aoe_radius && !fh_line_intersects_wall(cast_target_x, cast_target_y, _player.x, _player.y)) {
                 player_take_damage(aoe_damage, "physical");
                 player_apply_slow(0.3, 1.8);
             }

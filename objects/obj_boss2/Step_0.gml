@@ -67,7 +67,7 @@ switch (state) {
                 fh_move_and_collide(lengthdir_x(move_speed * _dt, _dir), lengthdir_y(move_speed * _dt, _dir));
             }
 
-            if (attack_cooldown_timer <= 0) {
+            if (attack_cooldown_timer <= 0 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
                 if (combo_cycle mod 2 == 0) {
                     // Ataque 1: Inicia Erupção de Magma Tripla
                     state = "erupcao_windup";
@@ -84,11 +84,12 @@ switch (state) {
                     erupcao_targets_x[2] = _player.x + lengthdir_x(90, _pdir - 60);
                     erupcao_targets_y[2] = _player.y + lengthdir_y(90, _pdir - 60);
                 } else {
-                    // Ataque 2: Carga Vulcânica Incandescente
+                    // Ataque 2: Carga de Fúria em Linha Reta
                     state = "charge_windup";
                     charge_windup_timer = charge_windup;
-                    scale_y = 1.3;
-                    scale_x = 1.3;
+                    scale_y = 1.35;
+                    scale_x = 1.35;
+                    body_colour = c_yellow;
                 }
             }
         }
@@ -109,24 +110,23 @@ switch (state) {
                 var _ty = erupcao_targets_y[_i];
                 fx_spawn_sparks(_tx, _ty, c_red, 16);
                 fx_spawn_sparks(_tx, _ty, c_orange, 12);
-                if (_player != noone && point_distance(_player.x, _player.y, _tx, _ty) <= erupcao_radius) {
+                if (_player != noone && point_distance(_player.x, _player.y, _tx, _ty) <= erupcao_radius && !fh_line_intersects_wall(_tx, _ty, _player.x, _player.y)) {
                     player_take_damage(erupcao_damage, "magical");
                     player_apply_poison(4, 0.5, 3.0);
                 }
             }
 
             combo_cycle++;
-            state = "recover";
-            recover_timer = 0.6;
+            state = "chase";
+            attack_cooldown_timer = 0.6;
         }
         break;
 
     case "charge_windup":
         charge_windup_timer -= _dt;
-        body_colour = c_yellow;
         if (charge_windup_timer <= 0) {
             state = "charge";
-            charge_timer = 0.50;
+            charge_timer = 0.40;
             var _cdir = (_player != noone) ? point_direction(x, y, _player.x, _player.y) : facing_dir;
             charge_vx = lengthdir_x(520, _cdir);
             charge_vy = lengthdir_y(520, _cdir);
@@ -142,7 +142,7 @@ switch (state) {
             fx_spawn_sparks(x, y, c_orange, 3);
         }
 
-        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius) {
+        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             player_take_damage(charge_damage, "physical");
             player_apply_poison(4, 0.5, 3.0);
         }
