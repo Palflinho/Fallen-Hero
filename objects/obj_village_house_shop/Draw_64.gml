@@ -169,11 +169,16 @@ if (_tn > 0) {
             draw_rectangle(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h, true);
             if (_is_sel) draw_rectangle(_cx - 1, _cy - 1, _cx + talent_card_w + 1, _cy + talent_card_h + 1, true);
 
+            // Icone Vetorial Procedural do Talento
+            var _icon = talent_get_icon_type(_t_item);
+            var _icon_col = _is_sel ? c_yellow : (_unlocked ? c_lime : (!_affinity_ok ? make_colour_rgb(140, 70, 75) : make_colour_rgb(180, 205, 230)));
+            draw_talent_icon(_icon, _cx + talent_card_w * 0.5, _cy + 24, 24, _icon_col);
+
             // Nome do Talento
             draw_set_halign(fa_center);
             draw_set_valign(fa_top);
             draw_set_colour(_unlocked ? c_lime : (_is_sel ? c_yellow : c_white));
-            draw_text_ext(_cx + talent_card_w * 0.5, _cy + 8, _t_item.label, 13, talent_card_w - 12);
+            draw_text_ext(_cx + talent_card_w * 0.5, _cy + 42, _t_item.label, 13, talent_card_w - 12);
 
             // Custo ou Status
             var _cost_str = "";
@@ -208,14 +213,20 @@ draw_rectangle(_mx + 30, _det_y, _mx + _mw - 30, _det_y + _det_h, true);
 
 if (_tn > 0 && shop_talent_index < _tn) {
     var _cur_sel_t = _tab_talents[shop_talent_index];
+    
+    // Icone de Destaque no Painel Inferior
+    var _det_icon = talent_get_icon_type(_cur_sel_t);
+    var _det_icon_col = talent_is_unlocked(_cur_sel_t.id) ? c_lime : c_yellow;
+    draw_talent_icon(_det_icon, _mx + 62, _det_y + _det_h * 0.5, 34, _det_icon_col);
+
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 
     draw_set_colour(c_yellow);
-    draw_text(_mx + 45, _det_y + 8, _cur_sel_t.label + " (" + string_upper(_cur_sel_t.affinity) + ")");
+    draw_text(_mx + 96, _det_y + 8, _cur_sel_t.label + " (" + string_upper(_cur_sel_t.affinity) + ")");
 
     draw_set_colour(make_colour_rgb(180, 200, 220));
-    draw_text(_mx + 45, _det_y + 28, _cur_sel_t.desc_value);
+    draw_text_ext(_mx + 96, _det_y + 28, _cur_sel_t.desc_value, 14, _mw - 140);
 }
 
 // -------------------------------------------------------------------------

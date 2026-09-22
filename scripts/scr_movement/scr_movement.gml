@@ -482,7 +482,7 @@ function player_change_class(_player_inst, _new_class, _new_element, _new_talent
     }
 
     if (variable_global_exists("current_save_slot") && save_slot_exists(global.current_save_slot)) {
-        save_slot_save(global.current_save_slot);
+        save_slot_save_character_select(global.current_save_slot, _new_class, _new_element, global.chosen_talent_ids);
     }
 
     sfx_play("equip");

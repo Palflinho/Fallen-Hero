@@ -121,18 +121,19 @@ for (var _i = 0; _i < 4; _i++) {
 
     // Nome da Classe
     draw_set_halign(fa_center);
+    draw_set_valign(fa_top);
     draw_set_colour(_is_sel ? c_yellow : c_white);
-    draw_text_transformed(_cx + _card_w * 0.5, _card_y + 12, class_labels[_i], 1.25, 1.25, 0);
+    draw_text_transformed(_cx + _card_w * 0.5, _card_y + 8, class_labels[_i], 1.25, 1.25, 0);
 
     // Ícone / Representação Chibi do Herói
     var _chibi_cx = _cx + _card_w * 0.5;
-    var _chibi_cy = _card_y + 82;
+    var _chibi_cy = _card_y + 98;
     var _spr = asset_get_index("spr_portrait_" + _c_name);
     if (_spr != -1 && sprite_exists(_spr)) {
         var _sw = sprite_get_width(_spr);
         var _sh = sprite_get_height(_spr);
-        var _max_w = _card_w - 36;
-        var _max_h = 105;
+        var _max_w = _card_w - 48;
+        var _max_h = 92;
         var _scale = min(_max_w / max(1, _sw), _max_h / max(1, _sh));
         draw_sprite_ext(_spr, 0, _chibi_cx, _chibi_cy, _scale, _scale, 0, c_white, 1.0);
     } else {
@@ -144,8 +145,9 @@ for (var _i = 0; _i < 4; _i++) {
     }
 
     // Descrição do papel da classe
+    draw_set_valign(fa_top);
     draw_set_colour(make_colour_rgb(170, 185, 205));
-    draw_text_ext(_cx + _card_w * 0.5, _card_y + 155, class_subtitles[_i], 14, _card_w - 18);
+    draw_text_ext(_cx + _card_w * 0.5, _card_y + 162, class_subtitles[_i], 14, _card_w - 18);
 }
 
 // -------------------------------------------------------------------------

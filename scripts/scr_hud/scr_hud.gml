@@ -1144,18 +1144,20 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         draw_line(_lx, _ly, _col1_x + _left_w - 16, _ly);
         _ly += 10;
     
-        // Atributos Vitais de Combate (Nintendo Miyamoto: semi├│tica limpa)
-        var _val_x = _lx + 165;
+        // Atributos Vitais de Combate (Nintendo Miyamoto: semiotica limpa)
+        var _val_rx = _col1_x + _left_w - 20;
     
         // 1. HP
         var _hp_val = string(max(0, round(target.hp))) + " / " + string(round(target.hp_max));
         if (variable_instance_exists(target, "paladin_barrier_active") && target.paladin_barrier_active > 0) {
-            _hp_val += "  (+" + string(round(target.paladin_barrier_active)) + ")";
+            _hp_val += " (+" + string(round(target.paladin_barrier_active)) + ")";
         }
+        draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(240, 80, 80));
         draw_text(_lx, _ly, "[HP] Vida:");
+        draw_set_halign(fa_right);
         draw_set_color(c_white);
-        draw_text(_val_x, _ly, _hp_val);
+        draw_text(_val_rx, _ly, _hp_val);
         _ly += 22;
     
         // 2. Poder Fisico (Auto-Ataque com a arma basica)
@@ -1163,19 +1165,23 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         if (variable_instance_exists(target, "synth_pwr_fisica") && target.synth_pwr_fisica > 0) {
             _pwr_str += " (+" + string(target.synth_pwr_fisica) + ")";
         }
+        draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(255, 170, 40));
-        draw_text(_lx, _ly, "[PWR-F] Fisico (AA):");
+        draw_text(_lx, _ly, "[PWR-F] Fisico:");
+        draw_set_halign(fa_right);
         draw_set_color(c_white);
-        draw_text(_val_x, _ly, _pwr_str);
+        draw_text(_val_rx, _ly, _pwr_str);
         _ly += 20;
     
         // 3. Poder Magico (Habilidades, Curas e Efeitos Elementais)
         var _mag_val = variable_instance_exists(target, "synth_pwr_magica") ? target.synth_pwr_magica : 0;
-        var _mag_str = (_mag_val > 0) ? ("+" + string(_mag_val) + " (Skills/Cura)") : "Base (x1.0)";
+        var _mag_str = (_mag_val > 0) ? ("+" + string(_mag_val)) : "x1.0";
+        draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(200, 130, 255));
-        draw_text(_lx, _ly, "[PWR-M] Magico (Skill):");
+        draw_text(_lx, _ly, "[PWR-M] Magico:");
+        draw_set_halign(fa_right);
         draw_set_color((_mag_val > 0) ? c_yellow : c_gray);
-        draw_text(_val_x, _ly, _mag_str);
+        draw_text(_val_rx, _ly, _mag_str);
         _ly += 20;
     
         // 4. Defesa Fisica (Melee / Contato / Espinhos)
@@ -1183,10 +1189,12 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         if (variable_instance_exists(target, "synth_def_fisica") && target.synth_def_fisica > 0) {
             _def_str += " (+" + string(target.synth_def_fisica) + ")";
         }
+        draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(70, 160, 240));
-        draw_text(_lx, _ly, "[DEF-F] Melee/Contato:");
+        draw_text(_lx, _ly, "[DEF-F] Melee:");
+        draw_set_halign(fa_right);
         draw_set_color(c_white);
-        draw_text(_val_x, _ly, _def_str);
+        draw_text(_val_rx, _ly, _def_str);
         _ly += 20;
     
         // 5. Defesa Magica (Projeteis Ranged / Pocas / Area)
@@ -1195,32 +1203,41 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         if (_mdef_val > 0) {
             _mdef_str += " (+" + string(_mdef_val) + ")";
         }
+        draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(100, 220, 240));
-        draw_text(_lx, _ly, "[DEF-M] Ranged/Area:");
+        draw_text(_lx, _ly, "[DEF-M] Ranged:");
+        draw_set_halign(fa_right);
         draw_set_color(c_white);
-        draw_text(_val_x, _ly, _mdef_str);
+        draw_text(_val_rx, _ly, _mdef_str);
         _ly += 20;
     
-        // 4. Velocidade de Ataque
+        // 6. Velocidade de Ataque
+        draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(230, 210, 80));
         draw_text(_lx, _ly, "[ATK] Cadencia:");
+        draw_set_halign(fa_right);
         draw_set_color(c_white);
-        draw_text(_val_x, _ly, string(round(target.nat_atk_spd * 100) / 100) + " golpes/s");
+        draw_text(_val_rx, _ly, string_format(target.nat_atk_spd, 1, 2) + " golpes/s");
         _ly += 22;
     
-        // 5. Velocidade de Movimento
+        // 7. Velocidade de Movimento
+        draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(80, 220, 130));
         draw_text(_lx, _ly, "[VEL] Movimento:");
+        draw_set_halign(fa_right);
         draw_set_color(c_white);
-        draw_text(_val_x, _ly, string(round(target.nat_move_spd)));
+        draw_text(_val_rx, _ly, string(round(target.nat_move_spd)));
         _ly += 22;
     
-        // 6. Tempo de Partida
+        // 8. Tempo de Partida
+        draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(180, 210, 240));
         draw_text(_lx, _ly, "[RUN] Tempo:");
+        draw_set_halign(fa_right);
         draw_set_color(c_white);
-        draw_text(_val_x, _ly, format_playtime(variable_global_exists("run_playtime") ? global.run_playtime : 0));
+        draw_text(_val_rx, _ly, format_playtime(variable_global_exists("run_playtime") ? global.run_playtime : 0));
         _ly += 26;
+        draw_set_halign(fa_left);
     
         // Divisor
         draw_set_color(make_colour_rgb(35, 45, 70));
