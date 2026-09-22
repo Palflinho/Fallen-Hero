@@ -5,11 +5,17 @@
 // garantindo 0 dependencias externas e resposta sonora instantanea.
 // =========================================================================
 
+if (!variable_global_exists("bgm_current_inst")) global.bgm_current_inst = -1;
+if (!variable_global_exists("bgm_current_id")) global.bgm_current_id = "";
+if (!variable_global_exists("bgm_current_stream")) global.bgm_current_stream = -1;
+if (!variable_global_exists("bgm_volume")) global.bgm_volume = 0.7;
+
 function audio_system_init() {
     if (variable_global_exists("audio_initialized") && global.audio_initialized) return;
     global.audio_initialized = true;
     global.sfx_volume = 0.85;
     global.sfx_map = {};
+
 
     var _sr = 22050; // Taxa de amostragem padrão
 
@@ -98,6 +104,10 @@ function sfx_play(_name, _pitch_var = 0.06, _gain_mult = 1.0) {
 // -------------------------------------------------------------------------
 function bgm_play(_track_id, _fade_ms = 400) {
     audio_system_init();
+    if (!variable_global_exists("bgm_current_id")) global.bgm_current_id = "";
+    if (!variable_global_exists("bgm_current_inst")) global.bgm_current_inst = -1;
+    if (!variable_global_exists("bgm_volume")) global.bgm_volume = 0.7;
+
     if (global.bgm_current_id == _track_id && global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
         return;
     }
@@ -115,7 +125,7 @@ function bgm_play(_track_id, _fade_ms = 400) {
     if (file_exists(_ogg_path)) {
         _snd = audio_create_stream(_ogg_path);
         global.bgm_current_stream = _snd;
-    } else if (variable_struct_exists(global.bgm_map, _track_id)) {
+    } else if (variable_global_exists("bgm_map") && variable_struct_exists(global.bgm_map, _track_id)) {
         // 2. Fallback automático para a melodia procedural sintetizada em PCM
         _snd = global.bgm_map[$ _track_id];
         global.bgm_current_stream = -1;
@@ -134,7 +144,7 @@ function bgm_play(_track_id, _fade_ms = 400) {
 }
 
 function bgm_stop(_fade_ms = 400) {
-    if (global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
+    if (variable_global_exists("bgm_current_inst") && global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
         audio_sound_gain(global.bgm_current_inst, 0, _fade_ms);
     }
     global.bgm_current_id = "";
@@ -142,7 +152,7 @@ function bgm_stop(_fade_ms = 400) {
 
 function bgm_set_volume(_vol) {
     global.bgm_volume = clamp(_vol, 0.0, 1.0);
-    if (global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
+    if (variable_global_exists("bgm_current_inst") && global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
         var _master = variable_global_exists("master_volume") ? global.master_volume : 1.0;
         var _target_gain = global.bgm_volume * _master;
         audio_sound_gain(global.bgm_current_inst, max(0.001, _target_gain), 50);

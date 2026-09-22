@@ -407,8 +407,13 @@ function settings_init() {
     global.fullscreen = false;
     global.screen_shake_enabled = true;
 
+    if (script_exists(asset_get_index("audio_system_init"))) {
+        audio_system_init();
+    }
+
     settings_load();
 }
+
 
 function settings_load() {
     ini_open("settings.ini");
