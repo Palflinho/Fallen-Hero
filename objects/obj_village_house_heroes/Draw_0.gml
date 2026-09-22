@@ -58,6 +58,24 @@ draw_line_width(x - 8, _banner_y + 8, x + 8, _banner_y + 28, 2);
 draw_line_width(x + 8, _banner_y + 8, x - 8, _banner_y + 28, 2);
 draw_circle(x, _banner_y + 18, 4, true);
 
+// Placa suspensa balançando com Espada
+var _h_sign_sway = sin(_t * 2.4) * 3;
+var _h_sign_x = x - 46;
+var _h_sign_y = y - 10;
+draw_set_colour(make_colour_rgb(50, 40, 35));
+draw_line(x - 40, y - 25, _h_sign_x, _h_sign_y - 10);
+draw_line(x - 52, y - 25, _h_sign_x, _h_sign_y - 10);
+draw_set_colour(make_colour_rgb(90, 65, 45));
+draw_rectangle(_h_sign_x + _h_sign_sway - 10, _h_sign_y - 8, _h_sign_x + _h_sign_sway + 10, _h_sign_y + 12, false);
+draw_set_colour(make_colour_rgb(60, 40, 25));
+draw_rectangle(_h_sign_x + _h_sign_sway - 10, _h_sign_y - 8, _h_sign_x + _h_sign_sway + 10, _h_sign_y + 12, true);
+// Ícone da Espada
+draw_set_colour(c_white);
+draw_line_width(_h_sign_x + _h_sign_sway, _h_sign_y - 4, _h_sign_x + _h_sign_sway, _h_sign_y + 8, 2);
+draw_set_colour(make_colour_rgb(255, 215, 80));
+draw_line(_h_sign_x + _h_sign_sway - 4, _h_sign_y + 4, _h_sign_x + _h_sign_sway + 4, _h_sign_y + 4);
+draw_circle(_h_sign_x + _h_sign_sway, _h_sign_y + 9, 1.5, false);
+
 // 5. Porta Maciça de Carvalho com Arco
 var _door_x = x;
 var _door_y = y + 45;

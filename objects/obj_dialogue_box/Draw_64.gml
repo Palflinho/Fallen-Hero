@@ -56,6 +56,18 @@ if (current_portrait != -1 && sprite_exists(current_portrait)) {
     } else if (current_speaker == "human") {
         draw_set_colour(c_aqua);
         draw_text(_port_x + _port_size * 0.5, _port_y + _port_size * 0.5, loc("human", "HUMANO"));
+    } else if (current_speaker == "blacksmith") {
+        draw_set_colour(make_colour_rgb(255, 140, 50));
+        draw_text(_port_x + _port_size * 0.5, _port_y + _port_size * 0.5, "FORJA");
+    } else if (current_speaker == "alchemist") {
+        draw_set_colour(make_colour_rgb(110, 230, 160));
+        draw_text(_port_x + _port_size * 0.5, _port_y + _port_size * 0.5, "HERVAS");
+    } else if (current_speaker == "scout") {
+        draw_set_colour(make_colour_rgb(160, 240, 90));
+        draw_text(_port_x + _port_size * 0.5, _port_y + _port_size * 0.5, "VIGIA");
+    } else if (current_speaker == "oracle") {
+        draw_set_colour(make_colour_rgb(200, 130, 255));
+        draw_text(_port_x + _port_size * 0.5, _port_y + _port_size * 0.5, "ORACULO");
     }
 }
 
