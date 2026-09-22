@@ -77,8 +77,8 @@ if (_equip_btn && _n_talents > 0 && talent_cursor < _n_talents) {
 // Interação por Mouse / Touch na Interface
 var _gw = display_get_gui_width();
 var _gh = display_get_gui_height();
-var _mx = mouse_x_gui();
-var _my = mouse_y_gui();
+var _mx = device_mouse_x_to_gui(0);
+var _my = device_mouse_y_to_gui(0);
 var _m_click = mouse_check_button_pressed(mb_left);
 
 var _panel_w = min(1040, _gw - 60);
