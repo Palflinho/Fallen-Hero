@@ -23,6 +23,7 @@ talent_card_h = 105;
 talent_card_gap_x = 14;
 talent_card_gap_y = 12;
 
+interact_cooldown = 0;
 notice_timer = 0;
 notice_text = "";
 
@@ -31,6 +32,18 @@ function open_shop_modal() {
     global.village_modal_open = true;
     notice_timer = 0;
     notice_text = "";
+
+    with (obj_player) {
+        defend_active = false;
+        defend_timer = 0;
+        attack_buffer_timer = 0;
+        state = "idle";
+    }
+    keyboard_clear(ord("X"));
+    keyboard_clear(vk_space);
+    keyboard_clear(vk_enter);
+    keyboard_clear(ord("Z"));
+    io_clear();
 
     var _p_char = variable_global_exists("selected_character") ? global.selected_character : "knight";
     for (var _k = 0; _k < array_length(classes); _k++) {
@@ -45,6 +58,19 @@ function open_shop_modal() {
 function close_shop_modal() {
     modal_open = false;
     global.village_modal_open = false;
+    interact_cooldown = 0.4;
+    with (obj_player) {
+        defend_active = false;
+        defend_timer = 0;
+        attack_buffer_timer = 0;
+        state = "idle";
+    }
+    keyboard_clear(ord("X"));
+    keyboard_clear(vk_space);
+    keyboard_clear(vk_enter);
+    keyboard_clear(ord("Z"));
+    io_clear();
     save_meta();
     sfx_play("menu_select");
 }
+

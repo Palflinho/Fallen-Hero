@@ -13,6 +13,9 @@ if (global.screen_damage_flash > 0) global.screen_damage_flash -= delta_time / 1
 if (!variable_global_exists("camera_shake")) global.camera_shake = 0;
 if (global.camera_shake > 0) global.camera_shake = max(0, global.camera_shake - (delta_time / 1000000) * 30);
 
+if (!variable_global_exists("dialogue_just_closed_timer")) global.dialogue_just_closed_timer = 0;
+if (global.dialogue_just_closed_timer > 0) global.dialogue_just_closed_timer -= delta_time / 1000000;
+
 if (!variable_global_exists("run_playtime")) global.run_playtime = 0;
 if (!is_world_paused()) global.run_playtime += delta_time / 1000000;
 

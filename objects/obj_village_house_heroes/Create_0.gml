@@ -6,6 +6,7 @@
 // =========================================================================
 
 interact_radius = 65;
+interact_cooldown = 0;
 modal_open = false;
 
 classes = ["knight", "mage", "archer", "assassin"];
@@ -36,12 +37,19 @@ notice_text = "";
 function refresh_talents_list() {
     var _char = classes[selected_class_idx];
     var _elem = elements[selected_element_idx];
-    
+    ensure_meta_loaded();
+
     if (element_is_unlocked(_elem, _char)) {
-        var _all = get_talents_for_character_and_affinity(_char, _elem);
         var _unlocked = [];
-        for (var _i = 0; _i < array_length(_all); _i++) {
-            if (talent_is_unlocked(_all[_i].id)) array_push(_unlocked, _all[_i]);
+        var _all_ids = meta_get_talents_for_subarchetype(_char, _elem);
+        for (var _i = 0; _i < array_length(_all_ids); _i++) {
+            var _tid = _all_ids[_i];
+            if (meta_is_talent_unlocked(_tid)) {
+                var _t_def = talent_get_def(_tid);
+                if (!is_undefined(_t_def)) {
+                    array_push(_unlocked, _t_def);
+                }
+            }
         }
         talent_select_list = _unlocked;
     } else {
@@ -55,6 +63,18 @@ function open_heroes_modal() {
     global.village_modal_open = true;
     notice_timer = 0;
     notice_text = "";
+
+    with (obj_player) {
+        defend_active = false;
+        defend_timer = 0;
+        attack_buffer_timer = 0;
+        state = "idle";
+    }
+    keyboard_clear(ord("X"));
+    keyboard_clear(vk_space);
+    keyboard_clear(vk_enter);
+    keyboard_clear(ord("Z"));
+    io_clear();
 
     // Sincroniza com a classe atual
     var _p_char = variable_global_exists("selected_character") ? global.selected_character : "knight";
@@ -83,5 +103,17 @@ function open_heroes_modal() {
 function close_heroes_modal() {
     modal_open = false;
     global.village_modal_open = false;
+    interact_cooldown = 0.4;
+    with (obj_player) {
+        defend_active = false;
+        defend_timer = 0;
+        attack_buffer_timer = 0;
+        state = "idle";
+    }
+    keyboard_clear(ord("X"));
+    keyboard_clear(vk_space);
+    keyboard_clear(vk_enter);
+    keyboard_clear(ord("Z"));
+    io_clear();
     sfx_play("menu_select");
 }

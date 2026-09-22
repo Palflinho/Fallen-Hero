@@ -10,17 +10,27 @@ draw_set_valign(fa_top);
 var _gw = display_get_gui_width();
 var _gh = display_get_gui_height();
 
+var _is_village_modal = (variable_global_exists("village_modal_open") && global.village_modal_open);
+var _is_dialogue = dialogue_is_active();
+var _is_sheet_or_pause = (global.paused || global.attr_window_open || global.chest_reward_open || game_over || level_complete);
+
 // 1. Efeito de Flash de Dano na Tela
 hud_draw_damage_flash(_gw, _gh);
 
 // 2. Card de Status do Jogador, Barras e Objetivo
-hud_draw_player_card(id, target, pad, _gw, _gh, boss_room);
+if (!_is_village_modal && !_is_dialogue && !_is_sheet_or_pause) {
+    hud_draw_player_card(id, target, pad, _gw, _gh, boss_room);
+}
 
 // 3. Barra Superior do Chefe da Fase
-hud_draw_boss_bar(_gw, _gh, boss_room);
+if (!_is_village_modal && !_is_dialogue) {
+    hud_draw_boss_bar(_gw, _gh, boss_room);
+}
 
-// 4. Minimapa Radar e Trilha de NÃ³s do Bioma
-hud_draw_minimap_and_tracker(id, target, _gw, _gh, game_over, level_complete);
+// 4. Minimapa Radar e Trilha de Nos do Bioma (apenas em masmorras, nunca na Vila nem em modais)
+if (room != room_village && !_is_village_modal && !_is_dialogue && !_is_sheet_or_pause) {
+    hud_draw_minimap_and_tracker(id, target, _gw, _gh, game_over, level_complete);
+}
 
 // 5. Modais de Estado de Jogo (Exclusivos)
 if (game_over) {
@@ -33,8 +43,10 @@ if (game_over) {
     hud_draw_hero_sheet(id, target, _gw, _gh);
 }
 
-// 6. Controles Touch Mobile (caso ativos)
-touch_controls_draw_gui();
+// 6. Controles Touch Mobile (caso ativos e tela livre de modais)
+if (!_is_village_modal && !_is_dialogue && !_is_sheet_or_pause) {
+    touch_controls_draw_gui();
+}
 
 // 7. Onboarding Diegético de Controles (na Vila e na Sala 1 da Masmorra)
 if (!game_over && !level_complete && !global.paused && !global.attr_window_open && !is_world_paused()) {

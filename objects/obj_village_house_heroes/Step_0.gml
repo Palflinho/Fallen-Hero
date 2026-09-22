@@ -2,6 +2,7 @@ var _player = instance_find(obj_player, 0);
 if (_player == noone) exit;
 
 if (notice_timer > 0) notice_timer--;
+if (interact_cooldown > 0) interact_cooldown -= delta_time / 1000000;
 
 // -------------------------------------------------------------------------
 // 1. Interação do Jogador no Mundo (Aproximação da Porta)
@@ -13,7 +14,7 @@ if (!modal_open) {
     var _door_y = y + 42;
     var _dist = point_distance(_door_x, _door_y, _player.x, _player.y);
 
-    if (_dist <= interact_radius) {
+    if (_dist <= interact_radius && interact_cooldown <= 0) {
         var _interact = input_check_ui_confirm() || keyboard_check_pressed(ord("E")) || keyboard_check_pressed(vk_space);
         var _touch = touch_room_clicked(x - 36, y + 10, x + 36, y + 70);
         

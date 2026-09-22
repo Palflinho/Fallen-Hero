@@ -241,6 +241,66 @@ function dialogue_db_init() {
 }
 
 // -------------------------------------------------------------------------
+// HIGIENIZAÇÃO DE TEXTO PARA FONTES ASCII DO GAMEMAKER
+// -------------------------------------------------------------------------
+function loc_clean_text(_str) {
+    if (!is_string(_str) || _str == "") return _str;
+    
+    var _s = _str;
+    _s = string_replace_all(_s, "á", "a");
+    _s = string_replace_all(_s, "à", "a");
+    _s = string_replace_all(_s, "ã", "a");
+    _s = string_replace_all(_s, "â", "a");
+    _s = string_replace_all(_s, "ä", "a");
+    _s = string_replace_all(_s, "Á", "A");
+    _s = string_replace_all(_s, "À", "A");
+    _s = string_replace_all(_s, "Ã", "A");
+    _s = string_replace_all(_s, "Â", "A");
+    _s = string_replace_all(_s, "Ä", "A");
+    
+    _s = string_replace_all(_s, "é", "e");
+    _s = string_replace_all(_s, "è", "e");
+    _s = string_replace_all(_s, "ê", "e");
+    _s = string_replace_all(_s, "ë", "e");
+    _s = string_replace_all(_s, "É", "E");
+    _s = string_replace_all(_s, "È", "E");
+    _s = string_replace_all(_s, "Ê", "E");
+    
+    _s = string_replace_all(_s, "í", "i");
+    _s = string_replace_all(_s, "ì", "i");
+    _s = string_replace_all(_s, "î", "i");
+    _s = string_replace_all(_s, "ï", "i");
+    _s = string_replace_all(_s, "Í", "I");
+    _s = string_replace_all(_s, "Ì", "I");
+    _s = string_replace_all(_s, "Î", "I");
+    
+    _s = string_replace_all(_s, "ó", "o");
+    _s = string_replace_all(_s, "ò", "o");
+    _s = string_replace_all(_s, "õ", "o");
+    _s = string_replace_all(_s, "ô", "o");
+    _s = string_replace_all(_s, "ö", "o");
+    _s = string_replace_all(_s, "Ó", "O");
+    _s = string_replace_all(_s, "Ò", "O");
+    _s = string_replace_all(_s, "Õ", "O");
+    _s = string_replace_all(_s, "Ô", "O");
+    
+    _s = string_replace_all(_s, "ú", "u");
+    _s = string_replace_all(_s, "ù", "u");
+    _s = string_replace_all(_s, "û", "u");
+    _s = string_replace_all(_s, "ü", "u");
+    _s = string_replace_all(_s, "Ú", "U");
+    _s = string_replace_all(_s, "Ù", "U");
+    _s = string_replace_all(_s, "Û", "U");
+    
+    _s = string_replace_all(_s, "ç", "c");
+    _s = string_replace_all(_s, "Ç", "C");
+    _s = string_replace_all(_s, "ñ", "n");
+    _s = string_replace_all(_s, "Ñ", "N");
+    
+    return _s;
+}
+
+// -------------------------------------------------------------------------
 // FUNÇÃO UTILITÁRIA PARA DISPARAR QUALQUER DIÁLOGO DA TABELA
 // -------------------------------------------------------------------------
 function dialogue_play_id(_dialogue_id, _on_finish = undefined) {
@@ -284,12 +344,13 @@ function dialogue_play_id(_dialogue_id, _on_finish = undefined) {
 
         array_push(_resolved_lines, {
             speaker: _speaker,
-            name: _name,
+            name: loc_clean_text(_name),
             alien: _alien,
-            text: _text,
+            text: loc_clean_text(_text),
             portrait: _portrait
         });
     }
 
     dialogue_start(_resolved_lines, _on_finish);
 }
+

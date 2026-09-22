@@ -126,10 +126,15 @@ for (var _i = 0; _i < 4; _i++) {
 
     // Ícone / Representação Chibi do Herói
     var _chibi_cx = _cx + _card_w * 0.5;
-    var _chibi_cy = _card_y + 90;
+    var _chibi_cy = _card_y + 82;
     var _spr = asset_get_index("spr_portrait_" + _c_name);
     if (_spr != -1 && sprite_exists(_spr)) {
-        draw_sprite_ext(_spr, 0, _chibi_cx, _chibi_cy, 0.7, 0.7, 0, c_white, 1.0);
+        var _sw = sprite_get_width(_spr);
+        var _sh = sprite_get_height(_spr);
+        var _max_w = _card_w - 36;
+        var _max_h = 105;
+        var _scale = min(_max_w / max(1, _sw), _max_h / max(1, _sh));
+        draw_sprite_ext(_spr, 0, _chibi_cx, _chibi_cy, _scale, _scale, 0, c_white, 1.0);
     } else {
         draw_set_colour(_c_col);
         draw_circle(_chibi_cx, _chibi_cy, 24, false);
