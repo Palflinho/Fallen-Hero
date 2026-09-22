@@ -42,9 +42,10 @@ knight_eco_ancestral_used = false;
 
 switch (character_class) {
     case "knight":
-        sprite_walk = spr_knight_walk;
-        sprite_attack = spr_knight_attack;
-        sprite_index = spr_knight_walk;
+        sprite_walk = -1;
+        sprite_attack = -1;
+        sprite_index = -1;
+
 
         switch (element_affinity) {
             case "water":
