@@ -13,8 +13,12 @@ var _player = instance_find(obj_player, 0);
 var _dist = (_player != noone) ? point_distance(x, y, _player.x, _player.y) : infinity;
 
 if (_player != noone && !_player.invisible && state != "slam_windup") {
-    var _lead_acc = (variable_instance_exists(id, "adaptation") && is_struct(adaptation)) ? adaptation.barrage_lead_accuracy : 0.40;
-    facing_dir = adaptive_ai_get_lead_aim_dir(x, y, _player, projectile_speed, _lead_acc);
+    var _lead_acc = (variable_instance_exists(id, "adaptation") && is_struct(adaptation)) ? adaptation.barrage_lead_accuracy : 0.35;
+    // Calibração progressiva da rajada: os primeiros tiros iniciam mais brandos, afinando o arco
+    var _total_shots = variable_instance_exists(id, "barrage_shots_total") ? barrage_shots_total : 6;
+    var _volley_prog = (_total_shots > 1) ? min(1.0, barrage_shots_fired / (_total_shots - 1)) : 1.0;
+    var _cur_acc = lerp(_lead_acc * 0.30, _lead_acc, _volley_prog);
+    facing_dir = adaptive_ai_get_lead_aim_dir(x, y, _player, projectile_speed, _cur_acc, 20.0);
 }
 
 if (vulnerable) {

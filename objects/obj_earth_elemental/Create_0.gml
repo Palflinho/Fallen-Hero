@@ -18,9 +18,11 @@ patrol_radius = 120;
 preferred_range = 80;
 attack_range = 150;
 attack_cooldown = 2.2;
-attack_cooldown_timer = 0;
+attack_cooldown_timer = random_range(0.5, 0.9); // Pausa de reação inicial para não atirar no frame 1
 attack_windup = 0.45;
 attack_windup_timer = 0;
+consecutive_shots = 0; // Calibração progressiva da telemetria
+locked_aim_dir = -1;   // Trava de mira na fase final do windup
 
 exp_reward = 35;
 gold_reward = 2;

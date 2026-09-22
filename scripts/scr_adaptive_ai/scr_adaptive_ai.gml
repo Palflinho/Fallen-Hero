@@ -36,11 +36,15 @@ function adaptive_ai_ensure_loaded() {
 }
 
 // -------------------------------------------------------------------------
-// 1. MIRA PREDITIVA (Lead Aim Interception)
+// 1. MIRA PREDITIVA REFINADA (Fair Lead Aim & Telemetry)
 // -------------------------------------------------------------------------
-// Calcula o angulo interceptando o vetor de velocidade (vx, vy) do jogador.
-// _accuracy varia de 0.0 (tiro direto burro) a 1.0 (predição matemática exata).
-function adaptive_ai_get_lead_aim_dir(_sx, _sy, _player, _proj_speed, _accuracy = 0.70) {
+// Calcula o angulo interceptando o vetor de velocidade do jogador de forma organica e justa.
+// Pilares de Game Feel (Sakurai / Miyamoto / Fair Play):
+// - Evasão limpa: se o jogador estiver esquivando (dodge/dash/knockback), não tenta prever o roll.
+// - Horizonte temporal limitado (max 0.38s à frente): evita extrapolações irreais para alvos distantes.
+// - Teto de desvio angular (_max_lead_angle padrão 18 graus): o tiro nunca sai em ângulos bizarros.
+// - Leve dispersão orgânica (±1.5 graus): evita tiros que parecem lasers perfeitamente teleguiados.
+function adaptive_ai_get_lead_aim_dir(_sx, _sy, _player, _proj_speed, _accuracy = 0.45, _max_lead_angle = 18.0) {
     if (_player == noone || !instance_exists(_player) || _player.invisible || _player.hp <= 0) {
         return point_direction(_sx, _sy, _player.x, _player.y);
     }
@@ -48,15 +52,27 @@ function adaptive_ai_get_lead_aim_dir(_sx, _sy, _player, _proj_speed, _accuracy 
     var _direct_dir = point_direction(_sx, _sy, _player.x, _player.y);
     if (_accuracy <= 0 || _proj_speed <= 0) return _direct_dir;
 
+    // Se o jogador estiver em esquiva/dash, invulneravel ou sofrendo knockback, usa mira direta justa
+    var _is_evading = false;
+    if (variable_instance_exists(_player, "state") && _player.state == "dodge") _is_evading = true;
+    if (variable_instance_exists(_player, "invuln_timer") && _player.invuln_timer > 0) _is_evading = true;
+    if (variable_instance_exists(_player, "knockback_vx") && point_distance(0, 0, _player.knockback_vx, _player.knockback_vy) > 30) _is_evading = true;
+
+    if (_is_evading) {
+        return _direct_dir;
+    }
+
     var _dist = point_distance(_sx, _sy, _player.x, _player.y);
-    var _travel_time = _dist / max(10, _proj_speed);
+    // Limita o horizonte de projeção para no máximo 0.38 segundos no futuro
+    var _raw_travel = _dist / max(10, _proj_speed);
+    var _travel_time = min(0.38, _raw_travel);
 
     // Recupera a velocidade atual do jogador (vx e vy de obj_player)
     var _pvx = variable_instance_exists(_player, "vx") ? _player.vx : 0;
     var _pvy = variable_instance_exists(_player, "vy") ? _player.vy : 0;
 
-    // Se o jogador estiver parado ou quase parado, atira direto
-    if (point_distance(0, 0, _pvx, _pvy) < 15) {
+    // Se o jogador estiver parado ou quase parado (< 18 px/s), atira direto
+    if (point_distance(0, 0, _pvx, _pvy) < 18) {
         return _direct_dir;
     }
 
@@ -68,7 +84,20 @@ function adaptive_ai_get_lead_aim_dir(_sx, _sy, _player, _proj_speed, _accuracy 
     _predicted_x = clamp(_predicted_x, 40, room_width - 40);
     _predicted_y = clamp(_predicted_y, 40, room_height - 40);
 
-    return point_direction(_sx, _sy, _predicted_x, _predicted_y);
+    var _raw_lead_dir = point_direction(_sx, _sy, _predicted_x, _predicted_y);
+
+    // Limita estritamente o desvio angular em relação à mira direta
+    var _ang_offset = angle_difference(_raw_lead_dir, _direct_dir);
+    _ang_offset = clamp(_ang_offset, -_max_lead_angle, _max_lead_angle);
+
+    var _final_dir = _direct_dir + _ang_offset;
+
+    // Dispersão orgânica sutil (±1.5°) para sensação natural de disparo
+    if (_accuracy > 0) {
+        _final_dir += random_range(-1.5, 1.5);
+    }
+
+    return _final_dir;
 }
 
 // -------------------------------------------------------------------------
@@ -142,7 +171,7 @@ function adaptive_ai_get_boss_adaptation(_biome) {
         phys_damage_vulnerability: 1.0, // Multiplicador de fraqueza fisica
         magic_damage_vulnerability: 1.0,// Multiplicador de fraqueza magica
         thorns_reflect_damage: 0,   // Dano refletido a ataques corpo a corpo
-        barrage_lead_accuracy: 0.40,// Precisao preditiva dos tiros
+        barrage_lead_accuracy: 0.35,// Precisao preditiva dos tiros (equilibrada)
         slam_bait_chance: 0.0,      // Chance de delay para punir roll
         extra_projectile_speed: 0,  // Velocidade extra de tiros
         aura_colour: c_white
@@ -158,7 +187,7 @@ function adaptive_ai_get_boss_adaptation(_biome) {
             _res.phys_damage_reduction = 0.40;
             _res.magic_damage_vulnerability = 1.50;
             _res.thorns_reflect_damage = 5;
-            _res.barrage_lead_accuracy = 0.50;
+            _res.barrage_lead_accuracy = 0.40;
             _res.slam_bait_chance = 0.20;
             _res.aura_colour = make_colour_rgb(255, 120, 60);
             break;
@@ -172,18 +201,18 @@ function adaptive_ai_get_boss_adaptation(_biome) {
             _res.magic_damage_reduction = 0.50;
             _res.phys_damage_vulnerability = 1.40;
             _res.extra_projectile_speed = 65;
-            _res.barrage_lead_accuracy = 0.85;
+            _res.barrage_lead_accuracy = 0.55;
             _res.aura_colour = make_colour_rgb(180, 80, 255);
             break;
             
         case "archer":
-            // Venceu de Arqueiro: O Chefe aprendeu a caçar alvos à distância, atirando com alta
-            // predição e atrasando o slam para punir o rolamento (I-Frame bait),
+            // Venceu de Arqueiro: O Chefe aprendeu a caçar alvos à distância, atirando com
+            // predição refinada e atrasando o slam para punir o rolamento (I-Frame bait),
             // mas fica totalmente vulnerável a ataques surpresa pelas costas do Assassino!
             _res.title = "Instinto Predador de Alcance";
-            _res.description = "Mira Preditiva Avançada (85%) e Atraso Tático de Slam (pune rolamentos). Vulnerável a Furtividade do Assassino.";
+            _res.description = "Mira Preditiva Adaptada (60%) e Atraso Tático de Slam (pune rolamentos). Vulnerável a Furtividade do Assassino.";
             _res.recommended_class = "assassin";
-            _res.barrage_lead_accuracy = 0.90;
+            _res.barrage_lead_accuracy = 0.60;
             _res.slam_bait_chance = 0.65;
             _res.phys_damage_reduction = 0.20;
             _res.aura_colour = make_colour_rgb(80, 220, 240);
@@ -196,7 +225,7 @@ function adaptive_ai_get_boss_adaptation(_biome) {
             _res.description = "Dificulta aproximações furtivas com pulsos de alerta contínuos. Vulnerável a ataques à distância do Arqueiro (+40% de dano).";
             _res.recommended_class = "archer";
             _res.phys_damage_vulnerability = 1.30;
-            _res.barrage_lead_accuracy = 0.70;
+            _res.barrage_lead_accuracy = 0.50;
             _res.slam_bait_chance = 0.35;
             _res.aura_colour = make_colour_rgb(140, 255, 120);
             break;
