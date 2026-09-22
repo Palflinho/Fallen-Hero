@@ -393,3 +393,54 @@ function get_save_summary() {
     if (!_info.occupied) return "";
     return _info.hero_label + "   -   " + _info.progress_label;
 }
+
+// =========================================================================
+// SISTEMA DE CONFIGURAÇÕES GERAIS (Áudio, Vídeo e Acessibilidade)
+// =========================================================================
+function settings_init() {
+    if (variable_global_exists("settings_initialized") && global.settings_initialized) return;
+    global.settings_initialized = true;
+
+    global.master_volume = 1.0;
+    global.bgm_volume = 0.7;
+    global.sfx_volume = 0.85;
+    global.fullscreen = false;
+    global.screen_shake_enabled = true;
+
+    settings_load();
+}
+
+function settings_load() {
+    ini_open("settings.ini");
+    global.master_volume = ini_read_real("Audio", "master", 1.0);
+    global.bgm_volume = ini_read_real("Audio", "bgm", 0.7);
+    global.sfx_volume = ini_read_real("Audio", "sfx", 0.85);
+    global.fullscreen = ini_read_real("Video", "fullscreen", 0) == 1;
+    global.screen_shake_enabled = ini_read_real("Accessibility", "screen_shake", 1) == 1;
+    ini_close();
+
+    settings_apply();
+}
+
+function settings_save() {
+    ini_open("settings.ini");
+    ini_write_real("Audio", "master", global.master_volume);
+    ini_write_real("Audio", "bgm", global.bgm_volume);
+    ini_write_real("Audio", "sfx", global.sfx_volume);
+    ini_write_real("Video", "fullscreen", global.fullscreen ? 1 : 0);
+    ini_write_real("Accessibility", "screen_shake", global.screen_shake_enabled ? 1 : 0);
+    ini_close();
+
+    settings_apply();
+}
+
+function settings_apply() {
+    audio_master_gain(clamp(global.master_volume, 0.0, 1.0));
+    if (window_get_fullscreen() != global.fullscreen) {
+        window_set_fullscreen(global.fullscreen);
+    }
+    if (script_exists(asset_get_index("bgm_set_volume"))) {
+        bgm_set_volume(global.bgm_volume);
+    }
+}
+

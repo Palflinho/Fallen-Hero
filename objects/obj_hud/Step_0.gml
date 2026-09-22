@@ -88,6 +88,15 @@ if (!game_over && _player != noone && _player.state == "dead") {
     clear_save();
 }
 
+// Gerenciamento Dinâmico de Trilha Sonora (BGM)
+if (room == room_village) {
+    bgm_play("village");
+} else if (room == room_arena || room == Room2 || room == Room4 || room == Room6 || room == Room8 || room == asset_get_index("room_temple5_boss")) {
+    bgm_play("boss");
+} else if (room == Room1 || room == Room3 || room == Room5 || room == Room7 || room == room_exp2 || room == room_exp4 || room == room_shop || room == room_preboss || room == asset_get_index("room_temple5_shop")) {
+    bgm_play("dungeon");
+}
+
 var _touch_pause = (variable_global_exists("touch_pause_pressed") && global.touch_pause_pressed);
 
 if (game_over) {
@@ -97,8 +106,11 @@ if (game_over) {
     }
     if (input_check_ui_confirm() || keyboard_check_pressed(ord("C")) || _touch_tap) {
         global.inrun_saved_stats = false;
-        global.char_select_direct = true;
-        room_goto(room_char_select);
+        global.run_room_step = 1;
+        global.run_biome = "water";
+        global.respawn_at_bonfire = true;
+        save_checkpoint_fresh(global.selected_character, "room_village", global.selected_element);
+        room_goto(room_village);
     } else if (keyboard_check_pressed(ord("M"))) {
         global.inrun_saved_stats = false;
         global.char_select_direct = false;
@@ -130,11 +142,11 @@ if (global.run_victory || level_complete) {
         clear_save();
         global.run_victory = false;
         level_complete = false;
-        global.char_select_direct = true;
-        room_goto(room_char_select);
+        room_goto(room_village);
     }
     exit;
 }
+
 
 if (global.chest_reward_open) {
     if (_player != noone) {

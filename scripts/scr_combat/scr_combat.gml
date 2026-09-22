@@ -8,9 +8,11 @@ function trigger_hitstop(_duration) {
 }
 
 function trigger_camera_shake(_amount) {
+    if (variable_global_exists("screen_shake_enabled") && !global.screen_shake_enabled) return;
     if (!variable_global_exists("camera_shake")) global.camera_shake = 0;
     global.camera_shake = max(global.camera_shake, _amount);
 }
+
 
 // -------------------------------------------------------------
 // SAKURAI JUICE: Combat FX, Floating Numbers, Sparks & Particles

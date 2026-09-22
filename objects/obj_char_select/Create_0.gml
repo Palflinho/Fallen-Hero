@@ -30,14 +30,20 @@ if (variable_global_exists("char_select_direct") && global.char_select_direct) {
     state = "select";
     global.char_select_direct = false;
 } else {
-    state = "main_menu"; // main_menu | save_slots | select | shop | select_talents
+    state = "main_menu"; // main_menu | save_slots | settings | select | shop | select_talents
 }
 
-main_menu_options = ["Novo Jogo", "Continuar", "Sair"];
+main_menu_options = ["Novo Jogo", "Continuar", "Configuracoes", "Sair"];
 main_menu_cursor = any_save_slot_exists() ? 1 : 0;
 main_menu_btn_w = 340;
-main_menu_btn_h = 54;
-main_menu_btn_gap = 18;
+main_menu_btn_h = 52;
+main_menu_btn_gap = 16;
+
+// Parâmetros do Menu de Configurações
+settings_cursor = 0;
+settings_options_count = 7;
+settings_init();
+
 
 // Parâmetros da tela dedicada de Save Slots (Segunda Tela)
 save_slot_action = "new_game"; // "new_game" | "continue"

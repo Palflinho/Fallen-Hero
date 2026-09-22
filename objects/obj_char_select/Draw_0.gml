@@ -157,6 +157,74 @@ switch (state) {
         draw_text(room_width / 2, room_height - 45, _menu_tip);
         break;
 
+    case "settings":
+        var _title_x = room_width / 2;
+        var _title_y = 110;
+
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_set_color(c_yellow);
+        draw_text_transformed(_title_x, _title_y, "CONFIGURACOES", 2.2, 2.2, 0);
+
+        var _box_w = 660;
+        var _box_h = 420;
+        var _bx = (room_width - _box_w) / 2;
+        var _by = 160;
+
+        draw_set_alpha(0.88);
+        draw_set_color(make_colour_rgb(18, 22, 34));
+        draw_rectangle(_bx, _by, _bx + _box_w, _by + _box_h, false);
+        draw_set_alpha(1.0);
+        draw_set_color(make_colour_rgb(70, 95, 140));
+        draw_rectangle(_bx, _by, _bx + _box_w, _by + _box_h, true);
+
+        var _names = [
+            "Volume Geral (Master)",
+            "Volume da Musica (BGM)",
+            "Volume dos Efeitos (SFX)",
+            "Modo de Tela",
+            "Tremor de Tela (Acessibilidade)",
+            "Idioma (Language)",
+            "Voltar ao Menu Principal"
+        ];
+
+        var _item_h = 50;
+        for (var _i = 0; _i < 7; _i++) {
+            var _iy = _by + 35 + _i * _item_h;
+            var _is_sel = (settings_cursor == _i);
+
+            if (_is_sel) {
+                draw_set_alpha(0.25);
+                draw_set_color(c_yellow);
+                draw_rectangle(_bx + 16, _iy - 18, _bx + _box_w - 16, _iy + 18, false);
+                draw_set_alpha(1.0);
+            }
+
+            draw_set_halign(fa_left);
+            draw_set_color(_is_sel ? c_yellow : c_white);
+            draw_text(_bx + 32, _iy, _names[_i]);
+
+            draw_set_halign(fa_right);
+            var _val_str = "";
+            switch (_i) {
+                case 0: _val_str = "< " + string(round(global.master_volume * 100)) + "% >"; break;
+                case 1: _val_str = "< " + string(round(global.bgm_volume * 100)) + "% >"; break;
+                case 2: _val_str = "< " + string(round(global.sfx_volume * 100)) + "% >"; break;
+                case 3: _val_str = global.fullscreen ? "[Tela Cheia]" : "[Janela]"; break;
+                case 4: _val_str = global.screen_shake_enabled ? "[Ativado]" : "[Desativado]"; break;
+                case 5: _val_str = "[ " + loc_get_language_label() + " ]"; break;
+                case 6: _val_str = "[Enter]"; break;
+            }
+
+            draw_set_color(_is_sel ? c_yellow : make_colour_rgb(180, 210, 240));
+            draw_text(_bx + _box_w - 32, _iy, _val_str);
+        }
+
+        draw_set_halign(fa_center);
+        draw_set_color(make_colour_rgb(160, 175, 195));
+        draw_text(room_width / 2, _by + _box_h + 36, "W / S: Selecionar   |   A / D ou Enter: Ajustar   |   Esc: Salvar e Voltar");
+        break;
+
     case "save_slots":
         var _is_new = (save_slot_action == "new_game");
         var _title_text = _is_new ? "NOVO JOGO - ESCOLHA UM SLOT" : "CONTINUAR - ESCOLHA UM SLOT";

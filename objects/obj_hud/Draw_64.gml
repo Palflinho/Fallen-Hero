@@ -1,4 +1,4 @@
-﻿if (target == noone || !instance_exists(target)) {
+if (target == noone || !instance_exists(target)) {
     target = instance_find(obj_player, 0);
     if (target == noone) exit;
 }
@@ -35,3 +35,37 @@ if (game_over) {
 
 // 6. Controles Touch Mobile (caso ativos)
 touch_controls_draw_gui();
+
+// 7. Onboarding Diegético de Controles (na Vila e na Sala 1 da Masmorra)
+if (!game_over && !level_complete && !global.paused && !global.attr_window_open && !is_world_paused()) {
+    if (room == room_village || room == Room1) {
+        var _hint_txt = "[WASD / Setas] Mover   *   [Z / Clique] Atacar   *   [X] Especial   *   [Espaco] Esquiva / Interagir   *   [G] Ficha & Talentos";
+        var _lang = loc_get_language();
+        if (_lang == "en") _hint_txt = "[WASD / Arrows] Move   *   [Z / Click] Attack   *   [X] Skill   *   [Space] Dash / Interact   *   [G] Hero Sheet";
+        else if (_lang == "es") _hint_txt = "[WASD / Flechas] Mover   *   [Z / Clic] Atacar   *   [X] Especial   *   [Espacio] Esquiva / Interactuar   *   [G] Hoja de Heroe";
+        else if (_lang == "ja") _hint_txt = "[WASD / 矢印] 移動   *   [Z] 攻撃   *   [X] スキル   *   [Space] 回避/調べる   *   [G] ステータス";
+
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_bottom);
+        draw_set_font(-1);
+
+        var _hw = string_width(_hint_txt) + 24;
+        var _hh = 24;
+        var _hx = _gw * 0.5;
+        var _hy = _gh - 14;
+
+        draw_set_alpha(0.7);
+        draw_set_colour(make_colour_rgb(10, 14, 22));
+        draw_rectangle(_hx - _hw * 0.5, _hy - _hh, _hx + _hw * 0.5, _hy, false);
+        draw_set_colour(make_colour_rgb(60, 80, 110));
+        draw_rectangle(_hx - _hw * 0.5, _hy - _hh, _hx + _hw * 0.5, _hy, true);
+
+        draw_set_alpha(0.9);
+        draw_set_colour(make_colour_rgb(200, 220, 240));
+        draw_text(_hx, _hy - 4, _hint_txt);
+
+        draw_set_alpha(1.0);
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+    }
+}

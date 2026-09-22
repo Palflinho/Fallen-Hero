@@ -423,6 +423,13 @@ if (variable_global_exists("inrun_saved_stats") && global.inrun_saved_stats && v
     hp = clamp(global.inrun_hp, 1, hp_max);
 }
 
+if (variable_global_exists("respawn_at_bonfire") && global.respawn_at_bonfire && room == room_village) {
+    x = 800;
+    y = 650;
+    global.respawn_at_bonfire = false;
+}
+
+
 facing_x = 0;
 facing_y = 1;
 move_dir = 270;

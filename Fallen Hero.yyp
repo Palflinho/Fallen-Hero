@@ -85,6 +85,8 @@
     {"id":{"name":"obj_trap_gas","path":"objects/obj_trap_gas/obj_trap_gas.yy",},},
     {"id":{"name":"obj_trap_spike","path":"objects/obj_trap_spike/obj_trap_spike.yy",},},
     {"id":{"name":"obj_village_elder","path":"objects/obj_village_elder/obj_village_elder.yy",},},
+    {"id":{"name":"obj_village_house_heroes","path":"objects/obj_village_house_heroes/obj_village_house_heroes.yy",},},
+    {"id":{"name":"obj_village_house_shop","path":"objects/obj_village_house_shop/obj_village_house_shop.yy",},},
     {"id":{"name":"obj_village_portal","path":"objects/obj_village_portal/obj_village_portal.yy",},},
     {"id":{"name":"obj_wall","path":"objects/obj_wall/obj_wall.yy",},},
     {"id":{"name":"obj_water_puddle","path":"objects/obj_water_puddle/obj_water_puddle.yy",},},

@@ -464,3 +464,28 @@ function touch_room_clicked(_x1, _y1, _x2, _y2) {
     return false;
 }
 
+function player_change_class(_player_inst, _new_class, _new_element, _new_talents = undefined) {
+    global.selected_character = _new_class;
+    global.selected_element = _new_element;
+    if (_new_talents != undefined) {
+        global.chosen_talent_ids = _new_talents;
+    }
+
+    if (instance_exists(_player_inst)) {
+        with (_player_inst) {
+            var _cur_x = x;
+            var _cur_y = y;
+            event_perform(ev_create, 0);
+            x = _cur_x;
+            y = _cur_y;
+        }
+    }
+
+    if (variable_global_exists("current_save_slot") && save_slot_exists(global.current_save_slot)) {
+        save_slot_save(global.current_save_slot);
+    }
+
+    sfx_play("equip");
+}
+
+
