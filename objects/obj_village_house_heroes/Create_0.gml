@@ -2,7 +2,7 @@
 // CASA DOS HERÓIS (Alojamento dos Campeões) - Fallen Hero
 // =========================================================================
 // Edificação diegética na Vila onde o jogador interage com a porta
-// para abrir o modal de seleção e troca de classe, afinidade e talentos.
+// para abrir o modal de seleção e troca de classe e afinidade elemental.
 // =========================================================================
 
 interact_radius = 65;
@@ -11,6 +11,8 @@ modal_open = false;
 
 classes = ["knight", "mage", "archer", "assassin"];
 class_labels = ["Cavaleiro", "Mago", "Arqueiro", "Assassino"];
+class_weapons = ["Espada Longa", "Cajado Arcano", "Arco Curto", "Adagas Gemeas"];
+class_roles = ["Tanque / Melee", "Dano Magico / Area", "Mobilidade / Alcance", "Dano Critico / Evasao"];
 class_subtitles = [
     "Defesa robusta, combate corpo a corpo e bloqueio resoluto.",
     "Ataques magicos de longo alcance e escudos elementais arcanos.",
@@ -26,34 +28,8 @@ element_colors = [c_white, make_colour_rgb(90, 180, 255), make_colour_rgb(255, 1
 selected_class_idx = 0;
 selected_element_idx = 0;
 
-talent_select_list = [];
-talent_selected_ids = [];
-talent_cursor = 0;
-
 notice_timer = 0;
 notice_text = "";
-
-// Sincroniza com as escolhas atuais do jogador
-function refresh_talents_list() {
-    var _char = classes[selected_class_idx];
-    var _elem = elements[selected_element_idx];
-    ensure_meta_loaded();
-
-    if (element_is_unlocked(_elem, _char)) {
-        var _unlocked = [];
-        var _all = get_talents_for_character_and_affinity(_char, _elem);
-        for (var _i = 0; _i < array_length(_all); _i++) {
-            var _t = _all[_i];
-            if (talent_is_unlocked(_t.id)) {
-                array_push(_unlocked, _t);
-            }
-        }
-        talent_select_list = _unlocked;
-    } else {
-        talent_select_list = [];
-    }
-    talent_cursor = 0;
-}
 
 function open_heroes_modal() {
     modal_open = true;
@@ -86,14 +62,6 @@ function open_heroes_modal() {
         if (elements[_e] == _p_elem) { selected_element_idx = _e; break; }
     }
 
-    talent_selected_ids = [];
-    if (variable_global_exists("chosen_talent_ids") && is_array(global.chosen_talent_ids)) {
-        for (var _t = 0; _t < array_length(global.chosen_talent_ids); _t++) {
-            if (global.chosen_talent_ids[_t] != "") array_push(talent_selected_ids, global.chosen_talent_ids[_t]);
-        }
-    }
-
-    refresh_talents_list();
     sfx_play("door_open");
 }
 
