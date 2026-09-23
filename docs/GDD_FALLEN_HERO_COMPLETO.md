@@ -3,7 +3,7 @@
 **Engine:** GameMaker LTS (Compatibilidade GML LTS 2026)  
 **Gênero:** Top-Down Action Roguelike RPG com Progressão Elemental  
 **Inspirações de Design:** *Hades*, *Dead Cells*, *Hyper Light Drifter*, *Super Smash Bros* (Filosofia Sakurai) e *The Legend of Zelda* (Filosofia Miyamoto)  
-**Status do Projeto:** 100% Integrado, Compilável e Validado na branch `main`
+**Status do Projeto:** Em desenvolvimento — protótipo jogável com sistemas completos; arte final, música e finais ainda pendentes. Compile e teste a cada entrega.
 
 ---
 
@@ -55,7 +55,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
 ```
 
 ### 3.1 Cavaleiro (Tatu-Bola — Macho)
-* **Atributos Base:** HP 140, Dano 12, Defesa Física 4, Velocidade 150 px/s.
+* **Atributos Base (nível 1, sem afinidade — `obj_player/Create_0.gml`):** HP 100, Poder 12 (físico), Defesa 8, recarga do ataque 0,28 s, Velocidade 180 px/s.
 * **Ataque Básico:** Talho frontal amplo (varredura de espada em 180° com repelência física).
 * **Habilidade Especial (Defesa / [X]):** Ergue o escudo. Bloqueia 50% a 100% de dano frontal, absorve projéteis.
   * **QoL Integrada:** Pode cancelar a qualquer instante antes do fim da duração apertando `[X]` novamente.
@@ -66,7 +66,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
   * *Terra (Guardião Tectônico):* Aumenta a couraça corporal proporcionalmente aos inimigos próximos.
 
 ### 3.2 Maga (Lobo-Guará — Fêmea)
-* **Atributos Base:** HP 90, Dano 18, Defesa Mágica 5, Velocidade 155 px/s.
+* **Atributos Base (nível 1, sem afinidade):** HP 70, Poder 14 (mágico), Defesa 3, recarga do ataque 0,9 s, Velocidade 160 px/s.
 * **Ataque Básico:** Disparo de esferas místicas de longo alcance com aceleração contínua.
 * **Habilidade Especial (Defesa / [X]):** Prisão Criogênica / Campo de Mana. Concede invulnerabilidade temporária estática.
   * **QoL Integrada:** Cancelável a qualquer momento com `[X]`.
@@ -77,7 +77,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
   * *Terra (Geomante):* Ruptura sísmica perfurante e muralhas protetoras de granito.
 
 ### 3.3 Arqueiro (Lagarto Teiú — Macho)
-* **Atributos Base:** HP 100, Dano 15, Cadência Alta, Velocidade 165 px/s.
+* **Atributos Base (nível 1, sem afinidade):** HP 80, Poder 8 (físico), Defesa 4, recarga do ataque 0,38 s, Velocidade 200 px/s.
 * **Ataque Básico:** Disparo de flechas lineares de alta perfuração com dano escalonado pela distância percorrida.
 * **Habilidade Especial (Defesa / [X]):** Rolamento Tático Evasivo com quadros de invulnerabilidade total.
 * **Afinidades Elementais:**
@@ -87,10 +87,10 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
   * *Terra (Arpão Tectônico):* Tiros cataclísmicos colossais e atordoamento por impacto contra paredes.
 
 ### 3.4 Assassino (Pássaro Urutau — Andrógino / Mãe-da-lua)
-* **Atributos Base:** HP 95, Dano 14, Taxa Crítica 20%, Velocidade 180 px/s.
+* **Atributos Base (nível 1, sem afinidade):** HP 60, Poder 6 (físico), Defesa 2, recarga do ataque 0,15 s, Velocidade 190 px/s.
 * **Ataque Básico:** Golpes rápidos de adagas curvas com bônus de 50% a 175% por golpe nas costas (*Backstab*).
 * **Habilidade Especial (Defesa / [X]):** Passo Espectral / Furtividade.
-  * **Mecânica de Aggro:** Ao ativar, chama imediatamente [`player_enter_stealth()`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_combat/scr_combat.gml#L1567-L1579), forçando todos os inimigos a perderem a visão e retornarem para patrulha.
+  * **Mecânica de Aggro:** Ao ativar, chama imediatamente [`player_enter_stealth()`](../scripts/scr_combat/scr_combat.gml#L1567-L1579), forçando todos os inimigos a perderem a visão e retornarem para patrulha.
   * **Movimentação Tática:** Move-se a 80% da velocidade normal enquanto invisível.
   * **Emboscada:** Quebra a invisibilidade atacando para desferir um acerto crítico garantido e plantar uma Mina de Basalto.
 * **Afinidades Elementais:**
@@ -153,7 +153,7 @@ Implementada no commit `7c1a9cd` e refinada em `scr_combat.gml`:
 
 ## 5. A MATRIZ DOS 210 TALENTOS ELEMENTAIS
 
-O catálogo de talentos está 100% definido em [`scr_talents.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_talents/scr_talents.gml) e operante nos eventos de combate:
+O catálogo de talentos está 100% definido em [`scr_talents.gml`](../scripts/scr_talents/scr_talents.gml) e operante nos eventos de combate:
 
 ### 5.1 Distribuição Estrutural (211 Talentos Totais)
 * **Cavaleiro (50 Talentos):**
@@ -229,10 +229,10 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
 5. **Câmara do Guardião (Etapa 7):** Batalha contra o chefe elemental do bioma.
 
 ### 6.3 Os Cinco Grandes Chefes
-1. **Templo da Água — Golem de Gelo Arcaico (`obj_boss`):** Estilhaços criogênicos, tempestades de granizo e congelamento do solo.
-2. **Templo do Fogo — Titã de Magma Vulcânico (`obj_boss2`):** Poças de lava permanentes, ondas de calor radiante e erupções subterrâneas.
-3. **Templo do Vento — Falcão das Tempestades (`obj_boss3`):** Ciclones móveis, investidas aéreas ultrarrápidas e zonas de vácuo cortante.
-4. **Templo da Terra — Colosso Tectônico (`obj_boss4`):** Fissuras sísmicas no solo, terremotos de impacto e armadura impenetrável que exige quebra de postura (*stagger*).
+1. **Templo da Água — General da Água (`obj_boss`; o HUD o chama de "General Glacial"):** Estilhaços criogênicos, tempestades de granizo e congelamento do solo.
+2. **Templo do Fogo — General Magma (`obj_boss2`):** Poças de lava permanentes, ondas de calor radiante e erupções subterrâneas.
+3. **Templo do Vento — General Zephyrus (`obj_boss3`):** Ciclones móveis, investidas aéreas ultrarrápidas e zonas de vácuo cortante.
+4. **Templo da Terra — Titã Monolito (`obj_boss4`; também aparece como "Colosso Titã"):** Fissuras sísmicas no solo, terremotos de impacto e armadura impenetrável que exige quebra de postura (*stagger*).
 5. **Santuário Orbital — O Guardião Humano (`obj_boss_human`):**
    * *Fase 1 (Armadura Titânica):* Disparos de laser contínuo (`laser_beam`), escudos de energia defletores (`energy_shield`) e convocação de drones de vigilância.
    * *Fase 2 (Sobrecarga de Emergência):* Sobrecarga de propulsores, pulsos EMP e chuvas de artilharia orbital.
@@ -291,20 +291,21 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
   * Parries e defesas perfeitas (*chimes* harmônicos e sinos metálicos).
   * Baús e triunfos (*fanfares* arpejadas em onda senoidal).
   * Vento, fogo e explosões (*filtered brown/white noise*).
-* **Vozes Chiptune (Estilo Banjo-Kazooie):** Cada raça e personagem possui um tom de modulação sonora próprio durante as caixas de diálogo (Tatu grave em serra, Lobo médio suave em seno, Lagarto estalado, Urutau etéreo em tom harmônico).
+* **Vozes Chiptune (Estilo Banjo-Kazooie):** Cada raça e personagem tem um tom próprio definido em `scr_audio` (Tatu grave em serra, Lobo médio suave em seno, Lagarto estalado, Urutau etéreo em tom harmônico). **Pendente:** as vozes ainda não tocam nas caixas de diálogo.
+* **Música:** ainda não existe. **Pendente.**
 
 ---
 
 ## 9. MAPA DE ARQUITETURA TÉCNICA DO PROJETO
 
 ### 9.1 Scripts Centrais
-* [`scripts/scr_combat/scr_combat.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_combat/scr_combat.gml): Mecânicas de dano, mitigação inteligente, knockback, projéteis, 210 procs elementais, furtividade e hit-stops.
-* [`scripts/scr_talents/scr_talents.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_talents/scr_talents.gml): Definição dos 211 talentos, sintetizadores de atributos, cálculo de custos balanceados e sistema de baús.
-* [`scripts/scr_audio/scr_audio.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_audio/scr_audio.gml): Gerador PCM matemático de áudio procedural 16-bit e reprodução com pitch randômico.
-* [`scripts/scr_ai/scr_ai.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_ai/scr_ai.gml): Cones de visão, sentido aranha, flanco adaptativo, mira preditiva e patrulhas.
-* [`scripts/scr_hud/scr_hud.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_hud/scr_hud.gml): Desenho de minimapa, status do jogador, barras de vida/mana e avisos de combate.
-* [`scripts/scr_dialogue_data/scr_dialogue_data.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_dialogue_data/scr_dialogue_data.gml): Textos narrativos, diálogos dos heróis, NPCs da vila e do confronto final com o humano.
-* [`scripts/scr_locale/scr_locale.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_locale/scr_locale.gml): Suporte a internacionalização (i18n) e alternância dinâmica de idiomas.
+* [`scripts/scr_combat/scr_combat.gml`](../scripts/scr_combat/scr_combat.gml): Mecânicas de dano, mitigação inteligente, knockback, projéteis, 210 procs elementais, furtividade e hit-stops.
+* [`scripts/scr_talents/scr_talents.gml`](../scripts/scr_talents/scr_talents.gml): Definição dos 211 talentos, sintetizadores de atributos, cálculo de custos balanceados e sistema de baús.
+* [`scripts/scr_audio/scr_audio.gml`](../scripts/scr_audio/scr_audio.gml): Gerador PCM matemático de áudio procedural 16-bit e reprodução com pitch randômico.
+* [`scripts/scr_ai/scr_ai.gml`](../scripts/scr_ai/scr_ai.gml): Cones de visão, sentido aranha, flanco adaptativo, mira preditiva e patrulhas.
+* [`scripts/scr_hud/scr_hud.gml`](../scripts/scr_hud/scr_hud.gml): Desenho de minimapa, status do jogador, barras de vida/mana e avisos de combate.
+* [`scripts/scr_dialogue_data/scr_dialogue_data.gml`](../scripts/scr_dialogue_data/scr_dialogue_data.gml): Textos narrativos, diálogos dos heróis, NPCs da vila e do confronto final com o humano.
+* [`scripts/scr_locale/scr_locale.gml`](../scripts/scr_locale/scr_locale.gml): Suporte a internacionalização (i18n) e alternância dinâmica de idiomas.
 
 ### 9.2 Objetos Vitais
 * `obj_player`: Controlador do herói, máquinas de estados (idle, walk, attack, defend, hurt), timers de buffs e entrada de dados.
@@ -321,17 +322,21 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
 
 | Componente | Quantidade / Dimensão | Status de Implementação | Verificação de Código |
 | :--- | :---: | :---: | :--- |
-| **Classes de Herói** | 4 (Tatu, Lobo, Lagarto, Urutau) | 100% Operante | [`obj_player/Create_0.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/objects/obj_player/Create_0.gml) |
-| **Afinidades Elementais** | 4 (Água, Fogo, Vento, Terra) | 100% Operante | [`scr_combat.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_combat/scr_combat.gml) |
-| **Catálogo de Talentos** | 211 (50×4 + 11 Gerais) | 100% Concluído | [`scr_talents.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_talents/scr_talents.gml) |
-| **Procs Ativos de Combate** | 211 Efeitos Únicos | 100% Integrado | [`scr_combat.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_combat/scr_combat.gml) / Projéteis |
-| **Mitigação Físico vs Mágico** | 2 Tipos + Retornos Decrescentes | 100% Integrado | [`scr_combat.gml:2205`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_combat/scr_combat.gml#L2205) |
-| **Mecânica de Furtividade** | Perda de Aggro + 80% Vel | 100% Integrado | [`player_enter_stealth()`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_combat/scr_combat.gml#L1567) |
-| **Cancelamento de Habilidade** | `[X]` para Cavaleiro e Maga | 100% Integrado | [`obj_player/Step_0.gml:630`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/objects/obj_player/Step_0.gml#L630) |
-| **Hub da Vila Subterrânea** | Fogueira, Ancião, Pedestais | 100% Operante | [`room_village`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/rooms/room_village) |
-| **Chefes de Masmorra** | 5 (4 Elementais + Humano) | 100% Operante | [`obj_boss_human`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/objects/obj_boss_human) / `obj_boss 1-4` |
-| **Síntese de Áudio Procedural**| 24 Efeitos PCM + Vozes Chiptune | 100% Operante | [`scr_audio.gml`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/scripts/scr_audio/scr_audio.gml) |
-| **Planilhas de Metadados** | Excel `.xlsx` e `.csv` | 100% Sincronizado | [`Talentos_Fallen_Hero.xlsx`](file:///e:/Documentos/Reposit%C3%B3rios/Fallen-Hero/Talentos_Fallen_Hero.xlsx) (0 Pendências) |
+| **Classes de Herói** | 4 (Tatu, Lobo, Lagarto, Urutau) | 100% Operante | [`obj_player/Create_0.gml`](../objects/obj_player/Create_0.gml) |
+| **Afinidades Elementais** | 4 (Água, Fogo, Vento, Terra) | 100% Operante | [`scr_combat.gml`](../scripts/scr_combat/scr_combat.gml) |
+| **Catálogo de Talentos** | 211 (50×4 + 11 Gerais) | 100% Concluído | [`scr_talents.gml`](../scripts/scr_talents/scr_talents.gml) |
+| **Procs Ativos de Combate** | 211 Efeitos Únicos | 100% Integrado | [`scr_combat.gml`](../scripts/scr_combat/scr_combat.gml) / Projéteis |
+| **Mitigação Físico vs Mágico** | 2 Tipos + Retornos Decrescentes | 100% Integrado | [`scr_combat.gml:2205`](../scripts/scr_combat/scr_combat.gml#L2205) |
+| **Mecânica de Furtividade** | Perda de Aggro + 80% Vel | 100% Integrado | [`player_enter_stealth()`](../scripts/scr_combat/scr_combat.gml#L1567) |
+| **Cancelamento de Habilidade** | `[X]` para Cavaleiro e Maga | 100% Integrado | [`obj_player/Step_0.gml:630`](../objects/obj_player/Step_0.gml#L630) |
+| **Hub da Vila Subterrânea** | Fogueira, Ancião, Pedestais | 100% Operante | [`room_village`](../rooms/room_village) |
+| **Chefes de Masmorra** | 5 (4 Elementais + Humano) | 100% Operante | [`obj_boss_human`](../objects/obj_boss_human) / `obj_boss 1-4` |
+| **Síntese de Áudio Procedural**| 27 Efeitos PCM + 8 Vozes | Efeitos operantes; vozes não tocadas nos diálogos | [`scr_audio.gml`](../scripts/scr_audio/scr_audio.gml) |
+| **Música** | — | Não existe | — |
+| **Três Finais (Vingança, Conquistador, Síntese)** | 3 | Não implementado (derrotar o Humano leva direto à tela de vitória) | [`obj_stage_gate/Step_0.gml`](../objects/obj_stage_gate/Step_0.gml) |
+| **Fonte da Interface** | Liberation Sans (SIL OFL), faixa Latin-1 | Embutida em `datafiles/fonts` | [`ui_font()`](../scripts/scr_locale/scr_locale.gml) |
+| **Idiomas** | PT, EN, ES, JA | PT completo; demais parciais; JA sem fonte com caracteres japoneses | [`scr_locale.gml`](../scripts/scr_locale/scr_locale.gml) |
+| **Planilhas de Metadados** | Excel `.xlsx` e `.csv` | 100% Sincronizado | [`Talentos_Fallen_Hero.xlsx`](../Talentos_Fallen_Hero.xlsx) (0 Pendências) |
 
 ---
 *Documento homologado e integrado ao repositório oficial de Fallen Hero.*

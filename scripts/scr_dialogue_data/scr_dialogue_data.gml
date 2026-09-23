@@ -39,7 +39,7 @@ function dialogue_db_init() {
                 pt: "Herói... Você despertou sob as raízes da terra ancestral. A superfície sucumbiu após o roubo das Quatro Essências. Os Quatro Pedestais ao norte choram por seu retorno!",
                 en: "Hero... You awaken beneath the roots of the ancestral earth. The surface fell after the Four Essences were stolen. The Four Pedestals to the north weep for their return!",
                 es: "Héroe... Despertaste bajo las raíces de la tierra ancestral. La superficie sucumbió tras el robo de las Cuatro Esencias. ¡Los Cuatro Pedestales al norte lloran por su regreso!",
-                ja: "英雄よ…そなたは先祖伝来の大地の根元で目覚めた。四つの精髄が奪われ、地上は崩壊した。北にある四つの台座がそなたの帰還を待っておる！"
+                ja: "英雄よ...そなたは先祖伝来の大地の根元で目覚めた。四つの精髄が奪われ、地上は崩壊した。北にある四つの台座がそなたの帰還を待っておる！"
             }
         },
         {
@@ -81,7 +81,7 @@ function dialogue_db_init() {
                 pt: "As ruínas do Templo da Água... Sinto a umidade pesada e o lodo corrompido adiante. Minha carapaça e minha lâmina não vacilarão!",
                 en: "The ruins of the Water Temple... Heavy moisture and corrupted mire pulse ahead. My shell and blade shall not falter!",
                 es: "Las ruinas del Templo del Agua... Siento la pesada humedad y el lodo corrupto más adelante. ¡Mi caparazón y mi espada no vacilarán!",
-                ja: "水の神殿の遺跡…重い湿気と穢れた泥が渦巻いている。我が甲殻と刃は決して屈せぬ！"
+                ja: "水の神殿の遺跡...重い湿気と穢れた泥が渦巻いている。我が甲殻と刃は決して屈せぬ！"
             }
         }
     ];
@@ -95,7 +95,7 @@ function dialogue_db_init() {
                 pt: "Tolos mortais... Vocês rastejam até aqui se achando heróis?! Vocês não entendem o sacrifício! A Terra está morrendo e este poder a salvará!",
                 en: "Foolish mortals... You crawl here thinking yourselves heroes?! You do not comprehend the sacrifice! Earth is dying, and this power shall save it!",
                 es: "¡Necios mortales!... ¿Se arrastran hasta aquí creyéndose héroes? ¡No comprenden el sacrificio! ¡La Tierra está muriendo y este poder la salvará!",
-                ja: "愚かな者どもめ…自らを英雄と思い込んでここまで這い寄ったか？！貴様らには真の犠牲が理解できぬ！滅びゆく地球はこの力で救われるのだ！"
+                ja: "愚かな者どもめ...自らを英雄と思い込んでここまで這い寄ったか？！貴様らには真の犠牲が理解できぬ！滅びゆく地球はこの力で救われるのだ！"
             }
         },
         {
@@ -134,7 +134,7 @@ function dialogue_db_init() {
                 pt: "O Templo do Vento... Ciclones cortantes e vendavais rugem entre as fendas aéreas. Meus olhos de réptil acompanharão cada rajada!",
                 en: "The Wind Temple... Razor cyclones and howling gales roar through aerial chasms. My reptilian eyes shall trace every gust!",
                 es: "El Templo del Viento... Ciclones afilados y vendavales rugen entre las grietas aéreas. ¡Mis ojos de reptil seguirán cada ráfaga!",
-                ja: "風の神殿…空中回廊を切り裂く旋風と怒号の嵐。我が爬虫類の眼は、いかなる突風の軌道も見逃しはせぬ！"
+                ja: "風の神殿...空中回廊を切り裂く旋風と怒号の嵐。我が爬虫類の眼は、いかなる突風の軌道も見逃しはせぬ！"
             }
         }
     ];
@@ -148,7 +148,7 @@ function dialogue_db_init() {
                 pt: "Quem ousa desafiar os céus roubados?! O ar deste mundo não pertence mais a vocês... Cada rajada impulsiona a salvação da nossa espécie!",
                 en: "Who dares defy the stolen skies?! The atmosphere of this world no longer belongs to you... Every gale fuels the salvation of our kind!",
                 es: "¡¿Quién osa desafiar los cielos robados?! El aire de este mundo ya no les pertenece... ¡Cada ráfaga impulsa la salvación de nuestra especie!",
-                ja: "奪われし蒼穹に仇なす者は誰だ？！この大気はもはや貴様らのものではない…すべての風が、我ら人類の救済を加速させているのだ！"
+                ja: "奪われし蒼穹に仇なす者は誰だ？！この大気はもはや貴様らのものではない...すべての風が、我ら人類の救済を加速させているのだ！"
             }
         },
         {
@@ -187,7 +187,7 @@ function dialogue_db_init() {
                 pt: "Herói... Você reuniu os Quatro Elementos. Além daquela porta blindada não há mais monstros... Apenas o artífice por trás de toda essa tragédia. Use seu ouro. Compre tudo o que precisar.",
                 en: "Hero... You have gathered the Four Elements. Beyond that armored blast-door lie no beasts... Only the architect behind this entire tragedy. Spend your gold. Take all you require.",
                 es: "Héroe... Has reunido los Cuatro Elementos. Más allá de esa puerta blindada no hay monstruos... Solo el artífice detrás de toda esta tragedia. Usa tu oro. Compra todo lo que necesites.",
-                ja: "英雄よ…四つの属性をすべて集めたのだな。あの防壁扉の向こうに魔物はもうおらぬ…この悲劇を仕組んだ張本人が待つのみじゃ。残る金をすべて使い、必要な力を蓄えよ。"
+                ja: "英雄よ...四つの属性をすべて集めたのだな。あの防壁扉の向こうに魔物はもうおらぬ...この悲劇を仕組んだ張本人が待つのみじゃ。残る金をすべて使い、必要な力を蓄えよ。"
             }
         }
     ];
@@ -201,7 +201,7 @@ function dialogue_db_init() {
                 pt: "Então foram vocês... Os guardiões deste planeta primitivo conseguiram romper todas as minhas defesas de contenção.",
                 en: "So it was you... The guardians of this primitive planet managed to breach all of my containment barriers.",
                 es: "Así que fueron ustedes... Los guardianes de este planeta primitivo lograron romper todas mis barreras de contención.",
-                ja: "貴様らだったのか…この原生惑星の守護者どもが、私のすべての隔離防壁を突破してくるとはな。"
+                ja: "貴様らだったのか...この原生惑星の守護者どもが、私のすべての隔離防壁を突破してくるとはな。"
             }
         },
         {
@@ -223,7 +223,7 @@ function dialogue_db_init() {
                 pt: "Destruir a vida de um mundo para salvar outro não é salvação... É apenas condenar inocentes ao mesmo destino. Devolva as essências!",
                 en: "Extinguishing one world to save another is not salvation... It is merely dooming innocents to the very same fate. Surrender the essences!",
                 es: "Destruir la vida de un mundo para salvar otro no es salvación... Es solo condenar inocentes al mismo destino. ¡Devuelve las esencias!",
-                ja: "一つの世界を滅ぼして別の世界を救うことなど救済ではない…それは無実の命を同じ絶望に突き落とすだけだ。精髄を返してもらう！"
+                ja: "一つの世界を滅ぼして別の世界を救うことなど救済ではない...それは無実の命を同じ絶望に突き落とすだけだ。精髄を返してもらう！"
             }
         },
         {

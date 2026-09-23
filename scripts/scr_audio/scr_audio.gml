@@ -23,6 +23,9 @@ function audio_system_init() {
     global.sfx_map[$ "gold"] = audio_synth_chime(0.14, 987, 1318, _sr, 0.55);
     global.sfx_map[$ "chest"] = audio_synth_fanfare(0.32, _sr, 0.7);
     global.sfx_map[$ "stagger"] = audio_synth_bell(0.30, 440, _sr, 0.8);
+    global.sfx_map[$ "menu_select"] = audio_synth_chime(0.07, 880, 1175, _sr, 0.4);
+    global.sfx_map[$ "victory"] = audio_synth_fanfare(0.70, _sr, 0.8);
+    global.sfx_map[$ "thunder"] = audio_synth_slam_rumble(0.65, _sr, 0.9);
 
     // Efeitos de Ambiente da Vila e Portal
     global.sfx_map[$ "bonfire_crackle"] = audio_synth_noise_sweep(0.18, 320, 110, _sr, 0.35);

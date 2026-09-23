@@ -3,7 +3,7 @@
     if (target == noone) exit;
 }
 
-draw_set_font(-1);
+draw_set_font(ui_font());
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
@@ -19,7 +19,7 @@ hud_draw_player_card(id, target, pad, _gw, _gh, boss_room);
 // 3. Barra Superior do Chefe da Fase
 hud_draw_boss_bar(_gw, _gh, boss_room);
 
-// 4. Minimapa Radar e Trilha de NÃ³s do Bioma
+// 4. Minimapa Radar e Trilha de Nós do Bioma
 hud_draw_minimap_and_tracker(id, target, _gw, _gh, game_over, level_complete);
 
 // 5. Modais de Estado de Jogo (Exclusivos)

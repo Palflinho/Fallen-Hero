@@ -326,7 +326,7 @@ function touch_controls_draw_gui() {
 
     // Indicador dev no PC (apenas no modo dev para não poluir tela de jogadores)
     if (os_type != os_android && os_type != os_ios && variable_global_exists("dev_mode") && global.dev_mode) {
-        draw_set_font(-1);
+        draw_set_font(ui_font());
         draw_set_halign(fa_right);
         draw_set_valign(fa_top);
         draw_set_color(c_aqua);

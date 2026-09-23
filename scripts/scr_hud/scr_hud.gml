@@ -19,7 +19,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     var _card_w = 345;
     var _card_h = (target.talent_pending_points > 0) ? 132 : 124;
     
-    // Transpar├¬ncia Inteligente por Oclus├úo (Sakurai: A interface nunca deve tampar o combate nos cantos)
+    // Transparência Inteligente por Oclusão (Sakurai: A interface nunca deve tampar o combate nos cantos)
     var _hud_target_alpha = 1.0;
     if (view_enabled && view_visible[0] && target != noone) {
         var _cam = view_camera[0];
@@ -44,13 +44,13 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     if (!variable_instance_exists(id, "_hud.hud_card_alpha")) _hud.hud_card_alpha = 1.0;
     _hud.hud_card_alpha = lerp(_hud.hud_card_alpha, _hud_target_alpha, 0.15);
     
-    // Fundo escuro fosco transl├║cido
+    // Fundo escuro fosco translúcido
     draw_set_alpha(0.88 * _hud.hud_card_alpha);
     draw_set_color(make_colour_rgb(12, 16, 26));
     draw_rectangle(_card_x, _card_y, _card_x + _card_w, _card_y + _card_h, false);
     draw_set_alpha(_hud.hud_card_alpha);
     
-    // Cor elemental tem├ítica
+    // Cor elemental temática
     var _elem_col = make_colour_rgb(80, 200, 255); // agua
     if (target.element_affinity == "fire") _elem_col = make_colour_rgb(255, 120, 40);
     else if (target.element_affinity == "wind") _elem_col = make_colour_rgb(160, 240, 230);
@@ -73,12 +73,12 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     draw_rectangle(_card_x, _card_y + _card_h - 4, _card_x + 4, _card_y + _card_h, false);
     draw_rectangle(_card_x + _card_w - 4, _card_y + _card_h - 4, _card_x + _card_w, _card_y + _card_h, false);
     
-    // ---- COLUNA ESQUERDA: RETRATO DO HER├ôI, N├ìVEL E OURO ----
+    // ---- COLUNA ESQUERDA: RETRATO DO HERÓI, NÍVEL E OURO ----
     var _port_x = _card_x + 10;
     var _port_y = _card_y + 10;
     var _port_size = 52;
     
-    // Fundo do quadro do her├│i
+    // Fundo do quadro do herói
     draw_set_color(make_colour_rgb(16, 22, 34));
     draw_rectangle(_port_x, _port_y, _port_x + _port_size, _port_y + _port_size, false);
     
@@ -87,7 +87,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     var _cy = _port_y + _port_size / 2;
     var _body_col = variable_instance_exists(target, "body_colour") ? target.body_colour : _elem_col;
     
-    // Ins├¡gnia da classe (bloco geom├®trico transl├║cido com contorno na cor do her├│i)
+    // Insígnia da classe (bloco geométrico translúcido com contorno na cor do herói)
     draw_set_alpha(0.25);
     draw_set_color(_body_col);
     draw_rectangle(_cx - 16, _cy - 16, _cx + 16, _cy + 16, false);
@@ -95,7 +95,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     draw_set_color(_body_col);
     draw_rectangle(_cx - 16, _cy - 16, _cx + 16, _cy + 16, true);
     
-    // S├¡mbolo representativo da classe (├¡cone vetorial procedural da arma/estilo)
+    // Símbolo representativo da classe (ícone vetorial procedural da arma/estilo)
     var _c_icon = "sword";
     if (target.character_class == "knight") {
         _c_icon = (target.element_affinity == "earth") ? "shield" : "sword";
@@ -107,7 +107,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         _c_icon = "dagger";
     }
     
-    // Sombra de profundidade e ├¡cone estilizado da classe
+    // Sombra de profundidade e ícone estilizado da classe
     draw_talent_icon(_c_icon, _cx + 1, _cy + 1, 28, c_black);
     draw_talent_icon(_c_icon, _cx, _cy, 28, _body_col);
     
@@ -115,7 +115,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     draw_set_color(_elem_col);
     draw_rectangle(_port_x, _port_y, _port_x + _port_size, _port_y + _port_size, true);
     
-    // Chip de N├¡vel
+    // Chip de Nível
     var _lvl_y = _port_y + _port_size + 6;
     draw_set_alpha(0.9);
     draw_set_color(make_colour_rgb(20, 26, 38));
@@ -150,7 +150,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     var _col_w = _card_w - (_col_x - _card_x) - 10;
     var _cur_y = _card_y + 10;
     
-    // Linha 1: Nome do Arqu├®tipo & Badge de Afinidade
+    // Linha 1: Nome do Arquétipo & Badge de Afinidade
     var _hero_title = string_upper(target.character_class);
     if (variable_instance_exists(target, "archetype_name") && target.archetype_name != "") {
         _hero_title = string_upper(target.archetype_name);
@@ -192,7 +192,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_set_alpha(1);
     }
     
-    // Borda da barra de HP (pulsa em vermelho quando cr├¡tico <= 30%)
+    // Borda da barra de HP (pulsa em vermelho quando crítico <= 30%)
     var _is_danger = (target.hp / max(1, target.hp_max) <= 0.3);
     var _hp_border = _is_danger ? merge_colour(c_red, c_white, 0.5 + 0.5 * sin(current_time * 0.01)) : make_colour_rgb(80, 25, 30);
     draw_set_color(_hp_border);
@@ -258,7 +258,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_set_color(c_lime);
         draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _skill_pill_h, true);
         draw_set_valign(fa_middle);
-        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "Ôÿà [X] " + _skill_name + ": ATIVA (" + string(round(target.defend_timer * 10) / 10) + "s)");
+        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "* [X] " + _skill_name + ": ATIVA (" + string(round(target.defend_timer * 10) / 10) + "s)");
     } else if (target.defend_cooldown_timer > 0) {
         draw_set_alpha(0.7);
         draw_set_color(make_colour_rgb(20, 24, 32));
@@ -268,7 +268,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _skill_pill_h, true);
         draw_set_color(c_ltgray);
         draw_set_valign(fa_middle);
-        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "ÔÅ│ [X] " + _skill_name + ": " + string(round(target.defend_cooldown_timer * 10) / 10) + "s");
+        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "[X] " + _skill_name + ": " + string(round(target.defend_cooldown_timer * 10) / 10) + "s");
     } else {
         draw_set_alpha(0.8);
         draw_set_color(make_colour_rgb(16, 32, 24));
@@ -278,7 +278,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _skill_pill_h, true);
         draw_set_color(merge_colour(c_lime, c_white, 0.3));
         draw_set_valign(fa_middle);
-        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "ÔùÅ [X] " + _skill_name + ": PRONTA");
+        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "[X] " + _skill_name + ": PRONTA");
     }
     draw_set_valign(fa_top);
     _cur_y += _skill_pill_h + 5;
@@ -296,7 +296,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         var _plural = (target.talent_pending_points > 1) ? " PONTOS DISPONIVEIS" : " PONTO DISPONIVEL";
-        draw_text(_col_x + _col_w / 2, _cur_y + _pts_banner_h / 2, "Ôÿà " + string(target.talent_pending_points) + _plural + " [T / ESC]");
+        draw_text(_col_x + _col_w / 2, _cur_y + _pts_banner_h / 2, "* " + string(target.talent_pending_points) + _plural + " [T / ESC]");
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     } else {
@@ -324,16 +324,16 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_set_valign(fa_middle);
         if (_all_pressed) {
             draw_set_color(c_lime);
-            draw_text(_card_x + 8, _obj_y + _obj_h / 2, "Ô£ö 4/4 Selos! O Portal foi aberto!");
+            draw_text(_card_x + 8, _obj_y + _obj_h / 2, "4/4 Selos! O Portal foi aberto!");
         } else {
             draw_set_color(make_colour_rgb(255, 200, 100));
-            draw_text(_card_x + 8, _obj_y + _obj_h / 2, "ÔØû Selos Antigos: " + string(global.boss_buttons_pressed) + "/4 ativados");
+            draw_text(_card_x + 8, _obj_y + _obj_h / 2, "* Selos Antigos: " + string(global.boss_buttons_pressed) + "/4 ativados");
         }
         draw_set_valign(fa_top);
     }
     draw_set_alpha(1.0);
     
-    // Indicador do Modo Dev (Posicionado discretamente no rodap├® central)
+    // Indicador do Modo Dev (Posicionado discretamente no rodapé central)
     if (variable_global_exists("dev_mode") && global.dev_mode) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_bottom);
@@ -407,7 +407,7 @@ function hud_draw_boss_bar(_gw, _gh, boss_room) {
 }
 
 function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_complete) {
-    // ================= 2. MINIMAPA E PROGRESS├âO (TOP-RIGHT) =================
+    // ================= 2. MINIMAPA E PROGRESSÃO (TOP-RIGHT) =================
     if (!game_over && !level_complete && !(variable_global_exists("run_victory") && global.run_victory) && !global.chest_reward_open && !global.paused && !global.attr_window_open && (!variable_global_exists("midrun_shop_open") || !global.midrun_shop_open)) {
         run_update_current_room_state();
         var _map_w = 192;
@@ -415,7 +415,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
         var _map_x = _gw - _map_w - 24;
         var _map_y = 20;
     
-        // Transpar├¬ncia Inteligente no Mapa se o jogador estiver no canto superior direito
+        // Transparência Inteligente no Mapa se o jogador estiver no canto superior direito
         var _map_target_alpha = 1.0;
         if (view_enabled && view_visible[0] && target != noone) {
             var _cam = view_camera[0];
@@ -442,7 +442,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
         draw_set_color(make_colour_rgb(26, 36, 54));
         draw_rectangle(_map_x + 1, _map_y + 1, _map_x + _map_w - 1, _map_y + _map_h - 1, true);
     
-        // Barra de T├¡tulo do Radar com friso elemental
+        // Barra de Título do Radar com friso elemental
         var _header_h = 22;
         draw_set_color(make_colour_rgb(18, 24, 38));
         draw_rectangle(_map_x, _map_y, _map_x + _map_w, _map_y + _header_h, false);
@@ -455,20 +455,20 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
         draw_set_color(make_colour_rgb(50, 70, 100));
         draw_line(_map_x, _map_y + _header_h, _map_x + _map_w, _map_y + _header_h);
     
-        // T├¡tulo do bioma e etapa com prote├º├úo contra vazamento
+        // Título do bioma e etapa com proteção contra vazamento
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_yellow);
         var _b_name = run_get_biome_name(global.run_biome);
         var _step_str = (global.run_room_step == 2.5) ? "ARENA (2.5)" : ("SALA " + string(global.run_room_step) + "/6");
-        var _header_txt = _b_name + " ÔÇó " + _step_str;
+        var _header_txt = _b_name + " · " + _step_str;
         var _tw = string_width(_header_txt);
         var _max_tw = _map_w - 12;
         var _t_scale = (_tw > _max_tw) ? (_max_tw / _tw) : 1;
         draw_text_transformed(_map_x + _map_w / 2, _map_y + 2 + (_header_h - 2) / 2, _header_txt, _t_scale, _t_scale, 0);
         draw_set_valign(fa_top);
     
-        // ├ürea interna do radar
+        // Área interna do radar
         var _inner_x = _map_x + 6;
         var _inner_y = _map_y + _header_h + 4;
         var _inner_w = _map_w - 12;
@@ -487,7 +487,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
             draw_rectangle(_wx, _wy, _wx + _ww, _wy + _wh, false);
         }
     
-        // Bot├Áes e Portas no radar
+        // Botões e Portas no radar
         with (obj_boss_button) {
             var _bx = _inner_x + x * _scale_x;
             var _by = _inner_y + y * _scale_y;
@@ -501,7 +501,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
             draw_rectangle(_dx - 1, _dy - 1, _dx + 4, _dy + 2, false);
         }
     
-        // Ba├║s no radar
+        // Baús no radar
         draw_set_color(c_yellow);
         with (obj_chest) {
             var _cx = _inner_x + x * _scale_x;
@@ -519,7 +519,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
             }
         }
     
-        // Portal de Sa├¡da no radar
+        // Portal de Saída no radar
         draw_set_color(make_colour_rgb(100, 220, 255));
         with (obj_stage_gate) {
             var _gx = _inner_x + x * _scale_x;
@@ -564,7 +564,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
             draw_line(_px, _py, _px + lengthdir_x(5, _p_dir), _py + lengthdir_y(5, _p_dir));
         }
     
-        // ================= TRILHA DE N├ôS (7 ETAPAS DO BIOMA) =================
+        // ================= TRILHA DE NÓS (7 ETAPAS DO BIOMA) =================
         var _trail_y = _map_y + _map_h + 6;
         var _step_keys = [1, 2, 2.5, 3, 4, 5, 6];
         var _node_labels = ["1", "2", "2.5", "3", "4", "5", "6"];
@@ -608,7 +608,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
             draw_set_valign(fa_top);
         }
     
-        // Subt├¡tulo descritivo da sala atual (abaixo dos n├│s)
+        // Subtítulo descritivo da sala atual (abaixo dos nós)
         var _sub_y = _trail_y + _node_h + 4;
         draw_set_alpha(0.85);
         draw_set_color(make_colour_rgb(14, 18, 26));
@@ -621,7 +621,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
         draw_set_valign(fa_middle);
         draw_set_color(make_colour_rgb(220, 230, 255));
         var _r_title = run_get_room_title(global.run_room_step);
-        var _title_txt = "Ô£ª " + _r_title + " Ô£ª";
+        var _title_txt = "* " + _r_title + " *";
         var _sub_tw = string_width(_title_txt);
         var _sub_scale = (_sub_tw > _map_w - 8) ? ((_map_w - 8) / _sub_tw) : 1;
         draw_text_transformed(_map_x + _map_w / 2, _sub_y + 9, _title_txt, _sub_scale, _sub_scale, 0);
@@ -1144,7 +1144,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         draw_line(_lx, _ly, _col1_x + _left_w - 16, _ly);
         _ly += 10;
     
-        // Atributos Vitais de Combate (Nintendo Miyamoto: semi├│tica limpa)
+        // Atributos Vitais de Combate (Nintendo Miyamoto: semiótica limpa)
         var _val_x = _lx + 165;
     
         // 1. HP
@@ -1385,7 +1385,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             draw_set_color(c_yellow);
             draw_text(_tx, _ty, _tlabel);
     
-            // Exibi├º├úo estilizada do Rank
+            // Exibição estilizada do Rank
             draw_set_halign(fa_right);
             var _rank_str = "";
             if (_max_rank == 1) {
@@ -1402,7 +1402,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             draw_set_color(make_colour_rgb(35, 45, 65));
             draw_line(_tx, _ty + 22, _rx + _card_w - 14, _ty + 22);
     
-            // Descricao mec├ónica
+            // Descricao mecânica
             draw_set_color(c_ltgray);
             var _desc_w = _card_w - 90;
             draw_text_ext(_tx, _ty + 26, _tdesc, 16, _desc_w);
@@ -1426,7 +1426,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
                     draw_text(_rx + _card_w - 14, _cy + _card_h - 6, _upg_str);
                 } else {
                     draw_set_color(make_colour_rgb(170, 180, 200));
-                    draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "Custo: " + string(_cost) + " pts (" + string(_pts) + " dispon├¡veis)");
+                    draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "Custo: " + string(_cost) + " pts (" + string(_pts) + " disponíveis)");
                 }
             } else {
                 draw_set_color(make_colour_rgb(100, 220, 140));

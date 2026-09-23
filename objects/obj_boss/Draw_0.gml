@@ -63,7 +63,7 @@ if (variable_instance_exists(id, "adaptation") && is_struct(adaptation) && adapt
     draw_circle(x, y, body_radius + 12 + 2 * sin(current_time * 0.008), true);
     draw_set_alpha(1);
     
-    draw_text(x, y - body_radius - 42, "✦ " + adaptation.title + " ✦");
+    draw_text(x, y - body_radius - 42, "* " + adaptation.title + " *");
 }
 
 draw_set_color(vulnerable ? c_yellow : c_white);

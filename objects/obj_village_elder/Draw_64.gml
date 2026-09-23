@@ -8,7 +8,7 @@ if (point_distance(x, y, _player.x, _player.y) <= 52 && !is_world_paused()) {
     var _sx = (x - _cx);
     var _sy = (y - _cy - 36);
 
-    draw_set_font(-1);
+    draw_set_font(ui_font());
     draw_set_halign(fa_center);
     draw_set_valign(fa_bottom);
 

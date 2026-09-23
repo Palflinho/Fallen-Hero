@@ -302,7 +302,7 @@ function get_talent_defs() {
          desc_flavor: "O choque dos projeteis contra rochedos e paredes dissipa ondas sismicas no assoalho.",
          desc_value: "O impacto de projeteis em paredes gera uma onda sismica curta no chao causando lentidao.", icon_type: "rock"},
         {id: "mage_geo_monolito_esmagador", character: "mage", affinity: "earth", label: "Monolito Esmagador", synth_field: "synth_geo_monolito_esmagador", per_rank: 40, cost: 200,
-         desc_flavor: "O pilar basÃ¡ltico implode ao se esgotar, esmagando tudo que estiver preso na gravidade.",
+         desc_flavor: "O pilar basáltico implode ao se esgotar, esmagando tudo que estiver preso na gravidade.",
          desc_value: "O Monolito Basaltico (X) desaba no fim da duracao causando 40 de dano em area.", icon_type: "bastion"},
         {id: "mage_geo_espinhos_teluricos", character: "mage", affinity: "earth", label: "Espinhos Teluricos", synth_field: "synth_geo_espinhos_teluricos", per_rank: 1.0, cost: 135,
          desc_flavor: "Monstros arremessados contra obstaculos sofrem a violencia do esmagamento mineral.",
@@ -387,7 +387,7 @@ function get_talent_defs() {
          desc_value: "O rolamento deixa um rastro de agua congelada no solo que desorienta inimigos.", icon_type: "barrier"},
         {id: "archer_glacial_chuva_torrencial", character: "archer", affinity: "water", label: "Chuva Torrencial", synth_field: "synth_archer_glacial_chuva_torrencial", per_rank: 4, cost: 95,
          desc_flavor: "Uma saraivada celestial de flechas liquefeitas que chovem sobre zonas inteiras.",
-         desc_value: "Toda 5Âª flecha atirada faz chover 4 projeteis aquaticos celestes em leque.", icon_type: "bow"},
+         desc_value: "Toda 5ª flecha atirada faz chover 4 projeteis aquaticos celestes em leque.", icon_type: "bow"},
         {id: "archer_glacial_flecha_arpao", character: "archer", affinity: "water", label: "Flecha Arpao", synth_field: "synth_archer_glacial_flecha_arpao", per_rank: 3, cost: 115,
          desc_flavor: "Cordas de orvalho conectam os inimigos perfurados, dividindo os ferimentos entre todos.",
          desc_value: "Flechas perfurantes conectam alvos com agua, dividindo dano entre ate 3 monstros.", icon_type: "pierce"},
@@ -395,7 +395,7 @@ function get_talent_defs() {
          desc_flavor: "Gotas de agua purificada evaporam das vitimas lentas, restaurando a vitalidade do arqueiro.",
          desc_value: "Abater inimigos sob lentidao libera goticulas que restauram 4 de HP.", icon_type: "regen"},
         {id: "archer_glacial_nevoa_ilusoria", character: "archer", affinity: "water", label: "Nevoa Ilusoria", synth_field: "synth_archer_glacial_nevoa_ilusoria", per_rank: 1, cost: 115,
-         desc_flavor: "Uma nÃ©voa densa que cega agressores na area de rolamento, fazendo-os golpear o ar.",
+         desc_flavor: "Uma névoa densa que cega agressores na area de rolamento, fazendo-os golpear o ar.",
          desc_value: "Inimigos dentro da nevoa do Rolamento perdem a linha de visao e erram seus ataques.", icon_type: "dodge"},
         {id: "archer_glacial_perfurador_glacial", character: "archer", affinity: "water", label: "Perfurador Glacial", synth_field: "synth_archer_glacial_perfurador_glacial", per_rank: 1.0, cost: 135,
          desc_flavor: "Tiros macicos contra carne congelada que quebram o alvo em estilhacos cortantes.",
@@ -506,7 +506,7 @@ function get_talent_defs() {
          desc_value: "Abater inimigos reinicia a recarga do Rolamento e dobra a velocidade de disparo temporariamente.", icon_type: "haste"},
         {id: "archer_lendario_flecha_julgamento", character: "archer", affinity: "legendary", label: "Flecha do Julgamento", synth_field: "synth_archer_flecha_julgamento", per_rank: 1, cost: 220,
          desc_flavor: "Um raio de luz divina que desintegra criaturas enfraquecidas em um estrondo celestial.",
-         desc_value: "Toda 10Âª flecha dispara uma lanca divina que desintegra monstros com menos de 30% de vida.", icon_type: "holy"},
+         desc_value: "Toda 10ª flecha dispara uma lanca divina que desintegra monstros com menos de 30% de vida.", icon_type: "holy"},
 
         // =========================================================================
         // ASSASSINO (ASSASSIN) - 50 TALENTOS
@@ -597,7 +597,7 @@ function get_talent_defs() {
 
         // 4. ALGOZ DO TUFAO (ASSASSINO / VENTO - 8 TALENTOS)
         {id: "assassin_tufao_lamina_vacuo", character: "assassin", affinity: "wind", label: "Lamina de Vacuo", synth_field: "synth_assassin_tufao_lamina_vacuo", per_rank: 1.0, cost: 105,
-         desc_flavor: "O talho veloz projeta lÃ¢minas de ar que dobram o alcance dos ataques corpo a corpo.",
+         desc_flavor: "O talho veloz projeta lâminas de ar que dobram o alcance dos ataques corpo a corpo.",
          desc_value: "Cortes com adagas estendem ondas cortantes que dobram o alcance dos ataques basicos.", icon_type: "wind"},
         {id: "assassin_tufao_celeridade_fantasma", character: "assassin", affinity: "wind", label: "Celeridade Fantasma", synth_field: "synth_assassin_tufao_celeridade_fantasma", per_rank: 0.35, cost: 95,
          desc_flavor: "Bracos que se transformam em borroes de vento em uma sequencia de fatiamento vertiginosa.",

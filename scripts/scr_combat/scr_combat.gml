@@ -170,7 +170,7 @@ function fx_system_draw() {
     }
 
     // Draw Popups
-    draw_set_font(-1);
+    draw_set_font(ui_font());
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     for (var _i = 0; _i < array_length(global.combat_popups); _i++) {
@@ -501,7 +501,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
                         _base_damage = _enemy.hp + 9999;
                     }
                     trigger_hitstop(0.18);
-                    fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 18, "✦ GUILHOTINA! ✦", true, c_red);
+                    fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 18, "* GUILHOTINA! *", true, c_red);
                     fx_spawn_death_burst(_enemy.x, _enemy.y, c_maroon, 20);
                 }
             }
@@ -1758,7 +1758,7 @@ function player_perform_attack() {
                     }
                 }
                 if (array_length(_cut_targets) > 0) {
-                    fx_spawn_damage_popup(x, y - 32, "✦ MIL CORTES! ✦", true, make_colour_rgb(220, 240, 255));
+                    fx_spawn_damage_popup(x, y - 32, "* MIL CORTES! *", true, make_colour_rgb(220, 240, 255));
                     trigger_hitstop(0.14);
                     for (var _ti = 0; _ti < array_length(_cut_targets); _ti++) {
                         var _tgt = _cut_targets[_ti];

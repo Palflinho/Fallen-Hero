@@ -1,5 +1,5 @@
 // Indicador do Modo Dev e Atalhos de Teste no canto superior esquerdo
-draw_set_font(-1);
+draw_set_font(ui_font());
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
@@ -485,8 +485,8 @@ switch (state) {
         var _lbl_shoulder_l = "< Q";
         var _lbl_shoulder_r = "E >";
         if (_is_mobile) {
-            _lbl_shoulder_l = "◀";
-            _lbl_shoulder_r = "▶";
+            _lbl_shoulder_l = "<";
+            _lbl_shoulder_r = ">";
         } else {
             var _dev_sh = input_get_device_type();
             if (_dev_sh == "ps") {
@@ -576,13 +576,13 @@ switch (state) {
                     draw_set_color(c_yellow);
                     draw_set_halign(fa_center);
                     draw_set_valign(fa_bottom);
-                    draw_text(room_width / 2, _grid_start_y - 2, "▲  (Mais talentos acima)  ▲");
+                    draw_text(room_width / 2, _grid_start_y - 2, "^  (Mais talentos acima)  ^");
                 }
                 if (_end_vis_row < _total_rows) {
                     draw_set_color(c_yellow);
                     draw_set_halign(fa_center);
                     draw_set_valign(fa_top);
-                    draw_text(room_width / 2, _grid_start_y + talent_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, "▼  (Mais talentos abaixo - Role para ver)  ▼");
+                    draw_text(room_width / 2, _grid_start_y + talent_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, "v  (Mais talentos abaixo - Role para ver)  v");
                 }
 
                 for (var _row = _start_vis_row; _row < _end_vis_row; _row++) {
@@ -785,8 +785,8 @@ switch (state) {
         var _tab_lbl_l = "< Q";
         var _tab_lbl_r = "E >";
         if (_is_mobile) {
-            _tab_lbl_l = "◀";
-            _tab_lbl_r = "▶";
+            _tab_lbl_l = "<";
+            _tab_lbl_r = ">";
         } else {
             var _dev_tab = input_get_device_type();
             if (_dev_tab == "ps") {
@@ -847,13 +847,13 @@ switch (state) {
                 draw_set_color(c_yellow);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_bottom);
-                draw_text(room_width / 2, _grid_shop_y - 2, "▲  (Mais talentos acima)  ▲");
+                draw_text(room_width / 2, _grid_shop_y - 2, "^  (Mais talentos acima)  ^");
             }
             if (_end_vis_s_row < _total_s_rows) {
                 draw_set_color(c_yellow);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_top);
-                draw_text(room_width / 2, _grid_shop_y + shop_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, "▼  (Mais talentos abaixo - Role para ver)  ▼");
+                draw_text(room_width / 2, _grid_shop_y + shop_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, "v  (Mais talentos abaixo - Role para ver)  v");
             }
 
             for (var _row = _start_vis_s_row; _row < _end_vis_s_row; _row++) {

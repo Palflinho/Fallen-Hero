@@ -154,7 +154,7 @@ if (hp <= 0) {
         if (random(1) < _chance) {
             var _chest = instance_create_layer(x, y, layer, obj_chest);
             fx_spawn_sparks(x, y, c_yellow, 30);
-            fx_spawn_damage_popup(x, y - 24, "✦ BAU DE TALENTO RARO! ✦", false, c_yellow);
+            fx_spawn_damage_popup(x, y - 24, "* BAU DE TALENTO RARO! *", false, c_yellow);
         }
     }
 

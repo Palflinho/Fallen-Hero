@@ -15,3 +15,10 @@ output/Fallen Hero/Fallen Hero.zip
 # System & OS
 .DS_Store
 Thumbs.db
+
+# Saidas de build (geradas a cada compilacao, nao versionar)
+Build/
+output/
+*.exe
+*.win
+*.bak

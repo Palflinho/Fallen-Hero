@@ -6,7 +6,7 @@ var _bh = 150;
 var _bx = floor((_gw - _bw) * 0.5);
 var _by = floor(_gh - _bh - 32);
 
-draw_set_font(-1);
+draw_set_font(ui_font());
 draw_set_alpha(box_alpha);
 
 // 1. Sombra da caixa

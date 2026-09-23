@@ -42,8 +42,8 @@ function locale_init() {
     loc_register("pedestal_fire", "Pedestal do Fogo", "Fire Pedestal", "Pedestal del Fuego", "火の台座");
     loc_register("pedestal_wind", "Pedestal do Vento", "Wind Pedestal", "Pedestal del Viento", "風の台座");
     loc_register("pedestal_earth", "Pedestal da Terra", "Earth Pedestal", "Pedestal de la Tierra", "地の台座");
-    loc_register("essence_reclaimed", "✦ Essência Restaurada ✦", "✦ Essence Restored ✦", "✦ Esencia Restaurada ✦", "✦ 精髄回復 ✦");
-    loc_register("essence_missing", "◇ Vazio — Derrote o General ◇", "◇ Empty — Defeat the General ◇", "◇ Vacío — Derrota al General ◇", "◇ 空虚 — 将軍を討て ◇");
+    loc_register("essence_reclaimed", "* Essência Restaurada *", "* Essence Restored *", "* Esencia Restaurada *", "* 精髄回復 *");
+    loc_register("essence_missing", "* Vazio - Derrote o General *", "* Empty - Defeat the General *", "* Vacío - Derrota al General *", "* 空虚 - 将軍を討て *");
 
     // Classes e Atributos
     loc_register("class_knight", "Tatu Cavaleiro", "Armadillo Knight", "Armadillo Caballero", "アルマジロ騎士");
@@ -123,4 +123,23 @@ function loc_get_language_label() {
         case "ja": return "日本語";
         default:   return "Português";
     }
+}
+
+// Fonte da interface com acentos (Latin-1). Prioridade: asset "fnt_ui" criado no IDE,
+// depois a Liberation Sans embutida em datafiles/fonts, e por fim a fonte padrão.
+function ui_font() {
+    if (!variable_global_exists("fnt_ui_cached")) {
+        global.fnt_ui_cached = -1;
+        var _asset = asset_get_index("fnt_ui");
+        if (_asset != -1 && font_exists(_asset)) {
+            global.fnt_ui_cached = _asset;
+        } else {
+            var _path = "fonts/LiberationSans-Regular.ttf";
+            if (file_exists(_path)) {
+                var _f = font_add(_path, 12, false, false, 32, 255);
+                if (font_exists(_f)) global.fnt_ui_cached = _f;
+            }
+        }
+    }
+    return global.fnt_ui_cached;
 }

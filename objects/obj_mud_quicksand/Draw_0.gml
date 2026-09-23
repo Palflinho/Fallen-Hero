@@ -7,7 +7,7 @@ var _cy = y + _h * 0.5;
 var _rx = _w * 0.5;
 var _ry = _h * 0.5;
 
-// Lama movediÃ§a escura (Causa lentidÃ£o severa de 55% e impede dash)
+// Lama movediça escura (Causa lentidão severa de 55% e impede dash)
 draw_set_alpha(0.65);
 draw_set_color(make_colour_rgb(70, 48, 28));
 draw_ellipse(_cx - _rx, _cy - _ry, _cx + _rx, _cy + _ry, false);

@@ -151,7 +151,7 @@ if (_is_telegraphing) {
     draw_set_color(c_white);
     draw_circle(x, _ty, 8, true);
 
-    draw_set_font(-1);
+    draw_set_font(ui_font());
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_set_color(c_white);
@@ -171,7 +171,7 @@ if (variable_instance_exists(id, "spider_alert_timer") && spider_alert_timer > 0
     draw_circle(x, _sy, _rad_pulse, true);
     draw_circle(x, _sy, 7, false);
     draw_set_color(c_black);
-    draw_set_font(-1);
+    draw_set_font(ui_font());
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_text(x, _sy, "!");
@@ -219,7 +219,7 @@ if (_should_draw_hp) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_bottom);
         draw_set_color(c_yellow);
-        draw_text_transformed(x, _hy - 2, "★ RARO ★", 0.75, 0.75, 0);
+        draw_text_transformed(x, _hy - 2, "* RARO *", 0.75, 0.75, 0);
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     }
