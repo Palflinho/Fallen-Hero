@@ -41,6 +41,10 @@ if (vulnerable) {
     _label = "Recuperando...";
 } else if (state == "charge_windup") {
     _label = "DESVIE E FACA-O BATER NA PAREDE!";
+    var _pk = instance_find(obj_player, 0);
+    if (_pk != noone && _pk.character_class == "knight" && (_pk.defend_mode == "block" || _pk.defend_mode == "guardian_aegis")) {
+        _label = "DESVIE OU ERGA O ESCUDO!";
+    }
 }
 
 draw_set_halign(fa_center);

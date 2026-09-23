@@ -3,6 +3,8 @@
 //  1. INVESTIDA: mira (linha de aviso) e dispara ate bater em algo.
 //     Bateu na PAREDE -> CROSTA RACHADA 4s (janela +50%).
 //     Bateu em VOCE -> ele para e nao fica exposto.
+//     CAVALEIRO com escudo erguido segura a investida: janela de 2s (empurrado e com dano
+//     reduzido). GUARDIAO segura sem recuar nem sofrer dano: janela cheia de 4s.
 //  2. ERUPCAO: 3 (fase 3: 5) pontos marcados explodem e o chao queima.
 //  3. LEQUE DE MAGMA (fase 2+): 5 tiros de fogo.
 // ---------------------------------------------------------------------
@@ -177,6 +179,31 @@ switch (state) {
                 var _tg = elem_spawn_ground(x, y, "fire", 26, 3.0);
                 _tg.damage = 5;
             }
+        }
+
+        // Cavaleiro com o ESCUDO erguido segura a investida
+        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius
+            && _player.character_class == "knight" && _player.state == "defend" && _player.defend_active
+            && (_player.defend_mode == "block" || _player.defend_mode == "guardian_aegis")) {
+            trigger_hitstop(0.15);
+            trigger_camera_shake(12);
+            sfx_play("parry", 0.02, 1.0);
+            sfx_play("slam", 0.02, 0.8);
+            fx_spawn_death_burst(_player.x, _player.y, c_yellow, 20);
+            if (_player.defend_mode == "guardian_aegis") {
+                // Guardiao: muralha viva - nao recua, nao sofre dano, o General fica atordoado como se batesse na parede
+                state = "crashed";
+                boss_open_window(crash_duration);
+                fx_spawn_damage_popup(x, y - body_radius - 30, "MURALHA INABALAVEL! ATAQUE!", true, c_yellow);
+            } else {
+                // Cavaleiro comum: segura, mas e arrastado e sente o impacto (dano reduzido pelo bloqueio)
+                player_take_damage(charge_damage, "physical");
+                elem_push_player(charge_dir, 420);
+                state = "crashed";
+                boss_open_window(2.0);
+                fx_spawn_damage_popup(x, y - body_radius - 30, "INVESTIDA CONTIDA!", true, c_yellow);
+            }
+            break;
         }
 
         // Acertou o jogador: para e NAO fica exposto
