@@ -44,7 +44,7 @@ function player_gain_exp(_amount) {
     while (_p.xp >= _p.xp_to_next) {
         _p.xp -= _p.xp_to_next;
         _p.level += 1;
-        _p.talent_pending_points += 1;
+        _p.talent_pending_points += talent_points_for_level(_p.level);
         player_recompute_attributes(_p);
     }
 }

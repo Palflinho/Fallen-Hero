@@ -637,6 +637,12 @@ function locale_en_init() {
     _d[$ "^  (Mais talentos acima)  ^"] = "^  (More talents above)  ^";
     _d[$ "v  (Mais talentos abaixo - Role para ver)  v"] = "v  (More talents below - Scroll to see)  v";
 
+    _d[$ "Aperte [1 a 5]"] = "Press [1 to 5]";
+    _d[$ ": (Slot Extra - Equipe talentos encontrados em Baus)"] = ": (Extra Slot - Equip talents found in Chests)";
+    _d[$ "(Slot Extra)"] = "(Extra Slot)";
+    _d[$ "Equipe sem perder nada!"] = "Equip without losing anything!";
+    _d[$ "SELECIONE O SLOT PARA EQUIPAR  (O NOVO TALENTO HERDA O RANK DO SLOT):"] = "SELECT A SLOT TO EQUIP  (THE NEW TALENT INHERITS THE SLOT'S RANK):";
+
     // ---------------------------------------------------------------------
     // PEDACOS PARA TEXTOS COM NUMEROS (trocados em ordem, so quando a frase
     // inteira nao esta no dicionario)

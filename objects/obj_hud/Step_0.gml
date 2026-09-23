@@ -142,7 +142,7 @@ if (global.chest_reward_open) {
             hud_chest_slot_cursor = max(0, hud_chest_slot_cursor - 1);
         }
         if (input_check_ui_right_pressed()) {
-            hud_chest_slot_cursor = min(2, hud_chest_slot_cursor + 1);
+            hud_chest_slot_cursor = min(array_length(_player.talent_slot_ids) - 1, hud_chest_slot_cursor + 1);
         }
         if (input_check_ui_confirm()) {
             equip_chest_talent(_player, hud_chest_slot_cursor);
@@ -150,9 +150,9 @@ if (global.chest_reward_open) {
         if (input_check_ui_cancel() || input_check_slot_discard_pressed()) {
             skip_chest_reward();
         }
-        if (input_check_slot_pressed(0)) equip_chest_talent(_player, 0);
-        if (input_check_slot_pressed(1)) equip_chest_talent(_player, 1);
-        if (input_check_slot_pressed(2)) equip_chest_talent(_player, 2);
+        for (var _ks = 0; _ks < array_length(_player.talent_slot_ids); _ks++) {
+            if (input_check_slot_pressed(_ks)) equip_chest_talent(_player, _ks);
+        }
     }
     exit;
 }
@@ -195,12 +195,13 @@ if (global.paused || global.attr_window_open) {
         global.chest_reward_open = false;
         room_goto(room_char_select);
     } else if (_player != noone) {
-        // Navegacao com D-Pad nos 3 cards de talentos
+        // Navegacao com D-Pad nos cards de talentos (3 iniciais + 2 extras)
+        var _slot_n = array_length(_player.talent_slot_ids);
         if (input_check_ui_up_pressed()) {
             hud_talent_slot_cursor = max(0, hud_talent_slot_cursor - 1);
         }
         if (input_check_ui_down_pressed()) {
-            hud_talent_slot_cursor = min(2, hud_talent_slot_cursor + 1);
+            hud_talent_slot_cursor = min(_slot_n - 1, hud_talent_slot_cursor + 1);
         }
 
         // Y / Triangulo (auxiliar fixo) ou A / Cruz confirma ponto no talento focado
@@ -218,10 +219,10 @@ if (global.paused || global.attr_window_open) {
         var _rx = _col2_x + 16;
         var _ry = _content_y + 12 + 22 + 12;
         var _card_w = _right_w - 32;
-        var _card_h = 100;
-        var _card_gap = 12;
+        var _card_gap = hud_talent_card_gap(_slot_n);
+        var _card_h = hud_talent_card_height(_slot_n, _ry, _footer_y - 8);
 
-        for (var _t_idx = 0; _t_idx < 3; _t_idx++) {
+        for (var _t_idx = 0; _t_idx < _slot_n; _t_idx++) {
             var _cy = _ry + _t_idx * (_card_h + _card_gap);
             if (touch_gui_clicked(_rx, _cy, _rx + _card_w, _cy + _card_h)) {
                 hud_talent_slot_cursor = _t_idx;
@@ -229,9 +230,9 @@ if (global.paused || global.attr_window_open) {
             }
         }
 
-        if (input_check_slot_pressed(0)) { hud_talent_slot_cursor = 0; player_apply_talent_point(_player, 0); }
-        if (input_check_slot_pressed(1)) { hud_talent_slot_cursor = 1; player_apply_talent_point(_player, 1); }
-        if (input_check_slot_pressed(2)) { hud_talent_slot_cursor = 2; player_apply_talent_point(_player, 2); }
+        for (var _kt = 0; _kt < _slot_n; _kt++) {
+            if (input_check_slot_pressed(_kt)) { hud_talent_slot_cursor = _kt; player_apply_talent_point(_player, _kt); }
+        }
     }
 
     if (keyboard_check_pressed(ord("C"))) {

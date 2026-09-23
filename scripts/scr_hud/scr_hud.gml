@@ -924,9 +924,11 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
         var _slots_y = _card_top_y + _card_top_h + 10;
         draw_set_halign(fa_center);
         draw_set_color(c_yellow);
-        draw_text(_win_x + _win_w / 2, _slots_y, tr("SELECIONE O SLOT PARA SUBSTITUIR  (O NOVO TALENTO HERDARA O RANK DO SLOT):"));
+        draw_text(_win_x + _win_w / 2, _slots_y, tr("SELECIONE O SLOT PARA EQUIPAR  (O NOVO TALENTO HERDA O RANK DO SLOT):"));
     
-        var _col_w = (_win_w - 60 - 2 * 16) / 3;
+        var _slot_n = array_length(target.talent_slot_ids);
+        var _col_gap = (_slot_n > 3) ? 10 : 16;
+        var _col_w = (_win_w - 60 - (_slot_n - 1) * _col_gap) / _slot_n;
         var _cols_start_y = _slots_y + 20;
     
         var _discard_w = min(500, _win_w - 60);
@@ -944,7 +946,7 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
         for (var _i = 0; _i < array_length(target.talent_slot_ids); _i++) {
             var _cur_id = target.talent_slot_ids[_i];
             var _cur_rank = target.talent_slot_ranks[_i];
-            var _cx = _win_x + 30 + _i * (_col_w + 16);
+            var _cx = _win_x + 30 + _i * (_col_w + _col_gap);
     
             var _slot_hover = (_mx >= _cx && _mx <= _cx + _col_w && _my >= _cols_start_y && _my <= _cols_start_y + _col_h);
             var _is_cur_slot = (input_has_gamepad_connected() && _hud.hud_chest_slot_cursor == _i);
@@ -977,9 +979,10 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
             // Detalhes do Talento Atual do Slot
             if (_cur_id == "") {
                 draw_set_color(c_gray);
-                draw_text(_cx + _col_w / 2, _cols_start_y + 44, tr("(Slot Vazio)"));
+                draw_text(_cx + _col_w / 2, _cols_start_y + 44, (_i >= TALENT_SLOTS_START) ? tr("(Slot Extra)") : tr("(Slot Vazio)"));
                 draw_set_color(make_colour_rgb(80, 220, 120));
-                draw_text_ext(_cx + _col_w / 2, _cols_start_y + 68, tr("Instale com Rank ") + string(_cur_rank) + "!", 15, _col_w - 20);
+                var _inst_txt = (_cur_rank > 0) ? (tr("Instale com Rank ") + string(_cur_rank) + "!") : tr("Equipe sem perder nada!");
+                draw_text_ext(_cx + _col_w / 2, _cols_start_y + 68, _inst_txt, 15, _col_w - 20);
             } else {
                 var _cur_def = get_talent_def_by_id(_cur_id);
                 var _cur_label = is_undefined(_cur_def) ? _cur_id : talent_get_label(_cur_def);
@@ -1303,7 +1306,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             draw_set_color(_banner_col);
             draw_text(_rx, _ry, "* " + string(_pts) + tr(" PONTO(S)!"));
             draw_set_halign(fa_right);
-            draw_text(_col2_x + _right_w - 16, _ry, _is_mobile ? tr("Toque para Evoluir") : (input_is_gamepad_active() ? (tr("D-Pad Navegar | ") + input_get_btn_label("aux") + tr(" Evoluir")) : tr("Aperte [1, 2 ou 3]")));
+            draw_text(_col2_x + _right_w - 16, _ry, _is_mobile ? tr("Toque para Evoluir") : (input_is_gamepad_active() ? (tr("D-Pad Navegar | ") + input_get_btn_label("aux") + tr(" Evoluir")) : tr("Aperte [1 a 5]")));
             draw_set_halign(fa_left);
         } else {
             draw_set_color(c_white);
@@ -1319,10 +1322,12 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         draw_line(_rx, _ry, _col2_x + _right_w - 16, _ry);
         _ry += 12;
     
-        // Cards de Talentos (3 Slots)
+        // Cards de Talentos (3 iniciais + 2 extras da run)
+        var _slot_n = array_length(target.talent_slot_ids);
         var _card_w = _right_w - 32;
-        var _card_h = 100;
-        var _card_gap = 12;
+        var _card_gap = hud_talent_card_gap(_slot_n);
+        var _card_h = hud_talent_card_height(_slot_n, _ry, _content_y + _content_h);
+        var _compact = (_card_h < 90);
     
         for (var _i = 0; _i < array_length(target.talent_slot_ids); _i++) {
             var _tid = target.talent_slot_ids[_i];
@@ -1358,7 +1363,8 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
                 draw_set_color(c_gray);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
-                draw_text(_rx + _card_w / 2, _cy + _card_h / 2, tr("Slot ") + string(_i + 1) + tr(": (Vazio - Obtenha novos talentos em Baus)"));
+                var _empty_txt = (_i >= TALENT_SLOTS_START) ? tr(": (Slot Extra - Equipe talentos encontrados em Baus)") : tr(": (Vazio - Obtenha novos talentos em Baus)");
+                draw_text(_rx + _card_w / 2, _cy + _card_h / 2, tr("Slot ") + string(_i + 1) + _empty_txt);
                 draw_set_halign(fa_left);
                 draw_set_valign(fa_top);
                 continue;
@@ -1370,30 +1376,32 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             var _tdesc = is_undefined(_def) ? "" : talent_get_desc_value(_def);
     
             // Container do Icone
-            var _icon_box_size = 54;
+            var _icon_box_size = _compact ? (_card_h - 34) : 54;
+            var _key_off = _compact ? 3 : 6;
+            var _key_h = _compact ? 16 : 18;
             var _ibx = _rx + 10;
-            var _iby = _cy + 10;
+            var _iby = _cy + (_compact ? 8 : 10);
             draw_set_color(make_colour_rgb(26, 34, 52));
             draw_rectangle(_ibx, _iby, _ibx + _icon_box_size, _iby + _icon_box_size, false);
             draw_set_color(make_colour_rgb(60, 80, 115));
             draw_rectangle(_ibx, _iby, _ibx + _icon_box_size, _iby + _icon_box_size, true);
     
-            draw_talent_icon(_ticon, _ibx + _icon_box_size / 2, _iby + _icon_box_size / 2 - 2, 28, c_yellow);
+            draw_talent_icon(_ticon, _ibx + _icon_box_size / 2, _iby + _icon_box_size / 2 - 2, _compact ? 22 : 28, c_yellow);
     
-            // Tecla de atalho [1], [2], [3]
+            // Tecla de atalho [1]..[5]
             draw_set_color(make_colour_rgb(24, 30, 46));
-            draw_rectangle(_ibx, _iby + _icon_box_size + 6, _ibx + _icon_box_size, _iby + _icon_box_size + 24, false);
+            draw_rectangle(_ibx, _iby + _icon_box_size + _key_off, _ibx + _icon_box_size, _iby + _icon_box_size + _key_off + _key_h, false);
             draw_set_color((_pts >= _cost && _rank < _max_rank) ? c_yellow : make_colour_rgb(80, 100, 140));
-            draw_rectangle(_ibx, _iby + _icon_box_size + 6, _ibx + _icon_box_size, _iby + _icon_box_size + 24, true);
+            draw_rectangle(_ibx, _iby + _icon_box_size + _key_off, _ibx + _icon_box_size, _iby + _icon_box_size + _key_off + _key_h, true);
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
-            draw_text(_ibx + _icon_box_size / 2, _iby + _icon_box_size + 15, "[" + string(_i + 1) + "]");
+            draw_text(_ibx + _icon_box_size / 2, _iby + _icon_box_size + _key_off + _key_h / 2, "[" + string(_i + 1) + "]");
             draw_set_halign(fa_left);
             draw_set_valign(fa_top);
     
             // Titulo do Talento e Rank
             var _tx = _rx + 76;
-            var _ty = _cy + 10;
+            var _ty = _cy + (_compact ? 6 : 10);
             draw_set_color(c_yellow);
             draw_text(_tx, _ty, _tlabel);
     
@@ -1417,7 +1425,11 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             // Descricao mecânica
             draw_set_color(c_ltgray);
             var _desc_w = _card_w - 90;
-            draw_text_ext(_tx, _ty + 26, _tdesc, 16, _desc_w);
+            if (_compact) {
+                draw_text_ext_transformed(_tx, _ty + 25, _tdesc, 16, _desc_w / 0.8, 0.8, 0.8, 0);
+            } else {
+                draw_text_ext(_tx, _ty + 26, _tdesc, 16, _desc_w);
+            }
     
             // Aviso de upgrade
             draw_set_halign(fa_right);
@@ -1493,3 +1505,12 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         draw_set_valign(fa_top);
 }
 
+// Layout of the talent cards on the pause sheet (shared by obj_hud Step for touch input).
+function hud_talent_card_gap(_n) {
+    return (_n > 3) ? 6 : 12;
+}
+
+function hud_talent_card_height(_n, _top, _bottom) {
+    var _gap = hud_talent_card_gap(_n);
+    return clamp(floor((_bottom - _top - (_n - 1) * _gap) / max(1, _n)), 60, 100);
+}

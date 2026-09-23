@@ -316,9 +316,10 @@ xp = 0;
 xp_to_next = 30;
 
 // ---- Talents chosen for this run (picked at the char-select talent screen, or restored
-// from a checkpoint). Up to 3 slots; ranks grow in-run from level-up points.
-talent_slot_ids = ["", "", ""];
-talent_slot_ranks = [0, 0, 0];
+// from a checkpoint). 3 slots chosen pre-run + 2 extra slots filled in-run (chests);
+// ranks grow in-run from level-up points (level N grants N points).
+talent_slot_ids = array_create(TALENT_SLOTS_TOTAL, "");
+talent_slot_ranks = array_create(TALENT_SLOTS_TOTAL, 0);
 talent_pending_points = 0;
 
 if (variable_global_exists("inrun_saved_stats") && global.inrun_saved_stats) {
@@ -333,9 +334,12 @@ if (variable_global_exists("inrun_saved_stats") && global.inrun_saved_stats) {
     talent_slot_ids = global.save_talent_ids;
     talent_slot_ranks = global.save_talent_ranks;
     talent_pending_points = global.save_talent_pending;
-} else if (variable_global_exists("chosen_talent_ids")) {
-    talent_slot_ids = global.chosen_talent_ids;
+} else {
+    // Fresh run: level 1 already grants its point.
+    if (variable_global_exists("chosen_talent_ids")) talent_slot_ids = global.chosen_talent_ids;
+    talent_pending_points = talent_points_for_level(level);
 }
+player_normalize_talent_slots(id);
 
 // ---- Synthetic attributes -- only ever granted by talents. Recomputed from the talent
 // slots above right below; anything not covered by a chosen talent stays at 0.

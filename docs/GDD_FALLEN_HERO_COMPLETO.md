@@ -195,6 +195,11 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
   * Ranks 2 $\rightarrow$ 4: 3 a 5 pontos por nível (Consolidação de build)
   * Ranks 5 $\rightarrow$ 10: 6 a 9 pontos por nível (Especialização final e investimento de endgame)
 
+### 5.3 Slots e Pontos de Talento na Run
+* **5 slots por run:** o jogador escolhe **3 talentos** na tela pré-run; os **2 slots extras** começam vazios e são preenchidos durante a partida com talentos achados em baús/portais (o baú nunca sorteia um talento já equipado).
+* **O rank pertence ao slot:** trocar o talento de um slot mantém o rank já investido nele.
+* **Pontos por nível:** ao atingir o nível N o herói ganha N pontos (nível 1 = 1, nível 2 = 2, nível 3 = 3...). A run começa no nível 1 com 1 ponto. Fórmula em `talent_points_for_level()`.
+
 ---
 
 ## 6. ARQUITETURA DE FASES, DUNGEONS & VILA HUB
@@ -294,7 +299,7 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
 
 ### 8.2 HUD & Menus com Semiótica Nintendo
 * **Minimapa Vetorial:** Exibe o traçado da masmorra em tempo real, ícones de portas, posição do jogador e indicadores de direção sem vazamento de memória ou sobreposição na tela.
-* **Card de Baú Tríplice:** Ao abrir um baú de arena, o jogo pausa e exibe cards nítidos comparando os três slots de talento do herói com o novo poder sorteado.
+* **Card de Baú Tríplice:** Ao abrir um baú de arena, o jogo pausa e exibe cards nítidos comparando os slots de talento do herói (3 iniciais + 2 extras) com o novo poder sorteado.
 * **Ficha do Herói em Duas Colunas:** Painel limpo com árvore de maestria, atributos calculados em tempo real (dano físico, mágico, defesa, velocidade, cadência) e descrições com auto-ajuste de linha (`string_height_ext`).
 
 ### 8.3 Síntese Sonora Procedural 16-bit (`scr_audio.gml`)

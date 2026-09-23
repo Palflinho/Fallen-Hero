@@ -1,3 +1,8 @@
+// Talent slots: TALENT_SLOTS_START are picked at the pre-run screen; the remaining ones
+// (up to TALENT_SLOTS_TOTAL) start empty and are filled during the run from chests/portals.
+#macro TALENT_SLOTS_START 3
+#macro TALENT_SLOTS_TOTAL 5
+
 // Shop talents per class -- cost 0 means unlocked from the start, cost > 0 must be bought
 // with gold in the shop before it can be picked at the pre-run talent-selection screen.
 //
@@ -1769,6 +1774,32 @@ function talent_get_upgrade_cost(_id, _cur_rank) {
 }
 
 
+function talent_list_has(_arr, _id) {
+    for (var _i = 0; _i < array_length(_arr); _i++) {
+        if (_arr[_i] == _id) return true;
+    }
+    return false;
+}
+
+// Talent points granted on reaching a level: level 1 = 1, level 2 = 2, level 3 = 3...
+// (a run starts at level 1, so the hero begins with 1 point).
+function talent_points_for_level(_lvl) {
+    return max(1, _lvl);
+}
+
+// Pads/copies the player's slot arrays to TALENT_SLOTS_TOTAL entries (pre-run loadouts and
+// older saves only carry 3), so extra slots always exist as empty rank-0 slots.
+function player_normalize_talent_slots(_p) {
+    var _ids = array_create(TALENT_SLOTS_TOTAL, "");
+    var _ranks = array_create(TALENT_SLOTS_TOTAL, 0);
+    for (var _i = 0; _i < TALENT_SLOTS_TOTAL; _i++) {
+        if (is_array(_p.talent_slot_ids) && _i < array_length(_p.talent_slot_ids)) _ids[_i] = _p.talent_slot_ids[_i];
+        if (is_array(_p.talent_slot_ranks) && _i < array_length(_p.talent_slot_ranks)) _ranks[_i] = _p.talent_slot_ranks[_i];
+    }
+    _p.talent_slot_ids = _ids;
+    _p.talent_slot_ranks = _ranks;
+}
+
 function player_apply_talent_point(_p, _slot_index) {
     if (_p == noone || !instance_exists(_p)) return;
     if (_slot_index < 0 || _slot_index >= array_length(_p.talent_slot_ids)) return;
@@ -1790,11 +1821,17 @@ function player_apply_talent_point(_p, _slot_index) {
 }
 
 // ---- Chests: found during a run, grant one random general talent. The player picks
-// which of their 3 slots to put it in (discarding that slot's current rank), or skips.
+// which of their slots to put it in (the new talent keeps that slot's rank), or skips.
+// Talents the player already has equipped are left out of the pool.
 function roll_chest_talent() {
+    var _owned = [];
+    var _pl = instance_find(obj_player, 0);
+    if (_pl != noone && variable_instance_exists(_pl, "talent_slot_ids")) _owned = _pl.talent_slot_ids;
+
     var _pool = [];
     var _gens = get_general_talent_defs();
     for (var _i = 0; _i < array_length(_gens); _i++) {
+        if (talent_list_has(_owned, _gens[_i].id)) continue;
         array_push(_pool, _gens[_i].id);
     }
 
@@ -1804,7 +1841,7 @@ function roll_chest_talent() {
 
     for (var _j = 0; _j < array_length(_class_defs); _j++) {
         var _t = _class_defs[_j];
-        if (talent_is_unlocked(_t.id)) {
+        if (talent_is_unlocked(_t.id) && !talent_list_has(_owned, _t.id)) {
             array_push(_pool, _t.id);
         }
     }
