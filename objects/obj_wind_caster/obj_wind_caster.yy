@@ -14,8 +14,8 @@
     "path":"folders/Objects.yy",
   },
   "parentObjectId":{
-    "name":"obj_frost_caster",
-    "path":"objects/obj_frost_caster/obj_frost_caster.yy",
+    "name":"obj_enemy_parent",
+    "path":"objects/obj_enemy_parent/obj_enemy_parent.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,

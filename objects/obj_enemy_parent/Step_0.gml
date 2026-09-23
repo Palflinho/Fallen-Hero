@@ -142,7 +142,13 @@ if (variable_instance_exists(id, "wind_exposed") && wind_exposed > 0) wind_expos
 if (variable_instance_exists(id, "earth_fracture") && earth_fracture > 0) earth_fracture -= _dt;
 if (variable_instance_exists(id, "spectral_mark") && spectral_mark > 0) spectral_mark -= _dt;
 
+if (fh_vuln_timer > 0) fh_vuln_timer -= _dt;
+
 move_speed_effective = move_speed * (slow_active ? slow_multiplier : 1);
+if (fh_haste_timer > 0) {
+    fh_haste_timer -= _dt;
+    move_speed_effective *= 1.35;
+}
 
 if (hp <= 0) {
     player_gain_exp(exp_reward);

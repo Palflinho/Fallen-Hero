@@ -29,6 +29,10 @@ function fh_move_and_collide(_amount_x, _amount_y) {
 
 function fh_place_on_ice(_x, _y) {
     var _on = false;
+    // Gelo temporario criado por inimigos de agua (rastro do slime, cruz de gelo)
+    with (obj_elem_ground) {
+        if (kind == "slick" && point_distance(_x, _y, x, y) <= radius) _on = true;
+    }
     with (obj_ice_patch) {
         if (active) {
             var _w = base_size * image_xscale;

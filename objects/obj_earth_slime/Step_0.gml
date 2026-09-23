@@ -1,7 +1,15 @@
+// ---------------------------------------------------------------------
+// SLIME DE TERRA
+//  - Carapaca de pedra na frente: golpes frontais ricocheteiam (0 de dano).
+//    3 golpes na carapaca a quebram (janela vulneravel de 2.5s).
+//  - Ataque: linha de aviso -> rola em linha reta -> fica tonto 0.9s
+//    (gira e expoe as costas).
+// ---------------------------------------------------------------------
 event_inherited();
-var _dt = delta_time / 1000000;
+if (elem_ai_blocked()) exit;
 
-body_colour = (state == "windup") ? make_colour_rgb(180, 140, 80) : make_colour_rgb(135, 100, 60);
+var _dt = delta_time / 1000000;
+body_colour = (state == "windup" || state == "roll_windup") ? make_colour_rgb(180, 140, 80) : make_colour_rgb(135, 100, 60);
 
 if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
 
@@ -32,16 +40,20 @@ switch (state) {
                 break;
             }
         }
+        if (_player == noone) break;
 
-        if (_dist <= attack_range) {
-            if (attack_cooldown_timer <= 0) {
-                state = "windup";
-                attack_windup_timer = attack_windup;
-            }
-        } else if (_player != noone) {
-            var _dir = point_direction(x, y, _player.x, _player.y);
-            ai_enemy_move(_dir, move_speed_effective, _dt);
+        if (_dist <= attack_range && attack_cooldown_timer <= 0) {
+            state = "windup";
+            attack_windup_timer = attack_windup;
+        } else if (attack_cooldown_timer <= 0 && _dist >= roll_min && _dist <= roll_range) {
+            state = "roll_windup";
+            attack_windup_timer = 0.55;
+            roll_dir = point_direction(x, y, _player.x, _player.y);
+        } else {
+            ai_enemy_move(point_direction(x, y, _player.x, _player.y), move_speed_effective, _dt);
         }
+        // A carapaca sempre encara o jogador
+        facing_dir = point_direction(x, y, _player.x, _player.y);
         break;
 
     case "windup":
@@ -60,6 +72,52 @@ switch (state) {
             scale_y = 1.25;
             fx_spawn_sparks(x, y, make_colour_rgb(160, 120, 70), 8);
         }
+        break;
+
+    case "roll_windup":
+        attack_windup_timer -= _dt;
+        facing_dir = roll_dir;
+        scale_x = 1.3;
+        scale_y = 0.7;
+        if (attack_windup_timer <= 0) {
+            state = "roll";
+            roll_timer = 0.6;
+            roll_hit = false;
+            sfx_play("slam", 0.1, 0.4);
+        }
+        break;
+
+    case "roll":
+        roll_timer -= _dt;
+        facing_dir = roll_dir;
+        var _ox = x;
+        var _oy = y;
+        fh_move_and_collide(lengthdir_x(320 * _dt, roll_dir), lengthdir_y(320 * _dt, roll_dir));
+        if (random(1) < 0.4) fx_spawn_sparks(x, y + body_radius, make_colour_rgb(160, 120, 70), 1);
+        if (!roll_hit && _player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius + 2) {
+            roll_hit = true;
+            player_take_damage(elem_dmg(12), "physical");
+            elem_push_player(roll_dir, 280);
+        }
+        var _blocked = (point_distance(_ox, _oy, x, y) < 320 * _dt * 0.3);
+        if (roll_timer <= 0 || _blocked) {
+            if (_blocked) {
+                trigger_camera_shake(3);
+                fx_spawn_sparks(x, y, c_ltgray, 10);
+            }
+            state = "dizzy";
+            dizzy_timer = _blocked ? 1.3 : 0.9;
+            fh_vuln_timer = dizzy_timer;
+            attack_cooldown_timer = attack_cooldown + 0.8;
+        }
+        break;
+
+    case "dizzy":
+        dizzy_timer -= _dt;
+        facing_dir = (facing_dir + 540 * _dt) mod 360; // gira tonto: a carapaca deixa as costas expostas
+        scale_x = 1.1;
+        scale_y = 0.9;
+        if (dizzy_timer <= 0) state = "chase";
         break;
 }
 

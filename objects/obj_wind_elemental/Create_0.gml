@@ -22,3 +22,13 @@ exp_reward = 30;
 gold_reward = 1;
 knockback_resistance = 0.15;
 anim_rot = 0;
+
+// --- Elemental de Vento: teleporta quando o jogador se aproxima + bumerangues ---
+attack_cooldown = 1.9;
+blink_trigger = 75;
+blink_cooldown = 0;
+blink_recover = 0;
+blink_from_x = x;
+blink_from_y = y;
+blink_fx_timer = 0;
+recover_timer = 0;

@@ -101,7 +101,7 @@ if (variable_instance_exists(id, "stagger_timer") && stagger_timer > 0) {
 
 // 1.9. Anel Tático de Ameaça Sob os Pés (Feedback Lele / Sakurai: Identificação Imediata de Inimigo)
 var _seed = variable_instance_exists(id, "anim_seed") ? anim_seed : (x * 13 + y * 17);
-var _threat_pulse = 0.65 + 0.35 * abs(sin((current_time + _seed * 70) * 0.006));
+var _threat_pulse = (0.65 + 0.35 * abs(sin((current_time + _seed * 70) * 0.006))) * (draw_alpha >= 0.5 ? 1 : 0);
 draw_set_alpha(0.18 * _threat_pulse);
 draw_set_color(c_red);
 draw_ellipse(x - body_radius * 1.15, y + body_radius * 0.45, x + body_radius * 1.15, y + body_radius * 0.90, false);
@@ -110,13 +110,51 @@ draw_set_color(make_colour_rgb(255, 60, 60));
 draw_ellipse(x - body_radius * 1.15, y + body_radius * 0.45, x + body_radius * 1.15, y + body_radius * 0.90, true);
 draw_set_alpha(1.0);
 
+// 1.95. Ganchos elementais: janela de vulnerabilidade, escudo de totem, pressa e infusao
+if (fh_vuln_timer > 0) {
+    draw_set_alpha(0.45 + 0.35 * sin(current_time * 0.03));
+    draw_set_color(c_yellow);
+    draw_circle(x, y, body_radius * scale_x + 10, true);
+    draw_circle(x, y, body_radius * scale_x + 11, true);
+    draw_set_alpha(1);
+}
+if (fh_totem_shield > 0) {
+    draw_set_alpha(0.55);
+    draw_set_color(make_colour_rgb(200, 160, 100));
+    for (var _ts = 0; _ts < fh_totem_shield; _ts++) {
+        var _tsa = current_time * 0.15 + _ts * (360 / max(1, fh_totem_shield));
+        draw_rectangle(x + lengthdir_x(body_radius + 8, _tsa) - 3, y + lengthdir_y(body_radius + 8, _tsa) - 3, x + lengthdir_x(body_radius + 8, _tsa) + 3, y + lengthdir_y(body_radius + 8, _tsa) + 3, false);
+    }
+    draw_set_alpha(1);
+}
+if (fh_haste_timer > 0 && random(1) < 0.3) {
+    fx_spawn_sparks(x, y + body_radius * 0.5, make_colour_rgb(255, 150, 60), 1);
+}
+if (fh_infused) {
+    draw_set_alpha(0.35 + 0.2 * sin(current_time * 0.02));
+    draw_set_color(make_colour_rgb(150, 255, 220));
+    draw_circle(x, y - draw_z, body_radius * scale_x + 5, false);
+    draw_set_alpha(1);
+}
+
+// 1.96. Sombra no chao quando o corpo esta no ar (salto do slime de vento, voo)
+if (draw_z > 1) {
+    var _sh = clamp(1 - draw_z / 120, 0.4, 1);
+    draw_set_alpha(0.35);
+    draw_set_color(c_black);
+    draw_ellipse(x - body_radius * _sh, y + body_radius * 0.5 - 4 * _sh, x + body_radius * _sh, y + body_radius * 0.5 + 4 * _sh, false);
+    draw_set_alpha(1);
+}
+
 // 2. Body Rendering with Sakurai Squash & Stretch Deformation
+var _body_y = y - draw_z;
+draw_set_alpha(draw_alpha);
 if (sprite_index != -1) {
     var _blend = body_colour;
     if (poison_active) _blend = merge_colour(body_colour, c_lime, 0.4);
     if (hit_flash_timer > 0) _blend = c_white;
     var _facing_sign = variable_instance_exists(id, "facing_h") ? facing_h : ((facing_dir > 90 && facing_dir < 270) ? -1 : 1);
-    draw_sprite_ext(sprite_index, image_index, x, y, scale_x * _facing_sign, scale_y, 0, _blend, 1);
+    draw_sprite_ext(sprite_index, image_index, x, _body_y, scale_x * _facing_sign, scale_y, 0, _blend, draw_alpha);
 } else {
     var _col = body_colour;
     if (poison_active) _col = merge_colour(body_colour, c_lime, 0.4);
@@ -125,14 +163,14 @@ if (sprite_index != -1) {
     var _hw = body_radius * scale_x;
     var _hh = body_radius * scale_y;
     draw_set_color(_col);
-    draw_rectangle(x - _hw, y - _hh, x + _hw, y + _hh, false);
+    draw_rectangle(x - _hw, _body_y - _hh, x + _hw, _body_y + _hh, false);
     draw_set_color(c_black);
-    draw_rectangle(x - _hw, y - _hh, x + _hw, y + _hh, true);
+    draw_rectangle(x - _hw, _body_y - _hh, x + _hw, _body_y + _hh, true);
 
     // Olhos Ameaçadores de Monstro (Claridade visual para nunca parecer objeto passivo)
     var _facing_sign = variable_instance_exists(id, "facing_h") ? facing_h : ((facing_dir > 90 && facing_dir < 270) ? -1 : 1);
     var _eye_x = x + _facing_sign * 3;
-    var _eye_y = y - 2;
+    var _eye_y = _body_y - 2;
     draw_set_color(c_red);
     draw_circle(_eye_x - 4, _eye_y, 2.5, false);
     draw_circle(_eye_x + 4, _eye_y, 2.5, false);
@@ -140,11 +178,24 @@ if (sprite_index != -1) {
     draw_circle(_eye_x - 4, _eye_y, 1.2, false);
     draw_circle(_eye_x + 4, _eye_y, 1.2, false);
 }
+draw_set_alpha(1);
+
+// 2.5. Carapaca frontal (Slime de Terra / Golem de Pedra): arco grosso voltado para a frente
+if (fh_shell_hits > 0) {
+    draw_set_color(make_colour_rgb(110, 85, 60));
+    var _arc_r = body_radius * scale_x + 5;
+    for (var _sa = -fh_shell_arc; _sa < fh_shell_arc; _sa += 10) {
+        var _a1 = facing_dir + _sa;
+        var _a2 = facing_dir + _sa + 10;
+        draw_line_width(x + lengthdir_x(_arc_r, _a1), _body_y + lengthdir_y(_arc_r, _a1), x + lengthdir_x(_arc_r, _a2), _body_y + lengthdir_y(_arc_r, _a2), 2 + fh_shell_hits);
+    }
+    draw_set_color(c_white);
+}
 
 // 3. Miyamoto Attack Telegraph: Overhead "!" Warning Bubble
-var _is_telegraphing = (state == "windup" || state == "cast" || state == "slam_windup" || state == "magia_windup");
+var _is_telegraphing = (state == "windup" || state == "cast" || string_pos("_windup", state) > 0 || string_pos("_warn", state) > 0);
 if (_is_telegraphing) {
-    var _ty = y - body_radius * scale_y - 18 + sin(current_time * 0.02) * 2;
+    var _ty = y - draw_z - body_radius * scale_y - 18 + sin(current_time * 0.02) * 2;
     draw_set_alpha(0.9);
     draw_set_color(c_red);
     draw_circle(x, _ty, 8, false);
@@ -193,7 +244,7 @@ if (variable_instance_exists(id, "spectral_mark") && spectral_mark > 0) {
 
 // 4. Dynamic Combat Health Bar (Lagging yellow damage chunk)
 var _is_boss = (object_index == obj_boss || object_index == obj_boss2);
-var _should_draw_hp = _is_boss || (hp_bar_timer > 0 && hp < hp_max);
+var _should_draw_hp = (_is_boss || (hp_bar_timer > 0 && hp < hp_max)) && draw_alpha >= 0.5;
 
 if (_should_draw_hp) {
     var _w = body_radius * 2 + 6;

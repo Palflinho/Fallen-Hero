@@ -72,6 +72,15 @@ function dungeon_spawn_enemy(_biome, _type, _x, _y) {
     if (_inst != noone && _make_greater) {
         _inst.is_greater_variant = true;
     }
+
+    // Suportes elementais: conjuradores as vezes vem com um Totem; atiradores com um Fogo-fatuo
+    if (_inst != noone && _type == "caster" && random(1) < 0.30) {
+        var _tp = fh_find_free_spawn_pos(_safe.x + choose(-60, 60), _safe.y + choose(-50, 50), 20);
+        instance_create_layer(_tp.x, _tp.y, _layer_id, obj_elem_totem);
+    } else if (_inst != noone && _type == "ranged" && random(1) < 0.20) {
+        var _wp = fh_find_free_spawn_pos(_safe.x + choose(-50, 50), _safe.y + choose(-40, 40), 12);
+        instance_create_layer(_wp.x, _wp.y, _layer_id, obj_wisp);
+    }
     return _inst;
 }
 

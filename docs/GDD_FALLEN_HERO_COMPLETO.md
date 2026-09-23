@@ -223,7 +223,7 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
 
 ### 6.2 O Ciclo de 7 Etapas por Masmorra
 1. **Exploração Inicial (Salas 1 e 2):** Combates contra patrulhas de inimigos comuns, descoberta de potes de ouro e aprendizado dos perigos ambientais (lama movediça, poças de lava, gelo).
-2. **Arena de Desafio (Etapa 3):** Portas trancam-se magicamente; o jogador enfrenta 3 ondas escalonadas de inimigos com elites. A vitória gera o **Baú de Tesouro com Cards Comparativos** no estilo Nintendo.
+2. **Arena de Desafio (Etapa 3):** Portas trancam-se magicamente; o jogador enfrenta ondas escalonadas de inimigos com elites (Água 2, Fogo 3, Vento 3, Terra 4) e, ao final, o **Espírito Elemental** do templo desperta como chefe da arena (ver 6.4). A vitória gera o **Baú de Tesouro com Cards Comparativos** no estilo Nintendo.
 3. **Loja de Intermissão (Etapa 4):** Espaço neutro protegido pelo Mercador Interdimensional. Permite comprar poções de cura, aumentos definitivos de ataque/defesa para a run e trocar talentos ativos.
 4. **Exploração Avançada & Pré-Chefe (Salas 5 e 6):** Densidade máxima de inimigos e sala de preparação com fontes de cura.
 5. **Câmara do Guardião (Etapa 7):** Batalha contra o chefe elemental do bioma.
@@ -237,6 +237,13 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
    * *Fase 1 (Armadura Titânica):* Disparos de laser contínuo (`laser_beam`), escudos de energia defletores (`energy_shield`) e convocação de drones de vigilância.
    * *Fase 2 (Sobrecarga de Emergência):* Sobrecarga de propulsores, pulsos EMP e chuvas de artilharia orbital.
    * *Desfecho Dramático:* Quebra da couraça e diálogo final do humano, desvendando o segredo da Terra.
+
+### 6.4 Os Espíritos Elementais (Chefes das Arenas)
+Criaturas nascidas do próprio poder do elemento, guardiãs de cada arena. Detalhes completos em [`INIMIGOS_ELEMENTAIS.md`](INIMIGOS_ELEMENTAIS.md).
+1. **Ondina (Água, `obj_spirit_ondina`):** leque de gotas, clones de água que morrem com 1 golpe e troca de lugar; na fase 2, cura canalizada (interrompível) e cruz de gelo.
+2. **Salamandra (Fogo, `obj_spirit_salamandra`):** serpenteia deixando rastro de fogo, cospe leques de fogo e mergulha na lava para emergir sob o jogador.
+3. **Sílfide (Vento, `obj_spirit_silfide`):** invisível, só a poeira denuncia; rajada atravessando a arena, anel de bumerangues e, na fase 2, vórtice.
+4. **Gnomo (Terra, `obj_spirit_gnomo`):** escava e emerge sob o jogador, arremessa pedregulhos que viram obstáculos e crava estacas atrasadas.
 
 ---
 

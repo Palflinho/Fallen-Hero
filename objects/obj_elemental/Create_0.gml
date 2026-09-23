@@ -21,3 +21,7 @@ patrol_radius = 130;
 exp_reward = 20;
 gold_reward = 1;
 knockback_resistance = 0.25;
+
+// --- Elemental de Agua: bolha lenta teleguiada que prende por 1s (estoura com qualquer golpe) ---
+attack_cooldown = 2.4;
+recover_timer = 0;

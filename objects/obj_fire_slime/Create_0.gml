@@ -18,3 +18,9 @@ patrol_radius = 100;
 exp_reward = 20;
 gold_reward = 1;
 knockback_resistance = 0.0;
+
+// --- Slime de Fogo: abaixo de 30% de vida incha e explode (1.2s), ferindo tudo ao redor ---
+swell_triggered = false;
+swell_time = 1.2;
+swell_timer = 0;
+explode_radius = 64;

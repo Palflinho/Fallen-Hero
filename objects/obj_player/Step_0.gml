@@ -10,6 +10,14 @@ if (hp <= 0) {
 
 if (hit_flash_timer > 0) hit_flash_timer -= _dt;
 if (invuln_timer > 0) invuln_timer -= _dt;
+
+// Empurroes elementais (pouso do slime de vento, tornados, ondas de choque)
+if (variable_instance_exists(id, "fh_push_vx") && (abs(fh_push_vx) > 2 || abs(fh_push_vy) > 2)) {
+    if (hp > 0) fh_move_and_collide(fh_push_vx * _dt, fh_push_vy * _dt);
+    var _push_fric = power(0.86, _dt * 60);
+    fh_push_vx *= _push_fric;
+    fh_push_vy *= _push_fric;
+}
 if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
 if (attack_buffer_timer > 0) attack_buffer_timer -= _dt;
 if (defend_cooldown_timer > 0) defend_cooldown_timer -= _dt;

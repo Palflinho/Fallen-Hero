@@ -24,3 +24,9 @@ gold_reward = 2;
 knockback_resistance = 0.35;
 is_rare_mob = true;
 rare_chest_drop_chance = 0.20;
+
+// --- Conjurador de Terra: ergue muralhas de pedra que encurralam e depois faz o chao tremer ---
+attack_windup = 0.5;
+attack_windup_timer = 0;
+wall_life = 4.0;
+exhausted_timer = 0;

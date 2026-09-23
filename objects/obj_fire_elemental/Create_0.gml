@@ -21,3 +21,8 @@ patrol_radius = 130;
 exp_reward = 26;
 gold_reward = 1;
 knockback_resistance = 0.25;
+
+// --- Elemental de Fogo: leque de 3 tiros; cada impacto vira chao em chamas por 3s ---
+attack_cooldown = 2.0;
+fan_spread = 20;
+recover_timer = 0;

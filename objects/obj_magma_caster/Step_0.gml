@@ -1,7 +1,15 @@
+// ---------------------------------------------------------------------
+// CONJURADOR DE MAGMA
+//  - Canaliza 3 METEOROS encadeados: cada um marca a posicao atual do
+//    jogador e cai 0.85s depois. Nao pare de se mover!
+//  - Enquanto canaliza fica parado; depois fica EXAUSTO 1s (+50% de dano).
+// ---------------------------------------------------------------------
 event_inherited();
-var _dt = delta_time / 1000000;
+if (elem_ai_blocked()) exit;
 
-body_colour = (state == "cast") ? c_yellow : c_maroon;
+var _dt = delta_time / 1000000;
+body_colour = (state == "windup" || state == "channel") ? c_yellow : c_maroon;
+if (state == "exhausted") body_colour = make_colour_rgb(90, 40, 40);
 
 if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
 
@@ -25,7 +33,6 @@ switch (state) {
         }
         if (_seen != noone) {
             lost_sight_timer = 0;
-            if (attack_cooldown_timer <= 0) facing_dir = point_direction(x, y, _player.x, _player.y);
         } else {
             lost_sight_timer += _dt;
             if (lost_sight_timer >= lost_sight_grace) {
@@ -33,34 +40,54 @@ switch (state) {
                 break;
             }
         }
+        if (_player == noone) break;
+        facing_dir = point_direction(x, y, _player.x, _player.y);
 
-        if (attack_cooldown_timer <= 0) {
-            state = "cast";
-            cast_target_x = _player.x;
-            cast_target_y = _player.y;
-            cast_timer = telegraph_time;
-        } else if (_player != noone && _dist > preferred_range) {
-            var _dir = point_direction(x, y, _player.x, _player.y);
-            ai_enemy_move(_dir, move_speed_effective, _dt);
+        if (attack_cooldown_timer <= 0 && _dist <= 340) {
+            state = "windup";
+            attack_windup_timer = attack_windup;
+        } else if (_dist < preferred_range - 30) {
+            ai_enemy_move(facing_dir + 180, move_speed_effective, _dt);
+        } else if (_dist > preferred_range + 30) {
+            ai_enemy_move(facing_dir, move_speed_effective, _dt);
         }
         break;
 
-    case "cast":
-        cast_timer -= _dt;
-        // Sakurai Polish: Levitating magical channeling
-        scale_y = 1.25;
-        scale_x = 0.85;
-        if (cast_timer <= 0) {
-            if (_player != noone && !_player.invisible && point_distance(cast_target_x, cast_target_y, _player.x, _player.y) <= aoe_radius) {
-                player_take_damage(aoe_damage, "magical");
-                player_apply_poison(burn_damage, burn_tick_interval, burn_duration);
+    case "windup":
+        attack_windup_timer -= _dt;
+        scale_y = 1.3;
+        scale_x = 0.8;
+        if (attack_windup_timer <= 0) {
+            var _n = is_greater_variant ? meteor_count + 1 : meteor_count;
+            for (var _i = 0; _i < _n; _i++) {
+                var _m = elem_spawn_missile(x, y, "meteor", 0, 0, elem_dmg(meteor_damage), make_colour_rgb(255, 120, 30));
+                _m.delay = 0.01 + _i * meteor_gap;
             }
-            attack_cooldown_timer = attack_cooldown;
-            state = "chase";
-            // Detonation impact squash and sparks
-            scale_y = 0.85;
-            scale_x = 1.15;
-            fx_spawn_sparks(cast_target_x, cast_target_y, c_orange, 12);
+            state = "channel";
+            channel_timer = 0.85 + (_n - 1) * meteor_gap;
+            sfx_play("magic", 0.1, 0.6);
         }
+        break;
+
+    case "channel":
+        channel_timer -= _dt;
+        scale_y = 1.3 + 0.05 * sin(current_time * 0.04);
+        scale_x = 0.8;
+        if (random(1) < 0.3) fx_spawn_sparks(x, y - body_radius, c_orange, 1);
+        if (channel_timer <= 0) {
+            state = "exhausted";
+            exhausted_timer = 1.0;
+            fh_vuln_timer = 1.0;
+            attack_cooldown_timer = attack_cooldown;
+        }
+        break;
+
+    case "exhausted":
+        exhausted_timer -= _dt;
+        scale_y = 0.8;
+        scale_x = 1.2;
+        if (exhausted_timer <= 0) state = "chase";
         break;
 }
+
+ai_update_sprite_animation();

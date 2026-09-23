@@ -34,11 +34,8 @@ if (_is_preboss) {
         if (_wc == -1) _wc = obj_frost_caster;
         _spawn_safe(_we, 450, 450);
         _spawn_safe(_wc, 950, 450);
-        var _g = _spawn_safe(obj_ice_golem, 700, 350);
-        if (_g != noone) {
-            _g.element_type = "wind";
-            _g.body_colour = make_colour_rgb(180, 240, 255);
-        }
+        // Golem de Tempestade: alterna solido/nevoa, tornado e fica tonto
+        _spawn_safe(obj_storm_golem, 700, 350);
         _spawn_safe(asset_get_index("obj_wind_cyclone"), 700, 500);
         _spawn_safe(asset_get_index("obj_wind_stream"), 700, 420);
     } else { // Earth
@@ -48,16 +45,15 @@ if (_is_preboss) {
         if (_ec == -1) _ec = obj_frost_caster;
         _spawn_safe(_ee, 450, 450);
         _spawn_safe(_ec, 950, 450);
-        var _g = _spawn_safe(obj_ice_golem, 700, 350);
-        if (_g != noone) {
-            _g.element_type = "earth";
-            _g.body_colour = make_colour_rgb(140, 100, 60);
-        }
+        // Golem de Pedra: inempurravel, armadura quebravel, pisao em anel e pedregulhos
+        _spawn_safe(obj_stone_golem, 700, 350);
         _spawn_safe(asset_get_index("obj_earth_fissure"), 700, 500);
         _spawn_safe(asset_get_index("obj_mud_quicksand"), 700, 420);
     }
 } else if (_is_exp4) {
     // Sala 4: Exploração 3 (Pré-Boss Avançada) - Apenas Mobs Normais e Variantes Maiores de Elite (Sem Mini-Chefes)
+    // Totem Elemental no centro: fortalece quem estiver na aura (derrube-o primeiro)
+    _spawn_safe(obj_elem_totem, 700, 380);
     if (_b == "water") {
         _spawn_safe(obj_slime, 400, 350);
         var _s2 = _spawn_safe(obj_slime, 1000, 350);
@@ -114,6 +110,8 @@ if (_is_preboss) {
     }
 } else {
     // Sala 2: Exploração 2
+    // Fogo-fatuo: tenta infundir um aliado e transforma-lo em elite
+    _spawn_safe(obj_wisp, 650, 520);
     if (_b == "water") {
         _spawn_safe(obj_slime, 280, 400);
         _spawn_safe(obj_slime, 860, 400);

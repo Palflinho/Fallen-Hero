@@ -64,10 +64,14 @@ switch (arena_state) {
                     banner_timer = 2.0;
                     fx_spawn_sparks(x, y, c_yellow, 16);
                 } else {
-                    arena_state = "victory";
-                    arena_barrier_active = false;
-                    banner_text = "* ARENA CONQUISTADA! BAU DO CAMPEAO LIBERADO! *";
-                    banner_timer = 3.5;
+                    // Todas as ondas vencidas: o Espirito Elemental do templo desperta
+                    arena_state = "spirit_intro";
+                    wave_delay_timer = 2.8;
+                    banner_text = "O ESPIRITO " + spirit_name + " DESPERTA!";
+                    banner_timer = 2.8;
+                    sfx_play("thunder", 0.05, 0.8);
+                    trigger_camera_shake(5);
+                    fx_spawn_sparks(x, y, theme_colour, 30);
                 }
             }
         }
@@ -82,6 +86,29 @@ switch (arena_state) {
             banner_text = "ONDA " + string(current_wave) + " DE " + string(total_waves);
             banner_timer = 2.2;
             fx_spawn_sparks(x, y, theme_colour, 20);
+        }
+        break;
+
+    case "spirit_intro":
+        wave_delay_timer -= _dt;
+        if (random(1) < 0.3) fx_spawn_sparks(x + random_range(-40, 40), y + random_range(-40, 40), theme_colour, 1);
+        if (wave_delay_timer <= 0) {
+            var _sp2 = fh_find_free_spawn_pos(x, y, 28);
+            spirit_inst = instance_create_layer(_sp2.x, _sp2.y, layer, spirit_obj);
+            arena_state = "spirit";
+            banner_text = spirit_name + ", ESPIRITO GUARDIAO DO TEMPLO";
+            banner_timer = 2.2;
+            fx_spawn_sparks(_sp2.x, _sp2.y, theme_colour, 30);
+        }
+        break;
+
+    case "spirit":
+        if (!instance_exists(spirit_inst) && instance_number(obj_enemy_parent) == 0) {
+            arena_state = "victory";
+            arena_barrier_active = false;
+            banner_text = "* " + spirit_name + " VENCIDO! BAU DO CAMPEAO LIBERADO! *";
+            banner_timer = 3.5;
+            sfx_play("victory", 0.05, 0.9);
         }
         break;
 

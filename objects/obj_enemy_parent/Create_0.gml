@@ -136,3 +136,16 @@ if (!fh_place_free_of_walls(x, y, body_radius)) {
     patrol_target_x = x;
     patrol_target_y = y;
 }
+
+// Ganchos elementais genericos (inimigos redesenhados, totens e espiritos das arenas)
+atk_scale = 1.0;          // multiplicador de ataque do bioma (preenchido por enemy_ensure_scaling)
+fh_untargetable = false;  // no ar / nevoa / enterrado: ignora todo dano
+fh_shell_hits = 0;        // carapaca frontal: golpes pela frente ricocheteiam
+fh_shell_arc = 70;        // meia-abertura (graus) do angulo frontal protegido
+fh_vuln_timer = 0;        // janela de vulnerabilidade: recebe +50% de dano
+fh_haste_timer = 0;       // velocidade +35% (Totem de Fogo)
+fh_totem_shield = 0;      // golpes absorvidos (Totem de Terra)
+fh_infused = false;       // infundido por um Fogo-fatuo
+draw_z = 0;               // altura visual (saltos, voo)
+draw_alpha = 1;           // transparencia do corpo (nevoa, invisibilidade)
+is_spirit_boss = false;

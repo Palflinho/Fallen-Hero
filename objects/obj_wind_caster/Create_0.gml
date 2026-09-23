@@ -24,3 +24,16 @@ gold_reward = 2;
 knockback_resistance = 0.15;
 is_rare_mob = true;
 rare_chest_drop_chance = 0.20;
+
+// --- Conjurador de Vento: barreira que reflete projeteis + vortice que puxa ---
+attack_windup = 0.4;
+attack_windup_timer = 0;
+barrier_cooldown = 0;
+barrier_cooldown_max = 6.0;
+barrier_time = 3.0;
+barrier_timer = 0;
+barrier_radius = 70;
+vortex_radius = 180;
+vortex_pull = 55;
+vortex_tick = 0;
+exhausted_timer = 0;

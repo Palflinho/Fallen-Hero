@@ -28,7 +28,7 @@ with (obj_enemy_parent) {
             break;
         }
     }
-    if (!_already_hit && point_distance(x, y, other.x, other.y) <= body_radius + other.body_radius) {
+    if (!_already_hit && !fh_untargetable && point_distance(x, y, other.x, other.y) <= body_radius + other.body_radius) {
         array_push(other.hit_list, id);
         player_on_hit_enemy(other.owner, id, other.damage);
         if (other.pierce_remaining > 0) {

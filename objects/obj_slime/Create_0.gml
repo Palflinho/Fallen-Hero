@@ -18,3 +18,21 @@ patrol_radius = 100;
 exp_reward = 15;
 gold_reward = 1;
 knockback_resistance = 0.0;
+
+// --- Slime de Agua: divide-se ao morrer; os minis se reunem curados se nao forem mortos em 3s ---
+is_mini = false;
+split_done = false;
+partner = noone;
+merge_timer = 0;
+orig_hp_max = hp_max;
+orig_contact = contact_damage;
+orig_speed = move_speed;
+orig_exp = exp_reward;
+orig_gold = gold_reward;
+// Investida escorregadia: deixa um rastro de gelo
+lunge_range = 120;
+lunge_dir = 0;
+lunge_timer = 0;
+lunge_hit = false;
+trail_timer = 0;
+recover_timer = 0;

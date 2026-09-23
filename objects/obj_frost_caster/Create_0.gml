@@ -24,3 +24,10 @@ gold_reward = 2;
 knockback_resistance = 0.15;
 is_rare_mob = true;
 rare_chest_drop_chance = 0.20;
+
+// --- Conjurador de Gelo: congela em cruz "+" a partir do ponto marcado -> gelo escorregadio 6s ---
+attack_cooldown = 3.2;
+attack_windup = 0.4;
+attack_windup_timer = 0;
+cross_damage = 14;
+recover_timer = 0;

@@ -29,3 +29,13 @@ burn_tick_interval = 0.6;
 burn_duration = 2.5;
 is_rare_mob = true;
 rare_chest_drop_chance = 0.20;
+
+// --- Conjurador de Magma: 3 meteoros encadeados que seguem o jogador ---
+attack_cooldown = 4.0;
+attack_windup = 0.4;
+attack_windup_timer = 0;
+meteor_damage = 16;
+meteor_count = 3;
+meteor_gap = 0.45;
+channel_timer = 0;
+exhausted_timer = 0;

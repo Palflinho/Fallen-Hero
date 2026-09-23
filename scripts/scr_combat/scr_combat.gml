@@ -251,6 +251,7 @@ function enemy_ensure_scaling(_inst) {
     _inst.defense = _def_bonus;
     _inst.damage_reduction = _inst.damage_reduction * _red_mult;
     _inst.hp_lag = _inst.hp_max;
+    _inst.atk_scale = _atk_mult;
 }
 
 function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_force, _is_crit) {
@@ -260,6 +261,45 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
 
     if (variable_instance_exists(_inst, "stats_scaled") && !_inst.stats_scaled) {
         enemy_ensure_scaling(_inst);
+    }
+
+    // Ganchos elementais: intangivel (no ar / nevoa / enterrado)
+    if (variable_instance_exists(_inst, "fh_untargetable") && _inst.fh_untargetable) return;
+
+    // Carapaca frontal (Slime de Terra, Golem de Pedra): golpes pela frente ricocheteiam
+    if (variable_instance_exists(_inst, "fh_shell_hits") && _inst.fh_shell_hits > 0 && !is_undefined(_source_x) && !is_undefined(_source_y)) {
+        var _from = point_direction(_inst.x, _inst.y, _source_x, _source_y);
+        if (abs(angle_difference(_inst.facing_dir, _from)) <= _inst.fh_shell_arc) {
+            _inst.fh_shell_hits -= 1;
+            sfx_play("parry", 0.08, 0.7);
+            fx_spawn_sparks(_inst.x + lengthdir_x(_inst.body_radius, _from), _inst.y + lengthdir_y(_inst.body_radius, _from), c_ltgray, 6);
+            if (_inst.fh_shell_hits <= 0) {
+                fx_spawn_damage_popup(_inst.x, _inst.y - 26, "CARAPACA QUEBRADA!", true, c_yellow);
+                fx_spawn_sparks(_inst.x, _inst.y, make_colour_rgb(170, 125, 70), 16);
+                _inst.fh_vuln_timer = max(_inst.fh_vuln_timer, 2.5);
+                _inst.defense = 0;
+                _inst.knockback_resistance = max(0, _inst.knockback_resistance - 0.35);
+                trigger_hitstop(0.06);
+                trigger_camera_shake(4);
+            } else {
+                fx_spawn_damage_popup(_inst.x, _inst.y - 22, "RICOCHETE!", false, c_ltgray);
+            }
+            return;
+        }
+    }
+
+    // Escudo de pedra concedido pelo Totem de Terra
+    if (variable_instance_exists(_inst, "fh_totem_shield") && _inst.fh_totem_shield > 0) {
+        _inst.fh_totem_shield -= 1;
+        sfx_play("parry", 0.08, 0.5);
+        fx_spawn_damage_popup(_inst.x, _inst.y - 22, "ESCUDO DE PEDRA!", false, make_colour_rgb(200, 160, 100));
+        fx_spawn_sparks(_inst.x, _inst.y, make_colour_rgb(200, 160, 100), 6);
+        return;
+    }
+
+    // Janela de vulnerabilidade apos golpes fortes: +50% de dano
+    if (variable_instance_exists(_inst, "fh_vuln_timer") && _inst.fh_vuln_timer > 0) {
+        _amount *= 1.5;
     }
 
     var _is_boss = (_inst.object_index == obj_boss || _inst.object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && _inst.object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && _inst.object_index == asset_get_index("obj_boss4")));
@@ -282,7 +322,7 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
                         _mult *= (1 - _inst.adaptation.phys_damage_reduction) * _inst.adaptation.phys_damage_vulnerability;
                         // Retaliação de espinhos colados se tiver mutação anti-cavaleiro
                         if (_inst.adaptation.thorns_reflect_damage > 0 && point_distance(_inst.x, _inst.y, _p.x, _p.y) <= 70) {
-                            player_take_damage(_p, _inst.adaptation.thorns_reflect_damage, _inst.x, _inst.y, 80);
+                            player_take_damage(_inst.adaptation.thorns_reflect_damage, "physical");
                             fx_spawn_sparks(_p.x, _p.y, c_red, 4);
                         }
                     }
@@ -420,6 +460,8 @@ function player_apply_slow(_multiplier, _duration) {
 // lifesteal, on-hit poison) only need to be written once.
 function player_on_hit_enemy(_owner, _enemy, _base_damage) {
     if (!instance_exists(_enemy)) return;
+    // No ar / na nevoa / enterrado: o golpe atravessa sem efeitos de acerto
+    if (variable_instance_exists(_enemy, "fh_untargetable") && _enemy.fh_untargetable) return;
 
     if (!instance_exists(_owner)) {
         enemy_take_damage(_enemy, _base_damage);

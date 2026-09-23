@@ -27,3 +27,10 @@ gold_reward = 2;
 state = "patrol";
 is_rare_mob = true;
 rare_chest_drop_chance = 0.20;
+
+// --- Elemental de Terra: estaca atrasada que irrompe sob o jogador 0.8s depois ---
+preferred_range = 150;
+attack_range = 240;
+attack_cooldown = 2.4;
+stake_damage = 14;
+recover_timer = 0;
