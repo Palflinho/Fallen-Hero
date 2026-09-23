@@ -48,7 +48,7 @@ function get_talent_defs() {
          desc_flavor: "Postura inabalavel que ignora terrenos escorregadios, ventanias e empurroes de chefes colossais.",
          desc_value: "Torna o Cavaleiro imune a empurroes, knockback e desaceleracoes de armadilhas ou chefes.", icon_type: "bastion"},
 
-        // 2. PALADINO (ELEMENTO AGUA / SAGRADO - 8 TALENTOS)
+        // 2. LANCEIRO (antigo Paladino - ELEMENTO AGUA / estilo ARQUEIRO - 8 TALENTOS)
         {id: "knight_paladino_bencao_mare", character: "knight", affinity: "water", label: "Bencao da Mare", synth_field: "synth_paladino_bencao_mare", per_rank: 4, cost: 85,
          desc_flavor: "As aguas sagradas circulam em pulsos acelerados, revitalizando tecidos e curando feridas profundas.",
          desc_value: "A Aura de Sobrevida pulsa 25% mais rapido e aumenta a regeneracao natural em +4 HP/s.", icon_type: "holy"},
@@ -74,7 +74,7 @@ function get_talent_defs() {
          desc_flavor: "Sob o amparo da barreira luminosa, o cavaleiro manuseia a espada com serenidade e cadencia reluzente.",
          desc_value: "Enquanto a barreira de sobrevida estiver ativa, a velocidade de ataque da espada aumenta em +25%.", icon_type: "haste"},
 
-        // 3. BERSERKER (ELEMENTO FOGO / FURIA - 8 TALENTOS)
+        // 3. CAVALEIRO RUNICO (antigo Berserker - ELEMENTO FOGO / estilo MAGA - 8 TALENTOS)
         {id: "knight_berserk_arco_incendiario", character: "knight", affinity: "fire", label: "Arco Incendiario", synth_field: "synth_berserk_arco_incendiario", per_rank: 0.40, cost: 95,
          desc_flavor: "O calor abrasador alarga a silhueta da espada, deixando rastros incandescentes no chao da masmorra.",
          desc_value: "Aumenta a area do corte da espada em +40% e queima o chao por 1.5s.", icon_type: "burn"},
@@ -88,7 +88,7 @@ function get_talent_defs() {
          desc_flavor: "A furia cega se alimenta da dor inimiga, restaurando a fibra muscular e mantendo o frenesi aceso.",
          desc_value: "Golpes criticos recuperam 15% do dano causado como vida e prolongam a Furia Ardente em +0.5s.", icon_type: "lifesteal"},
         {id: "knight_berserk_cinzas_sacrificio", character: "knight", affinity: "fire", label: "Cinzas do Sacrificio", synth_field: "synth_berserk_cinzas_sacrificio", per_rank: 1, cost: 135,
-         desc_flavor: "O berserker queima o proprio sangue em troca de um pico de destruicao piroclastica estarrecedor.",
+         desc_flavor: "O cavaleiro runico queima o proprio sangue em troca de um pico de destruicao piroclastica estarrecedor.",
          desc_value: "Ativar Furia Ardente consome 10% do HP atual, mas dobra o bonus de dano de fogo nos primeiros 3s.", icon_type: "fireball"},
         {id: "knight_berserk_lamina_brasa", character: "knight", affinity: "fire", label: "Lamina em Brasa", synth_field: "synth_berserk_lamina_brasa", per_rank: 0.50, cost: 200,
          desc_flavor: "Temperatura vulcanica capaz de fundir escudos pesados e rachar as couracas rochosas dos golens.",
@@ -213,7 +213,7 @@ function get_talent_defs() {
          desc_flavor: "A assimilacao de segredos antigos a cada lacaio expurgado expande o poder de conjuracao.",
          desc_value: "Ganha +2 de Poder Magico a cada 15 inimigos derrotados na run (maximo +12).", icon_type: "magic_def"},
 
-        // 2. CRIOMANTE (MAGO / AGUA - 8 TALENTOS)
+        // 2. ATIRADORA ARCANA (antiga Criomante - MAGO / AGUA / estilo ARQUEIRO - 8 TALENTOS)
         {id: "mage_crio_geada_penetrante", character: "mage", affinity: "water", label: "Geada Penetrante", synth_field: "synth_crio_geada_penetrante", per_rank: 0.30, cost: 85,
          desc_flavor: "Cristais frios que se fixam nas juntas dos monstros, entorpecendo seus movimentos.",
          desc_value: "Projeteis basicos aplicam 30% de lentidao por 2s a cada impacto.", icon_type: "barrier"},
@@ -543,7 +543,7 @@ function get_talent_defs() {
          desc_flavor: "Afinidade com as sombras reduzindo o intervalo entre momentos de ocultamento.",
          desc_value: "O tempo de recarga da habilidade de Invisibilidade e reduzido em 1.5 segundos.", icon_type: "cdr"},
 
-        // 2. LAMINA ESPECTRAL (ASSASSINO / AGUA - 8 TALENTOS)
+        // 2. RASTREADOR (antiga Lamina Espectral - ASSASSINO / AGUA / estilo ARQUEIRO - 8 TALENTOS)
         {id: "assassin_espect_corte_fluido", character: "assassin", affinity: "water", label: "Corte Fluido", synth_field: "synth_assassin_espect_corte_fluido", per_rank: 1, cost: 85,
          desc_flavor: "O corpo desliza como agua escorrendo por entre as garras e armas dos monstros.",
          desc_value: "Atacar permite deslizar livremente atraves do modelo de colisao dos inimigos.", icon_type: "dodge"},
@@ -746,15 +746,15 @@ function class_get_archetype_name(_class, _elem) {
     switch (_class) {
         case "knight":
             switch (_elem) {
-                case "water": return "Paladino";
-                case "fire": return "Berserker";
+                case "water": return "Lanceiro";
+                case "fire": return "Cavaleiro Runico";
                 case "wind": return "Duelista";
                 case "earth": return "Guardiao";
                 default: return "Cavaleiro";
             }
         case "mage":
             switch (_elem) {
-                case "water": return "Criomante";
+                case "water": return "Atiradora Arcana";
                 case "fire": return "Piromante";
                 case "wind": return "Aeromante";
                 case "earth": return "Geomante";
@@ -770,7 +770,7 @@ function class_get_archetype_name(_class, _elem) {
             }
         case "assassin":
             switch (_elem) {
-                case "water": return "Lamina Espectral";
+                case "water": return "Rastreador";
                 case "fire": return "Lamina Vulcanica";
                 case "wind": return "Algoz do Tufao";
                 case "earth": return "Carrasco de Obsidiana";
@@ -785,15 +785,15 @@ function class_get_archetype_desc(_class, _elem) {
     switch (_class) {
         case "knight":
             switch (_elem) {
-                case "water": return "Paladino: Especial gera Aura de Sobrevida em area que cura/protege.";
-                case "fire": return "Berserker: Ataque amplo devastador. Especial entra em Furia Ardente (+50% dano/+regen).";
+                case "water": return "Lanceiro: Cada golpe solta uma lamina d'agua de longo alcance. Especial gera Aura de Sobrevida que cura/protege.";
+                case "fire": return "Cavaleiro Runico: Golpes que acertam detonam uma runa de fogo em area. Especial entra em Furia Ardente (+50% dano/+regen, runas maiores).";
                 case "wind": return "Duelista: Ataque duplo veloz em combo. Especial e Aparar (Parry com contra-ataque de 360).";
                 case "earth": return "Guardiao: Ataque concentrado. Especial Bastiao bloqueia 100% dano fisico e magico + Taunt.";
                 default: return "Cavaleiro: Espada de medio alcance e escudo com bloqueio fisico tradicional.";
             }
         case "mage":
             switch (_elem) {
-                case "water": return "Criomante: Magias de gelo que desaceleram e congelam. Especial Prisao Glacial cria redoma defensiva.";
+                case "water": return "Atiradora Arcana: Lancas de gelo rapidas e perfurantes (+30% em alvos lentos). Especial Prisao Glacial cria redoma defensiva.";
                 case "fire": return "Piromante: Conjuracoes igneas devastadoras. Especial Ponto de Ignicao detona calor em 360 e incendeia o chao.";
                 case "wind": return "Aeromante: Projeteis velozes e eletricos. Especial Distorcao Voltaica (Blink) teletransporta com arco eletrico.";
                 case "earth": return "Geomante: Dano basaltico com alto impacto. Especial Monolito Basaltico ergue pilar que atrai inimigos.";
@@ -809,7 +809,7 @@ function class_get_archetype_desc(_class, _elem) {
             }
         case "assassin":
             switch (_elem) {
-                case "water": return "Lamina Espectral: Furtividade fluida e roubo de vida. Especial Dissipacao em Nevoa atravessa corpos e regenera vida.";
+                case "water": return "Rastreador: Todo 3o golpe arremessa facas espectrais que marcam o alvo. Especial Dissipacao em Nevoa atravessa corpos e regenera vida.";
                 case "fire": return "Lamina Vulcanica: Adagas igneas e explosoes a cada golpe. Especial Bomba de Cinzas cega e queima em area.";
                 case "wind": return "Algoz do Tufao: Cortes de ar em hipervelocidade. Especial Salto das Sombras teletransporta atras do alvo com estocada.";
                 case "earth": return "Carrasco de Obsidiana: Veneno petrificante e alta resistencia. Especial Carapaca de Obsidiana reduz 80% do dano.";

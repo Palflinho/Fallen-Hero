@@ -57,7 +57,7 @@ Antes do cataclismo, o planeta natal dos protagonistas era uma joia viva no cosm
   * Flechas banhadas em toxinas paralisantes e corrosivas, armadilhas territoriais e disparos calculados a distâncias inalcançáveis para armas comuns.
 
 #### C. O Povo Rinoceronte — A Casta dos Cavaleiros (Grandes Planícies)
-* **Arquétipo de Classe:** **Cavaleiro / Guardião / Paladino / Berserker**
+* **Arquétipo de Classe:** **Cavaleiro / Guardião / Lanceiro / Cavaleiro Rúnico / Duelista**
 * **Natureza Biológica & Mística:**
   * Habitantes das planícies sem fim, forjados sob tempestades e solos de pedra dura.
   * Couraça dérmica quase impenetrável por armas convencionais; porte monumental e uma devoção inabalável ao código de honra e proteção de sua manada.

@@ -22,7 +22,7 @@ if (!is_clone && state != "intro") {
 }
 event_inherited();
 if (state == "exposed") spirit_draw_exposed();
-// Lamina Espectral enxerga atraves das ilusoes: clones marcados com X
+// Rastreador enxerga atraves das ilusoes: clones marcados com X
 if (is_clone && player_is_archetype(instance_find(obj_player, 0), "assassin", "water")) {
     draw_set_color(c_red);
     draw_line_width(x - 12, y - draw_z - 12, x + 12, y - draw_z + 12, 3);

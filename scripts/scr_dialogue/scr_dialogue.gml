@@ -45,7 +45,7 @@ function dialogue_get_intro_lines(_class) {
             return [
                 {
                     speaker: "mage",
-                    name: "Raposa Maga [Criomante]",
+                    name: "Raposa Maga [Atiradora Arcana]",
                     alien: "« Asha-riil... vom mystic vahn lumina! »",
                     text: "As correntes arcanas deste santuário foram completamente distorcidas. O General da Água deve estar guardando o núcleo corrompido."
                 }

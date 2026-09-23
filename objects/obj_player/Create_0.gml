@@ -44,7 +44,7 @@ switch (character_class) {
     case "knight":
         switch (element_affinity) {
             case "water":
-                archetype_name = "Paladino";
+                archetype_name = "Lanceiro"; // Agua -> estilo Arqueiro
                 body_colour = c_teal;
                 defend_mode = "paladin_aura";
                 defend_duration = 3.5;
@@ -52,9 +52,8 @@ switch (character_class) {
                 break;
 
             case "fire":
-                archetype_name = "Berserker";
+                archetype_name = "Cavaleiro Runico"; // Fogo -> estilo Maga
                 body_colour = c_orange;
-                attack_range = 42;
                 attack_duration = 0.25;
                 defend_mode = "berserk_fury";
                 defend_duration = 4.0;
@@ -116,7 +115,7 @@ switch (character_class) {
 
         switch (element_affinity) {
             case "water":
-                archetype_name = "Criomante";
+                archetype_name = "Atiradora Arcana"; // Agua -> estilo Arqueiro
                 body_colour = make_colour_rgb(100, 180, 255);
                 defend_mode = "cryo_prison";
                 defend_duration = 2.5;
@@ -244,7 +243,7 @@ switch (character_class) {
 
         switch (element_affinity) {
             case "water":
-                archetype_name = "Lamina Espectral";
+                archetype_name = "Rastreador"; // Agua -> estilo Arqueiro
                 body_colour = make_colour_rgb(90, 160, 220);
                 defend_mode = "spectral_mist";
                 defend_duration = 2.5;
@@ -349,12 +348,12 @@ synth_gold_bonus = 0;
 synth_second_wind = 0;
 second_wind_cooldown_timer = 0;
 
-// Paladino
+// Lanceiro
 synth_paladin_aura_heal = 0;
 synth_paladin_barrier = 0;
 synth_paladin_heal_hit = 0;
 
-// Berserker
+// Cavaleiro Runico
 synth_berserk_dmg_bonus = 0;
 synth_berserk_burn = 0;
 synth_berserk_lifesteal = 0;
@@ -372,6 +371,7 @@ synth_guardian_taunt_shock = 0;
 // Variáveis de controle de combate para talentos do Cavaleiro
 attack_idle_timer = 0;
 hit_streak_count = 0;
+rune_blast_last = 0; // Cavaleiro Runico: controle de uma explosao por golpe
 frenesi_stacks = 0;
 frenesi_timer = 0;
 flame_revenge_cooldown = 0;

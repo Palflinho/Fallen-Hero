@@ -25,7 +25,7 @@ Este documento reúne **50 ideias originais de talentos** para o Cavaleiro, estr
 
 ---
 
-## 2. Paladino (Elemento Água / Sagrado - 8 Talentos)
+## 2. Lanceiro (antigo Paladino — Elemento Água / estilo Arqueiro - 8 Talentos)
 *Focado em cura, barreira protetora, suporte contínuo, controle de grupo e purificação.*
 
 | # | Nome do Talento | Tipo | Efeito Mecânico | Game Feel / Feedback |
@@ -41,7 +41,7 @@ Este documento reúne **50 ideias originais de talentos** para o Cavaleiro, estr
 
 ---
 
-## 3. Berserker (Elemento Fogo / Fúria - 8 Talentos)
+## 3. Cavaleiro Rúnico (antigo Berserker — Elemento Fogo / estilo Maga - 8 Talentos)
 *Focado em ataque agressivo, dano bruto massivo, arco de corte expandido, calor e sacrifício.*
 
 | # | Nome do Talento | Tipo | Efeito Mecânico | Game Feel / Feedback |

@@ -7,7 +7,7 @@ if (life <= 0) {
     exit;
 }
 
-// Interacoes: Criomante apaga fogo, Piromante derrete gelo, aura do Paladino purifica o chao
+// Interacoes: Atiradora Arcana apaga fogo, Piromante derrete gelo, aura do Lanceiro purifica o chao
 var _pl = instance_find(obj_player, 0);
 if (_pl != noone && (kind == "fire" || kind == "slick")) {
     var _counter = (kind == "fire") ? "water" : "fire";

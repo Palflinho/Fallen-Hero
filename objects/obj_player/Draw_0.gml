@@ -83,7 +83,7 @@ if (variable_instance_exists(id, "synth_lamina_afiada") && synth_lamina_afiada >
     draw_set_alpha(1);
 }
 
-// Paladino: Bolha aquosa protetora visivel ao redor do corpo
+// Lanceiro: Bolha aquosa protetora visivel ao redor do corpo
 if (paladin_barrier_active > 0) {
     draw_set_alpha(0.35 + 0.15 * sin(current_time * 0.008));
     draw_set_color(c_aqua);

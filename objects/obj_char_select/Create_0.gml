@@ -55,7 +55,7 @@ talent_select_cursor = 0;
 talent_selected_ids = [];
 
 elements = ["none", "water", "fire", "wind", "earth"];
-element_labels = ["Neutro (Cavaleiro)", "Agua (Paladino)", "Fogo (Berserker)", "Ar (Duelista)", "Terra (Guardiao)"];
+element_labels = ["Neutro (Cavaleiro)", "Agua (Lanceiro)", "Fogo (Cavaleiro Runico)", "Ar (Duelista)", "Terra (Guardiao)"];
 selected_element_index = 0;
 
 // Configurações visuais da grade de talentos

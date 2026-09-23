@@ -475,7 +475,7 @@ function player_apply_slow(_multiplier, _duration) {
     var _p = instance_find(obj_player, 0);
     if (_p == noone) return;
     if (variable_instance_exists(_p, "synth_vontade_indomavel") && _p.synth_vontade_indomavel > 0) return;
-    // Berserker em Furia nao e contido (imune a lentidao e aprisionamento)
+    // Cavaleiro Runico em Furia nao e contido (imune a lentidao e aprisionamento)
     if (_p.state == "defend" && _p.defend_active && _p.defend_mode == "berserk_fury") return;
     _p.slow_active = true;
     _p.slow_multiplier = _multiplier;
@@ -643,7 +643,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
         _dmg *= (1 + _owner.synth_execute_bonus);
     }
 
-    // Marca Espectral (Lâmina Espectral / Assassino de Água): +50% dano sofrido
+    // Marca Espectral (Rastreador / Assassino de Água): +50% dano sofrido
     if (variable_instance_exists(_enemy, "spectral_mark") && _enemy.spectral_mark > 0) {
         _dmg *= 1.50;
         fx_spawn_sparks(_enemy.x, _enemy.y, c_teal, 6);
@@ -744,6 +744,30 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
 
     // Elemental On-Hit Effects for Knight
     if (_owner.character_class == "knight") {
+        // Cavaleiro Runico (Cavaleiro + Fogo -> estilo Maga): o golpe que acerta detona uma runa de fogo em area.
+        // Uma runa por golpe; na Furia a runa e maior e mais forte. Como magia, interrompe canalizacoes.
+        if (_owner.element_affinity == "fire" && current_time - _owner.rune_blast_last >= 150) {
+            _owner.rune_blast_last = current_time;
+            var _fury = (_owner.state == "defend" && _owner.defend_active && _owner.defend_mode == "berserk_fury");
+            var _rr = _fury ? 72 : 54;
+            var _rd = _dmg * (_fury ? 0.50 : 0.35);
+            var _rx = _enemy.x;
+            var _ry = _enemy.y;
+            with (obj_enemy_parent) {
+                if (hp > 0 && !fh_untargetable && point_distance(x, y, _rx, _ry) <= _rr + body_radius) {
+                    enemy_take_damage(id, _rd, _rx, _ry, 120);
+                    enemy_apply_poison(id, 2, 0.5, 1.5);
+                    if (fh_channeling && !fh_interrupt) {
+                        fh_interrupt = true;
+                        fx_spawn_damage_popup(x, y - body_radius - 26, "INTERROMPIDO!", true, c_orange);
+                    }
+                }
+            }
+            fx_spawn_death_burst(_rx, _ry, c_orange, _fury ? 16 : 10);
+            fx_spawn_sparks(_rx, _ry, c_yellow, 6);
+            sfx_play("slam", 0.1, 0.3);
+        }
+
         // 20 Frenesi Ardente (+5% vel ataque ate 6 stacks por 3s)
         if (variable_instance_exists(_owner, "synth_berserk_frenesi_ardente") && _owner.synth_berserk_frenesi_ardente > 0) {
             _owner.frenesi_stacks = min(6, _owner.frenesi_stacks + 1);
@@ -808,7 +832,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             }
         }
     } else if (_owner.character_class == "mage") {
-        // Criomante / Agua
+        // Atiradora Arcana / Agua
         if (_owner.element_affinity == "water" || (variable_instance_exists(_owner, "synth_crio_geada_penetrante") && _owner.synth_crio_geada_penetrante > 0)) {
             var _slow = (variable_instance_exists(_owner, "synth_crio_geada_penetrante") && _owner.synth_crio_geada_penetrante > 0) ? 0.30 : 0.20;
             enemy_apply_slow(_enemy, _slow, 2.0);
@@ -1161,7 +1185,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             }
         }
 
-        // Lamina Espectral (Agua): Marca Espectral (+50% dano sofrido por 4s)
+        // Rastreador (Agua): Marca Espectral (+50% dano sofrido por 4s)
         if (_owner.element_affinity == "water") {
             _enemy.spectral_mark = 4.0;
         }
@@ -1464,6 +1488,12 @@ function player_perform_attack() {
             _p.dir_y = facing_y;
             _p.speed_px = _spd;
             _p.pierce_remaining = _eff_pierce;
+            // Atiradora Arcana (Maga + Agua -> estilo Arqueiro): lancas de gelo rapidas, perfurantes e de longo alcance
+            if (character_class == "mage" && element_affinity == "water") {
+                _p.speed_px *= 1.35;
+                _p.pierce_remaining += 1;
+                _p.life *= 1.25;
+            }
             if (character_class == "archer" && variable_instance_exists(id, "synth_archer_falcao_cosmico") && synth_archer_falcao_cosmico > 0) {
                 _p.life = 10.0;
             }
@@ -1536,7 +1566,7 @@ function player_perform_attack() {
             // 3º Golpe Elemental do Mago
             if (mage_consecutive_hits mod 3 == 0) {
                 if (element_affinity == "water" || (variable_instance_exists(id, "synth_crio_onda_torrencial") && synth_crio_onda_torrencial > 0)) {
-                    // Criomante / 14 Onda Torrencial: arrasta monstros por 150px
+                    // Atiradora Arcana / 14 Onda Torrencial: arrasta monstros por 150px
                     var _wave_x = x + facing_x * 50;
                     var _wave_y = y + facing_y * 50;
                     var _nova = instance_create_layer(_wave_x, _wave_y, layer, obj_atk_knight);
@@ -1717,7 +1747,7 @@ function player_perform_attack() {
         var _radius_mult = 0.7;
 
         if (character_class == "knight") {
-            if (element_affinity == "fire" || (variable_instance_exists(id, "synth_berserk_arco_incendiario") && synth_berserk_arco_incendiario > 0)) {
+            if (variable_instance_exists(id, "synth_berserk_arco_incendiario") && synth_berserk_arco_incendiario > 0) {
                 _range_mult = 0.8;
                 _radius_mult = 1.2; // Arco Incendiario (+40% area)
             } else if (element_affinity == "earth") {
@@ -1741,6 +1771,18 @@ function player_perform_attack() {
         _hit.owner = id;
         _hit.damage = _dmg;
         _hit.body_radius = attack_range * _radius_mult;
+
+        // Lanceiro (Cavaleiro + Agua -> estilo Arqueiro): cada golpe solta uma lamina d'agua de longo alcance
+        if (character_class == "knight" && element_affinity == "water") {
+            var _blade = instance_create_layer(x + facing_x * 16, y + facing_y * 16, layer, obj_atk_arrow);
+            _blade.owner = id;
+            _blade.damage = _dmg * 0.40;
+            _blade.dir_x = facing_x;
+            _blade.dir_y = facing_y;
+            _blade.speed_px = 420;
+            _blade.life = 0.42;
+            _blade.pierce_remaining = 0;
+        }
 
         // Assassin: Laminas Gemeas (segundo corte imediato)
         if (character_class == "assassin" && variable_instance_exists(id, "synth_assassin_laminas_gemeas") && synth_assassin_laminas_gemeas > 0) {
@@ -1852,35 +1894,21 @@ function player_perform_attack() {
             // 3º Golpe Elemental do Assassino
             if (assassin_combo_counter mod 3 == 0) {
                 if (element_affinity == "water") {
-                    // Lâmina Espectral: Passo Fantasma instantâneo para trás do inimigo mais próximo
-                    var _near_enemy = noone;
-                    var _min_d = 160;
-                    with (obj_enemy_parent) {
-                        var _ed = point_distance(other.x, other.y, x, y);
-                        if (_ed < _min_d) {
-                            _min_d = _ed;
-                            _near_enemy = id;
-                        }
+                    // Rastreador (Assassino + Agua -> estilo Arqueiro): arremessa 3 facas espectrais em leque.
+                    // Cada acerto aplica a Marca Espectral (+50% de dano sofrido por 4s).
+                    var _kdir = point_direction(0, 0, facing_x, facing_y);
+                    for (var _k = -1; _k <= 1; _k++) {
+                        var _knife = instance_create_layer(x + facing_x * 12, y + facing_y * 12, layer, obj_atk_arrow);
+                        _knife.owner = id;
+                        _knife.damage = _dmg * 0.9;
+                        _knife.dir_x = lengthdir_x(1, _kdir + _k * 10);
+                        _knife.dir_y = lengthdir_y(1, _kdir + _k * 10);
+                        _knife.speed_px = 460;
+                        _knife.life = 0.5;
+                        _knife.pierce_remaining = 1;
                     }
-                    if (_near_enemy != noone) {
-                        var _ne_fx = variable_instance_exists(_near_enemy, "facing_x") ? _near_enemy.facing_x : (variable_instance_exists(_near_enemy, "facing_dir") ? lengthdir_x(1, _near_enemy.facing_dir) : 0);
-                        var _ne_fy = variable_instance_exists(_near_enemy, "facing_y") ? _near_enemy.facing_y : (variable_instance_exists(_near_enemy, "facing_dir") ? lengthdir_y(1, _near_enemy.facing_dir) : 1);
-                        var _bx = _near_enemy.x - _ne_fx * 22;
-                        var _by = _near_enemy.y - _ne_fy * 22;
-                        if (fh_place_free_of_walls(_bx, _by, body_radius)) {
-                            x = _bx;
-                            y = _by;
-                            facing_x = _ne_fx;
-                            facing_y = _ne_fy;
-                        }
-                    }
-                    // Golpe Espectral Crítico Garantido
-                    var _spec_hit = instance_create_layer(x + facing_x * 18, y + facing_y * 18, layer, obj_atk_dagger);
-                    _spec_hit.owner = id;
-                    _spec_hit.damage = _dmg * 2.2;
-                    _spec_hit.body_radius = attack_range * 1.2;
-                    fx_spawn_sparks(x, y, c_teal, 12);
-                    trigger_hitstop(0.08);
+                    fx_spawn_sparks(x, y, c_teal, 10);
+                    sfx_play("dagger", 0.1, 0.9);
                 } else if (element_affinity == "fire") {
                     // Lâmina Vulcânica: Detonação de Pólvora em chamas
                     var _det = instance_create_layer(_hx, _hy, layer, obj_atk_knight);
@@ -2264,7 +2292,7 @@ function player_take_damage(_amount, _damage_type) {
         var _min_dmg = max(2, ceil(_amount * 0.20));
         _final = max(_min_dmg, round(_final));
 
-        // Absorção de Sobrevida (Barreira Sagrada / Paladino)
+        // Absorção de Sobrevida (Barreira Sagrada / Lanceiro)
         if (variable_instance_exists(_p, "paladin_barrier_active") && _p.paladin_barrier_active > 0 && _final > 0) {
             if (_p.paladin_barrier_active >= _final) {
                 _p.paladin_barrier_active -= _final;

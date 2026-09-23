@@ -18,12 +18,12 @@ Código: `class_interaction_on_hit()` e helpers em `scripts/scr_elemental_ai`; g
 | Especialização | Interação |
 |---|---|
 | Cavaleiro | Verbo base (escudo segura parcial). |
-| **Paladino** (Água) | A aura **purifica o chão**: apaga fogo e derrete gelo dentro do raio. Segura investidas (parcial). |
-| **Berserker** (Fogo) | **Fúria inabalável**: durante a Fúria não é empurrado, puxado, lento nem preso em bolhas. |
+| **Lanceiro** (Água → Arqueiro) | Cada golpe solta uma **lâmina d'água** de longo alcance, que também **derruba voadores**. A aura **purifica o chão**: apaga fogo e derrete gelo dentro do raio. Segura investidas (parcial). |
+| **Cavaleiro Rúnico** (Fogo → Maga) | Todo golpe que acerta detona uma **runa de fogo em área**, que também **interrompe canalizações**. **Fúria inabalável**: durante a Fúria não é empurrado, puxado, lento nem preso em bolhas. |
 | **Duelista** (Vento) | **Aparar** no momento do impacto segura investidas por completo ("APARADO!"). |
 | **Guardião** (Terra) | **Muralha viva**: segura investidas sem recuar nem sofrer dano; carapaça do Slime de Terra estilhaça no escudo. |
 | Arcano | Verbo base. |
-| **Criomante** (Água) | **Gelo apaga fogo**: magias apagam chão em chamas e **desarmam o Slime de Fogo inchado**; a Prisão Criogênica **congela o General Magma** no meio da investida. |
+| **Atiradora Arcana** (Água → Arqueiro) | **Lanças de gelo** rápidas e perfurantes (+30% em alvos lentos) que **derrubam voadores**. **Gelo apaga fogo**: magias apagam chão em chamas e **desarmam o Slime de Fogo inchado**; a Prisão Criogênica **congela o General Magma** no meio da investida. |
 | **Piromante** (Fogo) | **Fogo derrete gelo**: magias derretem chão escorregadio; General da Água **congelado** recebe +30%. |
 | **Aeromante** (Vento) | **Vento não reflete vento**: projéteis ignoram barreiras de vento (Conjurador, Totem, vórtice da Sílfide). |
 | **Geomante** (Terra) | **Terra atravessa terra**: magias passam por carapaças (50% do dano, rachando 2 placas), inclusive a frente do Titã; o **Pilar de Basalto arranca Gnomo e Salamandra do subsolo** (expostos 2,5s). |
@@ -33,7 +33,7 @@ Código: `class_interaction_on_hit()` e helpers em `scripts/scr_elemental_ai`; g
 | **Mestre do Vendaval** (Vento) | **Vento não reflete vento** (igual ao Aeromante). |
 | **Balista da Terra** (Terra) | **Ancorado**: com a âncora ativa ignora empurrões e puxões (vórtices, vendavais, ondas, pousos). |
 | Assassino | Verbo base. |
-| **Lâmina Espectral** (Água) | **Vê através de ilusões**: clones da Ondina aparecem marcados com X e a Sílfide fica visível. |
+| **Rastreador** (Água → Arqueiro) | Todo 3º golpe arremessa **3 facas espectrais** que marcam (+50% de dano) e **derrubam voadores**. **Vê através de ilusões**: clones da Ondina aparecem marcados com X e a Sílfide fica visível. |
 | **Lâmina Vulcânica** (Fogo) | **Bomba de cinzas cega**: interrompe canalizações ("CEGADO!") e revela a Sílfide por 4s. |
 | **Algoz do Tufão** (Vento) | **Corta o vento**: adagas acertam o Golem de Tempestade na névoa e o Slime de Vento no ar. |
 | **Carrasco de Obsidiana** (Terra) | **Obsidiana corta pedra**: adagas passam por carapaças (50%, rachando 2 placas), inclusive a frente do Titã. |
@@ -43,10 +43,10 @@ Código: `class_interaction_on_hit()` e helpers em `scripts/scr_elemental_ai`; g
 | Chefe | Quem tem vantagem |
 |---|---|
 | General da Água | Todos rebatem o orbe; Piromante (+30% congelado); Assassino (orbe perde o alvo). |
-| General Magma | Cavaleiro (segura a investida), Guardião/Duelista (total), Criomante (congela a investida). |
-| General Zephyrus | Arqueiro (derruba com 5 flechas), Assassino (sombra perde o alvo), Balista/Berserker (ignoram vendavais). |
+| General Magma | Cavaleiro (segura a investida), Guardião/Duelista (total), Atiradora Arcana (congela a investida). |
+| General Zephyrus | Arqueiro e especializações de Água (derrubam com 5 acertos), Assassino (sombra perde o alvo), Balista/Cavaleiro Rúnico (ignoram vendavais). |
 | Titã Monolito | Assassino (núcleo ×2), Geomante e Carrasco (atravessam a frente). |
 | O Salvador | Todos (drones); Assassino (ataque orbital erra). |
-| Ondina | Maga e Lâmina Vulcânica (interrompem a cura), Lâmina Espectral (vê os clones). |
+| Ondina | Maga e Lâmina Vulcânica (interrompem a cura), Rastreador (vê os clones). |
 | Salamandra / Gnomo | Geomante (Pilar de Basalto arranca do subsolo), Assassino (perdem o alvo). |
-| Sílfide | Cavaleiro (rebate a rajada), Lâmina Espectral e Vulcânica (revelam), Aeromante/Vendaval (vórtice não reflete), Balista/Berserker (não são puxados). |
+| Sílfide | Cavaleiro (rebate a rajada), Rastreador e Lâmina Vulcânica (revelam), Aeromante/Vendaval (vórtice não reflete), Balista/Cavaleiro Rúnico (não são puxados). |

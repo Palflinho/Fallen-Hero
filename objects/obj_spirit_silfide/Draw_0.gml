@@ -13,7 +13,7 @@ if (state == "vortex" || state == "vortex_windup") {
     draw_circle(x, y, 320, true);
     draw_set_alpha(1);
 }
-// Lamina Espectral enxerga o invisivel
+// Rastreador enxerga o invisivel
 var _saved_alpha = draw_alpha;
 if (player_is_archetype(instance_find(obj_player, 0), "assassin", "water")) draw_alpha = max(draw_alpha, 0.6);
 event_inherited();

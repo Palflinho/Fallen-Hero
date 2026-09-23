@@ -183,7 +183,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_set_alpha(1);
     }
     
-    // Escudo de Sobrevida do Paladino
+    // Escudo de Sobrevida do Lanceiro
     if (variable_instance_exists(target, "paladin_barrier_active") && target.paladin_barrier_active > 0) {
         draw_set_alpha(0.55);
         draw_set_color(c_aqua);

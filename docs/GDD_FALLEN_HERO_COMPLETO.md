@@ -60,8 +60,8 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
 * **Habilidade Especial (Defesa / [X]):** Ergue o escudo. Bloqueia 50% a 100% de dano frontal, absorve projéteis.
   * **QoL Integrada:** Pode cancelar a qualquer instante antes do fim da duração apertando `[X]` novamente.
 * **Afinidades Elementais:**
-  * *Água (Paladino):* Gera barreira de sobrevida sagrada e ondas de cura em combate.
-  * *Fogo (Berserker):* Converte vida perdida em velocidade e dano em labaredas; fúria imortal.
+  * *Água (Lanceiro — estilo Arqueiro):* Cada golpe solta uma lâmina d'água de longo alcance; a aura de sobrevida cura e protege.
+  * *Fogo (Cavaleiro Rúnico — estilo Maga):* Alcance normal, mas todo golpe que acerta detona uma runa de fogo em área (maior durante a Fúria) que também interrompe canalizações.
   * *Vento (Duelista):* Concede combo duplo de lâmina veloz e rajadas cortantes de ar.
   * *Terra (Guardião Tectônico):* Aumenta a couraça corporal proporcionalmente aos inimigos próximos.
 
@@ -71,7 +71,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
 * **Habilidade Especial (Defesa / [X]):** Prisão Criogênica / Campo de Mana. Concede invulnerabilidade temporária estática.
   * **QoL Integrada:** Cancelável a qualquer momento com `[X]`.
 * **Afinidades Elementais:**
-  * *Água (Criomante):* Nova glacial e ondas torrenciais que empurram inimigos por 150px.
+  * *Água (Atiradora Arcana — estilo Arqueiro):* Lanças de gelo mais rápidas, perfurantes e de longo alcance (+30% em alvos lentos).
   * *Fogo (Piromante):* Dispara meteoros de magma devastadores e sopros de dragão.
   * *Vento (Aeromante):* Vórtice de gravidade galvânica que puxa e esquiva de projéteis em movimento.
   * *Terra (Geomante):* Ruptura sísmica perfurante e muralhas protetoras de granito.
@@ -158,14 +158,14 @@ O catálogo de talentos está 100% definido em [`scr_talents.gml`](../scripts/sc
 ### 5.1 Distribuição Estrutural (211 Talentos Totais)
 * **Cavaleiro (50 Talentos):**
   * 10 Base (Postura Firme, Lâmina Afiada, Golpe Pesado, Escudo de Choque, Segundo Fôlego, etc.)
-  * 8 Água / Paladino (Lâmina da Maré, Bastilha Sagrada, Escudo Espelhado, Julgamento Sereno, etc.)
-  * 8 Fogo / Berserker (Fúria Ardente, Lâmina em Brasa, Fúria Imortal, Impacto Vulcânico, etc.)
+  * 8 Água / Lanceiro (Lâmina da Maré, Bastilha Sagrada, Escudo Espelhado, Julgamento Sereno, etc.)
+  * 8 Fogo / Cavaleiro Rúnico (Fúria Ardente, Lâmina em Brasa, Fúria Imortal, Impacto Vulcânico, etc.)
   * 8 Vento / Duelista (Combo Vendaval, Postura Eólica, Lâmina Relâmpago, Dança das Lâminas, etc.)
   * 8 Terra / Guardião (Fissura Telúrica, Carapaça de Granito, Fortaleza Viva, Peso Esmagador, etc.)
   * 8 Lendários / Mestria (Cavaleiro do Apocalipse, Avatar Elemental, etc.)
 * **Maga (50 Talentos):**
   * 10 Base (Canalização Fluida, Eco Mágico, Fluxo Conduzido, etc.)
-  * 8 Água / Criomante (Onda Torrencial, Lança de Zero Absoluto, Prisma de Gelo, etc.)
+  * 8 Água / Atiradora Arcana (Onda Torrencial, Lança de Zero Absoluto, Prisma de Gelo, etc.)
   * 8 Fogo / Piromante (Meteoro de Magma, Sopro de Dragão, Conflagração Furiosa, etc.)
   * 8 Vento / Aeromante (Vórtice Cortante, Olho do Furacão, Passo Céfiro, etc.)
   * 8 Terra / Geomante (Ruptura Sísmica, Espinhos Telúricos, Armadura de Granito, etc.)
@@ -236,6 +236,9 @@ Cada chefe tem **uma mecânica central** (estilo Zelda) que abre a **janela de d
 3. **General Zephyrus (`obj_boss3`) — "Céu e Chão":** **no ar é intangível** (só a sombra fica no chão) e dispara leques de penas. Depois a sombra persegue o jogador, **trava** e ele **mergulha**. Após o último mergulho fica com as **ASAS PRESAS** (3,5s). Fase 1: 1 mergulho; fase 2: 2 mergulhos + 2 ciclones soltos; fase 3: 3 mergulhos + **vendavais** que empurram o jogador pela arena.
 4. **Titã Monolito (`obj_boss4`) — "Costas Expostas":** a **frente é blindada** (golpes ricocheteiam) e o **núcleo brilha nas costas**; ele gira devagar para encarar o jogador (mais rápido a cada fase). **Varredura** em cone na frente. O **pisão** (só quando o jogador está perto) solta uma onda de choque em anel e o deixa **PRESO AO CHÃO** com a couraça aberta (3,2s, dano em qualquer lado). Fase 2: muralhas de pedra atrás de si + pedregulhos que viram obstáculos; fase 3: **giro de 360°** se o jogador acampar nas costas.
 5. **O Salvador (`obj_boss_human`) — "Protocolo de Drones":** o **escudo** fica ativo enquanto houver **drones** vivos (`obj_boss_drone`, destrutíveis, ligados ao traje por um cabo de energia). Destruir todos causa **SOBRECARGA** (4,5s); depois ele lança drones novos (2/3/4 por fase). Também: plasma triplo, **laser** que mira e dispara (fase 2: o feixe **varre**; fase 3: **dois feixes** girando) e **ataque orbital** (fase 2+).
+
+### 6.3.0 Regra do Elemento (2 para 1)
+Cada elemento pertence a uma classe e **empresta uma ferramenta** do estilo dela: **Terra → Cavaleiro**, **Água → Arqueiro**, **Fogo → Maga**, **Vento → Assassino**. A classe base continua sendo o corpo (vida, ataque principal, botão de defesa); o elemento acrescenta uma coisa só. A classe no próprio elemento é a **Maestria** (Guardião, Piromante, Caçador das Marés, Algoz do Tufão). Os nomes das especializações evocam a classe emprestada (Duelista, Lanceiro, Cavaleiro Rúnico, Atiradora Arcana, Rastreador).
 
 ### 6.3.1 Interações de Classe
 Cada classe tem um verbo contra os inimigos — **Cavaleiro segura** investidas com o escudo, **Maga interrompe** canalizações, **Arqueiro derruba** o que voa, **Assassino despista** o que persegue — e cada especialização tem uma interação própria (ex.: Criomante apaga o Slime de Fogo e congela o General Magma; Geomante arranca o Gnomo do subsolo). Tabela completa em [`INTERACOES_DE_CLASSE.md`](INTERACOES_DE_CLASSE.md).

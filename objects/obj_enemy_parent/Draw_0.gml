@@ -231,7 +231,7 @@ if (variable_instance_exists(id, "spider_alert_timer") && spider_alert_timer > 0
     draw_set_valign(fa_top);
 }
 
-// 3.8. Marcacao Espectral (Assassino de Agua / Lamina Espectral)
+// 3.8. Marcacao Espectral (Assassino de Agua / Rastreador)
 if (variable_instance_exists(id, "spectral_mark") && spectral_mark > 0) {
     var _mp = 0.6 + 0.4 * sin(current_time * 0.012);
     draw_set_alpha(0.75 * _mp);

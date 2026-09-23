@@ -730,7 +730,7 @@ switch (state) {
             }
         }
 
-        // Paladino: Aura de Sobrevida cura em pulsos e reduz velocidade de movimento
+        // Lanceiro: Aura de Sobrevida cura em pulsos e reduz velocidade de movimento
         if (defend_mode == "paladin_aura") {
             paladin_aura_tick_timer -= _dt;
             if (paladin_aura_tick_timer <= 0) {
@@ -773,7 +773,7 @@ switch (state) {
             }
         }
 
-        // Berserker: Furia permite movimento livre e ataque continuo
+        // Cavaleiro Runico: Furia permite movimento livre e ataque continuo
         if (defend_mode == "berserk_fury") {
             hp = min(hp_max, hp + (8 + synth_hp_reg * 2) * _dt);
             if (input_h != 0 || input_v != 0) {

@@ -181,7 +181,7 @@ switch (state) {
             }
         }
 
-        // Criomante: a Prisao Criogenica congela o General no meio da investida
+        // Atiradora Arcana: a Prisao Criogenica congela o General no meio da investida
         if (_player != noone && _player.state == "defend" && _player.defend_active && _player.defend_mode == "cryo_prison"
             && point_distance(x, y, _player.x, _player.y) <= body_radius + 110) {
             state = "crashed";

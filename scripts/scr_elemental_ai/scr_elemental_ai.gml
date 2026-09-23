@@ -387,7 +387,7 @@ function player_shield_tier(_p) {
     return 0;
 }
 
-// Ancorado: Balista da Terra (ancora) e Berserker em Furia ignoram empurroes e puxoes
+// Ancorado: Balista da Terra (ancora) e Cavaleiro Runico em Furia ignoram empurroes e puxoes
 function player_is_anchored(_p) {
     if (_p == noone || !instance_exists(_p)) return false;
     if (variable_instance_exists(_p, "earth_anchored") && _p.earth_anchored) return true;
@@ -417,13 +417,15 @@ function class_interaction_on_hit(_o, _e, _dmg) {
     var _obj = _e.object_index;
 
     // ---------------- ARQUEIRO: derrubar voadores ----------------
+    // Regra do elemento: Agua empresta o estilo do Arqueiro - as laminas do Lanceiro e as facas do
+    // Rastreador e as lancas da Atiradora Arcana tambem derrubam voadores.
+    if ((_cls == "archer" || _el == "water") && _e.fh_untargetable && _e.fh_air) {
+        _e.fh_air_hits += 1;
+        _e.fh_air_shot = true;
+        fx_spawn_sparks(_e.x, _e.y - _e.draw_z, c_white, 8);
+        return -1;
+    }
     if (_cls == "archer") {
-        if (_e.fh_untargetable && _e.fh_air) {
-            _e.fh_air_hits += 1;
-            _e.fh_air_shot = true;
-            fx_spawn_sparks(_e.x, _e.y - _e.draw_z, c_white, 8);
-            return -1;
-        }
         if (_obj == obj_wisp) {
             fx_spawn_damage_popup(_e.x, _e.y - 24, "ABATIDO!", true, c_yellow);
             return _e.hp + 999;
@@ -443,7 +445,12 @@ function class_interaction_on_hit(_o, _e, _dmg) {
             fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 26, "INTERROMPIDO!", true, c_fuchsia);
             trigger_hitstop(0.06);
         }
-        // Criomante: gelo apaga o Slime de Fogo inchado
+        // Atiradora Arcana: precisao contra alvos lentos ou congelados
+        if (_el == "water" && _e.slow_active) {
+            _dmg *= 1.3;
+            if (random(1) < 0.2) fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 20, "PRECISAO!", false, c_aqua);
+        }
+        // Atiradora Arcana (antiga Criomante): gelo apaga o Slime de Fogo inchado
         if (_el == "water" && _obj == obj_fire_slime && _e.state == "swell") {
             _e.state = "chase";
             _e.scale_x = 1;
