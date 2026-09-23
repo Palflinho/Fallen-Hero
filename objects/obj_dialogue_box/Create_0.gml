@@ -3,7 +3,7 @@ line_index = 0;
 on_finish = undefined;
 
 current_speaker = "knight";
-current_name = "Herói";
+current_name = tr("Herói");
 current_alien = "";
 current_text = "";
 current_portrait = -1;
@@ -28,7 +28,7 @@ dialogue_setup_current_line = function() {
 
     var _line = lines[line_index];
     current_speaker = variable_struct_exists(_line, "speaker") ? _line.speaker : "knight";
-    current_name = variable_struct_exists(_line, "name") ? _line.name : "Herói";
+    current_name = variable_struct_exists(_line, "name") ? _line.name : tr("Herói");
     current_alien = variable_struct_exists(_line, "alien") ? _line.alien : "";
     current_text = variable_struct_exists(_line, "text") ? _line.text : "";
 

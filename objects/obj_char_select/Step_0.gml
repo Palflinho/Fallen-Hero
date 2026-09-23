@@ -158,7 +158,7 @@ switch (state) {
             var _del_y = _card_y + 12;
             if (save_slot_exists(_s + 1) && touch_room_clicked(_del_x, _del_y, _del_x + 32, _del_y + 32)) {
                 save_slot_delete(_s + 1);
-                save_notice_text = "Slot " + string(_s + 1) + " apagado com sucesso!";
+                save_notice_text = tr("Slot ") + string(_s + 1) + tr(" apagado com sucesso!");
                 save_notice_timer = 90;
                 continue;
             }
@@ -179,7 +179,7 @@ switch (state) {
             var _target_slot = save_slot_cursor + 1;
             if (save_slot_exists(_target_slot)) {
                 save_slot_delete(_target_slot);
-                save_notice_text = "Slot " + string(_target_slot) + " apagado com sucesso!";
+                save_notice_text = tr("Slot ") + string(_target_slot) + tr(" apagado com sucesso!");
                 save_notice_timer = 90;
             }
         }
@@ -198,7 +198,7 @@ switch (state) {
                 selected_index = 0;
                 selected_element_index = 0;
                 talent_selected_ids = [];
-                save_notice_text = "Novo jogo iniciado no Slot " + string(_chosen_slot) + "!";
+                save_notice_text = tr("Novo jogo iniciado no Slot ") + string(_chosen_slot) + "!";
                 save_notice_timer = 90;
                 state = "select";
             } else if (save_slot_action == "continue") {
@@ -223,11 +223,11 @@ switch (state) {
                             array_push(talent_selected_ids, global.chosen_talent_ids[_t]);
                         }
                     }
-                    save_notice_text = "Slot " + string(_chosen_slot) + " carregado com sucesso!";
+                    save_notice_text = tr("Slot ") + string(_chosen_slot) + tr(" carregado com sucesso!");
                     save_notice_timer = 90;
                     state = "select";
                 } else {
-                    save_notice_text = "Slot " + string(_chosen_slot) + " esta vazio!";
+                    save_notice_text = tr("Slot ") + string(_chosen_slot) + tr(" esta vazio!");
                     save_notice_timer = 60;
                 }
             }
@@ -256,13 +256,13 @@ switch (state) {
             if (touch_room_clicked(_sbx, _slot_bar_y, _sbx + 110, _slot_bar_y + 32)) {
                 global.current_save_slot = _s;
                 load_meta_from_disk();
-                save_notice_text = "Slot ativo alterado para Slot " + string(_s);
+                save_notice_text = tr("Slot ativo alterado para Slot ") + string(_s);
                 save_notice_timer = 60;
             }
         }
-        if (input_check_slot_pressed(0)) { global.current_save_slot = 1; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 1"; save_notice_timer = 60; }
-        if (input_check_slot_pressed(1)) { global.current_save_slot = 2; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 2"; save_notice_timer = 60; }
-        if (input_check_slot_pressed(2)) { global.current_save_slot = 3; load_meta_from_disk(); save_notice_text = "Slot ativo: Slot 3"; save_notice_timer = 60; }
+        if (input_check_slot_pressed(0)) { global.current_save_slot = 1; load_meta_from_disk(); save_notice_text = tr("Slot ativo: Slot 1"); save_notice_timer = 60; }
+        if (input_check_slot_pressed(1)) { global.current_save_slot = 2; load_meta_from_disk(); save_notice_text = tr("Slot ativo: Slot 2"); save_notice_timer = 60; }
+        if (input_check_slot_pressed(2)) { global.current_save_slot = 3; load_meta_from_disk(); save_notice_text = tr("Slot ativo: Slot 3"); save_notice_timer = 60; }
 
         // Salvamento explícito do perfil no slot escolhido com G, Y ou Botão Y do Controle
         var _btn_sel_y = room_height - 62;
@@ -273,7 +273,7 @@ switch (state) {
         var _gp_save_btn = (_pad_save != -1 && gamepad_button_check_pressed(_pad_save, gp_face4));
         if (keyboard_check_pressed(ord("G")) || keyboard_check_pressed(ord("Y")) || _gp_save_btn || touch_room_clicked(_save_btn_x, _btn_sel_y, _save_btn_x + _save_btn_w, _btn_sel_y + _btn_sel_h)) {
             save_slot_save_character_select(global.current_save_slot, classes[selected_index], elements[selected_element_index], talent_selected_ids);
-            save_notice_text = "Perfil salvo com sucesso no Slot " + string(global.current_save_slot) + "!";
+            save_notice_text = tr("Perfil salvo com sucesso no Slot ") + string(global.current_save_slot) + "!";
             save_notice_timer = 120;
         }
 

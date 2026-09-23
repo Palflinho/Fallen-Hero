@@ -127,7 +127,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_set_color(c_yellow);
-    draw_text(_port_x + _port_size / 2, _lvl_y + 8, "Nv. " + string(target.level));
+    draw_text(_port_x + _port_size / 2, _lvl_y + 8, tr("Nv. ") + string(target.level));
     
     // Chip de Ouro
     var _gold_y = _lvl_y + 18;
@@ -199,7 +199,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _hp_h, true);
     
     // Texto de HP centralizado com sombra
-    var _hp_str = "HP " + string(max(0, round(target.hp))) + " / " + string(round(target.hp_max));
+    var _hp_str = tr("HP ") + string(max(0, round(target.hp))) + " / " + string(round(target.hp_max));
     if (variable_instance_exists(target, "paladin_barrier_active") && target.paladin_barrier_active > 0) {
         _hp_str += " (+" + string(round(target.paladin_barrier_active)) + ")";
     }
@@ -227,27 +227,27 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
     _cur_y += _exp_h + 5;
     
     // Linha 4: Habilidade Defensiva / Especial (Tactical Pill)
-    var _skill_name = "Habilidade";
-    if (target.defend_mode == "paladin_aura") _skill_name = "Aura Sobrevida";
-    else if (target.defend_mode == "berserk_fury") _skill_name = "Furia Ardente";
-    else if (target.defend_mode == "parry") _skill_name = "Aparar";
-    else if (target.defend_mode == "guardian_aegis") _skill_name = "Bastiao";
-    else if (target.defend_mode == "block") _skill_name = "Bloqueio";
-    else if (target.defend_mode == "manashield") _skill_name = "Escudo Magico";
-    else if (target.defend_mode == "cryo_prison") _skill_name = "Tumba de Gelo";
-    else if (target.defend_mode == "pyro_blast") _skill_name = "Onda Piroclastica";
-    else if (target.defend_mode == "voltaic_blink") _skill_name = "Blink Voltaico";
-    else if (target.defend_mode == "basalt_pillar") _skill_name = "Muralha Basalto";
-    else if (target.defend_mode == "mist_roll") _skill_name = "Rolamento Nevoa";
-    else if (target.defend_mode == "fire_recoil") _skill_name = "Salto Propulsor";
-    else if (target.defend_mode == "cyclone_roll") _skill_name = "Rolamento Vendaval";
-    else if (target.defend_mode == "earth_anchor") _skill_name = "Ancoragem";
-    else if (target.defend_mode == "spectral_mist") _skill_name = "Manto Espectral";
-    else if (target.defend_mode == "ash_bomb") _skill_name = "Bomba de Cinzas";
-    else if (target.defend_mode == "shadowstep") _skill_name = "Passo das Sombras";
-    else if (target.defend_mode == "obsidian_skin") _skill_name = "Pele Obsidiana";
-    else if (target.defend_mode == "roll") _skill_name = "Esquiva";
-    else if (target.defend_mode == "invisible") _skill_name = "Invisivel";
+    var _skill_name = tr("Habilidade");
+    if (target.defend_mode == "paladin_aura") _skill_name = tr("Aura Sobrevida");
+    else if (target.defend_mode == "berserk_fury") _skill_name = tr("Furia Ardente");
+    else if (target.defend_mode == "parry") _skill_name = tr("Aparar");
+    else if (target.defend_mode == "guardian_aegis") _skill_name = tr("Bastiao");
+    else if (target.defend_mode == "block") _skill_name = tr("Bloqueio");
+    else if (target.defend_mode == "manashield") _skill_name = tr("Escudo Magico");
+    else if (target.defend_mode == "cryo_prison") _skill_name = tr("Tumba de Gelo");
+    else if (target.defend_mode == "pyro_blast") _skill_name = tr("Onda Piroclastica");
+    else if (target.defend_mode == "voltaic_blink") _skill_name = tr("Blink Voltaico");
+    else if (target.defend_mode == "basalt_pillar") _skill_name = tr("Muralha Basalto");
+    else if (target.defend_mode == "mist_roll") _skill_name = tr("Rolamento Nevoa");
+    else if (target.defend_mode == "fire_recoil") _skill_name = tr("Salto Propulsor");
+    else if (target.defend_mode == "cyclone_roll") _skill_name = tr("Rolamento Vendaval");
+    else if (target.defend_mode == "earth_anchor") _skill_name = tr("Ancoragem");
+    else if (target.defend_mode == "spectral_mist") _skill_name = tr("Manto Espectral");
+    else if (target.defend_mode == "ash_bomb") _skill_name = tr("Bomba de Cinzas");
+    else if (target.defend_mode == "shadowstep") _skill_name = tr("Passo das Sombras");
+    else if (target.defend_mode == "obsidian_skin") _skill_name = tr("Pele Obsidiana");
+    else if (target.defend_mode == "roll") _skill_name = tr("Esquiva");
+    else if (target.defend_mode == "invisible") _skill_name = tr("Invisivel");
     
     var _skill_pill_h = 16;
     if (target.state == "defend" && target.defend_active) {
@@ -258,7 +258,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_set_color(c_lime);
         draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _skill_pill_h, true);
         draw_set_valign(fa_middle);
-        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "* [X] " + _skill_name + ": ATIVA (" + string(round(target.defend_timer * 10) / 10) + "s)");
+        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "* [X] " + _skill_name + tr(": ATIVA (") + string(round(target.defend_timer * 10) / 10) + "s)");
     } else if (target.defend_cooldown_timer > 0) {
         draw_set_alpha(0.7);
         draw_set_color(make_colour_rgb(20, 24, 32));
@@ -278,7 +278,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _skill_pill_h, true);
         draw_set_color(merge_colour(c_lime, c_white, 0.3));
         draw_set_valign(fa_middle);
-        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "[X] " + _skill_name + ": PRONTA");
+        draw_text(_col_x + 6, _cur_y + _skill_pill_h / 2, "[X] " + _skill_name + tr(": PRONTA"));
     }
     draw_set_valign(fa_top);
     _cur_y += _skill_pill_h + 5;
@@ -295,14 +295,14 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_rectangle(_col_x, _cur_y, _col_x + _col_w, _cur_y + _pts_banner_h, true);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        var _plural = (target.talent_pending_points > 1) ? " PONTOS DISPONIVEIS" : " PONTO DISPONIVEL";
-        draw_text(_col_x + _col_w / 2, _cur_y + _pts_banner_h / 2, "* " + string(target.talent_pending_points) + _plural + " [T / ESC]");
+        var _plural = (target.talent_pending_points > 1) ? tr(" PONTOS DISPONIVEIS") : tr(" PONTO DISPONIVEL");
+        draw_text(_col_x + _col_w / 2, _cur_y + _pts_banner_h / 2, "* " + string(target.talent_pending_points) + _plural + tr(" [T / ESC]"));
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     } else {
         draw_set_color(make_colour_rgb(130, 145, 170));
         draw_set_valign(fa_middle);
-        draw_text(_col_x + 2, _cur_y + 8, "[T] Ficha / Talentos");
+        draw_text(_col_x + 2, _cur_y + 8, tr("[T] Ficha / Talentos"));
         draw_set_valign(fa_top);
     }
     
@@ -324,10 +324,10 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_set_valign(fa_middle);
         if (_all_pressed) {
             draw_set_color(c_lime);
-            draw_text(_card_x + 8, _obj_y + _obj_h / 2, "4/4 Selos! O Portal foi aberto!");
+            draw_text(_card_x + 8, _obj_y + _obj_h / 2, tr("4/4 Selos! O Portal foi aberto!"));
         } else {
             draw_set_color(make_colour_rgb(255, 200, 100));
-            draw_text(_card_x + 8, _obj_y + _obj_h / 2, "* Selos Antigos: " + string(global.boss_buttons_pressed) + "/4 ativados");
+            draw_text(_card_x + 8, _obj_y + _obj_h / 2, tr("* Selos Antigos: ") + string(global.boss_buttons_pressed) + tr("/4 ativados"));
         }
         draw_set_valign(fa_top);
     }
@@ -338,7 +338,7 @@ function hud_draw_player_card(_hud, target, pad, _gw, _gh, boss_room) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_bottom);
         draw_set_color(c_aqua);
-        draw_text(_gw / 2, _gh - 10, "[MODO DEV ATIVO - F1/F2]");
+        draw_text(_gw / 2, _gh - 10, tr("[MODO DEV ATIVO - F1/F2]"));
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     }
@@ -367,11 +367,11 @@ function hud_draw_boss_bar(_gw, _gh, boss_room) {
             var _by = 24;
             var _boss_name = loc("boss", "CHEFE");
             if (_boss.object_index == obj_boss) _boss_name = loc("boss_water_title", "GENERAL GLACIAL (AGUA)");
-            else if (_boss.object_index == obj_boss2) _boss_name = "GENERAL MAGMA (FOGO)";
+            else if (_boss.object_index == obj_boss2) _boss_name = tr("GENERAL MAGMA (FOGO)");
             else if (object_exists(asset_get_index("obj_boss3")) && _boss.object_index == asset_get_index("obj_boss3")) _boss_name = loc("boss_wind_title", "GENERAL ZEPHYRUS (VENTO)");
-            else if (object_exists(asset_get_index("obj_boss4")) && _boss.object_index == asset_get_index("obj_boss4")) _boss_name = "TITA MONOLITO (TERRA)";
+            else if (object_exists(asset_get_index("obj_boss4")) && _boss.object_index == asset_get_index("obj_boss4")) _boss_name = tr("TITA MONOLITO (TERRA)");
             else if (object_exists(asset_get_index("obj_boss_human")) && _boss.object_index == asset_get_index("obj_boss_human")) _boss_name = loc("boss_human_title", "O SALVADOR (HUMANO)");
-            if (variable_instance_exists(_boss, "boss_phase")) _boss_name += "  [FASE " + string(_boss.boss_phase) + "]";
+            if (variable_instance_exists(_boss, "boss_phase")) _boss_name += tr("  [FASE ") + string(_boss.boss_phase) + "]";
     
             // Fundo do quadro do chefe
             draw_set_alpha(0.85);
@@ -405,7 +405,7 @@ function hud_draw_boss_bar(_gw, _gh, boss_room) {
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_top);
                 draw_set_color(c_yellow);
-                draw_text(_bx + _bw / 2, _by + _bh + 6, "JANELA DE DANO! (+50%)");
+                draw_text(_bx + _bw / 2, _by + _bh + 6, tr("JANELA DE DANO! (+50%)"));
             }
     
             draw_set_halign(fa_center);
@@ -472,7 +472,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
         draw_set_valign(fa_middle);
         draw_set_color(c_yellow);
         var _b_name = run_get_biome_name(global.run_biome);
-        var _step_str = (global.run_room_step == 2.5) ? "ARENA (2.5)" : ("SALA " + string(global.run_room_step) + "/6");
+        var _step_str = (global.run_room_step == 2.5) ? tr("ARENA (2.5)") : (tr("SALA ") + string(global.run_room_step) + "/6");
         var _header_txt = _b_name + " · " + _step_str;
         var _tw = string_width(_header_txt);
         var _max_tw = _map_w - 12;
@@ -670,10 +670,10 @@ function hud_draw_game_over(_gw, _gh, death_gold_earned, death_gold_lost, death_
         draw_set_halign(fa_center);
         draw_set_valign(fa_top);
         draw_set_color(make_colour_rgb(255, 75, 75));
-        draw_text(_bx + _box_w / 2, _by + 24, "VOCE FOI DERROTADO");
+        draw_text(_bx + _box_w / 2, _by + 24, tr("VOCE FOI DERROTADO"));
     
         draw_set_color(c_ltgray);
-        draw_text(_bx + _box_w / 2, _by + 52, "Sua jornada nesta masmorra chegou ao fim.");
+        draw_text(_bx + _box_w / 2, _by + 52, tr("Sua jornada nesta masmorra chegou ao fim."));
     
         // Divisor
         draw_set_color(make_colour_rgb(70, 30, 40));
@@ -684,24 +684,24 @@ function hud_draw_game_over(_gw, _gh, death_gold_earned, death_gold_lost, death_
         draw_set_halign(fa_left);
     
         draw_set_color(c_white);
-        draw_text(_bx + 50, _ry, "Ouro obtido nesta partida:");
+        draw_text(_bx + 50, _ry, tr("Ouro obtido nesta partida:"));
         draw_set_halign(fa_right);
         draw_set_color(c_yellow);
-        draw_text(_bx + _box_w - 50, _ry, "+" + string(death_gold_earned) + " Ouro");
+        draw_text(_bx + _box_w - 50, _ry, "+" + string(death_gold_earned) + tr(" Ouro"));
         _ry += 30;
     
         draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(240, 95, 95));
-        draw_text(_bx + 50, _ry, "Penalidade por Morte (40%):");
+        draw_text(_bx + 50, _ry, tr("Penalidade por Morte (40%):"));
         draw_set_halign(fa_right);
-        draw_text(_bx + _box_w - 50, _ry, "-" + string(death_gold_lost) + " Ouro");
+        draw_text(_bx + _box_w - 50, _ry, "-" + string(death_gold_lost) + tr(" Ouro"));
         _ry += 30;
     
         draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(80, 220, 120));
-        draw_text(_bx + 50, _ry, "Ouro resgatado ao cofre (60%):");
+        draw_text(_bx + 50, _ry, tr("Ouro resgatado ao cofre (60%):"));
         draw_set_halign(fa_right);
-        draw_text(_bx + _box_w - 50, _ry, "+" + string(death_gold_kept) + " Ouro");
+        draw_text(_bx + _box_w - 50, _ry, "+" + string(death_gold_kept) + tr(" Ouro"));
         _ry += 34;
     
         // Divisor
@@ -711,10 +711,10 @@ function hud_draw_game_over(_gw, _gh, death_gold_earned, death_gold_lost, death_
     
         draw_set_halign(fa_left);
         draw_set_color(c_white);
-        draw_text(_bx + 50, _ry, "Saldo Atual no Cofre:");
+        draw_text(_bx + 50, _ry, tr("Saldo Atual no Cofre:"));
         draw_set_halign(fa_right);
         draw_set_color(c_yellow);
-        draw_text(_bx + _box_w - 50, _ry, string(global.gold) + " Ouro");
+        draw_text(_bx + _box_w - 50, _ry, string(global.gold) + tr(" Ouro"));
         _ry += 40;
     
         // Botoes de Acao
@@ -722,13 +722,13 @@ function hud_draw_game_over(_gw, _gh, death_gold_earned, death_gold_lost, death_
         var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.006));
         var _is_mob = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
         draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-        var _cont_str = _is_mob ? "Toque na tela para Voltar a Selecao de Herois" : (input_get_btn_label("confirm") + " Voltar para Selecao de Personagem");
+        var _cont_str = _is_mob ? tr("Toque na tela para Voltar a Selecao de Herois") : (input_get_btn_label("confirm") + tr(" Voltar para Selecao de Personagem"));
         draw_text(_bx + _box_w / 2, _ry, _cont_str);
         _ry += 26;
     
         if (!_is_mob) {
             draw_set_color(c_ltgray);
-            draw_text(_bx + _box_w / 2, _ry, "[R] Reiniciar Expedicao   -   [M] Menu Principal");
+            draw_text(_bx + _box_w / 2, _ry, tr("[R] Reiniciar Expedicao   -   [M] Menu Principal"));
         }
     
         draw_set_halign(fa_left);
@@ -760,10 +760,10 @@ function hud_draw_victory(target, _gw, _gh) {
         draw_set_valign(fa_middle);
         var _pulse = 0.7 + 0.3 * abs(sin(current_time * 0.005));
         draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-        draw_text_transformed(_bx + _box_w / 2, _by + 36, "EXPEDICAO CONCLUIDA COM SUCESSO!", 1.35, 1.35, 0);
+        draw_text_transformed(_bx + _box_w / 2, _by + 36, tr("EXPEDICAO CONCLUIDA COM SUCESSO!"), 1.35, 1.35, 0);
     
         draw_set_color(make_colour_rgb(140, 210, 255));
-        draw_text(_bx + _box_w / 2, _by + 68, "Todos os 4 Reinos Elementais foram Conquistados!");
+        draw_text(_bx + _box_w / 2, _by + 68, tr("Todos os 4 Reinos Elementais foram Conquistados!"));
     
         draw_set_color(make_colour_rgb(60, 85, 125));
         draw_line(_bx + 30, _by + 92, _bx + _box_w - 30, _by + 92);
@@ -773,11 +773,11 @@ function hud_draw_victory(target, _gw, _gh) {
         draw_set_halign(fa_left);
     
         var _p_class = (target != noone) ? target.character_class : "Heroi";
-        var _p_arch = (target != noone && variable_instance_exists(target, "archetype_name")) ? target.archetype_name : "Guerreiro";
+        var _p_arch = (target != noone && variable_instance_exists(target, "archetype_name")) ? target.archetype_name : tr("Guerreiro");
         var _p_lvl = (target != noone) ? target.level : 1;
     
         draw_set_color(c_white);
-        draw_text(_bx + 50, _sy, "Heroi:");
+        draw_text(_bx + 50, _sy, tr("Heroi:"));
         draw_set_halign(fa_right);
         draw_set_color(c_yellow);
         draw_text(_bx + _box_w - 50, _sy, string_upper(_p_class) + " (" + _p_arch + ")");
@@ -785,26 +785,26 @@ function hud_draw_victory(target, _gw, _gh) {
     
         draw_set_halign(fa_left);
         draw_set_color(c_white);
-        draw_text(_bx + 50, _sy, "Nivel Final:");
+        draw_text(_bx + 50, _sy, tr("Nivel Final:"));
         draw_set_halign(fa_right);
         draw_set_color(c_aqua);
-        draw_text(_bx + _box_w - 50, _sy, "Nivel " + string(_p_lvl));
+        draw_text(_bx + _box_w - 50, _sy, tr("Nivel ") + string(_p_lvl));
         _sy += 28;
     
         draw_set_halign(fa_left);
         draw_set_color(c_white);
-        draw_text(_bx + 50, _sy, "Ouro Resgatado:");
+        draw_text(_bx + 50, _sy, tr("Ouro Resgatado:"));
         draw_set_halign(fa_right);
         draw_set_color(c_yellow);
-        draw_text(_bx + _box_w - 50, _sy, "+" + string(global.gold) + " Ouro");
+        draw_text(_bx + _box_w - 50, _sy, "+" + string(global.gold) + tr(" Ouro"));
         _sy += 28;
     
         draw_set_halign(fa_left);
         draw_set_color(c_white);
-        draw_text(_bx + 50, _sy, "Afinidades Desbloqueadas:");
+        draw_text(_bx + 50, _sy, tr("Afinidades Desbloqueadas:"));
         draw_set_halign(fa_right);
         draw_set_color(make_colour_rgb(100, 240, 160));
-        draw_text(_bx + _box_w - 50, _sy, "Agua, Fogo, Vento e Terra Conquistados!");
+        draw_text(_bx + _box_w - 50, _sy, tr("Agua, Fogo, Vento e Terra Conquistados!"));
         _sy += 38;
     
         // Linha divisoria
@@ -817,7 +817,7 @@ function hud_draw_victory(target, _gw, _gh) {
         var _b_pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
         var _is_mob_vic = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
         draw_set_color(merge_colour(c_yellow, c_white, _b_pulse));
-        var _vic_str = _is_mob_vic ? "Toque na tela para Retornar a Selecao de Herois" : (input_get_btn_label("confirm") + " Retornar a Selecao de Personagens");
+        var _vic_str = _is_mob_vic ? tr("Toque na tela para Retornar a Selecao de Herois") : (input_get_btn_label("confirm") + tr(" Retornar a Selecao de Personagens"));
         draw_text(_bx + _box_w / 2, _sy, _vic_str);
     
         draw_set_halign(fa_left);
@@ -847,7 +847,7 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
         var _card_top_w = _win_w - 60;
         var _text_max_w = _card_top_w - 110;
     
-        var _eff_str = "Efeito: " + _found_desc_val;
+        var _eff_str = tr("Efeito: ") + _found_desc_val;
         var _eff_sep = 15;
         var _eff_h = string_height_ext(_eff_str, _eff_sep, _text_max_w);
     
@@ -874,10 +874,10 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
     
         var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.007));
         draw_set_color(merge_colour(c_yellow, c_white, _pulse));
-        draw_text(_win_x + _win_w / 2, _win_y + 12, "*  BAU DE TESOURO ABERTO!  *");
+        draw_text(_win_x + _win_w / 2, _win_y + 12, tr("*  BAU DE TESOURO ABERTO!  *"));
     
         draw_set_color(c_ltgray);
-        draw_text(_win_x + _win_w / 2, _win_y + 32, "Voce encontrou um novo talento! Escolha um slot para equipar ou descarte-o.");
+        draw_text(_win_x + _win_w / 2, _win_y + 32, tr("Voce encontrou um novo talento! Escolha um slot para equipar ou descarte-o."));
     
         draw_set_color(make_colour_rgb(60, 50, 30));
         draw_line(_win_x + 30, _win_y + 50, _win_x + _win_w - 30, _win_y + 50);
@@ -908,7 +908,7 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
         draw_set_color(c_yellow);
-        draw_text(_card_top_x + 82, _card_top_y + 8, "NOVO TALENTO ENCONTRADO:  " + _found_label);
+        draw_text(_card_top_x + 82, _card_top_y + 8, tr("NOVO TALENTO ENCONTRADO:  ") + _found_label);
     
         var _eff_y = _card_top_y + 28;
         draw_set_color(make_colour_rgb(160, 220, 255));
@@ -924,7 +924,7 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
         var _slots_y = _card_top_y + _card_top_h + 10;
         draw_set_halign(fa_center);
         draw_set_color(c_yellow);
-        draw_text(_win_x + _win_w / 2, _slots_y, "SELECIONE O SLOT PARA SUBSTITUIR  (O NOVO TALENTO HERDARA O RANK DO SLOT):");
+        draw_text(_win_x + _win_w / 2, _slots_y, tr("SELECIONE O SLOT PARA SUBSTITUIR  (O NOVO TALENTO HERDARA O RANK DO SLOT):"));
     
         var _col_w = (_win_w - 60 - 2 * 16) / 3;
         var _cols_start_y = _slots_y + 20;
@@ -971,15 +971,15 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
             draw_rectangle(_cx, _cols_start_y, _cx + _col_w, _cols_start_y + 24, true);
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
-            draw_text(_cx + _col_w / 2, _cols_start_y + 12, "SLOT " + string(_i + 1));
+            draw_text(_cx + _col_w / 2, _cols_start_y + 12, tr("SLOT ") + string(_i + 1));
             draw_set_valign(fa_top);
     
             // Detalhes do Talento Atual do Slot
             if (_cur_id == "") {
                 draw_set_color(c_gray);
-                draw_text(_cx + _col_w / 2, _cols_start_y + 44, "(Slot Vazio)");
+                draw_text(_cx + _col_w / 2, _cols_start_y + 44, tr("(Slot Vazio)"));
                 draw_set_color(make_colour_rgb(80, 220, 120));
-                draw_text_ext(_cx + _col_w / 2, _cols_start_y + 68, "Instale com Rank " + string(_cur_rank) + "!", 15, _col_w - 20);
+                draw_text_ext(_cx + _col_w / 2, _cols_start_y + 68, tr("Instale com Rank ") + string(_cur_rank) + "!", 15, _col_w - 20);
             } else {
                 var _cur_def = get_talent_def_by_id(_cur_id);
                 var _cur_label = is_undefined(_cur_def) ? _cur_id : talent_get_label(_cur_def);
@@ -991,12 +991,12 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
                 draw_text_ext(_cx + _col_w / 2, _cols_start_y + 56, _cur_label, 13, _col_w - 20);
     
                 draw_set_color(c_yellow);
-                var _r_str = "Rank " + string(_cur_rank) + "  ";
+                var _r_str = tr("Rank ") + string(_cur_rank) + "  ";
                 for (var _s = 1; _s <= 3; _s++) _r_str += (_s <= _cur_rank) ? "[X] " : "[ ] ";
                 draw_text(_cx + _col_w / 2, _cols_start_y + 74, _r_str);
     
                 draw_set_color(make_colour_rgb(240, 110, 110));
-                draw_text_ext(_cx + _col_w / 2, _cols_start_y + 92, "Substituira " + _cur_label, 13, _col_w - 18);
+                draw_text_ext(_cx + _col_w / 2, _cols_start_y + 92, tr("Substituira ") + _cur_label, 13, _col_w - 18);
             }
     
             // Botao de Acao
@@ -1010,12 +1010,12 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
             var _slot_txt = "";
             if (input_has_gamepad_connected()) {
                 if (_hud.hud_chest_slot_cursor == _i) {
-                    _slot_txt = input_get_btn_label("confirm") + " Equipar";
+                    _slot_txt = input_get_btn_label("confirm") + tr(" Equipar");
                 } else {
-                    _slot_txt = "D-Pad Escolher";
+                    _slot_txt = tr("D-Pad Escolher");
                 }
             } else {
-                _slot_txt = "[Aperte " + string(_i + 1) + " para Equipar]";
+                _slot_txt = tr("[Aperte ") + string(_i + 1) + tr(" para Equipar]");
             }
             draw_text(_cx + _col_w / 2, _btn_y + 12, _slot_txt);
             draw_set_valign(fa_top);
@@ -1050,7 +1050,7 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(_discard_hover ? c_white : make_colour_rgb(240, 110, 110));
-        var _discard_txt = input_get_btn_label("cancel") + " Descartar este Talento e Continuar";
+        var _discard_txt = input_get_btn_label("cancel") + tr(" Descartar este Talento e Continuar");
         draw_text(_discard_x + _discard_w / 2, _discard_y + _discard_h / 2, _discard_txt);
     
         draw_set_halign(fa_left);
@@ -1087,7 +1087,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         draw_set_valign(fa_top);
         draw_set_color(c_yellow);
         var _play_str = format_playtime(variable_global_exists("run_playtime") ? global.run_playtime : 0);
-        draw_text(_win_x + 24, _win_y + 16, "PAUSADO  -  FICHA DO HEROI   (Tempo: " + _play_str + ")");
+        draw_text(_win_x + 24, _win_y + 16, tr("PAUSADO  -  FICHA DO HEROI   (Tempo: ") + _play_str + ")");
     
         var _is_mobile = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
         var _btn_rx = _win_x + _win_w - 130;
@@ -1101,7 +1101,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_white);
-        draw_text(_btn_rx + _btn_rw / 2, _btn_ry + _btn_rh / 2, _is_mobile ? "Retomar" : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + " Retomar") : "[ESC] Retomar"));
+        draw_text(_btn_rx + _btn_rw / 2, _btn_ry + _btn_rh / 2, _is_mobile ? tr("Retomar") : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + tr(" Retomar")) : tr("[ESC] Retomar")));
     
         // Linha divisoria do cabecalho
         draw_set_color(make_colour_rgb(45, 60, 90));
@@ -1139,7 +1139,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         _ly += 22;
     
         draw_set_color(c_white);
-        draw_text(_lx, _ly, "Nivel " + string(target.level) + "   (EXP: " + string(round(target.xp)) + " / " + string(round(target.xp_to_next)) + ")");
+        draw_text(_lx, _ly, tr("Nivel ") + string(target.level) + tr("   (EXP: ") + string(round(target.xp)) + " / " + string(round(target.xp_to_next)) + ")");
         _ly += 20;
     
         // Mini barra de EXP
@@ -1165,7 +1165,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             _hp_val += "  (+" + string(round(target.paladin_barrier_active)) + ")";
         }
         draw_set_color(make_colour_rgb(240, 80, 80));
-        draw_text(_lx, _ly, "[HP] Vida:");
+        draw_text(_lx, _ly, tr("[HP] Vida:"));
         draw_set_color(c_white);
         draw_text(_val_x, _ly, _hp_val);
         _ly += 22;
@@ -1176,16 +1176,16 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             _pwr_str += " (+" + string(target.synth_pwr_fisica) + ")";
         }
         draw_set_color(make_colour_rgb(255, 170, 40));
-        draw_text(_lx, _ly, "[PWR-F] Fisico (AA):");
+        draw_text(_lx, _ly, tr("[PWR-F] Fisico (AA):"));
         draw_set_color(c_white);
         draw_text(_val_x, _ly, _pwr_str);
         _ly += 20;
     
         // 3. Poder Magico (Habilidades, Curas e Efeitos Elementais)
         var _mag_val = variable_instance_exists(target, "synth_pwr_magica") ? target.synth_pwr_magica : 0;
-        var _mag_str = (_mag_val > 0) ? ("+" + string(_mag_val) + " (Skills/Cura)") : "Base (x1.0)";
+        var _mag_str = (_mag_val > 0) ? ("+" + string(_mag_val) + tr(" (Skills/Cura)")) : tr("Base (x1.0)");
         draw_set_color(make_colour_rgb(200, 130, 255));
-        draw_text(_lx, _ly, "[PWR-M] Magico (Skill):");
+        draw_text(_lx, _ly, tr("[PWR-M] Magico (Skill):"));
         draw_set_color((_mag_val > 0) ? c_yellow : c_gray);
         draw_text(_val_x, _ly, _mag_str);
         _ly += 20;
@@ -1196,7 +1196,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             _def_str += " (+" + string(target.synth_def_fisica) + ")";
         }
         draw_set_color(make_colour_rgb(70, 160, 240));
-        draw_text(_lx, _ly, "[DEF-F] Melee/Contato:");
+        draw_text(_lx, _ly, tr("[DEF-F] Melee/Contato:"));
         draw_set_color(c_white);
         draw_text(_val_x, _ly, _def_str);
         _ly += 20;
@@ -1208,28 +1208,28 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             _mdef_str += " (+" + string(_mdef_val) + ")";
         }
         draw_set_color(make_colour_rgb(100, 220, 240));
-        draw_text(_lx, _ly, "[DEF-M] Ranged/Area:");
+        draw_text(_lx, _ly, tr("[DEF-M] Ranged/Area:"));
         draw_set_color(c_white);
         draw_text(_val_x, _ly, _mdef_str);
         _ly += 20;
     
         // 4. Velocidade de Ataque
         draw_set_color(make_colour_rgb(230, 210, 80));
-        draw_text(_lx, _ly, "[ATK] Cadencia:");
+        draw_text(_lx, _ly, tr("[ATK] Cadencia:"));
         draw_set_color(c_white);
-        draw_text(_val_x, _ly, string(round(target.nat_atk_spd * 100) / 100) + " golpes/s");
+        draw_text(_val_x, _ly, string(round(target.nat_atk_spd * 100) / 100) + tr(" golpes/s"));
         _ly += 22;
     
         // 5. Velocidade de Movimento
         draw_set_color(make_colour_rgb(80, 220, 130));
-        draw_text(_lx, _ly, "[VEL] Movimento:");
+        draw_text(_lx, _ly, tr("[VEL] Movimento:"));
         draw_set_color(c_white);
         draw_text(_val_x, _ly, string(round(target.nat_move_spd)));
         _ly += 22;
     
         // 6. Tempo de Partida
         draw_set_color(make_colour_rgb(180, 210, 240));
-        draw_text(_lx, _ly, "[RUN] Tempo:");
+        draw_text(_lx, _ly, tr("[RUN] Tempo:"));
         draw_set_color(c_white);
         draw_text(_val_x, _ly, format_playtime(variable_global_exists("run_playtime") ? global.run_playtime : 0));
         _ly += 26;
@@ -1241,46 +1241,46 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
     
         // Sinergias Ativas (apenas o que for > 0!)
         draw_set_color(c_yellow);
-        draw_text(_lx, _ly, "SINERGIAS ATIVAS:");
+        draw_text(_lx, _ly, tr("SINERGIAS ATIVAS:"));
         _ly += 22;
     
         var _has_syn = false;
         draw_set_color(c_ltgray);
     
         if (target.synth_crit_chance > 0) {
-            draw_text(_lx, _ly, "- Chance Critica: " + string(round(target.synth_crit_chance * 100)) + "%");
+            draw_text(_lx, _ly, tr("- Chance Critica: ") + string(round(target.synth_crit_chance * 100)) + "%");
             _ly += 18;
             _has_syn = true;
         }
         if (target.synth_cdr > 0) {
-            draw_text(_lx, _ly, "- Reducao Recarga: " + string(round(target.synth_cdr * 100)) + "%");
+            draw_text(_lx, _ly, tr("- Reducao Recarga: ") + string(round(target.synth_cdr * 100)) + "%");
             _ly += 18;
             _has_syn = true;
         }
         if (target.synth_dodge > 0) {
-            draw_text(_lx, _ly, "- Chance de Esquiva: " + string(round(target.synth_dodge * 100)) + "%");
+            draw_text(_lx, _ly, tr("- Chance de Esquiva: ") + string(round(target.synth_dodge * 100)) + "%");
             _ly += 18;
             _has_syn = true;
         }
         if (target.synth_hp_reg > 0) {
-            draw_text(_lx, _ly, "- Regeneracao: +" + string(target.synth_hp_reg) + " HP/s");
+            draw_text(_lx, _ly, tr("- Regeneracao: +") + string(target.synth_hp_reg) + tr(" HP/s"));
             _ly += 18;
             _has_syn = true;
         }
         if (target.synth_lifesteal > 0) {
-            draw_text(_lx, _ly, "- Roubo de Vida: +" + string(round(target.synth_lifesteal * 100)) + "%");
+            draw_text(_lx, _ly, tr("- Roubo de Vida: +") + string(round(target.synth_lifesteal * 100)) + "%");
             _ly += 18;
             _has_syn = true;
         }
         if (target.synth_armor_hp > 0) {
-            draw_text(_lx, _ly, "- Bonus Armadura HP: +" + string(target.synth_armor_hp));
+            draw_text(_lx, _ly, tr("- Bonus Armadura HP: +") + string(target.synth_armor_hp));
             _ly += 18;
             _has_syn = true;
         }
     
         if (!_has_syn) {
             draw_set_color(make_colour_rgb(100, 115, 140));
-            draw_text(_lx, _ly, "(Evolua talentos para ativar sinergias)");
+            draw_text(_lx, _ly, tr("(Evolua talentos para ativar sinergias)"));
         }
     
         // ================= PAINEL DIREITO: TALENTOS DA RUN =================
@@ -1301,16 +1301,16 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             var _banner_col = merge_colour(c_yellow, c_white, _pulse);
     
             draw_set_color(_banner_col);
-            draw_text(_rx, _ry, "* " + string(_pts) + " PONTO(S)!");
+            draw_text(_rx, _ry, "* " + string(_pts) + tr(" PONTO(S)!"));
             draw_set_halign(fa_right);
-            draw_text(_col2_x + _right_w - 16, _ry, _is_mobile ? "Toque para Evoluir" : (input_is_gamepad_active() ? ("D-Pad Navegar | " + input_get_btn_label("aux") + " Evoluir") : "Aperte [1, 2 ou 3]"));
+            draw_text(_col2_x + _right_w - 16, _ry, _is_mobile ? tr("Toque para Evoluir") : (input_is_gamepad_active() ? (tr("D-Pad Navegar | ") + input_get_btn_label("aux") + tr(" Evoluir")) : tr("Aperte [1, 2 ou 3]")));
             draw_set_halign(fa_left);
         } else {
             draw_set_color(c_white);
-            draw_text(_rx, _ry, "Talentos Equipados");
+            draw_text(_rx, _ry, tr("Talentos Equipados"));
             draw_set_halign(fa_right);
             draw_set_color(c_gray);
-            draw_text(_col2_x + _right_w - 16, _ry, "0 pts pendentes");
+            draw_text(_col2_x + _right_w - 16, _ry, tr("0 pts pendentes"));
             draw_set_halign(fa_left);
         }
     
@@ -1358,7 +1358,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
                 draw_set_color(c_gray);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
-                draw_text(_rx + _card_w / 2, _cy + _card_h / 2, "Slot " + string(_i + 1) + ": (Vazio - Obtenha novos talentos em Baus)");
+                draw_text(_rx + _card_w / 2, _cy + _card_h / 2, tr("Slot ") + string(_i + 1) + tr(": (Vazio - Obtenha novos talentos em Baus)"));
                 draw_set_halign(fa_left);
                 draw_set_valign(fa_top);
                 continue;
@@ -1401,10 +1401,10 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             draw_set_halign(fa_right);
             var _rank_str = "";
             if (_max_rank == 1) {
-                _rank_str = (_rank >= 1) ? "[ATIVO - MAX]" : "[INATIVO - Custo: " + string(_cost) + " pts]";
+                _rank_str = (_rank >= 1) ? tr("[ATIVO - MAX]") : tr("[INATIVO - Custo: ") + string(_cost) + tr(" pts]");
             } else {
-                _rank_str = "Rank " + string(_rank) + "/" + string(_max_rank);
-                if (_rank >= _max_rank) _rank_str += " [MAX]";
+                _rank_str = tr("Rank ") + string(_rank) + "/" + string(_max_rank);
+                if (_rank >= _max_rank) _rank_str += tr(" [MAX]");
             }
             draw_set_color((_pts >= _cost && _rank < _max_rank) ? c_yellow : c_white);
             draw_text(_rx + _card_w - 14, _ty, _rank_str);
@@ -1428,21 +1428,21 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
                     var _upg_str = "";
                     if (input_has_gamepad_connected()) {
                         if (_hud.hud_talent_slot_cursor == _i) {
-                            _upg_str = input_get_btn_label("aux") + " ou " + input_get_btn_label("confirm") + " Evoluir (-" + string(_cost) + " pts)";
+                            _upg_str = input_get_btn_label("aux") + tr(" ou ") + input_get_btn_label("confirm") + tr(" Evoluir (-") + string(_cost) + tr(" pts)");
                         } else {
-                            _upg_str = "Custo: " + string(_cost) + " pts";
+                            _upg_str = tr("Custo: ") + string(_cost) + tr(" pts");
                         }
                     } else {
-                        _upg_str = "Aperte [" + string(_i + 1) + "] para Evoluir (-" + string(_cost) + " pts)";
+                        _upg_str = tr("Aperte [") + string(_i + 1) + tr("] para Evoluir (-") + string(_cost) + tr(" pts)");
                     }
                     draw_text(_rx + _card_w - 14, _cy + _card_h - 6, _upg_str);
                 } else {
                     draw_set_color(make_colour_rgb(170, 180, 200));
-                    draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "Custo: " + string(_cost) + " pts (" + string(_pts) + " disponíveis)");
+                    draw_text(_rx + _card_w - 14, _cy + _card_h - 6, tr("Custo: ") + string(_cost) + tr(" pts (") + string(_pts) + tr(" disponíveis)"));
                 }
             } else {
                 draw_set_color(make_colour_rgb(100, 220, 140));
-                draw_text(_rx + _card_w - 14, _cy + _card_h - 6, "TALENTO MAXIMIZADO");
+                draw_text(_rx + _card_w - 14, _cy + _card_h - 6, tr("TALENTO MAXIMIZADO"));
             }
             draw_set_halign(fa_left);
             draw_set_valign(fa_top);
@@ -1456,7 +1456,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         draw_set_valign(fa_middle);
         var _f_center_y = _footer_y + 20;
     
-        var _ret_str = _is_mobile ? "Retomar" : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + " / " + input_get_btn_label("pause") + " Retomar") : "[ESC] Retomar");
+        var _ret_str = _is_mobile ? tr("Retomar") : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + " / " + input_get_btn_label("pause") + tr(" Retomar")) : tr("[ESC] Retomar"));
         var _ret_w = max(150, string_width(_ret_str) + 32);
         var _ret_h = 32;
         var _ret_x = _win_x + 30;
@@ -1470,7 +1470,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         var _ret_scale = min(1.0, (_ret_w - 20) / _ret_tw);
         draw_text_transformed(_ret_x + _ret_w / 2, _ret_y + _ret_h / 2, _ret_str, _ret_scale, _ret_scale, 0);
     
-        var _men_str = _is_mobile ? "Abandonar Run" : (input_has_gamepad_connected() ? "[Select / M] Abandonar Run" : "[M] Abandonar Run (Menu)");
+        var _men_str = _is_mobile ? tr("Abandonar Run") : (input_has_gamepad_connected() ? tr("[Select / M] Abandonar Run") : tr("[M] Abandonar Run (Menu)"));
         var _men_w = max(310, string_width(_men_str) + 40);
         var _men_h = 32;
         var _men_x = _win_x + _win_w / 2 - _men_w / 2;
@@ -1487,7 +1487,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
         if (!_is_mobile) {
             draw_set_halign(fa_right);
             draw_set_color(c_gray);
-            draw_text(_win_x + _win_w - 30, _f_center_y, "[Q] Sair");
+            draw_text(_win_x + _win_w - 30, _f_center_y, tr("[Q] Sair"));
         }
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);

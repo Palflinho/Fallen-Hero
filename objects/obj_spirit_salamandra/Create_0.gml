@@ -1,5 +1,5 @@
 event_inherited();
-spirit_init("SALAMANDRA, ESPIRITO DO FOGO", "fire", 300);
+spirit_init(tr("SALAMANDRA, ESPIRITO DO FOGO"), "fire", 300);
 body_radius = 18;
 move_speed = 120;
 contact_damage = 14;

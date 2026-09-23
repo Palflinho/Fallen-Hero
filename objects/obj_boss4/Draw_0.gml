@@ -86,4 +86,4 @@ if (vulnerable) {
     draw_circle(_ex + 10, _ey, 5, false);
 }
 
-boss_draw_label("Tita Monolito - ataque o NUCLEO nas costas", "PRESO AO CHAO! ATAQUE!");
+boss_draw_label(tr("Tita Monolito - ataque o NUCLEO nas costas"), tr("PRESO AO CHAO! ATAQUE!"));

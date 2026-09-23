@@ -349,7 +349,7 @@ function touch_controls_draw_gui() {
         draw_set_halign(fa_right);
         draw_set_valign(fa_top);
         draw_set_color(c_aqua);
-        draw_text(_gw - 80, 20, "[F4] Touch: ON");
+        draw_text(_gw - 80, 20, tr("[F4] Touch: ON"));
         draw_set_halign(fa_left);
     }
 
@@ -419,7 +419,7 @@ function touch_controls_draw_gui() {
     draw_set_valign(fa_middle);
     draw_talent_icon("sword", _btn_atk_x, _btn_atk_y - 6, 26, c_white);
     draw_set_color(c_white);
-    draw_text_transformed(_btn_atk_x, _btn_atk_y + 14, "ATK", 1.05, 1.05, 0);
+    draw_text_transformed(_btn_atk_x, _btn_atk_y + 14, tr("ATK"), 1.05, 1.05, 0);
 
     // Botão de Habilidade / Defesa
     var _def_held = global.touch_defend_held;
@@ -439,7 +439,7 @@ function touch_controls_draw_gui() {
         var _sec_left = string(round(_player.defend_cooldown_timer * 10) / 10);
         draw_text_transformed(_btn_def_x, _btn_def_y + 12, _sec_left + "s", 0.95, 0.95, 0);
     } else {
-        draw_text_transformed(_btn_def_x, _btn_def_y + 12, "HAB", 0.95, 0.95, 0);
+        draw_text_transformed(_btn_def_x, _btn_def_y + 12, tr("HAB"), 0.95, 0.95, 0);
     }
 
     // Botão de Esquiva / Dash
@@ -453,7 +453,7 @@ function touch_controls_draw_gui() {
 
     draw_talent_icon("haste", _btn_dash_x, _btn_dash_y - 6, 22, c_white);
     draw_set_color(c_white);
-    draw_text_transformed(_btn_dash_x, _btn_dash_y + 12, "DASH", 0.95, 0.95, 0);
+    draw_text_transformed(_btn_dash_x, _btn_dash_y + 12, tr("DASH"), 0.95, 0.95, 0);
 
     // Botão de Ação / Interagir / Confirmar
     var _act_held = global.touch_action_held;

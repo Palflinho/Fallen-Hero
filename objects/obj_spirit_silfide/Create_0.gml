@@ -1,5 +1,5 @@
 event_inherited();
-spirit_init("SILFIDE, ESPIRITO DO VENTO", "wind", 260);
+spirit_init(tr("SILFIDE, ESPIRITO DO VENTO"), "wind", 260);
 body_radius = 16;
 move_speed = 150;
 contact_damage = 12;

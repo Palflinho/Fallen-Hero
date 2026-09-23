@@ -108,20 +108,20 @@ function run_update_current_room_state() {
 }
 
 function run_get_biome_name(_b) {
-    if (_b == "water") return "AGUA";
-    if (_b == "fire") return "FOGO";
-    if (_b == "wind") return "VENTO";
-    if (_b == "earth") return "TERRA";
-    return "DESCONHECIDO";
+    if (_b == "water") return tr("AGUA");
+    if (_b == "fire") return tr("FOGO");
+    if (_b == "wind") return tr("VENTO");
+    if (_b == "earth") return tr("TERRA");
+    return tr("DESCONHECIDO");
 }
 
 function run_get_room_title(_step) {
-    if (_step == 1) return "Exploracao 1";
-    if (_step == 2) return "Exploracao 2";
-    if (_step == 2.5) return "Arena";
-    if (_step == 3) return "Mercado";
-    if (_step == 4) return "Exploracao 3";
-    if (_step == 5) return "Pre-Chefe";
-    if (_step == 6) return "Chefe";
-    return "Sala";
+    if (_step == 1) return tr("Exploracao 1");
+    if (_step == 2) return tr("Exploracao 2");
+    if (_step == 2.5) return tr("Arena");
+    if (_step == 3) return tr("Mercado");
+    if (_step == 4) return tr("Exploracao 3");
+    if (_step == 5) return tr("Pre-Chefe");
+    if (_step == 6) return tr("Chefe");
+    return tr("Sala");
 }

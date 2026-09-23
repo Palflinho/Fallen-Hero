@@ -27,11 +27,11 @@ draw_rectangle(_bx - 2, _by - 2, _bx + _box_w + 2, _by + _box_h + 2, true);
 draw_set_halign(fa_center);
 draw_set_valign(fa_top);
 draw_set_color(c_yellow);
-draw_text_transformed(_bx + _box_w / 2, _by + 16, "MERCADOR ARCANO - BAZAR DA EXPEDICAO", 1.25, 1.25, 0);
+draw_text_transformed(_bx + _box_w / 2, _by + 16, tr("MERCADOR ARCANO - BAZAR DA EXPEDICAO"), 1.25, 1.25, 0);
 
 draw_set_halign(fa_right);
 draw_set_color(c_yellow);
-draw_text(_bx + _box_w - 55, _by + 20, "Ouro: " + string(global.gold));
+draw_text(_bx + _box_w - 55, _by + 20, tr("Ouro: ") + string(global.gold));
 
 // Botão de fechar [X]
 draw_set_color(make_colour_rgb(36, 48, 72));
@@ -98,11 +98,11 @@ for (var _i = 0; _i < array_length(items); _i++) {
     draw_set_halign(fa_right);
     if (_it.purchased) {
         draw_set_color(c_dkgray);
-        draw_text(_ix + _col_w - 10, _iy + 16, "ADQUIRIDO");
+        draw_text(_ix + _col_w - 10, _iy + 16, tr("ADQUIRIDO"));
     } else {
         var _can_afford = (global.gold >= _it.cost);
         draw_set_color(_can_afford ? c_yellow : c_red);
-        draw_text(_ix + _col_w - 10, _iy + 16, string(_it.cost) + " Ouro");
+        draw_text(_ix + _col_w - 10, _iy + 16, string(_it.cost) + tr(" Ouro"));
     }
 }
 
@@ -143,7 +143,7 @@ draw_rectangle(_bx + 30, _btn_m_y, _bx + 160, _btn_m_y + 30, true);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 draw_set_color(c_ltgray);
-draw_text(_bx + 95, _btn_m_y + 15, _is_mob ? "Fechar" : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + " Fechar") : "[ESC] Fechar"));
+draw_text(_bx + 95, _btn_m_y + 15, _is_mob ? tr("Fechar") : (input_is_gamepad_active() ? (input_get_btn_label("cancel") + tr(" Fechar")) : tr("[ESC] Fechar")));
 
 // Botão Comprar Item
 draw_set_color(make_colour_rgb(32, 54, 86));
@@ -151,11 +151,11 @@ draw_rectangle(_bx + _box_w - 190, _btn_m_y, _bx + _box_w - 30, _btn_m_y + 30, f
 draw_set_color(c_yellow);
 draw_rectangle(_bx + _box_w - 190, _btn_m_y, _bx + _box_w - 30, _btn_m_y + 30, true);
 draw_set_color(c_white);
-draw_text(_bx + _box_w - 110, _btn_m_y + 15, _is_mob ? "Comprar Item" : (input_is_gamepad_active() ? (input_get_btn_label("confirm") + " Comprar") : "[Z] Comprar Item"));
+draw_text(_bx + _box_w - 110, _btn_m_y + 15, _is_mob ? tr("Comprar Item") : (input_is_gamepad_active() ? (input_get_btn_label("confirm") + tr(" Comprar")) : tr("[Z] Comprar Item")));
 
 draw_set_halign(fa_center);
 draw_set_color(make_colour_rgb(180, 200, 225));
-var _hint = _is_mob ? "Toque nos itens para selecionar e comprar" : (input_is_gamepad_active() ? ("D-Pad para navegar | " + input_get_btn_label("confirm") + " Comprar") : "Clique ou use Setas/Enter para comprar");
+var _hint = _is_mob ? tr("Toque nos itens para selecionar e comprar") : (input_is_gamepad_active() ? (tr("D-Pad para navegar | ") + input_get_btn_label("confirm") + tr(" Comprar")) : tr("Clique ou use Setas/Enter para comprar"));
 draw_text(_bx + _box_w / 2, _btn_m_y + 15, _hint);
 
 draw_set_halign(fa_left);

@@ -18,7 +18,7 @@ save_notice_timer = 0;
 save_notice_text = "";
 
 classes = ["knight", "mage", "archer", "assassin"];
-labels = ["Cavaleiro", "Mago", "Arqueiro", "Assassino"];
+labels = [tr("Cavaleiro"), tr("Mago"), tr("Arqueiro"), tr("Assassino")];
 colours = [c_aqua, c_fuchsia, c_lime, c_gray];
 selected_index = 0;
 
@@ -33,7 +33,7 @@ if (variable_global_exists("char_select_direct") && global.char_select_direct) {
     state = "main_menu"; // main_menu | save_slots | select | shop | select_talents
 }
 
-main_menu_options = ["Novo Jogo", "Continuar", "Sair"];
+main_menu_options = [tr("Novo Jogo"), tr("Continuar"), tr("Sair")];
 main_menu_cursor = any_save_slot_exists() ? 1 : 0;
 main_menu_btn_w = 340;
 main_menu_btn_h = 54;
@@ -55,7 +55,7 @@ talent_select_cursor = 0;
 talent_selected_ids = [];
 
 elements = ["none", "water", "fire", "wind", "earth"];
-element_labels = ["Neutro (Cavaleiro)", "Agua (Lanceiro)", "Fogo (Cavaleiro Runico)", "Ar (Duelista)", "Terra (Guardiao)"];
+element_labels = [tr("Neutro (Cavaleiro)"), tr("Agua (Lanceiro)"), tr("Fogo (Cavaleiro Runico)"), tr("Ar (Duelista)"), tr("Terra (Guardiao)")];
 selected_element_index = 0;
 
 // Configurações visuais da grade de talentos

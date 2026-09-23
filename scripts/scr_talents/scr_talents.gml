@@ -714,30 +714,30 @@ function get_talent_defs() {
 
 function element_get_name(_elem) {
     switch (_elem) {
-        case "water": return "Agua";
-        case "fire": return "Fogo";
-        case "wind": return "Ar";
-        case "earth": return "Terra";
-        default: return "Neutro";
+        case "water": return tr("Agua");
+        case "fire": return tr("Fogo");
+        case "wind": return tr("Ar");
+        case "earth": return tr("Terra");
+        default: return tr("Neutro");
     }
 }
 
 function element_get_boss_name(_elem) {
     switch (_elem) {
-        case "water": return "General Glacial (Sala 2)";
-        case "fire":  return "General Magma (Sala 4)";
-        case "wind":  return "General Zephyrus (Sala 6)";
-        case "earth": return "Tita Monolito (Sala 8)";
+        case "water": return tr("General Glacial (Sala 2)");
+        case "fire":  return tr("General Magma (Sala 4)");
+        case "wind":  return tr("General Zephyrus (Sala 6)");
+        case "earth": return tr("Tita Monolito (Sala 8)");
         default:      return "";
     }
 }
 
 function element_get_unlock_requirement(_elem) {
     switch (_elem) {
-        case "water": return "Derrote o General Glacial (Chefe da Sala 2)";
-        case "fire":  return "Derrote o General Magma (Chefe da Sala 4)";
-        case "wind":  return "Derrote o General Zephyrus (Chefe da Sala 6)";
-        case "earth": return "Derrote o Tita Monolito (Chefe Supremo da Sala 8)";
+        case "water": return tr("Derrote o General Glacial (Chefe da Sala 2)");
+        case "fire":  return tr("Derrote o General Magma (Chefe da Sala 4)");
+        case "wind":  return tr("Derrote o General Zephyrus (Chefe da Sala 6)");
+        case "earth": return tr("Derrote o Tita Monolito (Chefe Supremo da Sala 8)");
         default:      return "";
     }
 }
@@ -746,38 +746,38 @@ function class_get_archetype_name(_class, _elem) {
     switch (_class) {
         case "knight":
             switch (_elem) {
-                case "water": return "Lanceiro";
-                case "fire": return "Cavaleiro Runico";
-                case "wind": return "Duelista";
-                case "earth": return "Guardiao";
-                default: return "Cavaleiro";
+                case "water": return tr("Lanceiro");
+                case "fire": return tr("Cavaleiro Runico");
+                case "wind": return tr("Duelista");
+                case "earth": return tr("Guardiao");
+                default: return tr("Cavaleiro");
             }
         case "mage":
             switch (_elem) {
-                case "water": return "Atiradora Arcana";
-                case "fire": return "Piromante";
-                case "wind": return "Ilusionista";
-                case "earth": return "Templaria";
-                default: return "Arcano";
+                case "water": return tr("Atiradora Arcana");
+                case "fire": return tr("Piromante");
+                case "wind": return tr("Ilusionista");
+                case "earth": return tr("Templaria");
+                default: return tr("Arcano");
             }
         case "archer":
             switch (_elem) {
-                case "water": return "Cacador das Mares";
-                case "fire": return "Artilheiro Arcano";
-                case "wind": return "Cacador Furtivo";
-                case "earth": return "Sentinela";
-                default: return "Arqueiro";
+                case "water": return tr("Cacador das Mares");
+                case "fire": return tr("Artilheiro Arcano");
+                case "wind": return tr("Cacador Furtivo");
+                case "earth": return tr("Sentinela");
+                default: return tr("Arqueiro");
             }
         case "assassin":
             switch (_elem) {
-                case "water": return "Rastreador";
-                case "fire": return "Alquimista";
-                case "wind": return "Algoz do Tufao";
-                case "earth": return "Cavaleiro Sombrio";
-                default: return "Assassino";
+                case "water": return tr("Rastreador");
+                case "fire": return tr("Alquimista");
+                case "wind": return tr("Algoz do Tufao");
+                case "earth": return tr("Cavaleiro Sombrio");
+                default: return tr("Assassino");
             }
         default:
-            return "Heroi";
+            return tr("Heroi");
     }
 }
 
@@ -785,35 +785,35 @@ function class_get_archetype_desc(_class, _elem) {
     switch (_class) {
         case "knight":
             switch (_elem) {
-                case "water": return "Lanceiro: Cada golpe solta uma lamina d'agua de longo alcance. Especial gera Aura de Sobrevida que cura/protege.";
-                case "fire": return "Cavaleiro Runico: Golpes que acertam detonam uma runa de fogo em area. Especial entra em Furia Ardente (+50% dano/+regen, runas maiores).";
-                case "wind": return "Duelista: Ataque duplo veloz em combo. Especial e Aparar (Parry com contra-ataque de 360).";
-                case "earth": return "Guardiao: Ataque concentrado. Especial Bastiao bloqueia 100% dano fisico e magico + Taunt.";
-                default: return "Cavaleiro: Espada de medio alcance e escudo com bloqueio fisico tradicional.";
+                case "water": return tr("Lanceiro: Cada golpe solta uma lamina d'agua de longo alcance. Especial gera Aura de Sobrevida que cura/protege.");
+                case "fire": return tr("Cavaleiro Runico: Golpes que acertam detonam uma runa de fogo em area. Especial entra em Furia Ardente (+50% dano/+regen, runas maiores).");
+                case "wind": return tr("Duelista: Ataque duplo veloz em combo. Especial e Aparar (Parry com contra-ataque de 360).");
+                case "earth": return tr("Guardiao: Ataque concentrado. Especial Bastiao bloqueia 100% dano fisico e magico + Taunt.");
+                default: return tr("Cavaleiro: Espada de medio alcance e escudo com bloqueio fisico tradicional.");
             }
         case "mage":
             switch (_elem) {
-                case "water": return "Atiradora Arcana: Lancas de gelo rapidas e perfurantes (+30% em alvos lentos). Especial Prisao Glacial cria redoma defensiva.";
-                case "fire": return "Piromante: Conjuracoes igneas devastadoras. Especial Ponto de Ignicao detona calor em 360 e incendeia o chao.";
-                case "wind": return "Ilusionista: Projeteis velozes e eletricos. Especial Distorcao Voltaica (Blink) teletransporta com arco eletrico.";
-                case "earth": return "Templaria: Dano basaltico com alto impacto. Especial Monolito Basaltico ergue pilar que atrai inimigos.";
-                default: return "Arcano: Projeteis de energia arcana e Manashield para absorcao de dano magico.";
+                case "water": return tr("Atiradora Arcana: Lancas de gelo rapidas e perfurantes (+30% em alvos lentos). Especial Prisao Glacial cria redoma defensiva.");
+                case "fire": return tr("Piromante: Conjuracoes igneas devastadoras. Especial Ponto de Ignicao detona calor em 360 e incendeia o chao.");
+                case "wind": return tr("Ilusionista: Projeteis velozes e eletricos. Especial Distorcao Voltaica (Blink) teletransporta com arco eletrico.");
+                case "earth": return tr("Templaria: Dano basaltico com alto impacto. Especial Monolito Basaltico ergue pilar que atrai inimigos.");
+                default: return tr("Arcano: Projeteis de energia arcana e Manashield para absorcao de dano magico.");
             }
         case "archer":
             switch (_elem) {
-                case "water": return "Cacador das Mares: Flechas de gelo e orvalho. Especial Cambalhota de Nevoa cega e confunde agressores.";
-                case "fire": return "Artilheiro Arcano: Tiros de polvora e fogo. Especial Tiro de Recuo Igneo salta para tras incendiando a area.";
-                case "wind": return "Cacador Furtivo: Flechas supersonicas em leque. Especial Esquiva Ciclonica rola atirando 3 flechas guiadas.";
-                case "earth": return "Sentinela: Tiros pesados de impacto. Especial Fixacao de Ancora enraiza no chao para +60% dano e perfuracao.";
-                default: return "Arqueiro: Disparos de flechas fisicas velozes a longa distancia e rolamento evasivo.";
+                case "water": return tr("Cacador das Mares: Flechas de gelo e orvalho. Especial Cambalhota de Nevoa cega e confunde agressores.");
+                case "fire": return tr("Artilheiro Arcano: Tiros de polvora e fogo. Especial Tiro de Recuo Igneo salta para tras incendiando a area.");
+                case "wind": return tr("Cacador Furtivo: Flechas supersonicas em leque. Especial Esquiva Ciclonica rola atirando 3 flechas guiadas.");
+                case "earth": return tr("Sentinela: Tiros pesados de impacto. Especial Fixacao de Ancora enraiza no chao para +60% dano e perfuracao.");
+                default: return tr("Arqueiro: Disparos de flechas fisicas velozes a longa distancia e rolamento evasivo.");
             }
         case "assassin":
             switch (_elem) {
-                case "water": return "Rastreador: Todo 3o golpe arremessa facas espectrais que marcam o alvo. Especial Dissipacao em Nevoa atravessa corpos e regenera vida.";
-                case "fire": return "Alquimista: Adagas igneas e explosoes a cada golpe. Especial Bomba de Cinzas cega e queima em area.";
-                case "wind": return "Algoz do Tufao: Cortes de ar em hipervelocidade. Especial Salto das Sombras teletransporta atras do alvo com estocada.";
-                case "earth": return "Cavaleiro Sombrio: Veneno petrificante e alta resistencia. Especial Carapaca de Obsidiana reduz 80% do dano.";
-                default: return "Assassino: Adagas duplas velozes com alto dano critico e furtividade temporaria.";
+                case "water": return tr("Rastreador: Todo 3o golpe arremessa facas espectrais que marcam o alvo. Especial Dissipacao em Nevoa atravessa corpos e regenera vida.");
+                case "fire": return tr("Alquimista: Adagas igneas e explosoes a cada golpe. Especial Bomba de Cinzas cega e queima em area.");
+                case "wind": return tr("Algoz do Tufao: Cortes de ar em hipervelocidade. Especial Salto das Sombras teletransporta atras do alvo com estocada.");
+                case "earth": return tr("Cavaleiro Sombrio: Veneno petrificante e alta resistencia. Especial Carapaca de Obsidiana reduz 80% do dano.");
+                default: return tr("Assassino: Adagas duplas velozes com alto dano critico e furtividade temporaria.");
             }
         default:
             return "";

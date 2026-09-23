@@ -56,7 +56,7 @@ if (_ready) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_bottom);
     draw_set_color(make_colour_rgb(180, 190, 205));
-    var _msg = (trigger_mode == "boss_dead") ? "Derrote o General para abrir" : ((trigger_mode == "clear_mobs") ? "Elimine os monstros para abrir" : "Ative os 4 botoes selados (" + string(global.boss_buttons_pressed) + "/4)");
+    var _msg = (trigger_mode == "boss_dead") ? tr("Derrote o General para abrir") : ((trigger_mode == "clear_mobs") ? tr("Elimine os monstros para abrir") : tr("Ative os 4 botoes selados (") + string(global.boss_buttons_pressed) + "/4)");
     draw_text(x, y - radius - 12, _msg);
 }
 

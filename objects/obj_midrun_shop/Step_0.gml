@@ -94,11 +94,11 @@ if (input_check_ui_confirm() || _touch_buy) {
     var _it = items[selected_index];
 
     if (_it.purchased) {
-        message_text = "Item unico ja adquirido nesta parada!";
+        message_text = tr("Item unico ja adquirido nesta parada!");
         message_colour = c_orange;
         message_timer = 1.5;
     } else if (global.gold < _it.cost) {
-        message_text = "Ouro insuficiente! Necessario: " + string(_it.cost) + " Ouro";
+        message_text = tr("Ouro insuficiente! Necessario: ") + string(_it.cost) + tr(" Ouro");
         message_colour = c_red;
         message_timer = 1.5;
     } else {
@@ -112,7 +112,7 @@ if (input_check_ui_confirm() || _touch_buy) {
                 fx_spawn_sparks(_player.x, _player.y, c_lime, 15);
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "CURA +" + string(_heal_val) + " HP", false, c_lime);
             }
-            message_text = "Vida restaurada com sucesso!";
+            message_text = tr("Vida restaurada com sucesso!");
             message_colour = c_lime;
             message_timer = 1.5;
         } else if (_it.type == "talent") {
@@ -129,7 +129,7 @@ if (input_check_ui_confirm() || _touch_buy) {
                 fx_spawn_sparks(_player.x, _player.y, c_yellow, 20);
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "+" + string(_it.amount) + " PONTOS DE TALENTO!", true, c_yellow);
             }
-            message_text = "Adquiriu +" + string(_it.amount) + " Ponto(s) de Talento!";
+            message_text = tr("Adquiriu +") + string(_it.amount) + tr(" Ponto(s) de Talento!");
             message_colour = c_yellow;
             message_timer = 2.0;
         } else if (_it.type == "stat_power") {
@@ -139,7 +139,7 @@ if (input_check_ui_confirm() || _touch_buy) {
                 player_recompute_attributes(_player);
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "+3 PODER!", true, c_orange);
             }
-            message_text = "Poder aumentado em +3 permanentemente nesta run!";
+            message_text = tr("Poder aumentado em +3 permanentemente nesta run!");
             message_colour = c_orange;
             message_timer = 1.5;
         } else if (_it.type == "stat_def") {
@@ -149,7 +149,7 @@ if (input_check_ui_confirm() || _touch_buy) {
                 player_recompute_attributes(_player);
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "+3 DEFESA!", true, c_aqua);
             }
-            message_text = "Defesa aumentada em +3 permanentemente nesta run!";
+            message_text = tr("Defesa aumentada em +3 permanentemente nesta run!");
             message_colour = c_aqua;
             message_timer = 1.5;
         } else if (_it.type == "stat_hp") {
@@ -160,7 +160,7 @@ if (input_check_ui_confirm() || _touch_buy) {
                 _player.hp += _it.amount;
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "+25 HP MAX!", true, c_red);
             }
-            message_text = "Vida Maxima aumentada em +25 nesta run!";
+            message_text = tr("Vida Maxima aumentada em +25 nesta run!");
             message_colour = c_red;
             message_timer = 1.5;
         } else if (_it.type == "stat_speed") {
@@ -170,7 +170,7 @@ if (input_check_ui_confirm() || _touch_buy) {
                 player_recompute_attributes(_player);
                 fx_spawn_damage_popup(_player.x, _player.y - 15, "+15 VELOCIDADE!", true, c_yellow);
             }
-            message_text = "Velocidade de movimento aumentada em +15!";
+            message_text = tr("Velocidade de movimento aumentada em +15!");
             message_colour = c_yellow;
             message_timer = 1.5;
         }

@@ -261,7 +261,7 @@ if (input_check_pause_pressed() || _touch_pause) {
         array_push(global.combat_popups, {
             x: _px,
             y: _py,
-            text: "MODO DEV: ATIVADO",
+            text: tr("MODO DEV: ATIVADO"),
             colour: c_aqua,
             is_crit: true,
             life: 1.5,
@@ -274,7 +274,7 @@ if (input_check_pause_pressed() || _touch_pause) {
         array_push(global.combat_popups, {
             x: _px,
             y: _py,
-            text: "MODO DEV: DESATIVADO",
+            text: tr("MODO DEV: DESATIVADO"),
             colour: c_yellow,
             is_crit: false,
             life: 1.5,
@@ -291,7 +291,7 @@ if (input_check_pause_pressed() || _touch_pause) {
     array_push(global.combat_popups, {
         x: _px,
         y: _py,
-        text: global.dev_touch_mode ? "TOUCH SIM: ATIVADO" : "TOUCH SIM: DESATIVADO",
+        text: global.dev_touch_mode ? tr("TOUCH SIM: ATIVADO") : tr("TOUCH SIM: DESATIVADO"),
         colour: global.dev_touch_mode ? c_lime : c_yellow,
         is_crit: true,
         life: 1.5,

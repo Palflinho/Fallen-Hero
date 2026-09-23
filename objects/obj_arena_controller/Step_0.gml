@@ -9,7 +9,7 @@ switch (arena_state) {
     case "waiting":
         if (_player != noone && point_distance(x, y, _player.x, _player.y) <= trigger_radius) {
             arena_state = "starting";
-            banner_text = biome_title + " ATIVADA! PREPARE-SE";
+            banner_text = biome_title + tr(" ATIVADA! PREPARE-SE");
             banner_timer = 2.5;
             wave_delay_timer = 2.0;
             arena_barrier_active = true;
@@ -23,7 +23,7 @@ switch (arena_state) {
             arena_state = "active";
             current_wave = 1;
             queue_wave_spawns(biome, current_wave);
-            banner_text = "ONDA 1 DE " + string(total_waves);
+            banner_text = tr("ONDA 1 DE ") + string(total_waves);
             banner_timer = 2.2;
         }
         break;
@@ -60,14 +60,14 @@ switch (arena_state) {
                 if (current_wave < total_waves) {
                     arena_state = "wave_cleared";
                     wave_delay_timer = 2.2;
-                    banner_text = "ONDA " + string(current_wave) + " SUPERADA!";
+                    banner_text = tr("ONDA ") + string(current_wave) + tr(" SUPERADA!");
                     banner_timer = 2.0;
                     fx_spawn_sparks(x, y, c_yellow, 16);
                 } else {
                     // Todas as ondas vencidas: o Espirito Elemental do templo desperta
                     arena_state = "spirit_intro";
                     wave_delay_timer = 2.8;
-                    banner_text = "O ESPIRITO " + spirit_name + " DESPERTA!";
+                    banner_text = tr("O ESPIRITO ") + spirit_name + tr(" DESPERTA!");
                     banner_timer = 2.8;
                     sfx_play("thunder", 0.05, 0.8);
                     trigger_camera_shake(5);
@@ -83,7 +83,7 @@ switch (arena_state) {
             current_wave += 1;
             arena_state = "active";
             queue_wave_spawns(biome, current_wave);
-            banner_text = "ONDA " + string(current_wave) + " DE " + string(total_waves);
+            banner_text = tr("ONDA ") + string(current_wave) + tr(" DE ") + string(total_waves);
             banner_timer = 2.2;
             fx_spawn_sparks(x, y, theme_colour, 20);
         }
@@ -96,7 +96,7 @@ switch (arena_state) {
             var _sp2 = fh_find_free_spawn_pos(x, y, 28);
             spirit_inst = instance_create_layer(_sp2.x, _sp2.y, layer, spirit_obj);
             arena_state = "spirit";
-            banner_text = spirit_name + ", ESPIRITO GUARDIAO DO TEMPLO";
+            banner_text = spirit_name + tr(", ESPIRITO GUARDIAO DO TEMPLO");
             banner_timer = 2.2;
             fx_spawn_sparks(_sp2.x, _sp2.y, theme_colour, 30);
         }
@@ -106,7 +106,7 @@ switch (arena_state) {
         if (!instance_exists(spirit_inst) && instance_number(obj_enemy_parent) == 0) {
             arena_state = "victory";
             arena_barrier_active = false;
-            banner_text = "* " + spirit_name + " VENCIDO! BAU DO CAMPEAO LIBERADO! *";
+            banner_text = "* " + spirit_name + tr(" VENCIDO! BAU DO CAMPEAO LIBERADO! *");
             banner_timer = 3.5;
             sfx_play("victory", 0.05, 0.9);
         }
@@ -120,7 +120,7 @@ switch (arena_state) {
             _gate.trigger_mode = "always_open";
             _gate.target_room = asset_get_index("room_shop");
             _gate.reward_type = "heal";
-            _gate.gate_label = "Avanco: O Mercador Arcano (Loja)";
+            _gate.gate_label = tr("Avanco: O Mercador Arcano (Loja)");
             _gate.gate_colour = c_yellow;
             fx_spawn_sparks(x, y, c_yellow, 35);
         }

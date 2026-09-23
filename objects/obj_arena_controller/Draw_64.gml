@@ -37,11 +37,11 @@ if (arena_state == "active" || arena_state == "wave_cleared") {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_set_color(c_white);
-    var _str = biome_title + "  |  ONDA " + string(current_wave) + "/" + string(total_waves);
+    var _str = biome_title + tr("  |  ONDA ") + string(current_wave) + "/" + string(total_waves);
     if (arena_state == "active") {
-        _str += "  (" + string(_living) + " restantes)";
+        _str += "  (" + string(_living) + tr(" restantes)");
     } else {
-        _str += "  (Onda Vencida!)";
+        _str += tr("  (Onda Vencida!)");
     }
     draw_text(_cx, _iy, _str);
     draw_set_halign(fa_left);
@@ -71,7 +71,7 @@ if (arena_state == "spirit" && instance_exists(spirit_inst)) {
     draw_text(_cx, _byb + _bh / 2, spirit_inst.spirit_name + " - " + string(round(spirit_inst.hp)) + "/" + string(round(spirit_inst.hp_max)));
     if (spirit_inst.fh_vuln_timer > 0) {
         draw_set_color(c_yellow);
-        draw_text(_cx, _byb + _bh + 14, "EXPOSTO! (+50% DE DANO)");
+        draw_text(_cx, _byb + _bh + 14, tr("EXPOSTO! (+50% DE DANO)"));
     }
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);

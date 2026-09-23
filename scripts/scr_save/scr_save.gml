@@ -32,46 +32,46 @@ function save_slot_section(_slot) {
 }
 
 function get_hero_archetype_label(_char, _elem) {
-    var _char_label = "Cavaleiro";
+    var _char_label = tr("Cavaleiro");
     switch (_char) {
         case "knight":
             switch (_elem) {
-                case "water": _char_label = "Cavaleiro (Lanceiro)"; break;
-                case "fire": _char_label = "Cavaleiro (Cavaleiro Runico)"; break;
-                case "wind": _char_label = "Cavaleiro (Duelista)"; break;
-                case "earth": _char_label = "Cavaleiro (Guardiao)"; break;
-                default: _char_label = "Cavaleiro"; break;
+                case "water": _char_label = tr("Cavaleiro (Lanceiro)"); break;
+                case "fire": _char_label = tr("Cavaleiro (Cavaleiro Runico)"); break;
+                case "wind": _char_label = tr("Cavaleiro (Duelista)"); break;
+                case "earth": _char_label = tr("Cavaleiro (Guardiao)"); break;
+                default: _char_label = tr("Cavaleiro"); break;
             }
             break;
         case "mage":
             switch (_elem) {
-                case "water": _char_label = "Mago (Atiradora Arcana)"; break;
-                case "fire": _char_label = "Mago (Piromante)"; break;
-                case "wind": _char_label = "Mago (Ilusionista)"; break;
-                case "earth": _char_label = "Mago (Templaria)"; break;
-                default: _char_label = "Mago (Arcano)"; break;
+                case "water": _char_label = tr("Mago (Atiradora Arcana)"); break;
+                case "fire": _char_label = tr("Mago (Piromante)"); break;
+                case "wind": _char_label = tr("Mago (Ilusionista)"); break;
+                case "earth": _char_label = tr("Mago (Templaria)"); break;
+                default: _char_label = tr("Mago (Arcano)"); break;
             }
             break;
         case "archer":
             switch (_elem) {
-                case "water": _char_label = "Arqueiro (Cacador das Mares)"; break;
-                case "fire": _char_label = "Arqueiro (Artilheiro Arcano)"; break;
-                case "wind": _char_label = "Arqueiro (Cacador Furtivo)"; break;
-                case "earth": _char_label = "Arqueiro (Sentinela)"; break;
-                default: _char_label = "Arqueiro"; break;
+                case "water": _char_label = tr("Arqueiro (Cacador das Mares)"); break;
+                case "fire": _char_label = tr("Arqueiro (Artilheiro Arcano)"); break;
+                case "wind": _char_label = tr("Arqueiro (Cacador Furtivo)"); break;
+                case "earth": _char_label = tr("Arqueiro (Sentinela)"); break;
+                default: _char_label = tr("Arqueiro"); break;
             }
             break;
         case "assassin":
             switch (_elem) {
-                case "water": _char_label = "Assassino (Rastreador)"; break;
-                case "fire": _char_label = "Assassino (Alquimista)"; break;
-                case "wind": _char_label = "Assassino (Algoz do Tufao)"; break;
-                case "earth": _char_label = "Assassino (Veneno Tellurico)"; break;
-                default: _char_label = "Assassino"; break;
+                case "water": _char_label = tr("Assassino (Rastreador)"); break;
+                case "fire": _char_label = tr("Assassino (Alquimista)"); break;
+                case "wind": _char_label = tr("Assassino (Algoz do Tufao)"); break;
+                case "earth": _char_label = tr("Assassino (Veneno Tellurico)"); break;
+                default: _char_label = tr("Assassino"); break;
             }
             break;
         default:
-            _char_label = "Heroi";
+            _char_label = tr("Heroi");
             break;
     }
     return _char_label;
@@ -123,8 +123,8 @@ function save_slot_get_info(_slot) {
         xp: 0,
         playtime: 0,
         talent_ids: ["", "", ""],
-        hero_label: "[ SLOT VAZIO ]",
-        progress_label: "Disponivel para Nova Jornada"
+        hero_label: tr("[ SLOT VAZIO ]"),
+        progress_label: tr("Disponivel para Nova Jornada")
     };
 
     if (!file_exists("save.ini")) return _res;
@@ -162,7 +162,7 @@ function save_slot_get_info(_slot) {
     _res.playtime = _time;
     _res.talent_ids = [_t0, _t1, _t2];
     _res.hero_label = get_hero_archetype_label(_char, _elem);
-    _res.progress_label = "Nivel " + string(_lvl) + "   *   Tempo: " + format_playtime(_time);
+    _res.progress_label = tr("Nivel ") + string(_lvl) + tr("   *   Tempo: ") + format_playtime(_time);
 
     return _res;
 }
@@ -377,14 +377,14 @@ function get_save_hero_label() {
     if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
     var _info = save_slot_get_info(global.current_save_slot);
     if (!_info.occupied) return "";
-    return _info.hero_label + "   *   Nivel " + string(_info.level);
+    return _info.hero_label + tr("   *   Nivel ") + string(_info.level);
 }
 
 function get_save_progress_label() {
     if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
     var _info = save_slot_get_info(global.current_save_slot);
     if (!_info.occupied) return "";
-    return "Fase de Preparacao   *   Tempo: " + format_playtime(_info.playtime);
+    return tr("Fase de Preparacao   *   Tempo: ") + format_playtime(_info.playtime);
 }
 
 function get_save_summary() {

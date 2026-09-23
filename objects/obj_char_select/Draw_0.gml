@@ -5,7 +5,7 @@ draw_set_valign(fa_top);
 
 var _is_mobile = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
 
-var _dev_str = _is_mobile ? (global.dev_mode ? "Modo Dev: ATIVO (Liberado)" : "Modo Dev: Normal") : (global.dev_mode ? "[F1] MODO DEV: ATIVADO (Tudo Desbloqueado)" : "[F1] Modo Dev: Desativado (Normal)");
+var _dev_str = _is_mobile ? (global.dev_mode ? tr("Modo Dev: ATIVO (Liberado)") : tr("Modo Dev: Normal")) : (global.dev_mode ? tr("[F1] MODO DEV: ATIVADO (Tudo Desbloqueado)") : tr("[F1] Modo Dev: Desativado (Normal)"));
 var _dev_col = global.dev_mode ? c_aqua : make_colour_rgb(130, 140, 160);
 
 draw_set_alpha(0.75);
@@ -20,12 +20,12 @@ draw_text(18, 16, _dev_str);
 
 if (global.dev_mode && !_is_mobile) {
     draw_set_color(make_colour_rgb(110, 120, 140));
-    draw_text(18, 42, "[F3] Zerar Elementos da Campanha");
+    draw_text(18, 42, tr("[F3] Zerar Elementos da Campanha"));
 }
 
 if (reset_notice_timer > 0) {
     draw_set_color(c_yellow);
-    draw_text(260, 40, ">> Elementos reiniciados para bloqueados!");
+    draw_text(260, 40, tr(">> Elementos reiniciados para bloqueados!"));
 }
 
 // Banner Toast de Notificações de Salvamento e Ações
@@ -89,13 +89,13 @@ switch (state) {
 
         // Titulo com sombra
         draw_set_color(make_colour_rgb(15, 22, 35));
-        draw_text_transformed(_title_x + 3, _title_y + 3, "FALLEN HERO", 3, 3, 0);
+        draw_text_transformed(_title_x + 3, _title_y + 3, tr("FALLEN HERO"), 3, 3, 0);
 
         draw_set_color(c_yellow);
-        draw_text_transformed(_title_x, _title_y, "FALLEN HERO", 3, 3, 0);
+        draw_text_transformed(_title_x, _title_y, tr("FALLEN HERO"), 3, 3, 0);
 
         draw_set_color(make_colour_rgb(130, 180, 230));
-        draw_text_transformed(_title_x, _title_y + 48, "As Cronicas dos Elementos", 1.2, 1.2, 0);
+        draw_text_transformed(_title_x, _title_y + 48, tr("As Cronicas dos Elementos"), 1.2, 1.2, 0);
 
         // Botoes do menu principal
         var _menu_start_x = (room_width - main_menu_btn_w) / 2;
@@ -131,7 +131,7 @@ switch (state) {
             // Texto do botao
             var _label = main_menu_options[_i];
             if (_is_continue && !_has_any_save) {
-                _label = "Continuar  (Sem Saves)";
+                _label = tr("Continuar  (Sem Saves)");
                 draw_set_color(c_dkgray);
             } else if (_is_cur) {
                 draw_set_color(c_yellow);
@@ -153,14 +153,14 @@ switch (state) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(make_colour_rgb(160, 170, 185));
-        var _menu_tip = _is_mobile ? "Toque na opcao desejada para navegar" : "W / S ou Setas: Navegar   |   Z / Enter / Espaco / Clique: Confirmar";
+        var _menu_tip = _is_mobile ? tr("Toque na opcao desejada para navegar") : tr("W / S ou Setas: Navegar   |   Z / Enter / Espaco / Clique: Confirmar");
         draw_text(room_width / 2, room_height - 45, _menu_tip);
         break;
 
     case "save_slots":
         var _is_new = (save_slot_action == "new_game");
-        var _title_text = _is_new ? "NOVO JOGO - ESCOLHA UM SLOT" : "CONTINUAR - ESCOLHA UM SLOT";
-        var _sub_text = _is_new ? "Selecione um slot para iniciar sua nova jornada do zero absoluto" : "Selecione um slot existente para carregar seu heroi salvo";
+        var _title_text = _is_new ? tr("NOVO JOGO - ESCOLHA UM SLOT") : tr("CONTINUAR - ESCOLHA UM SLOT");
+        var _sub_text = _is_new ? tr("Selecione um slot para iniciar sua nova jornada do zero absoluto") : tr("Selecione um slot existente para carregar seu heroi salvo");
 
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
@@ -197,7 +197,7 @@ switch (state) {
 
             // Topo do Card: Número do Slot
             draw_set_color(_is_cur ? c_yellow : c_white);
-            draw_text_transformed(_cx + save_card_w / 2, _card_y + 30, "SLOT " + string(_slot_num), 1.35, 1.35, 0);
+            draw_text_transformed(_cx + save_card_w / 2, _card_y + 30, tr("SLOT ") + string(_slot_num), 1.35, 1.35, 0);
 
             // Linha divisória horizontal
             draw_set_color(make_colour_rgb(50, 68, 95));
@@ -221,21 +221,21 @@ switch (state) {
                 draw_text_transformed(_cx + save_card_w / 2, _card_y + 125, "[ + ]", 2.2, 2.2, 0);
 
                 draw_set_color(c_ltgray);
-                draw_text(_cx + save_card_w / 2, _card_y + 175, "SLOT VAZIO");
+                draw_text(_cx + save_card_w / 2, _card_y + 175, tr("SLOT VAZIO"));
 
                 draw_set_color(make_colour_rgb(110, 130, 160));
-                draw_text(_cx + save_card_w / 2, _card_y + 205, "Disponivel para");
-                draw_text(_cx + save_card_w / 2, _card_y + 225, "Nova Jornada");
+                draw_text(_cx + save_card_w / 2, _card_y + 205, tr("Disponivel para"));
+                draw_text(_cx + save_card_w / 2, _card_y + 225, tr("Nova Jornada"));
 
                 // Rodapé do Card
                 if (_is_new) {
                     draw_set_color(c_lime);
                     draw_rectangle(_cx + 25, _card_y + save_card_h - 52, _cx + save_card_w - 25, _card_y + save_card_h - 18, false);
                     draw_set_color(c_black);
-                    draw_text(_cx + save_card_w / 2, _card_y + save_card_h - 35, "INICIAR AQUI");
+                    draw_text(_cx + save_card_w / 2, _card_y + save_card_h - 35, tr("INICIAR AQUI"));
                 } else {
                     draw_set_color(c_dkgray);
-                    draw_text(_cx + save_card_w / 2, _card_y + save_card_h - 35, "(Sem Dados)");
+                    draw_text(_cx + save_card_w / 2, _card_y + save_card_h - 35, tr("(Sem Dados)"));
                 }
             } else {
                 // SLOT OCUPADO
@@ -250,16 +250,16 @@ switch (state) {
 
                 // 2. Nível
                 draw_set_color(c_aqua);
-                draw_text(_cx + save_card_w / 2, _card_y + 125, "Nivel " + string(_info.level));
+                draw_text(_cx + save_card_w / 2, _card_y + 125, tr("Nivel ") + string(_info.level));
 
                 // 3. Sintonia Elemental
                 draw_set_color(c_yellow);
-                var _elem_str = "Sintonia: " + element_get_name(_info.element);
+                var _elem_str = tr("Sintonia: ") + element_get_name(_info.element);
                 draw_text(_cx + save_card_w / 2, _card_y + 155, _elem_str);
 
                 // 4. Tempo de Jogo
                 draw_set_color(make_colour_rgb(180, 205, 235));
-                draw_text(_cx + save_card_w / 2, _card_y + 190, "Tempo de Jogo:");
+                draw_text(_cx + save_card_w / 2, _card_y + 190, tr("Tempo de Jogo:"));
                 draw_set_color(c_white);
                 draw_text(_cx + save_card_w / 2, _card_y + 212, format_playtime(_info.playtime));
 
@@ -269,14 +269,14 @@ switch (state) {
                     draw_rectangle(_cx + 20, _card_y + save_card_h - 52, _cx + save_card_w - 20, _card_y + save_card_h - 18, false);
                     draw_set_color(c_orange);
                     draw_rectangle(_cx + 20, _card_y + save_card_h - 52, _cx + save_card_w - 20, _card_y + save_card_h - 18, true);
-                    draw_text(_cx + save_card_w / 2, _card_y + save_card_h - 35, "SOBRESCREVER");
+                    draw_text(_cx + save_card_w / 2, _card_y + save_card_h - 35, tr("SOBRESCREVER"));
                 } else {
                     draw_set_color(make_colour_rgb(26, 60, 40));
                     draw_rectangle(_cx + 20, _card_y + save_card_h - 52, _cx + save_card_w - 20, _card_y + save_card_h - 18, false);
                     draw_set_color(c_lime);
                     draw_rectangle(_cx + 20, _card_y + save_card_h - 52, _cx + save_card_w - 20, _card_y + save_card_h - 18, true);
                     draw_set_color(c_white);
-                    draw_text(_cx + save_card_w / 2, _card_y + save_card_h - 35, "CARREGAR");
+                    draw_text(_cx + save_card_w / 2, _card_y + save_card_h - 35, tr("CARREGAR"));
                 }
             }
         }
@@ -289,11 +289,11 @@ switch (state) {
         draw_set_color(make_colour_rgb(70, 95, 135));
         draw_rectangle(40, _btn_back_y, 200, _btn_back_y + _btn_back_h, true);
         draw_set_color(c_ltgray);
-        draw_text(120, _btn_back_y + _btn_back_h / 2, _is_mobile ? "VOLTAR" : (input_get_btn_label("cancel") + " Voltar"));
+        draw_text(120, _btn_back_y + _btn_back_h / 2, _is_mobile ? tr("VOLTAR") : (input_get_btn_label("cancel") + tr(" Voltar")));
 
         draw_set_halign(fa_center);
         draw_set_color(make_colour_rgb(160, 175, 195));
-        var _slots_tip = _is_mobile ? "Toque no card para selecionar   |   Toque no [X] para excluir" : (input_has_gamepad_connected() ? ("D-Pad: Navegar   |   " + input_get_btn_label("confirm") + ": Confirmar   |   " + input_get_btn_label("cancel") + ": Voltar") : "Setas / 1, 2, 3: Navegar   |   Enter / Clique: Confirmar   |   ESC: Voltar");
+        var _slots_tip = _is_mobile ? tr("Toque no card para selecionar   |   Toque no [X] para excluir") : (input_has_gamepad_connected() ? (tr("D-Pad: Navegar   |   ") + input_get_btn_label("confirm") + tr(": Confirmar   |   ") + input_get_btn_label("cancel") + tr(": Voltar")) : tr("Setas / 1, 2, 3: Navegar   |   Enter / Clique: Confirmar   |   ESC: Voltar"));
         draw_text(room_width / 2 + 50, _btn_back_y + _btn_back_h / 2, _slots_tip);
         break;
 
@@ -304,7 +304,7 @@ switch (state) {
         var _y = room_height / 2 - box_h / 2 + 10;
 
         draw_set_color(c_white);
-        draw_text_transformed(room_width / 2, 60, "Escolha seu Heroi", 1.4, 1.4, 0);
+        draw_text_transformed(room_width / 2, 60, tr("Escolha seu Heroi"), 1.4, 1.4, 0);
 
         // Barra do Slot Ativo no Topo
         var _slot_bar_w = 370;
@@ -327,7 +327,7 @@ switch (state) {
             }
 
             draw_set_color(_is_active_slot ? c_yellow : c_ltgray);
-            draw_text(_sbx + 57, _slot_bar_y + 14, "Slot " + string(_s) + (_is_active_slot ? " *" : ""));
+            draw_text(_sbx + 57, _slot_bar_y + 14, tr("Slot ") + string(_s) + (_is_active_slot ? " *" : ""));
         }
 
         // Setas táteis para mobile apenas
@@ -420,7 +420,7 @@ switch (state) {
             
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
-            draw_text(_rep_x + _rep_w / 2, _rep_y + _rep_h / 2, "ALERTA TÁTICO: General da Água adaptou \"" + _boss_adapt.title + "\"! (Contra-ataque: " + string_upper(_boss_adapt.recommended_class) + ")");
+            draw_text(_rep_x + _rep_w / 2, _rep_y + _rep_h / 2, tr("ALERTA TÁTICO: General da Água adaptou \"") + _boss_adapt.title + tr("\"! (Contra-ataque: ") + string_upper(_boss_adapt.recommended_class) + ")");
         }
 
         // Exibição do Bônus Geral de Maestria
@@ -429,7 +429,7 @@ switch (state) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(_bonus_pct > 0 ? c_yellow : c_ltgray);
-        draw_text(room_width / 2, room_height - 95, "Insignias: [A]gua [F]ogo [V]ento [T]erra   |   Bonus de Maestria: +" + string(_bonus_pct) + "% Ouro Permanente");
+        draw_text(room_width / 2, room_height - 95, tr("Insignias: [A]gua [F]ogo [V]ento [T]erra   |   Bonus de Maestria: +") + string(_bonus_pct) + tr("% Ouro Permanente"));
 
         // Botões e Ações na base da tela
         var _btn_sel_y = room_height - 62;
@@ -441,7 +441,7 @@ switch (state) {
         draw_set_color(make_colour_rgb(70, 95, 135));
         draw_rectangle(40, _btn_sel_y, 190, _btn_sel_y + _btn_sel_h, true);
         draw_set_color(c_ltgray);
-        draw_text(115, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "VOLTAR" : (input_get_btn_label("cancel") + " Voltar"));
+        draw_text(115, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? tr("VOLTAR") : (input_get_btn_label("cancel") + tr(" Voltar")));
 
         // Botão [ Confirmar Heroi ]
         draw_set_color(make_colour_rgb(32, 54, 86));
@@ -449,7 +449,7 @@ switch (state) {
         draw_set_color(c_yellow);
         draw_rectangle(room_width / 2 - 210, _btn_sel_y, room_width / 2 + 10, _btn_sel_y + _btn_sel_h, true);
         draw_set_color(c_white);
-        draw_text(room_width / 2 - 100, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "CONFIRMAR" : (input_get_btn_label("confirm") + " Confirmar Heroi"));
+        draw_text(room_width / 2 - 100, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? tr("CONFIRMAR") : (input_get_btn_label("confirm") + tr(" Confirmar Heroi")));
 
         // Botão [ Salvar Perfil ] (Exclusivo na Seleção de Personagem)
         var _save_btn_x = room_width / 2 + 30;
@@ -459,7 +459,7 @@ switch (state) {
         draw_set_color(c_lime);
         draw_rectangle(_save_btn_x, _btn_sel_y, _save_btn_x + _save_btn_w, _btn_sel_y + _btn_sel_h, true);
         draw_set_color(c_white);
-        draw_text(_save_btn_x + _save_btn_w / 2, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "SALVAR PERFIL" : (input_get_btn_label("save") + " Salvar Perfil"));
+        draw_text(_save_btn_x + _save_btn_w / 2, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? tr("SALVAR PERFIL") : (input_get_btn_label("save") + tr(" Salvar Perfil")));
 
         // Botão [ Loja de Talentos ]
         draw_set_color(make_colour_rgb(26, 36, 56));
@@ -467,14 +467,14 @@ switch (state) {
         draw_set_color(make_colour_rgb(215, 175, 60));
         draw_rectangle(room_width - 240, _btn_sel_y, room_width - 40, _btn_sel_y + _btn_sel_h, true);
         draw_set_color(c_yellow);
-        draw_text(room_width - 140, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? "LOJA TALENTOS" : (input_get_btn_label("shop") + " Loja Talentos"));
+        draw_text(room_width - 140, _btn_sel_y + _btn_sel_h / 2, _is_mobile ? tr("LOJA TALENTOS") : (input_get_btn_label("shop") + tr(" Loja Talentos")));
         break;
 
     case "select_talents":
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_white);
-        draw_text(room_width / 2, 34, "Talentos - " + labels[selected_index]);
+        draw_text(room_width / 2, 34, tr("Talentos - ") + labels[selected_index]);
 
         var _elem_id = elements[selected_element_index];
         var _elem_unlocked = element_is_unlocked(_elem_id, classes[selected_index]);
@@ -493,8 +493,8 @@ switch (state) {
                 _lbl_shoulder_l = "< L1";
                 _lbl_shoulder_r = "R1 >";
             } else if (_dev_sh == "xbox") {
-                _lbl_shoulder_l = "< LB";
-                _lbl_shoulder_r = "RB >";
+                _lbl_shoulder_l = tr("< LB");
+                _lbl_shoulder_r = tr("RB >");
             } else {
                 _lbl_shoulder_l = "< Q";
                 _lbl_shoulder_r = "E >";
@@ -517,14 +517,14 @@ switch (state) {
 
         if (_elem_unlocked) {
             draw_set_color(c_yellow);
-            draw_text(room_width / 2, 64, "Sintonia: " + element_get_name(_elem_id) + " (" + _arch + ")");
+            draw_text(room_width / 2, 64, tr("Sintonia: ") + element_get_name(_elem_id) + " (" + _arch + ")");
             draw_set_color(c_aqua);
             draw_text(room_width / 2, 95, _desc);
         } else {
             draw_set_color(make_colour_rgb(255, 90, 90));
-            draw_text(room_width / 2, 64, "Sintonia: " + element_get_name(_elem_id) + " (" + _arch + ") [BLOQUEADO]");
+            draw_text(room_width / 2, 64, tr("Sintonia: ") + element_get_name(_elem_id) + " (" + _arch + tr(") [BLOQUEADO]"));
             draw_set_color(c_yellow);
-            draw_text(room_width / 2, 95, "Requisito: " + element_get_unlock_requirement(_elem_id));
+            draw_text(room_width / 2, 95, tr("Requisito: ") + element_get_unlock_requirement(_elem_id));
         }
         var _grid_start_y = 126;
 
@@ -546,23 +546,23 @@ switch (state) {
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
             draw_set_color(c_red);
-            draw_text_transformed(_bx + _bw / 2, _by + 40, "ELEMENTO BLOQUEADO NA CAMPANHA", 1.35, 1.35, 0);
+            draw_text_transformed(_bx + _bw / 2, _by + 40, tr("ELEMENTO BLOQUEADO NA CAMPANHA"), 1.35, 1.35, 0);
 
             draw_set_color(c_white);
-            draw_text(_bx + _bw / 2, _by + 85, "Para sintonizar seu heroi com os poderes de " + element_get_name(_elem_id) + " (" + _arch + "):");
+            draw_text(_bx + _bw / 2, _by + 85, tr("Para sintonizar seu heroi com os poderes de ") + element_get_name(_elem_id) + " (" + _arch + "):");
 
             draw_set_color(c_yellow);
             draw_text_transformed(_bx + _bw / 2, _by + 118, element_get_unlock_requirement(_elem_id), 1.15, 1.15, 0);
 
             draw_set_color(c_aqua);
-            draw_text(_bx + _bw / 2, _by + 168, "[F1] MODO DEV: Desbloqueia todos os elementos e 200 talentos para testes!");
+            draw_text(_bx + _bw / 2, _by + 168, tr("[F1] MODO DEV: Desbloqueia todos os elementos e 200 talentos para testes!"));
         } else {
             var _m = array_length(talent_select_list);
             if (_m == 0) {
                 draw_set_color(c_white);
-                draw_text(room_width / 2, 260, "Nenhum talento desbloqueado ainda para esta classe.");
+                draw_text(room_width / 2, 260, tr("Nenhum talento desbloqueado ainda para esta classe."));
                 draw_set_color(c_yellow);
-                draw_text(room_width / 2, 290, "Volte com [X] e aperte [S] para abrir a Loja de Talentos.");
+                draw_text(room_width / 2, 290, tr("Volte com [X] e aperte [S] para abrir a Loja de Talentos."));
             } else {
                 var _cols = min(talent_grid_cols, _m);
                 if (_cols <= 0) _cols = 1;
@@ -576,13 +576,13 @@ switch (state) {
                     draw_set_color(c_yellow);
                     draw_set_halign(fa_center);
                     draw_set_valign(fa_bottom);
-                    draw_text(room_width / 2, _grid_start_y - 2, "^  (Mais talentos acima)  ^");
+                    draw_text(room_width / 2, _grid_start_y - 2, tr("^  (Mais talentos acima)  ^"));
                 }
                 if (_end_vis_row < _total_rows) {
                     draw_set_color(c_yellow);
                     draw_set_halign(fa_center);
                     draw_set_valign(fa_top);
-                    draw_text(room_width / 2, _grid_start_y + talent_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, "v  (Mais talentos abaixo - Role para ver)  v");
+                    draw_text(room_width / 2, _grid_start_y + talent_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, tr("v  (Mais talentos abaixo - Role para ver)  v"));
                 }
 
                 for (var _row = _start_vis_row; _row < _end_vis_row; _row++) {
@@ -693,14 +693,14 @@ switch (state) {
                 draw_set_halign(fa_right);
                 if (_cur_picked) {
                     draw_set_color(c_aqua);
-                    draw_text(_box_x + _box_w - 24, _box_y + 18, "SELECIONADO (Slot " + string(_cur_slot + 1) + "/3)");
+                    draw_text(_box_x + _box_w - 24, _box_y + 18, tr("SELECIONADO (Slot ") + string(_cur_slot + 1) + "/3)");
                 } else if (array_length(talent_selected_ids) < 3) {
                     draw_set_color(c_white);
-                    var _sel_prompt = _is_mobile ? "Toque para Selecionar" : (input_get_btn_label("confirm") + " para Selecionar");
+                    var _sel_prompt = _is_mobile ? tr("Toque para Selecionar") : (input_get_btn_label("confirm") + tr(" para Selecionar"));
                     draw_text(_box_x + _box_w - 24, _box_y + 18, _sel_prompt + "  (" + string(array_length(talent_selected_ids)) + "/3)");
                 } else {
                     draw_set_color(c_gray);
-                    draw_text(_box_x + _box_w - 24, _box_y + 18, "[Limite de 3 Atingido]");
+                    draw_text(_box_x + _box_w - 24, _box_y + 18, tr("[Limite de 3 Atingido]"));
                 }
 
                 // Divider line
@@ -708,7 +708,7 @@ switch (state) {
                 draw_line(_box_x + 130, _box_y + 44, _box_x + _box_w - 24, _box_y + 44);
 
                 // Description with numeric values
-                var _eff_str = "Efeito: " + talent_get_desc_value(_cur_t);
+                var _eff_str = tr("Efeito: ") + talent_get_desc_value(_cur_t);
                 var _eff_sep = 18;
                 var _text_max_w = _box_w - 160;
 
@@ -737,7 +737,7 @@ switch (state) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_ltgray);
-        draw_text(150, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? "VOLTAR" : (input_get_btn_label("cancel") + " Voltar"));
+        draw_text(150, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? tr("VOLTAR") : (input_get_btn_label("cancel") + tr(" Voltar")));
 
         // Botão [ Iniciar Expedição ]
         var _btn_ini_w = 320;
@@ -747,24 +747,24 @@ switch (state) {
         draw_set_color(_elem_unlocked ? c_lime : c_red);
         draw_rectangle(_btn_ini_x, _btn_tal_y, _btn_ini_x + _btn_ini_w, _btn_tal_y + _btn_tal_h, true);
         draw_set_color(c_white);
-        draw_text(_btn_ini_x + _btn_ini_w / 2, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? "INICIAR EXPEDICAO" : (input_is_gamepad_active() ? (input_get_btn_label("pause") + " INICIAR EXPEDICAO") : (input_get_btn_label("confirm") + " INICIAR EXPEDICAO")));
+        draw_text(_btn_ini_x + _btn_ini_w / 2, _btn_tal_y + _btn_tal_h / 2, _is_mobile ? tr("INICIAR EXPEDICAO") : (input_is_gamepad_active() ? (input_get_btn_label("pause") + tr(" INICIAR EXPEDICAO")) : (input_get_btn_label("confirm") + tr(" INICIAR EXPEDICAO"))));
 
         // Footer instructions adaptadas ao dispositivo
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         if (!_elem_unlocked) {
             draw_set_color(c_ltgray);
-            draw_text(room_width / 2, 626, _is_mobile ? "Troque o Elemento pelas setas ou ative o Modo Dev" : "Troque o Elemento pelas setas ou modo dev [F1]");
+            draw_text(room_width / 2, 626, _is_mobile ? tr("Troque o Elemento pelas setas ou ative o Modo Dev") : tr("Troque o Elemento pelas setas ou modo dev [F1]"));
         } else {
             draw_set_color(c_white);
-            var _tal_tip = _is_mobile ? "Toque nos cards para marcar/desmarcar (max 3 talentos)" : "Clique ou use Espaco para marcar/desmarcar (max 3 talentos)";
+            var _tal_tip = _is_mobile ? tr("Toque nos cards para marcar/desmarcar (max 3 talentos)") : tr("Clique ou use Espaco para marcar/desmarcar (max 3 talentos)");
             draw_text(room_width / 2, 626, _tal_tip);
         }
 
         if (locked_warning_timer > 0) {
             var _flash = (locked_warning_timer mod 10 < 5);
             draw_set_color(_flash ? c_yellow : c_red);
-            draw_text(room_width / 2, 626, _is_mobile ? "IMPOSSIVEL INICIAR: Elemento bloqueado! Escolha Neutro ou ative Modo Dev." : "IMPOSSIVEL INICIAR: Elemento bloqueado! Escolha Neutro ou elemento ja conquistado, ou aperte F1.");
+            draw_text(room_width / 2, 626, _is_mobile ? tr("IMPOSSIVEL INICIAR: Elemento bloqueado! Escolha Neutro ou ative Modo Dev.") : tr("IMPOSSIVEL INICIAR: Elemento bloqueado! Escolha Neutro ou elemento ja conquistado, ou aperte F1."));
         }
         break;
 
@@ -772,7 +772,7 @@ switch (state) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_white);
-        draw_text(room_width / 2, 34, "Loja de Talentos");
+        draw_text(room_width / 2, 34, tr("Loja de Talentos"));
 
         // Tabs for classes
         var _n2 = array_length(classes);
@@ -793,8 +793,8 @@ switch (state) {
                 _tab_lbl_l = "< L1";
                 _tab_lbl_r = "R1 >";
             } else if (_dev_tab == "xbox") {
-                _tab_lbl_l = "< LB";
-                _tab_lbl_r = "RB >";
+                _tab_lbl_l = tr("< LB");
+                _tab_lbl_r = tr("RB >");
             } else {
                 _tab_lbl_l = "< Q";
                 _tab_lbl_r = "E >";
@@ -847,13 +847,13 @@ switch (state) {
                 draw_set_color(c_yellow);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_bottom);
-                draw_text(room_width / 2, _grid_shop_y - 2, "^  (Mais talentos acima)  ^");
+                draw_text(room_width / 2, _grid_shop_y - 2, tr("^  (Mais talentos acima)  ^"));
             }
             if (_end_vis_s_row < _total_s_rows) {
                 draw_set_color(c_yellow);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_top);
-                draw_text(room_width / 2, _grid_shop_y + shop_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, "v  (Mais talentos abaixo - Role para ver)  v");
+                draw_text(room_width / 2, _grid_shop_y + shop_grid_visible_rows * (talent_card_h + talent_card_gap_y) + 2, tr("v  (Mais talentos abaixo - Role para ver)  v"));
             }
 
             for (var _row = _start_vis_s_row; _row < _end_vis_s_row; _row++) {
@@ -918,7 +918,7 @@ switch (state) {
                         draw_rectangle(_cx + talent_card_w - 48, _cy + 4, _cx + talent_card_w - 4, _cy + 20, false);
                         draw_set_color(c_red);
                         draw_rectangle(_cx + talent_card_w - 48, _cy + 4, _cx + talent_card_w - 4, _cy + 20, true);
-                        draw_text(_cx + talent_card_w - 26, _cy + 12, "BLOQ");
+                        draw_text(_cx + talent_card_w - 26, _cy + 12, tr("BLOQ"));
                     } else {
                         draw_set_color(make_colour_rgb(45, 38, 20));
                         draw_rectangle(_cx + talent_card_w - 42, _cy + 4, _cx + talent_card_w - 4, _cy + 20, false);
@@ -964,18 +964,18 @@ switch (state) {
             draw_set_halign(fa_right);
             if (_unlocked) {
                 draw_set_color(c_lime);
-                draw_text(_box_x + _box_w - 24, _box_y + 18, "JA DESBLOQUEADO");
+                draw_text(_box_x + _box_w - 24, _box_y + 18, tr("JA DESBLOQUEADO"));
             } else if (_cur_elem_locked) {
                 draw_set_color(c_orange);
-                draw_text(_box_x + _box_w - 24, _box_y + 18, "BLOQUEADO: " + element_get_unlock_requirement(_cur_t.affinity));
+                draw_text(_box_x + _box_w - 24, _box_y + 18, tr("BLOQUEADO: ") + element_get_unlock_requirement(_cur_t.affinity));
             } else {
-                var _buy_tip = _is_mobile ? "(Toque para Comprar)" : "[Z para Comprar]";
+                var _buy_tip = _is_mobile ? tr("(Toque para Comprar)") : tr("[Z para Comprar]");
                 if (global.gold >= _cur_t.cost) {
                     draw_set_color(c_yellow);
-                    draw_text(_box_x + _box_w - 24, _box_y + 18, "PRECO: " + string(_cur_t.cost) + " OURO   " + _buy_tip);
+                    draw_text(_box_x + _box_w - 24, _box_y + 18, tr("PRECO: ") + string(_cur_t.cost) + tr(" OURO   ") + _buy_tip);
                 } else {
                     draw_set_color(c_red);
-                    draw_text(_box_x + _box_w - 24, _box_y + 18, "PRECO: " + string(_cur_t.cost) + " OURO   (Ouro Insuficiente)");
+                    draw_text(_box_x + _box_w - 24, _box_y + 18, tr("PRECO: ") + string(_cur_t.cost) + tr(" OURO   (Ouro Insuficiente)"));
                 }
             }
 
@@ -996,7 +996,7 @@ switch (state) {
             var _meta_y = max(_box_y + 104, _box_y + 52 + _sh_h + 10);
 
             draw_set_color(c_ltgray);
-            draw_text(_box_x + 130, _meta_y, "Classe: " + labels[shop_tab_index] + "   |   Seu saldo: " + string(global.gold) + " ouro");
+            draw_text(_box_x + 130, _meta_y, tr("Classe: ") + labels[shop_tab_index] + tr("   |   Seu saldo: ") + string(global.gold) + tr(" ouro"));
         }
 
         // Botões inferiores na Loja
@@ -1011,7 +1011,7 @@ switch (state) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_ltgray);
-        draw_text(150, _btn_shop_y + _btn_shop_h / 2, _is_mobile ? "VOLTAR" : (input_get_btn_label("cancel") + " Voltar"));
+        draw_text(150, _btn_shop_y + _btn_shop_h / 2, _is_mobile ? tr("VOLTAR") : (input_get_btn_label("cancel") + tr(" Voltar")));
 
         // Botão [ Comprar ]
         var _btn_buy_w = 320;
@@ -1021,19 +1021,19 @@ switch (state) {
         draw_set_color(c_yellow);
         draw_rectangle(_btn_buy_x, _btn_shop_y, _btn_buy_x + _btn_buy_w, _btn_shop_y + _btn_shop_h, true);
         draw_set_color(c_white);
-        draw_text(_btn_buy_x + _btn_buy_w / 2, _btn_shop_y + _btn_shop_h / 2, _is_mobile ? "COMPRAR TALENTO" : (input_get_btn_label("confirm") + " Comprar Talento"));
+        draw_text(_btn_buy_x + _btn_buy_w / 2, _btn_shop_y + _btn_shop_h / 2, _is_mobile ? tr("COMPRAR TALENTO") : (input_get_btn_label("confirm") + tr(" Comprar Talento")));
 
         // Footer instructions adaptadas ao dispositivo
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(c_white);
-        var _shop_tip = _is_mobile ? "Toque nas abas de classe ou nos cards para comprar" : (input_is_gamepad_active() ? ("D-Pad: Navegar   |   " + input_get_btn_label("shoulder_l") + "/" + input_get_btn_label("shoulder_r") + ": Abas   |   " + input_get_btn_label("confirm") + ": Comprar") : "Clique ou use as Setas/Enter para selecionar e comprar");
+        var _shop_tip = _is_mobile ? tr("Toque nas abas de classe ou nos cards para comprar") : (input_is_gamepad_active() ? (tr("D-Pad: Navegar   |   ") + input_get_btn_label("shoulder_l") + "/" + input_get_btn_label("shoulder_r") + tr(": Abas   |   ") + input_get_btn_label("confirm") + tr(": Comprar")) : tr("Clique ou use as Setas/Enter para selecionar e comprar"));
         draw_text(room_width / 2, 626, _shop_tip);
 
         if (locked_warning_timer > 0) {
             var _flash = (locked_warning_timer mod 10 < 5);
             draw_set_color(_flash ? c_yellow : c_red);
-            draw_text(room_width / 2, 626, _is_mobile ? "COMPRA BLOQUEADA: Derrote o chefe elemental ou ative o Modo Dev no topo!" : "COMPRA BLOQUEADA: Requer derrotar o chefe elemental na campanha ou ativar o Modo Dev [F1]!");
+            draw_text(room_width / 2, 626, _is_mobile ? tr("COMPRA BLOQUEADA: Derrote o chefe elemental ou ative o Modo Dev no topo!") : tr("COMPRA BLOQUEADA: Requer derrotar o chefe elemental na campanha ou ativar o Modo Dev [F1]!"));
         }
         break;
 }

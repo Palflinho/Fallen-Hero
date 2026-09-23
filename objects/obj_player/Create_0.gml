@@ -1,7 +1,7 @@
 character_class = variable_global_exists("selected_character") ? global.selected_character : "knight";
 
 element_affinity = variable_global_exists("selected_element") ? global.selected_element : "none";
-archetype_name = "Cavaleiro";
+archetype_name = tr("Cavaleiro");
 
 // ---- Class identity: level-1 natural attribute bases + attack identity (Cavaleiro / Knight) ----
 nat_power_base = 12;
@@ -57,7 +57,7 @@ switch (character_class) {
 
         switch (element_affinity) {
             case "water":
-                archetype_name = "Lanceiro"; // Agua -> estilo Arqueiro
+                archetype_name = tr("Lanceiro"); // Agua -> estilo Arqueiro
                 body_colour = c_teal;
                 defend_mode = "paladin_aura";
                 defend_duration = 3.5;
@@ -65,7 +65,7 @@ switch (character_class) {
                 break;
 
             case "fire":
-                archetype_name = "Cavaleiro Runico"; // Fogo -> estilo Maga
+                archetype_name = tr("Cavaleiro Runico"); // Fogo -> estilo Maga
                 body_colour = c_orange;
                 attack_duration = 0.25;
                 defend_mode = "berserk_fury";
@@ -74,7 +74,7 @@ switch (character_class) {
                 break;
 
             case "wind":
-                archetype_name = "Duelista";
+                archetype_name = tr("Duelista");
                 body_colour = c_yellow;
                 nat_atk_spd_base = 1 / 0.20;
                 nat_move_spd_base = 205;
@@ -85,7 +85,7 @@ switch (character_class) {
                 break;
 
             case "earth":
-                archetype_name = "Guardiao";
+                archetype_name = tr("Guardiao");
                 body_colour = make_colour_rgb(160, 95, 45);
                 nat_defesa_base = 12;
                 nat_hp_base = 125;
@@ -97,7 +97,7 @@ switch (character_class) {
                 break;
 
             default:
-                archetype_name = "Cavaleiro";
+                archetype_name = tr("Cavaleiro");
                 body_colour = c_aqua;
                 defend_mode = "block";
                 defend_duration = 2.5;
@@ -128,7 +128,7 @@ switch (character_class) {
 
         switch (element_affinity) {
             case "water":
-                archetype_name = "Atiradora Arcana"; // Agua -> estilo Arqueiro
+                archetype_name = tr("Atiradora Arcana"); // Agua -> estilo Arqueiro
                 body_colour = make_colour_rgb(100, 180, 255);
                 defend_mode = "cryo_prison";
                 defend_duration = 2.5;
@@ -136,7 +136,7 @@ switch (character_class) {
                 break;
 
             case "fire":
-                archetype_name = "Piromante";
+                archetype_name = tr("Piromante");
                 body_colour = make_colour_rgb(255, 90, 40);
                 defend_mode = "pyro_blast";
                 defend_duration = 0.4;
@@ -145,7 +145,7 @@ switch (character_class) {
                 break;
 
             case "wind":
-                archetype_name = "Ilusionista";
+                archetype_name = tr("Ilusionista");
                 body_colour = make_colour_rgb(180, 220, 255);
                 nat_move_spd_base = 185;
                 nat_atk_spd_base = 1 / 0.75;
@@ -155,7 +155,7 @@ switch (character_class) {
                 break;
 
             case "earth":
-                archetype_name = "Templaria";
+                archetype_name = tr("Templaria");
                 body_colour = make_colour_rgb(190, 150, 90);
                 nat_defesa_base = 7;
                 nat_hp_base = 90;
@@ -165,7 +165,7 @@ switch (character_class) {
                 break;
 
             default:
-                archetype_name = "Arcano";
+                archetype_name = tr("Arcano");
                 body_colour = c_fuchsia;
                 defend_mode = "manashield";
                 defend_duration = 2.0;
@@ -190,7 +190,7 @@ switch (character_class) {
 
         switch (element_affinity) {
             case "water":
-                archetype_name = "Cacador das Mares";
+                archetype_name = tr("Cacador das Mares");
                 body_colour = make_colour_rgb(80, 200, 200);
                 defend_mode = "mist_roll";
                 defend_duration = 0.30;
@@ -199,7 +199,7 @@ switch (character_class) {
                 break;
 
             case "fire":
-                archetype_name = "Artilheiro Arcano";
+                archetype_name = tr("Artilheiro Arcano");
                 body_colour = make_colour_rgb(240, 110, 40);
                 defend_mode = "fire_recoil";
                 defend_duration = 0.25;
@@ -208,7 +208,7 @@ switch (character_class) {
                 break;
 
             case "wind":
-                archetype_name = "Cacador Furtivo";
+                archetype_name = tr("Cacador Furtivo");
                 body_colour = make_colour_rgb(160, 255, 120);
                 nat_atk_spd_base = 1 / 0.32;
                 defend_mode = "cyclone_roll";
@@ -218,7 +218,7 @@ switch (character_class) {
                 break;
 
             case "earth":
-                archetype_name = "Sentinela";
+                archetype_name = tr("Sentinela");
                 body_colour = make_colour_rgb(140, 170, 70);
                 nat_power_base = 11;
                 nat_atk_spd_base = 1 / 0.45;
@@ -230,7 +230,7 @@ switch (character_class) {
                 break;
 
             default:
-                archetype_name = "Arqueiro";
+                archetype_name = tr("Arqueiro");
                 body_colour = c_lime;
                 defend_mode = "roll";
                 defend_duration = 0.25;
@@ -256,7 +256,7 @@ switch (character_class) {
 
         switch (element_affinity) {
             case "water":
-                archetype_name = "Rastreador"; // Agua -> estilo Arqueiro
+                archetype_name = tr("Rastreador"); // Agua -> estilo Arqueiro
                 body_colour = make_colour_rgb(90, 160, 220);
                 defend_mode = "spectral_mist";
                 defend_duration = 2.5;
@@ -264,7 +264,7 @@ switch (character_class) {
                 break;
 
             case "fire":
-                archetype_name = "Alquimista";
+                archetype_name = tr("Alquimista");
                 body_colour = make_colour_rgb(220, 70, 50);
                 defend_mode = "ash_bomb";
                 defend_duration = 1.0;
@@ -272,7 +272,7 @@ switch (character_class) {
                 break;
 
             case "wind":
-                archetype_name = "Algoz do Tufao";
+                archetype_name = tr("Algoz do Tufao");
                 body_colour = make_colour_rgb(200, 200, 255);
                 nat_move_spd_base = 215;
                 nat_atk_spd_base = 1 / 0.12;
@@ -282,7 +282,7 @@ switch (character_class) {
                 break;
 
             case "earth":
-                archetype_name = "Cavaleiro Sombrio";
+                archetype_name = tr("Cavaleiro Sombrio");
                 body_colour = make_colour_rgb(80, 80, 95);
                 nat_defesa_base = 8;
                 nat_hp_base = 80;
@@ -292,7 +292,7 @@ switch (character_class) {
                 break;
 
             default:
-                archetype_name = "Assassino";
+                archetype_name = tr("Assassino");
                 body_colour = c_gray;
                 defend_mode = "invisible";
                 defend_duration = 3.0;

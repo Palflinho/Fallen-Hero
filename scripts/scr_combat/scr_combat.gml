@@ -45,7 +45,7 @@ function fx_spawn_reward_popup(_x, _y, _exp, _gold) {
         array_push(global.combat_popups, {
             x: _x - 12,
             y: _y - 16,
-            text: "+" + string(_exp) + " XP",
+            text: "+" + string(_exp) + tr(" XP"),
             colour: c_aqua,
             is_crit: false,
             life: 0.9,
@@ -59,7 +59,7 @@ function fx_spawn_reward_popup(_x, _y, _exp, _gold) {
         array_push(global.combat_popups, {
             x: _x + 12,
             y: _y - 20,
-            text: "+" + string(_gold) + " Ouro",
+            text: "+" + string(_gold) + tr(" Ouro"),
             colour: c_yellow,
             is_crit: false,
             life: 0.9,
@@ -83,7 +83,7 @@ function fx_spawn_element_unlocked_popup(_x, _y, _elem) {
     array_push(global.combat_popups, {
         x: _x,
         y: _y - 45,
-        text: "ELEMENTO " + string_upper(_name) + " DESBLOQUEADO!",
+        text: tr("ELEMENTO ") + string_upper(_name) + tr(" DESBLOQUEADO!"),
         colour: _col,
         is_crit: true,
         life: 2.2,

@@ -10,27 +10,27 @@ arena_setup_chamber(_layout, false, biome);
 if (biome == "water") {
     total_waves = 2;
     theme_colour = make_colour_rgb(100, 210, 255);
-    biome_title = "ARENA GLACIAL";
+    biome_title = tr("ARENA GLACIAL");
     spirit_obj = obj_spirit_ondina;
-    spirit_name = "ONDINA";
+    spirit_name = tr("ONDINA");
 } else if (biome == "fire") {
     total_waves = 3;
     theme_colour = make_colour_rgb(255, 120, 40);
-    biome_title = "ARENA VULCANICA";
+    biome_title = tr("ARENA VULCANICA");
     spirit_obj = obj_spirit_salamandra;
-    spirit_name = "SALAMANDRA";
+    spirit_name = tr("SALAMANDRA");
 } else if (biome == "wind") {
     total_waves = 3;
     theme_colour = make_colour_rgb(180, 240, 255);
-    biome_title = "ARENA DOS CICLONES";
+    biome_title = tr("ARENA DOS CICLONES");
     spirit_obj = obj_spirit_silfide;
-    spirit_name = "SILFIDE";
+    spirit_name = tr("SILFIDE");
 } else {
     total_waves = 4;
     theme_colour = make_colour_rgb(190, 150, 90);
-    biome_title = "COLISEU SISMICO";
+    biome_title = tr("COLISEU SISMICO");
     spirit_obj = obj_spirit_gnomo;
-    spirit_name = "GNOMO";
+    spirit_name = tr("GNOMO");
 }
 
 arena_state = "waiting"; // "waiting" | "starting" | "active" | "wave_cleared" | "victory"

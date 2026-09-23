@@ -1,5 +1,5 @@
 event_inherited();
-spirit_init("ONDINA, ESPIRITO DA AGUA", "water", 380);
+spirit_init(tr("ONDINA, ESPIRITO DA AGUA"), "water", 380);
 body_radius = 20;
 move_speed = 70;
 contact_damage = 12;

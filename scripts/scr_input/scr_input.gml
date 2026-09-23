@@ -91,11 +91,11 @@ function input_update_device() {
 /// @desc Retorna o texto formatado do botao para o dispositivo ativo
 function input_get_btn_label(_action) {
     if (touch_controls_is_enabled()) {
-        if (_action == "attack") return "[ATK]";
-        if (_action == "defend") return "[HAB]";
+        if (_action == "attack") return tr("[ATK]");
+        if (_action == "defend") return tr("[HAB]");
         if (_action == "confirm" || _action == "interact" || _action == "accept" || _action == "action") return "[" + loc("action_btn", "AÇÃO") + "]";
-        if (_action == "dash") return "[DASH]";
-        if (_action == "pause") return "[PAUSA]";
+        if (_action == "dash") return tr("[DASH]");
+        if (_action == "pause") return tr("[PAUSA]");
     }
 
     var _type = input_get_device_type();
@@ -106,7 +106,7 @@ function input_get_btn_label(_action) {
         return "[Z]";
     }
     if (_action == "defend") {
-        if (_type == "ps") return "[Quadrado]";
+        if (_type == "ps") return tr("[Quadrado]");
         if (_type == "xbox") return "[X]";
         return "[X]";
     }
@@ -121,41 +121,41 @@ function input_get_btn_label(_action) {
         return "[X]";
     }
     if (_action == "save") {
-        if (_type == "ps") return "[Triangulo]";
+        if (_type == "ps") return tr("[Triangulo]");
         if (_type == "xbox") return "[Y]";
         return "[G]";
     }
     if (_action == "shop") {
-        if (_type == "ps") return "[Quadrado]";
+        if (_type == "ps") return tr("[Quadrado]");
         if (_type == "xbox") return "[X]";
         return "[S]";
     }
     if (_action == "aux" || _action == "talent") {
-        if (_type == "ps") return "[Triangulo]";
+        if (_type == "ps") return tr("[Triangulo]");
         if (_type == "xbox") return "[Y]";
         return "[G]";
     }
     if (_action == "pause") {
-        if (_type == "ps") return "[Options]";
-        if (_type == "xbox") return "[Start]";
-        return "[ESC]";
+        if (_type == "ps") return tr("[Options]");
+        if (_type == "xbox") return tr("[Start]");
+        return tr("[ESC]");
     }
     if (_action == "menu_nav") {
-        if (_type == "ps" || _type == "xbox") return "D-Pad";
-        return "Setas";
+        if (_type == "ps" || _type == "xbox") return tr("D-Pad");
+        return tr("Setas");
     }
     if (_action == "move") {
-        if (_type == "ps" || _type == "xbox") return "Analogico";
-        return "Setas / WASD";
+        if (_type == "ps" || _type == "xbox") return tr("Analogico");
+        return tr("Setas / WASD");
     }
     if (_action == "shoulder_left" || _action == "shoulder_l" || _action == "prev_tab") {
         if (_type == "ps") return "L1";
-        if (_type == "xbox") return "LB";
+        if (_type == "xbox") return tr("LB");
         return "Q";
     }
     if (_action == "shoulder_right" || _action == "shoulder_r" || _action == "next_tab") {
         if (_type == "ps") return "R1";
-        if (_type == "xbox") return "RB";
+        if (_type == "xbox") return tr("RB");
         return "E";
     }
     

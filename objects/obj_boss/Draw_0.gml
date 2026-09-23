@@ -65,17 +65,17 @@ if (state == "slam_windup") {
 }
 
 // 5. Títulos e Estado de Vulnerabilidade
-var _label = "General da Água";
+var _label = tr("General da Água");
 if (vulnerable) {
-    _label = (state == "frozen") ? "CONGELADO! ATAQUE AGORA!" : "VULNERÁVEL! ATAQUE AGORA!";
+    _label = (state == "frozen") ? tr("CONGELADO! ATAQUE AGORA!") : tr("VULNERÁVEL! ATAQUE AGORA!");
     draw_set_alpha(0.35 + 0.15 * sin(current_time * 0.01));
     draw_set_color(c_yellow);
     draw_circle(x, y, body_radius + 20 + 4 * sin(current_time * 0.008), true);
     draw_set_alpha(1);
 } else if (state == "recover") {
-    _label = "Recuperando...";
+    _label = tr("Recuperando...");
 } else if (orb_active) {
-    _label = "REBATA O ORBE!";
+    _label = tr("REBATA O ORBE!");
 }
 
 draw_set_halign(fa_center);

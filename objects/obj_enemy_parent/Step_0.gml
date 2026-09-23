@@ -199,7 +199,7 @@ if (hp <= 0) {
         _gate.trigger_mode = "clear_mobs";
         _gate.target_room = asset_get_index("Room5");
         _gate.reward_type = "heal";
-        _gate.gate_label = "Avanco: Ruinas dos Ventos (Fase 3 - Cura 40% HP)";
+        _gate.gate_label = tr("Avanco: Ruinas dos Ventos (Fase 3 - Cura 40% HP)");
         _gate.gate_colour = make_colour_rgb(180, 240, 255);
     } else if (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) {
         element_unlock("wind", _killer_class);
@@ -212,7 +212,7 @@ if (hp <= 0) {
         _gate.target_room = asset_get_index("Room7");
         _gate.reward_type = "heal";
         _gate.reward_value = 0;
-        _gate.gate_label = "Avanco: Santuario da Terra (Fase 4 - Cura 40% HP)";
+        _gate.gate_label = tr("Avanco: Santuario da Terra (Fase 4 - Cura 40% HP)");
         _gate.gate_colour = make_colour_rgb(120, 220, 100);
     } else if (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) {
         element_unlock("earth", _killer_class);
@@ -225,7 +225,7 @@ if (hp <= 0) {
         _gate.trigger_mode = "clear_mobs";
         _gate.target_room = asset_get_index("room_village");
         _gate.reward_type = "heal";
-        _gate.gate_label = "Retorno Ancestral: Vila Subterranea (Abrir Templo 5)";
+        _gate.gate_label = tr("Retorno Ancestral: Vila Subterranea (Abrir Templo 5)");
         _gate.gate_colour = c_yellow;
     } else if (object_exists(asset_get_index("obj_boss_human")) && object_index == asset_get_index("obj_boss_human")) {
         // Conquista final: O Salvador foi vencido!
@@ -235,7 +235,7 @@ if (hp <= 0) {
         var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
         _gate.trigger_mode = "clear_mobs";
         _gate.reward_type = "victory";
-        _gate.gate_label = "TRIUNFO SUPREMO: Concluir Expedicao (Vitoria)";
+        _gate.gate_label = tr("TRIUNFO SUPREMO: Concluir Expedicao (Vitoria)");
         _gate.gate_colour = c_yellow;
     } else {
         sfx_play_at("enemy_death", x, y, 450, 0.08);

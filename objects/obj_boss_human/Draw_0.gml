@@ -132,4 +132,4 @@ if (shield_active) {
 
 draw_set_alpha(1.0);
 
-boss_draw_label(shield_active ? "O Salvador - destrua os DRONES do escudo" : "O Salvador", "SOBRECARGA! ATAQUE!");
+boss_draw_label(shield_active ? tr("O Salvador - destrua os DRONES do escudo") : tr("O Salvador"), tr("SOBRECARGA! ATAQUE!"));

@@ -134,9 +134,9 @@ function adaptive_ai_get_boss_adaptation(_biome) {
         active: (_counter != "none"),
         counter_class: _counter,
         streak: _streak,
-        title: "Padrão",
-        description: "Comportamento original do General sem adaptações prévias.",
-        recommended_class: "Qualquer",
+        title: tr("Padrão"),
+        description: tr("Comportamento original do General sem adaptações prévias."),
+        recommended_class: tr("Qualquer"),
         phys_damage_reduction: 0.0, // Redução percentual contra dano fisico
         magic_damage_reduction: 0.0,// Redução percentual contra dano magico
         phys_damage_vulnerability: 1.0, // Multiplicador de fraqueza fisica
@@ -152,8 +152,8 @@ function adaptive_ai_get_boss_adaptation(_biome) {
         case "knight":
             // Venceu de Cavaleiro: O Chefe endurece carapaça contra cortes e ganha espinhos,
             // mas sua couraça pesada o torna LENTO e SUPER VULNERÁVEL A MAGIA!
-            _res.title = "Carapaça Espinhosa";
-            _res.description = "Resistência Física +40% e reflete dano colado. Fraqueza Crítica à Magia (+50% de dano da Maga).";
+            _res.title = tr("Carapaça Espinhosa");
+            _res.description = tr("Resistência Física +40% e reflete dano colado. Fraqueza Crítica à Magia (+50% de dano da Maga).");
             _res.recommended_class = "mage";
             _res.phys_damage_reduction = 0.40;
             _res.magic_damage_vulnerability = 1.50;
@@ -166,8 +166,8 @@ function adaptive_ai_get_boss_adaptation(_biome) {
         case "mage":
             // Venceu de Maga: O Chefe invoca uma Barreira Arcana anti-magia e atira mais rápido,
             // mas perde blindagem física, tornando-se muito frágil à espada do Cavaleiro ou flechas do Arqueiro!
-            _res.title = "Vórtice Refletor de Mana";
-            _res.description = "Resistência Mágica +50% e projéteis +25% mais velozes. Vulnerável a Cortes Físicos (+40% de dano do Cavaleiro).";
+            _res.title = tr("Vórtice Refletor de Mana");
+            _res.description = tr("Resistência Mágica +50% e projéteis +25% mais velozes. Vulnerável a Cortes Físicos (+40% de dano do Cavaleiro).");
             _res.recommended_class = "knight";
             _res.magic_damage_reduction = 0.50;
             _res.phys_damage_vulnerability = 1.40;
@@ -180,8 +180,8 @@ function adaptive_ai_get_boss_adaptation(_biome) {
             // Venceu de Arqueiro: O Chefe aprendeu a caçar alvos à distância, atirando com alta
             // predição e atrasando o slam para punir o rolamento (I-Frame bait),
             // mas fica totalmente vulnerável a ataques surpresa pelas costas do Assassino!
-            _res.title = "Instinto Predador de Alcance";
-            _res.description = "Mira Preditiva Avançada (85%) e Atraso Tático de Slam (pune rolamentos). Vulnerável a Furtividade do Assassino.";
+            _res.title = tr("Instinto Predador de Alcance");
+            _res.description = tr("Mira Preditiva Avançada (85%) e Atraso Tático de Slam (pune rolamentos). Vulnerável a Furtividade do Assassino.");
             _res.recommended_class = "assassin";
             _res.barrage_lead_accuracy = 0.90;
             _res.slam_bait_chance = 0.65;
@@ -192,8 +192,8 @@ function adaptive_ai_get_boss_adaptation(_biome) {
         case "assassin":
             // Venceu de Assassino: O Chefe desenvolve um Pulso de Percepção Sísmica e tiros em leque amplos,
             // mas seu campo de visão focado o deixa exposto a ataques de longa distância do Arqueiro!
-            _res.title = "Sentido Sísmico de Alerta";
-            _res.description = "Dificulta aproximações furtivas com pulsos de alerta contínuos. Vulnerável a ataques à distância do Arqueiro (+40% de dano).";
+            _res.title = tr("Sentido Sísmico de Alerta");
+            _res.description = tr("Dificulta aproximações furtivas com pulsos de alerta contínuos. Vulnerável a ataques à distância do Arqueiro (+40% de dano).");
             _res.recommended_class = "archer";
             _res.phys_damage_vulnerability = 1.30;
             _res.barrage_lead_accuracy = 0.70;

@@ -7,7 +7,7 @@ if (_player != noone && point_distance(x, y, _player.x, _player.y) <= radius + _
     if (variable_instance_exists(id, "is_points") && is_points) {
         _player.talent_pending_points += points_amount;
         fx_spawn_sparks(_player.x, _player.y, c_yellow, 20);
-        var _txt = (points_amount > 1) ? ("+" + string(points_amount) + " PONTOS DE TALENTO!") : "+1 PONTO DE TALENTO!";
+        var _txt = (points_amount > 1) ? ("+" + string(points_amount) + tr(" PONTOS DE TALENTO!")) : tr("+1 PONTO DE TALENTO!");
         fx_spawn_damage_popup(_player.x, _player.y - 20, _txt, true, c_yellow);
         instance_destroy();
     } else {

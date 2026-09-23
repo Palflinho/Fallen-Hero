@@ -27,9 +27,9 @@ if (state == "charge_windup") {
     draw_set_alpha(1);
 }
 
-var _label = "General Magma";
+var _label = tr("General Magma");
 if (vulnerable) {
-    _label = "CROSTA RACHADA! ATAQUE!";
+    _label = tr("CROSTA RACHADA! ATAQUE!");
     // Miyamoto Polish: Golden opportunity aura
     draw_set_alpha(0.35 + 0.20 * sin(current_time * 0.015));
     draw_set_color(c_yellow);
@@ -38,12 +38,12 @@ if (vulnerable) {
     draw_circle(x, y, (body_radius + 22) * scale_x, true);
     draw_set_alpha(1);
 } else if (state == "recover") {
-    _label = "Recuperando...";
+    _label = tr("Recuperando...");
 } else if (state == "charge_windup") {
-    _label = "DESVIE E FACA-O BATER NA PAREDE!";
+    _label = tr("DESVIE E FACA-O BATER NA PAREDE!");
     var _pk = instance_find(obj_player, 0);
     if (_pk != noone && _pk.character_class == "knight" && (_pk.defend_mode == "block" || _pk.defend_mode == "guardian_aegis")) {
-        _label = "DESVIE OU ERGA O ESCUDO!";
+        _label = tr("DESVIE OU ERGA O ESCUDO!");
     }
 }
 
