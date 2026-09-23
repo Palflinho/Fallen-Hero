@@ -6,7 +6,8 @@
 // FORMATO DE CADA CENA:
 // global.dialogue_db[$ "id_da_cena"] = [
 //     {
-//         speaker: "knight" | "mage" | "archer" | "assassin" | "merchant" | "general" | "elder" | "human",
+//         speaker: "hero" (classe jogada) | "knight" | "mage" | "archer" | "assassin" | "merchant" | "general" | "elder" | "human",
+//         by_class: { knight: {...}, mage: {...}, archer: {...}, assassin: {...} } (opcional, so com speaker "hero")
 //         name: { pt: "Nome PT", en: "Name EN", es: "Nombre ES", ja: "名前 JA" }  // ou string simples
 //         alien: "« Texto na lingua dos bichinhos »", // opcional
 //         text: {
@@ -72,16 +73,48 @@ function dialogue_db_init() {
     // ---------------------------------------------------------------------
     // 2. TEMPLO 1: TEMPLO DA ÁGUA
     // ---------------------------------------------------------------------
+    // Fala de abertura: "speaker: hero" + "by_class" escolhe a versao da classe jogada;
+    // o nome e montado automaticamente com a especializacao (ex.: "Rinoceronte Cavaleiro [Lanceiro]").
     global.dialogue_db[$ "temple1_water_intro"] = [
         {
-            speaker: "knight",
-            name: { pt: "Rinoceronte Cavaleiro [Guardião]", en: "Rhino Knight [Guardian]", es: "Rinoceronte Caballero [Guardián]", ja: "サイ騎士 [守護者]" },
-            alien: "« Kro-tash! Zuk-zuk vahr tor'kahn! »",
-            text: {
-                pt: "As ruínas do Templo da Água... Sinto a umidade pesada e o lodo corrompido adiante. Minha couraça e minha lâmina não vacilarão!",
-                en: "The ruins of the Water Temple... Heavy moisture and corrupted mire pulse ahead. My hide and blade shall not falter!",
-                es: "Las ruinas del Templo del Agua... Siento la pesada humedad y el lodo corrupto más adelante. ¡Mi coraza y mi espada no vacilarán!",
-                ja: "水の神殿の遺跡...重い湿気と穢れた泥が渦巻いている。我が鎧皮と刃は決して屈せぬ！"
+            speaker: "hero",
+            by_class: {
+                knight: {
+                    alien: "« Kro-tash! Zuk-zuk vahr tor'kahn! »",
+                    text: {
+                        pt: "As ruínas do Templo da Água... Sinto a umidade pesada e o lodo corrompido adiante. Minha couraça e minha lâmina não vacilarão!",
+                        en: "The ruins of the Water Temple... Heavy moisture and corrupted mire pulse ahead. My hide and blade shall not falter!",
+                        es: "Las ruinas del Templo del Agua... Siento la pesada humedad y el lodo corrupto más adelante. ¡Mi coraza y mi espada no vacilarán!",
+                        ja: "水の神殿の遺跡...重い湿気と穢れた泥が渦巻いている。我が鎧皮と刃は決して屈せぬ！"
+                    }
+                },
+                mage: {
+                    alien: "« Asha-riil... vom mystic vahn lumina! »",
+                    text: {
+                        pt: "As correntes arcanas deste santuário foram completamente distorcidas. O General da Água deve estar guardando o núcleo corrompido.",
+                        en: "The arcane currents of this sanctuary have been completely twisted. The Water General must be guarding the corrupted core.",
+                        es: "Las corrientes arcanas de este santuario fueron completamente distorsionadas. El General del Agua debe estar custodiando el núcleo corrupto.",
+                        ja: "この聖域の魔力の流れは完全に歪められている。水の将軍が穢れた核を守っているはずだ。"
+                    }
+                },
+                archer: {
+                    alien: "« Sssss-kree! Zzzt lok-dar skree! »",
+                    text: {
+                        pt: "O vento sopra úmido entre as colunas submersas. Meus olhos já rastreiam as sombras... Minhas flechas encontrarão cada ponto fraco.",
+                        en: "A damp wind blows between the sunken pillars. My eyes already track the shadows... My arrows will find every weak point.",
+                        es: "El viento sopla húmedo entre las columnas sumergidas. Mis ojos ya rastrean las sombras... Mis flechas encontrarán cada punto débil.",
+                        ja: "沈んだ柱の間を湿った風が吹き抜ける。我が眼はすでに影を追っている...矢はあらゆる弱点を射抜くだろう。"
+                    }
+                },
+                assassin: {
+                    alien: "« Hu-ruuu... kwi-chi sha mor-gath... »",
+                    text: {
+                        pt: "O reflexo das águas esconde passos silenciosos. Nenhum ruído escapará antes da lâmina atingir o coração da corrupção.",
+                        en: "The water's reflection hides silent steps. Not a sound will escape before my blade reaches the heart of the corruption.",
+                        es: "El reflejo de las aguas oculta pasos silenciosos. Ningún ruido escapará antes de que la hoja alcance el corazón de la corrupción.",
+                        ja: "水面の反射が静かな足音を隠す。刃が穢れの心臓に届くまで、物音ひとつ漏らしはしない。"
+                    }
+                }
             }
         }
     ];
@@ -99,8 +132,7 @@ function dialogue_db_init() {
             }
         },
         {
-            speaker: "knight",
-            name: { pt: "Herói", en: "Hero", es: "Héroe", ja: "英雄" },
+            speaker: "hero",
             alien: "« Zuk-kahn tor'valasha! »",
             text: {
                 pt: "A ganância e o medo cegam seu propósito, General! O Templo da Água será purificado!",
@@ -127,14 +159,44 @@ function dialogue_db_init() {
     // ---------------------------------------------------------------------
     global.dialogue_db[$ "temple3_wind_intro"] = [
         {
-            speaker: "archer",
-            name: { pt: "Lagarto Arqueiro [Franco-Atirador]", en: "Lizard Archer [Marksman]", es: "Lagarto Arquero [Tirador]", ja: "トカゲ弓兵 [狙撃手]" },
-            alien: "« Sssss-kree! Zzzt lok-dar skree! »",
-            text: {
-                pt: "O Templo do Vento... Ciclones cortantes e vendavais rugem entre as fendas aéreas. Meus olhos de réptil acompanharão cada rajada!",
-                en: "The Wind Temple... Razor cyclones and howling gales roar through aerial chasms. My reptilian eyes shall trace every gust!",
-                es: "El Templo del Viento... Ciclones afilados y vendavales rugen entre las grietas aéreas. ¡Mis ojos de reptil seguirán cada ráfaga!",
-                ja: "風の神殿...空中回廊を切り裂く旋風と怒号の嵐。我が爬虫類の眼は、いかなる突風の軌道も見逃しはせぬ！"
+            speaker: "hero",
+            by_class: {
+                knight: {
+                    alien: "« Kro-tash val-drak! Tok-tok! »",
+                    text: {
+                        pt: "O Templo do Vento... As rajadas tentam me derrubar a cada passo. Mas nenhum vendaval move um Rinoceronte plantado no chão!",
+                        en: "The Wind Temple... The gusts try to knock me down with every step. But no gale can move a Rhino rooted to the ground!",
+                        es: "El Templo del Viento... Las ráfagas intentan derribarme a cada paso. ¡Pero ningún vendaval mueve a un Rinoceronte plantado en el suelo!",
+                        ja: "風の神殿...一歩ごとに突風が私を倒そうとする。だが大地に根を張ったサイを動かせる嵐などない！"
+                    }
+                },
+                mage: {
+                    alien: "« Asha-lumina riil-kor! »",
+                    text: {
+                        pt: "O Templo do Vento... O ar aqui é puro fluxo arcano, mas está envenenado. Vou desatar cada ciclone, fio por fio.",
+                        en: "The Wind Temple... The air here is pure arcane flow, yet it has been poisoned. I will unravel every cyclone, thread by thread.",
+                        es: "El Templo del Viento... El aire aquí es puro flujo arcano, pero está envenenado. Desataré cada ciclón, hilo por hilo.",
+                        ja: "風の神殿...ここの大気は純粋な魔力の流れだが、毒されている。旋風をひとつずつ解きほぐしてみせる。"
+                    }
+                },
+                archer: {
+                    alien: "« Sssss-kree! Zzzt lok-dar skree! »",
+                    text: {
+                        pt: "O Templo do Vento... Ciclones cortantes e vendavais rugem entre as fendas aéreas. Meus olhos de réptil acompanharão cada rajada!",
+                        en: "The Wind Temple... Razor cyclones and howling gales roar through aerial chasms. My reptilian eyes shall trace every gust!",
+                        es: "El Templo del Viento... Ciclones afilados y vendavales rugen entre las grietas aéreas. ¡Mis ojos de reptil seguirán cada ráfaga!",
+                        ja: "風の神殿...空中回廊を切り裂く旋風と怒号の嵐。我が爬虫類の眼は、いかなる突風の軌道も見逃しはせぬ！"
+                    }
+                },
+                assassin: {
+                    alien: "« Hu-ruuu... sha-vortex mor! »",
+                    text: {
+                        pt: "O Templo do Vento... Este é o céu do meu povo. Cada corrente de ar aqui já me carregou um dia. Agora ela vai esconder a minha lâmina.",
+                        en: "The Wind Temple... This is my people's sky. Every current here once carried me. Now it will hide my blade.",
+                        es: "El Templo del Viento... Este es el cielo de mi pueblo. Cada corriente de aire aquí ya me llevó alguna vez. Ahora esconderá mi hoja.",
+                        ja: "風の神殿...ここは我が一族の空だ。この気流はかつて私を運んだ。今度は私の刃を隠してくれる。"
+                    }
+                }
             }
         }
     ];
@@ -152,8 +214,7 @@ function dialogue_db_init() {
             }
         },
         {
-            speaker: "archer",
-            name: { pt: "Herói", en: "Hero", es: "Héroe", ja: "英雄" },
+            speaker: "hero",
             alien: "« Sssss-lok vahr gale! »",
             text: {
                 pt: "Você roubou o fôlego da nossa fauna e espalhou tempestades! Suas asas cairão aqui, Zephyrus!",
@@ -216,8 +277,7 @@ function dialogue_db_init() {
             }
         },
         {
-            speaker: "knight",
-            name: { pt: "Herói", en: "Hero", es: "Héroe", ja: "英雄" },
+            speaker: "hero",
             alien: "« Tor-vahr terra... non extinguish nos! »",
             text: {
                 pt: "Destruir a vida de um mundo para salvar outro não é salvação... É apenas condenar inocentes ao mesmo destino. Devolva as essências!",
@@ -255,11 +315,23 @@ function dialogue_play_id(_dialogue_id, _on_finish = undefined) {
     var _resolved_lines = [];
     var _lang = loc_get_language();
 
+    // Classe e especializacao de quem esta jogando (para as falas do heroi)
+    var _pl = instance_find(obj_player, 0);
+    var _cls = (_pl != noone) ? _pl.character_class : (variable_global_exists("selected_character") ? global.selected_character : "knight");
+    var _el = (_pl != noone) ? _pl.element_affinity : (variable_global_exists("selected_element") ? global.selected_element : "none");
+    var _hero_label = loc("class_" + _cls, "Herói") + " [" + class_get_archetype_name(_cls, _el) + "]";
+
     for (var _i = 0; _i < array_length(_raw_lines); _i++) {
         var _raw = _raw_lines[_i];
-        
+        var _is_hero = (variable_struct_exists(_raw, "speaker") && _raw.speaker == "hero");
+        // Versao da fala especifica da classe jogada
+        if (_is_hero && variable_struct_exists(_raw, "by_class")) {
+            if (variable_struct_exists(_raw.by_class, _cls)) _raw = _raw.by_class[$ _cls];
+            else _raw = _raw.by_class.knight;
+        }
+
         // Resolve nome no idioma ativo
-        var _name = "Herói";
+        var _name = _is_hero ? _hero_label : "Herói";
         if (variable_struct_exists(_raw, "name")) {
             if (is_struct(_raw.name)) {
                 _name = variable_struct_exists(_raw.name, _lang) ? _raw.name[$ _lang] : _raw.name.pt;
@@ -279,7 +351,7 @@ function dialogue_play_id(_dialogue_id, _on_finish = undefined) {
         }
 
         var _alien = variable_struct_exists(_raw, "alien") ? _raw.alien : "";
-        var _speaker = variable_struct_exists(_raw, "speaker") ? _raw.speaker : "knight";
+        var _speaker = _is_hero ? _cls : (variable_struct_exists(_raw, "speaker") ? _raw.speaker : "knight");
         var _portrait = variable_struct_exists(_raw, "portrait") ? _raw.portrait : -1;
 
         array_push(_resolved_lines, {

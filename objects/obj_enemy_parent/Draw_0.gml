@@ -155,7 +155,8 @@ if (sprite_index != -1) {
     if (hit_flash_timer > 0) _blend = c_white;
     var _facing_sign = variable_instance_exists(id, "facing_h") ? facing_h : ((facing_dir > 90 && facing_dir < 270) ? -1 : 1);
     draw_sprite_ext(sprite_index, image_index, x, _body_y, scale_x * _facing_sign, scale_y, 0, _blend, draw_alpha);
-} else {
+} else if (!enemy_draw_body()) {
+    // Modelo procedural por familia/elemento (scr_enemy_visuals); o retangulo abaixo e so o fallback
     var _col = body_colour;
     if (poison_active) _col = merge_colour(body_colour, c_lime, 0.4);
     if (hit_flash_timer > 0) _col = c_white;
