@@ -51,34 +51,9 @@ if (state == "defend" && defend_active) {
 
 var _alpha = invisible ? 0.35 : 1;
 
-if (hero_spr_idle != -1) {
-    if (facing_x > 0.1) hero_face = 1;
-    else if (facing_x < -0.1) hero_face = -1;
-
-    var _moving = (x != xprevious || y != yprevious);
-    var _spr = hero_spr_idle;
-    var _img = floor(current_time / 220);
-    if (state == "attack" && hero_spr_attack != -1) {
-        var _dur = variable_instance_exists(id, "attack_duration_current") ? attack_duration_current : attack_duration;
-        _spr = hero_spr_attack;
-        _img = floor(clamp(1 - attack_timer / max(0.001, _dur), 0, 0.999) * sprite_get_number(_spr));
-    } else if (_moving && hero_spr_walk != -1) {
-        _spr = hero_spr_walk;
-        _img = floor(current_time / 100);
-    }
-
-    draw_set_colour(c_black);
-    draw_set_alpha(0.32 * _alpha);
-    draw_ellipse(x - 11, y + 8, x + 11, y + 13, false);
-    if (invisible) {
-        draw_set_colour(make_colour_rgb(60, 20, 80));
-        draw_set_alpha(0.18 + 0.08 * sin(current_time * 0.008));
-        draw_circle(x, y - 6, 16, false);
-    }
-    draw_set_alpha(1);
-
-    var _rot = (state == "dead") ? 90 * hero_face : 0;
-    draw_sprite_ext(_spr, _img mod sprite_get_number(_spr), x, y, hero_face, 1, _rot, _blend, _alpha);
+if (sprite_walk != -1 && character_class == "knight") {
+    var _xscale = (facing_x < 0) ? -1 : 1;
+    draw_sprite_ext(sprite_index, image_index, x, y, _xscale, 1, 0, _blend, _alpha);
 } else {
     chibi_draw_hero(id, x, y, facing_x, facing_y, state, _blend, _alpha);
 }

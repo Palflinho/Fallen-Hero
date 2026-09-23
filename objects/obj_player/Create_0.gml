@@ -27,12 +27,6 @@ sprite_walk = -1;
 sprite_attack = -1;
 sprite_index = -1;
 
-// Pixel-art hero sprites (drawn manually in Draw so sprite_index -- and the collision mask -- stay untouched)
-hero_spr_idle = asset_get_index("spr_hero_" + character_class + "_idle");
-hero_spr_walk = asset_get_index("spr_hero_" + character_class + "_walk");
-hero_spr_attack = asset_get_index("spr_hero_" + character_class + "_attack");
-hero_face = 1;
-
 // Sub-archetype parameters for Knight
 paladin_aura_radius = 90;
 paladin_aura_tick_timer = 0;
