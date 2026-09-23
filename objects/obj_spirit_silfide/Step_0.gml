@@ -22,7 +22,7 @@ if (state == "patrol" || state == "chase" || state == "idle") {
 switch (state) {
     case "hidden":
         state_timer -= _dt;
-        // Revelada pela bomba de cinzas (Lamina Vulcanica)
+        // Revelada pela bomba de cinzas (Alquimista)
         draw_alpha = lerp(draw_alpha, (fh_revealed > 0) ? 0.85 : 0.06, 0.15);
         if (_player != noone) {
             var _d = point_distance(x, y, _player.x, _player.y);

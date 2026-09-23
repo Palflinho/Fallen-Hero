@@ -55,15 +55,15 @@ function get_talent_defs() {
         {id: "knight_paladino_bastiao_liquido", character: "knight", affinity: "water", label: "Bastiao Liquido", synth_field: "synth_paladino_bastiao_liquido", per_rank: 0.50, cost: 105,
          desc_flavor: "Uma pelicula aquosa translucida que dissipa disparos a distancia antes que toquem o corpo.",
          desc_value: "Barreira de sobrevida ganha capacidade maxima de +50% do HP e absorve 100% do dano de projeteis.", icon_type: "barrier"},
-        {id: "knight_paladino_gota_purificadora", character: "knight", affinity: "water", label: "Gota Purificadora", synth_field: "synth_paladino_gota_purificadora", per_rank: 8, cost: 95,
-         desc_flavor: "Emanacoes puras limpam toxinas corporais instantaneamente quando o mal e purgado.",
-         desc_value: "Eliminar um inimigo remove instantaneamente venenos ou queimaduras e cura 8 HP.", icon_type: "regen"},
-        {id: "knight_paladino_correnteza_dilacerante", character: "knight", affinity: "water", label: "Correnteza Dilacerante", synth_field: "synth_paladino_correnteza_dilacerante", per_rank: 6, cost: 115,
-         desc_flavor: "A aura gira como um turbilhao tempestuoso, desacelerando passos inimigos e corroendo sua carne.",
-         desc_value: "Inimigos na aura sofrem -40% de velocidade e recebem dano magico continuo a cada 0.5s.", icon_type: "wind"},
-        {id: "knight_paladino_golpe_nascente", character: "knight", affinity: "water", label: "Golpe da Nascente", synth_field: "synth_paladino_golpe_nascente", per_rank: 5, cost: 200,
-         desc_flavor: "A cada ciclo de esgrima, a lamina faz brotar uma onda cortante de agua pristina que nutre o heroi.",
-         desc_value: "Cada 3o golpe de espada libera uma onda d'agua penetrante que cura o jogador em 5 HP.", icon_type: "heal_hit"},
+        {id: "knight_paladino_gota_purificadora", character: "knight", affinity: "water", label: "Estocada Distante", synth_field: "synth_paladino_gota_purificadora", per_rank: 1, cost: 95,
+         desc_flavor: "O lanceiro mede a distancia como um cacador do pantano: quanto mais longe, mais fundo o corte.",
+         desc_value: "Laminas d'agua causam +50% de dano em alvos a mais de 120px.", icon_type: "crit"},
+        {id: "knight_paladino_correnteza_dilacerante", character: "knight", affinity: "water", label: "Mare de Laminas", synth_field: "synth_paladino_correnteza_dilacerante", per_rank: 1, cost: 115,
+         desc_flavor: "A cada terceiro movimento a lamina se parte em tres correntes cortantes.",
+         desc_value: "Todo 3o golpe dispara 3 laminas d'agua em leque em vez de uma.", icon_type: "wind"},
+        {id: "knight_paladino_golpe_nascente", character: "knight", affinity: "water", label: "Lamina Perfurante", synth_field: "synth_paladino_golpe_nascente", per_rank: 1, cost: 200,
+         desc_flavor: "A correnteza afia o gume da agua ate atravessar escudos e fileiras inteiras.",
+         desc_value: "As laminas d'agua atravessam +1 inimigo e alcancam +40% mais longe.", icon_type: "sword"},
         {id: "knight_paladino_escudo_espelhado", character: "knight", affinity: "water", label: "Escudo Espelhado", synth_field: "synth_paladino_escudo_espelhado", per_rank: 1, cost: 115,
          desc_flavor: "A quebra da barreira estilhaca o espelho dagua em um estrondo que atordoa agressores.",
          desc_value: "Quando a barreira de sobrevida quebra por dano, explode cegando e empurrando num raio de 120px.", icon_type: "shockwave"},
@@ -75,12 +75,12 @@ function get_talent_defs() {
          desc_value: "Enquanto a barreira de sobrevida estiver ativa, a velocidade de ataque da espada aumenta em +25%.", icon_type: "haste"},
 
         // 3. CAVALEIRO RUNICO (antigo Berserker - ELEMENTO FOGO / estilo MAGA - 8 TALENTOS)
-        {id: "knight_berserk_arco_incendiario", character: "knight", affinity: "fire", label: "Arco Incendiario", synth_field: "synth_berserk_arco_incendiario", per_rank: 0.40, cost: 95,
-         desc_flavor: "O calor abrasador alarga a silhueta da espada, deixando rastros incandescentes no chao da masmorra.",
-         desc_value: "Aumenta a area do corte da espada em +40% e queima o chao por 1.5s.", icon_type: "burn"},
-        {id: "knight_berserk_frenesi_ardente", character: "knight", affinity: "fire", label: "Frenesi Ardente", synth_field: "synth_berserk_frenesi_ardente", per_rank: 0.05, cost: 105,
-         desc_flavor: "A adrenalina e as brasas aceleram os musculos a cada contato cortante consecutivo com o ferro.",
-         desc_value: "Cada golpe consecutivo concede +5% de velocidade de ataque (acumula ate 6 vezes por 3s).", icon_type: "haste"},
+        {id: "knight_berserk_arco_incendiario", character: "knight", affinity: "fire", label: "Runa Ampliada", synth_field: "synth_berserk_arco_incendiario", per_rank: 1, cost: 95,
+         desc_flavor: "Circulos runicos mais largos e mais quentes marcam cada impacto da espada.",
+         desc_value: "As runas de fogo tem +40% de raio e +25% de dano.", icon_type: "burn"},
+        {id: "knight_berserk_frenesi_ardente", character: "knight", affinity: "fire", label: "Runa em Cadeia", synth_field: "synth_berserk_frenesi_ardente", per_rank: 1, cost: 105,
+         desc_flavor: "Quando uma runa consome uma vida, a energia liberada acende uma nova runa.",
+         desc_value: "Inimigo abatido por uma runa detona outra runa no lugar (1 vez por golpe).", icon_type: "fury"},
         {id: "knight_berserk_combustao_espontanea", character: "knight", affinity: "fire", label: "Combustao Espontanea", synth_field: "synth_berserk_combustao_espontanea", per_rank: 0.60, cost: 115,
          desc_flavor: "Inimigos em chamas entram em ponto critico ao morrer, detonando pirotecnicamente entre aliados.",
          desc_value: "Inimigos mortos sob efeito de Queimadura explodem causando 60% do dano do ataque em area.", icon_type: "fury"},
@@ -220,18 +220,18 @@ function get_talent_defs() {
         {id: "mage_crio_pico_glacial", character: "mage", affinity: "water", label: "Pico Glacial", synth_field: "synth_crio_pico_glacial", per_rank: 1.5, cost: 105,
          desc_flavor: "O frio acumulado atinge o zero relativo, congelando monstros em blocos solidos de gelo.",
          desc_value: "Inimigos sob lentidao recebem 1.5s de congelamento total se atingidos por magia.", icon_type: "barrier"},
-        {id: "mage_crio_armadura_gelo_negro", character: "mage", affinity: "water", label: "Armadura de Gelo Negro", synth_field: "synth_crio_armadura_gelo_negro", per_rank: 1, cost: 95,
-         desc_flavor: "Pontas afiadas de gelo negro que recobrem a barreira, congelando o toque dos agressores.",
-         desc_value: "Enquanto o Manashield estiver ativo, qualquer contato fisico congela o agressor.", icon_type: "shield"},
+        {id: "mage_crio_armadura_gelo_negro", character: "mage", affinity: "water", label: "Mira Firme", synth_field: "synth_crio_armadura_gelo_negro", per_rank: 1, cost: 95,
+         desc_flavor: "Parada, a atiradora respira fundo e alinha o cristal com o coracao do alvo.",
+         desc_value: "Ficar 1s parada carrega a proxima lanca: +80% de dano, critico garantido e atravessa todos.", icon_type: "crit"},
         {id: "mage_crio_onda_torrencial", character: "mage", affinity: "water", label: "Onda Torrencial", synth_field: "synth_crio_onda_torrencial", per_rank: 1, cost: 115,
          desc_flavor: "Um jato frontal de agua em alta pressao que varre hordas inteiras pelo corredor.",
          desc_value: "O 3o ataque magico dispara uma mare frontal que arrasta monstros por 150px.", icon_type: "shockwave"},
         {id: "mage_crio_prisao_criogenica", character: "mage", affinity: "water", label: "Prisao Criogenica", synth_field: "synth_crio_prisao_criogenica", per_rank: 6, cost: 200,
          desc_flavor: "A quebra da redoma de gelo descarrega estilhacos perfurantes em todas as direcoes.",
          desc_value: "A Prisao Glacial (X) estilhaca no final, disparando 6 fragmentos congelantes.", icon_type: "barrier"},
-        {id: "mage_crio_orvalho_restaurador", character: "mage", affinity: "water", label: "Orvalho Restaurador", synth_field: "synth_crio_orvalho_restaurador", per_rank: 8, cost: 115,
-         desc_flavor: "A quebra do gelo de inimigos derrotados condensa gotas pristinas curativas no piso.",
-         desc_value: "Derrotar inimigos congelados gera uma poca dagua pura que regenera 8 HP.", icon_type: "regen"},
+        {id: "mage_crio_orvalho_restaurador", character: "mage", affinity: "water", label: "Lanca Estilhacante", synth_field: "synth_crio_orvalho_restaurador", per_rank: 1, cost: 115,
+         desc_flavor: "A lanca que mata nao para: explode em fragmentos de gelo afiado.",
+         desc_value: "Inimigos abatidos por lancas estilhacam em 4 fragmentos (60% do dano, aplicam lentidao).", icon_type: "barrier"},
         {id: "mage_crio_lanca_zero_absoluto", character: "mage", affinity: "water", label: "Lanca de Zero Absoluto", synth_field: "synth_crio_lanca_zero_absoluto", per_rank: 0.35, cost: 135,
          desc_flavor: "Espetos de gelo fino desenhados para quebrar couracas enrijecidas pelo frio extremo.",
          desc_value: "Ataques contra inimigos imobilizados ou lentos tem +35% de chance de acerto critico.", icon_type: "crit"},
@@ -265,7 +265,7 @@ function get_talent_defs() {
          desc_flavor: "A centelha primordial da fenix renasce das cinzas em uma supernova de cura quando o mago cai.",
          desc_value: "Ao sofrer dano fatal, liberta uma supernova curando 35% de vida (1 vez por run).", icon_type: "second_wind"},
 
-        // 4. AEROMANTE (MAGO / VENTO E TROVAO - 8 TALENTOS)
+        // 4. ILUSIONISTA (MAGO / VENTO E TROVAO - 8 TALENTOS)
         {id: "mage_aero_arco_eletrico", character: "mage", affinity: "wind", label: "Arco Eletrico", synth_field: "synth_aero_arco_eletrico", per_rank: 2, cost: 105,
          desc_flavor: "Fagulhas ionizadas saltam do alvo primario para eletrocutar inimigos proximos.",
          desc_value: "Projeteis magicos encadeiam um raio secundario para ate 2 alvos proximos.", icon_type: "wind"},
@@ -291,7 +291,7 @@ function get_talent_defs() {
          desc_flavor: "A pressao atmosferica cria um bolsao de baixa densidade onde disparos erram o alvo.",
          desc_value: "Esquiva de projeteis aumentada em +15% enquanto o mago estiver em movimento.", icon_type: "dodge"},
 
-        // 5. GEOMANTE (MAGO / TERRA E BASALTO - 8 TALENTOS)
+        // 5. TEMPLARIA (MAGO / TERRA E BASALTO - 8 TALENTOS)
         {id: "mage_geo_projetil_rochoso", character: "mage", affinity: "earth", label: "Projetil Rochoso", synth_field: "synth_geo_projetil_rochoso", per_rank: 0.60, cost: 105,
          desc_flavor: "Cristais pesados de basalto no nucleo do disparo que empurram agressores para tras.",
          desc_value: "A magia basica ganha pedras pesadas com +60% de empurrao (knockback).", icon_type: "rock"},
@@ -404,7 +404,7 @@ function get_talent_defs() {
          desc_flavor: "A flecha gira criando um turbilhao tempestuoso que arrasta tudo pelo caminho.",
          desc_value: "A flecha se transforma em um redemoinho aquatico tragando monstros em sua trajetoria.", icon_type: "shockwave"},
 
-        // 3. BALISTICO INFERNAL (ARQUEIRO / FOGO - 8 TALENTOS)
+        // 3. ARTILHEIRO ARCANO (ARQUEIRO / FOGO - 8 TALENTOS)
         {id: "archer_balist_flecha_incendiaria", character: "archer", affinity: "fire", label: "Flecha Incendiaria", synth_field: "synth_archer_balist_flecha_incendiaria", per_rank: 4, cost: 95,
          desc_flavor: "Hastes ensopadas em pez ardente que cobrem agressores de labaredas continuas.",
          desc_value: "Flechas incendeiam inimigos atingidos causando dano de fogo continuo por 3s.", icon_type: "burn"},
@@ -430,7 +430,7 @@ function get_talent_defs() {
          desc_flavor: "Um projetil com asas de fogo que curva a trajetoria para devastar monstros de elite e chefes.",
          desc_value: "O disparo vira uma fenix voadora teleguiada que persegue o inimigo mais perigoso.", icon_type: "fireball"},
 
-        // 4. MESTRE DO VENDAVAL (ARQUEIRO / VENTO - 8 TALENTOS)
+        // 4. CACADOR FURTIVO (ARQUEIRO / VENTO - 8 TALENTOS)
         {id: "archer_venda_disparo_leque", character: "archer", affinity: "wind", label: "Disparo em Leque", synth_field: "synth_archer_venda_disparo_leque", per_rank: 3, cost: 105,
          desc_flavor: "Tres flechas disparadas simultaneamente em arco frontal para varrer corredores inteiros.",
          desc_value: "O ataque basico atira 3 flechas simultaneas em leque com 40% de dano cada.", icon_type: "bow"},
@@ -456,7 +456,7 @@ function get_talent_defs() {
          desc_flavor: "Metralhadora de arcos desferindo uma torrente de flechas reluzentes pelo ar.",
          desc_value: "Dispara uma torrente de 15 flechas ultrarrapidas em cone devastador a frente.", icon_type: "bow"},
 
-        // 5. BALISTA DA TERRA (ARQUEIRO / TERRA - 8 TALENTOS)
+        // 5. SENTINELA (ARQUEIRO / TERRA - 8 TALENTOS)
         {id: "archer_terra_flecha_arpao_pedra", character: "archer", affinity: "earth", label: "Flecha Arpao de Pedra", synth_field: "synth_archer_terra_flecha_arpao_pedra", per_rank: 1.0, cost: 105,
          desc_flavor: "Pontas pesadas de granito que cravam monstros contra colunas e paredes rochosas.",
          desc_value: "Flechas pesadas que empurram inimigos ate paredes causam atordoamento de 1s.", icon_type: "rock"},
@@ -544,18 +544,18 @@ function get_talent_defs() {
          desc_value: "O tempo de recarga da habilidade de Invisibilidade e reduzido em 1.5 segundos.", icon_type: "cdr"},
 
         // 2. RASTREADOR (antiga Lamina Espectral - ASSASSINO / AGUA / estilo ARQUEIRO - 8 TALENTOS)
-        {id: "assassin_espect_corte_fluido", character: "assassin", affinity: "water", label: "Corte Fluido", synth_field: "synth_assassin_espect_corte_fluido", per_rank: 1, cost: 85,
-         desc_flavor: "O corpo desliza como agua escorrendo por entre as garras e armas dos monstros.",
-         desc_value: "Atacar permite deslizar livremente atraves do modelo de colisao dos inimigos.", icon_type: "dodge"},
+        {id: "assassin_espect_corte_fluido", character: "assassin", affinity: "water", label: "Leque de Facas", synth_field: "synth_assassin_espect_corte_fluido", per_rank: 1, cost: 85,
+         desc_flavor: "Dedos treinados soltam mais laminas do que o olho consegue contar.",
+         desc_value: "O arremesso do 3o golpe lanca 5 facas em vez de 3.", icon_type: "dagger"},
         {id: "assassin_espect_gota_hemofagica", character: "assassin", affinity: "water", label: "Gota Hemofagica", synth_field: "synth_assassin_espect_gota_hemofagica", per_rank: 4, cost: 105,
          desc_flavor: "As adagas condensam a forca vital da vitima recompondo o folego do assassino.",
          desc_value: "Cortes criticos drenam a vitalidade do alvo, curando 4 de HP por golpe.", icon_type: "lifesteal"},
         {id: "assassin_espect_nevoa_ilusoria", character: "assassin", affinity: "water", label: "Nevoa Ilusoria", synth_field: "synth_assassin_espect_nevoa_ilusoria", per_rank: 1, cost: 95,
          desc_flavor: "Dissolucao repentina em gotas de agua ao sofrer um golpe iminente, anulando o impacto.",
          desc_value: "Ao sofrer dano, dissipa em nevoa momentanea anulando o golpe (recarga: 20s).", icon_type: "barrier"},
-        {id: "assassin_espect_adaga_criogenica", character: "assassin", affinity: "water", label: "Adaga Criogenica", synth_field: "synth_assassin_espect_adaga_criogenica", per_rank: 0.40, cost: 115,
-         desc_flavor: "O fio gelido das laminas esfria a circulacao sanguinea da vitima a cada corte.",
-         desc_value: "O 3o golpe de adaga esfria o sangue do alvo aplicando 40% de lentidao.", icon_type: "dagger"},
+        {id: "assassin_espect_adaga_criogenica", character: "assassin", affinity: "water", label: "Presa Marcada", synth_field: "synth_assassin_espect_adaga_criogenica", per_rank: 1, cost: 115,
+         desc_flavor: "O rastreador nunca erra a presa que ele mesmo marcou.",
+         desc_value: "Golpes corpo a corpo em alvos com Marca Espectral causam +60% de dano (critico).", icon_type: "crit"},
         {id: "assassin_espect_afogamento_sombrio", character: "assassin", affinity: "water", label: "Afogamento Sombrio", synth_field: "synth_assassin_espect_afogamento_sombrio", per_rank: 1, cost: 200,
          desc_flavor: "Uma esfera aquosa de vacuo sela a boca do monstro impedindo conjuracoes e gritos.",
          desc_value: "Ataques furtivos silenciam e desarmam a vitima momentaneamente com bolha d'agua.", icon_type: "shockwave"},
@@ -569,7 +569,7 @@ function get_talent_defs() {
          desc_flavor: "Turbilhao giratorio de oito cortes consecutivos com laminas de agua afiada em 360.",
          desc_value: "Desfere uma sequencia de 8 cortes circulares rapidos fatiando tudo ao redor.", icon_type: "dagger"},
 
-        // 3. LAMINA VULCANICA (ASSASSINO / FOGO - 8 TALENTOS)
+        // 3. ALQUIMISTA (ASSASSINO / FOGO - 8 TALENTOS)
         {id: "assassin_vulcan_corte_incandescente", character: "assassin", affinity: "fire", label: "Corte Incandescente", synth_field: "synth_assassin_vulcan_corte_incandescente", per_rank: 4, cost: 95,
          desc_flavor: "Laminas em brasa viva que cauterizam feridas abertas com chamas continuas.",
          desc_value: "Adagas em chamas incendeiam alvos causando queimadura continua por 3s.", icon_type: "burn"},
@@ -621,7 +621,7 @@ function get_talent_defs() {
          desc_flavor: "Teletransporte instantaneo entre todos os alvos fatiando cada um em cortes fulminantes.",
          desc_value: "Teletransporta entre todos os inimigos da sala fatiando cada um 3 vezes em 0.5s.", icon_type: "dagger"},
 
-        // 5. CARRASCO DE OBSIDIANA (ASSASSINO / TERRA - 8 TALENTOS)
+        // 5. CAVALEIRO SOMBRIO (ASSASSINO / TERRA - 8 TALENTOS)
         {id: "assassin_obsid_corte_obsidiana", character: "assassin", affinity: "earth", label: "Corte de Obsidiana", synth_field: "synth_assassin_obsid_corte_obsidiana", per_rank: 1, cost: 105,
          desc_flavor: "Laminas negras de vidro vulcanico que estilhacam as armaduras de chefes e elites.",
          desc_value: "Ataques basicos ignoram completamente a armadura fisica de elites e chefes.", icon_type: "rock"},
@@ -756,24 +756,24 @@ function class_get_archetype_name(_class, _elem) {
             switch (_elem) {
                 case "water": return "Atiradora Arcana";
                 case "fire": return "Piromante";
-                case "wind": return "Aeromante";
-                case "earth": return "Geomante";
+                case "wind": return "Ilusionista";
+                case "earth": return "Templaria";
                 default: return "Arcano";
             }
         case "archer":
             switch (_elem) {
                 case "water": return "Cacador das Mares";
-                case "fire": return "Balistico Infernal";
-                case "wind": return "Mestre do Vendaval";
-                case "earth": return "Balista da Terra";
+                case "fire": return "Artilheiro Arcano";
+                case "wind": return "Cacador Furtivo";
+                case "earth": return "Sentinela";
                 default: return "Arqueiro";
             }
         case "assassin":
             switch (_elem) {
                 case "water": return "Rastreador";
-                case "fire": return "Lamina Vulcanica";
+                case "fire": return "Alquimista";
                 case "wind": return "Algoz do Tufao";
-                case "earth": return "Carrasco de Obsidiana";
+                case "earth": return "Cavaleiro Sombrio";
                 default: return "Assassino";
             }
         default:
@@ -795,24 +795,24 @@ function class_get_archetype_desc(_class, _elem) {
             switch (_elem) {
                 case "water": return "Atiradora Arcana: Lancas de gelo rapidas e perfurantes (+30% em alvos lentos). Especial Prisao Glacial cria redoma defensiva.";
                 case "fire": return "Piromante: Conjuracoes igneas devastadoras. Especial Ponto de Ignicao detona calor em 360 e incendeia o chao.";
-                case "wind": return "Aeromante: Projeteis velozes e eletricos. Especial Distorcao Voltaica (Blink) teletransporta com arco eletrico.";
-                case "earth": return "Geomante: Dano basaltico com alto impacto. Especial Monolito Basaltico ergue pilar que atrai inimigos.";
+                case "wind": return "Ilusionista: Projeteis velozes e eletricos. Especial Distorcao Voltaica (Blink) teletransporta com arco eletrico.";
+                case "earth": return "Templaria: Dano basaltico com alto impacto. Especial Monolito Basaltico ergue pilar que atrai inimigos.";
                 default: return "Arcano: Projeteis de energia arcana e Manashield para absorcao de dano magico.";
             }
         case "archer":
             switch (_elem) {
                 case "water": return "Cacador das Mares: Flechas de gelo e orvalho. Especial Cambalhota de Nevoa cega e confunde agressores.";
-                case "fire": return "Balistico Infernal: Tiros de polvora e fogo. Especial Tiro de Recuo Igneo salta para tras incendiando a area.";
-                case "wind": return "Mestre do Vendaval: Flechas supersonicas em leque. Especial Esquiva Ciclonica rola atirando 3 flechas guiadas.";
-                case "earth": return "Balista da Terra: Tiros pesados de impacto. Especial Fixacao de Ancora enraiza no chao para +60% dano e perfuracao.";
+                case "fire": return "Artilheiro Arcano: Tiros de polvora e fogo. Especial Tiro de Recuo Igneo salta para tras incendiando a area.";
+                case "wind": return "Cacador Furtivo: Flechas supersonicas em leque. Especial Esquiva Ciclonica rola atirando 3 flechas guiadas.";
+                case "earth": return "Sentinela: Tiros pesados de impacto. Especial Fixacao de Ancora enraiza no chao para +60% dano e perfuracao.";
                 default: return "Arqueiro: Disparos de flechas fisicas velozes a longa distancia e rolamento evasivo.";
             }
         case "assassin":
             switch (_elem) {
                 case "water": return "Rastreador: Todo 3o golpe arremessa facas espectrais que marcam o alvo. Especial Dissipacao em Nevoa atravessa corpos e regenera vida.";
-                case "fire": return "Lamina Vulcanica: Adagas igneas e explosoes a cada golpe. Especial Bomba de Cinzas cega e queima em area.";
+                case "fire": return "Alquimista: Adagas igneas e explosoes a cada golpe. Especial Bomba de Cinzas cega e queima em area.";
                 case "wind": return "Algoz do Tufao: Cortes de ar em hipervelocidade. Especial Salto das Sombras teletransporta atras do alvo com estocada.";
-                case "earth": return "Carrasco de Obsidiana: Veneno petrificante e alta resistencia. Especial Carapaca de Obsidiana reduz 80% do dano.";
+                case "earth": return "Cavaleiro Sombrio: Veneno petrificante e alta resistencia. Especial Carapaca de Obsidiana reduz 80% do dano.";
                 default: return "Assassino: Adagas duplas velozes com alto dano critico e furtividade temporaria.";
             }
         default:

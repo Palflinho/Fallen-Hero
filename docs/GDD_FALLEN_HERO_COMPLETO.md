@@ -62,8 +62,8 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
 * **Afinidades Elementais:**
   * *Água (Lanceiro — estilo Arqueiro):* Cada golpe solta uma lâmina d'água de longo alcance; a aura de sobrevida cura e protege.
   * *Fogo (Cavaleiro Rúnico — estilo Maga):* Alcance normal, mas todo golpe que acerta detona uma runa de fogo em área (maior durante a Fúria) que também interrompe canalizações.
-  * *Vento (Duelista):* Concede combo duplo de lâmina veloz e rajadas cortantes de ar.
-  * *Terra (Guardião Tectônico):* Aumenta a couraça corporal proporcionalmente aos inimigos próximos.
+  * *Vento (Duelista — estilo Assassino):* Aparar e contra-atacar; combo duplo de lâmina veloz e rajadas cortantes de ar.
+  * *Terra (Guardião — Maestria):* Aumenta a couraça corporal proporcionalmente aos inimigos próximos.
 
 ### 3.2 Maga (Raposa — Fêmea)
 * **Atributos Base (nível 1, sem afinidade):** HP 70, Poder 14 (mágico), Defesa 3, recarga do ataque 0,9 s, Velocidade 160 px/s.
@@ -72,19 +72,19 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
   * **QoL Integrada:** Cancelável a qualquer momento com `[X]`.
 * **Afinidades Elementais:**
   * *Água (Atiradora Arcana — estilo Arqueiro):* Lanças de gelo mais rápidas, perfurantes e de longo alcance (+30% em alvos lentos).
-  * *Fogo (Piromante):* Dispara meteoros de magma devastadores e sopros de dragão.
-  * *Vento (Aeromante):* Vórtice de gravidade galvânica que puxa e esquiva de projéteis em movimento.
-  * *Terra (Geomante):* Ruptura sísmica perfurante e muralhas protetoras de granito.
+  * *Fogo (Piromante — Maestria):* Dispara meteoros de magma devastadores e sopros de dragão.
+  * *Vento (Ilusionista — estilo Assassino):* Salto voltaico (teleporte); Vórtice de gravidade galvânica que puxa e esquiva de projéteis em movimento.
+  * *Terra (Templária — estilo Cavaleiro):* Pilar de Basalto e mais defesa; Ruptura sísmica perfurante e muralhas protetoras de granito.
 
 ### 3.3 Arqueiro (Lagarto Teiú — Macho)
 * **Atributos Base (nível 1, sem afinidade):** HP 80, Poder 8 (físico), Defesa 4, recarga do ataque 0,38 s, Velocidade 200 px/s.
 * **Ataque Básico:** Disparo de flechas lineares de alta perfuração com dano escalonado pela distância percorrida.
 * **Habilidade Especial (Defesa / [X]):** Rolamento Tático Evasivo com quadros de invulnerabilidade total.
 * **Afinidades Elementais:**
-  * *Água (Glacial):* Pistas escorregadias de gelo e névoas ilusórias que cegam os perseguidores.
-  * *Fogo (Balista Piromante):* Flechas explosivas de fósforo e tornados ígneos a cada 3 tiros.
-  * *Vento (Tempestade):* Tiro supersônico, tempestade de 9 flechas em leque e reflexos de esquiva.
-  * *Terra (Arpão Tectônico):* Tiros cataclísmicos colossais e atordoamento por impacto contra paredes.
+  * *Água (Caçador das Marés — Maestria):* Pistas escorregadias de gelo e névoas ilusórias que cegam os perseguidores.
+  * *Fogo (Artilheiro Arcano — estilo Maga):* Flechas explosivas de fósforo e tornados ígneos a cada 3 tiros.
+  * *Vento (Caçador Furtivo — estilo Assassino):* Tiro supersônico, tempestade de 9 flechas em leque e reflexos de esquiva.
+  * *Terra (Sentinela — estilo Cavaleiro):* Âncora que o torna inabalável; Tiros cataclísmicos colossais e atordoamento por impacto contra paredes.
 
 ### 3.4 Assassino (Pássaro Urutau — Andrógino / Mãe-da-lua)
 * **Atributos Base (nível 1, sem afinidade):** HP 60, Poder 6 (físico), Defesa 2, recarga do ataque 0,15 s, Velocidade 190 px/s.
@@ -94,10 +94,10 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
   * **Movimentação Tática:** Move-se a 80% da velocidade normal enquanto invisível.
   * **Emboscada:** Quebra a invisibilidade atacando para desferir um acerto crítico garantido e plantar uma Mina de Basalto.
 * **Afinidades Elementais:**
-  * *Água (Espectro):* Passo fantasma que teletransporta para trás do alvo e ceifa em 360°.
-  * *Fogo (Vulcânico):* Bomba de cinzas com cegueira, marcas de enxofre e lâmina de magma derretido.
-  * *Vento (Tufão):* Reflexos que cortam projéteis inimigos em voo e tornados de adagas frontais.
-  * *Terra (Obsidiana):* Ignora armadura física de elites e crava adagas no solo em choques tectônicos.
+  * *Água (Rastreador — estilo Arqueiro):* Todo 3º golpe arremessa facas espectrais que marcam o alvo.
+  * *Fogo (Alquimista — estilo Maga):* Bomba de cinzas com cegueira, marcas de enxofre e lâmina de magma derretido.
+  * *Vento (Algoz do Tufão — Maestria):* Reflexos que cortam projéteis inimigos em voo e tornados de adagas frontais.
+  * *Terra (Cavaleiro Sombrio — estilo Cavaleiro):* Ignora armadura física de elites e crava adagas no solo em choques tectônicos.
 
 ---
 
@@ -158,31 +158,31 @@ O catálogo de talentos está 100% definido em [`scr_talents.gml`](../scripts/sc
 ### 5.1 Distribuição Estrutural (211 Talentos Totais)
 * **Cavaleiro (50 Talentos):**
   * 10 Base (Postura Firme, Lâmina Afiada, Golpe Pesado, Escudo de Choque, Segundo Fôlego, etc.)
-  * 8 Água / Lanceiro (Lâmina da Maré, Bastilha Sagrada, Escudo Espelhado, Julgamento Sereno, etc.)
-  * 8 Fogo / Cavaleiro Rúnico (Fúria Ardente, Lâmina em Brasa, Fúria Imortal, Impacto Vulcânico, etc.)
+  * 8 Água / Lanceiro (Lâmina Perfurante, Estocada Distante, Maré de Lâminas, Bastião Líquido, Escudo Espelhado, etc.)
+  * 8 Fogo / Cavaleiro Rúnico (Runa Ampliada, Runa em Cadeia, Combustão Espontânea, Lâmina em Brasa, Fúria Imortal, etc.)
   * 8 Vento / Duelista (Combo Vendaval, Postura Eólica, Lâmina Relâmpago, Dança das Lâminas, etc.)
   * 8 Terra / Guardião (Fissura Telúrica, Carapaça de Granito, Fortaleza Viva, Peso Esmagador, etc.)
   * 8 Lendários / Mestria (Cavaleiro do Apocalipse, Avatar Elemental, etc.)
 * **Maga (50 Talentos):**
   * 10 Base (Canalização Fluida, Eco Mágico, Fluxo Conduzido, etc.)
-  * 8 Água / Atiradora Arcana (Onda Torrencial, Lança de Zero Absoluto, Prisma de Gelo, etc.)
+  * 8 Água / Atiradora Arcana (Mira Firme, Lança Estilhaçante, Lança de Zero Absoluto, Onda Torrencial, etc.)
   * 8 Fogo / Piromante (Meteoro de Magma, Sopro de Dragão, Conflagração Furiosa, etc.)
-  * 8 Vento / Aeromante (Vórtice Cortante, Olho do Furacão, Passo Céfiro, etc.)
-  * 8 Terra / Geomante (Ruptura Sísmica, Espinhos Telúricos, Armadura de Granito, etc.)
+  * 8 Vento / Ilusionista (Vórtice Cortante, Olho do Furacão, Passo Céfiro, etc.)
+  * 8 Terra / Templária (Ruptura Sísmica, Espinhos Telúricos, Armadura de Granito, etc.)
   * 8 Lendários / Mestria (Singularidade Dimensional, Conjurador Supremo, etc.)
 * **Arqueiro (50 Talentos):**
   * 10 Base (Tiro em Corrida, Aljava Leve, Reflexo do Caçador, Flecha Pesada, etc.)
-  * 8 Água / Glacial (Pista Escorregadia, Névoa Ilusória, etc.)
-  * 8 Fogo / Balista (Balista Piromante, Tempestade Ígnea Aérea, etc.)
-  * 8 Vento / Tempestade (Tempestade de Mil Tiros, Tiro Supersônico, Dança dos Ventos, etc.)
-  * 8 Terra / Caçador de Basalto (Tiro Cataclísmico, Flecha Arpão de Pedra, etc.)
+  * 8 Água / Caçador das Marés (Pista Escorregadia, Névoa Ilusória, etc.)
+  * 8 Fogo / Artilheiro Arcano (Balista Piromante, Tempestade Ígnea Aérea, etc.)
+  * 8 Vento / Caçador Furtivo (Tempestade de Mil Tiros, Tiro Supersônico, Dança dos Ventos, etc.)
+  * 8 Terra / Sentinela (Tiro Cataclísmico, Flecha Arpão de Pedra, etc.)
   * 8 Lendários / Mestria (Atirador Fantasma, Falcão Cósmico, etc.)
 * **Assassino (50 Talentos):**
   * 10 Base (Golpe Jugular, Passo Silencioso, Esquiva Reflexa, Execução Fria, Lâminas Gêmeas, etc.)
-  * 8 Água / Espectro (Passo das Marés, Maré da Ceifa, Estocada de Gelo Fino, etc.)
-  * 8 Fogo / Vulcânico (Passo Explosivo, Marca do Enxofre, Lâmina de Magma, Supernova Sombria, etc.)
-  * 8 Vento / Tufão (Celeridade Fantasma, Reflexos Célere, Tornado de Adagas, Esquiva Espectral, etc.)
-  * 8 Terra / Obsidiana (Corte de Obsidiana, Pele Pétrea, Mina de Basalto, Golpe Tectônico, etc.)
+  * 8 Água / Rastreador (Leque de Facas, Presa Marcada, Passo das Marés, Maré da Ceifa, etc.)
+  * 8 Fogo / Alquimista (Passo Explosivo, Marca do Enxofre, Lâmina de Magma, Supernova Sombria, etc.)
+  * 8 Vento / Algoz do Tufão (Celeridade Fantasma, Reflexos Célere, Tornado de Adagas, Esquiva Espectral, etc.)
+  * 8 Terra / Cavaleiro Sombrio (Corte de Obsidiana, Pele Pétrea, Mina de Basalto, Golpe Tectônico, etc.)
   * 8 Lendários / Mestria (Lâmina da Guilhotina, Eco dos Assassinos, etc.)
 * **Talentos Gerais Neutros (11 Talentos):**
   * Vigor (+HP Max), Fortuna (+Ouro), Reflexos (+Esquiva), Ímpeto (+Velocidade), Precisão (+Crítico), Fôlego Extra (Auto-reviver), etc.
@@ -241,7 +241,7 @@ Cada chefe tem **uma mecânica central** (estilo Zelda) que abre a **janela de d
 Cada elemento pertence a uma classe e **empresta uma ferramenta** do estilo dela: **Terra → Cavaleiro**, **Água → Arqueiro**, **Fogo → Maga**, **Vento → Assassino**. A classe base continua sendo o corpo (vida, ataque principal, botão de defesa); o elemento acrescenta uma coisa só. A classe no próprio elemento é a **Maestria** (Guardião, Piromante, Caçador das Marés, Algoz do Tufão). Os nomes das especializações evocam a classe emprestada (Duelista, Lanceiro, Cavaleiro Rúnico, Atiradora Arcana, Rastreador).
 
 ### 6.3.1 Interações de Classe
-Cada classe tem um verbo contra os inimigos — **Cavaleiro segura** investidas com o escudo, **Maga interrompe** canalizações, **Arqueiro derruba** o que voa, **Assassino despista** o que persegue — e cada especialização tem uma interação própria (ex.: Criomante apaga o Slime de Fogo e congela o General Magma; Geomante arranca o Gnomo do subsolo). Tabela completa em [`INTERACOES_DE_CLASSE.md`](INTERACOES_DE_CLASSE.md).
+Cada classe tem um verbo contra os inimigos — **Cavaleiro segura** investidas com o escudo, **Maga interrompe** canalizações, **Arqueiro derruba** o que voa, **Assassino despista** o que persegue — e cada especialização tem uma interação própria (ex.: Criomante apaga o Slime de Fogo e congela o General Magma; Templária arranca o Gnomo do subsolo). Tabela completa em [`INTERACOES_DE_CLASSE.md`](INTERACOES_DE_CLASSE.md).
 
 ### 6.4 Os Espíritos Elementais (Chefes das Arenas)
 Criaturas nascidas do próprio poder do elemento, guardiãs de cada arena. Detalhes completos em [`INIMIGOS_ELEMENTAIS.md`](INIMIGOS_ELEMENTAIS.md).

@@ -47,24 +47,24 @@ function get_hero_archetype_label(_char, _elem) {
             switch (_elem) {
                 case "water": _char_label = "Mago (Atiradora Arcana)"; break;
                 case "fire": _char_label = "Mago (Piromante)"; break;
-                case "wind": _char_label = "Mago (Aeromante)"; break;
-                case "earth": _char_label = "Mago (Geomante)"; break;
+                case "wind": _char_label = "Mago (Ilusionista)"; break;
+                case "earth": _char_label = "Mago (Templaria)"; break;
                 default: _char_label = "Mago (Arcano)"; break;
             }
             break;
         case "archer":
             switch (_elem) {
                 case "water": _char_label = "Arqueiro (Cacador das Mares)"; break;
-                case "fire": _char_label = "Arqueiro (Balistico Infernal)"; break;
-                case "wind": _char_label = "Arqueiro (Mestre do Vendaval)"; break;
-                case "earth": _char_label = "Arqueiro (Balista da Terra)"; break;
+                case "fire": _char_label = "Arqueiro (Artilheiro Arcano)"; break;
+                case "wind": _char_label = "Arqueiro (Cacador Furtivo)"; break;
+                case "earth": _char_label = "Arqueiro (Sentinela)"; break;
                 default: _char_label = "Arqueiro"; break;
             }
             break;
         case "assassin":
             switch (_elem) {
                 case "water": _char_label = "Assassino (Rastreador)"; break;
-                case "fire": _char_label = "Assassino (Lamina Vulcanica)"; break;
+                case "fire": _char_label = "Assassino (Alquimista)"; break;
                 case "wind": _char_label = "Assassino (Algoz do Tufao)"; break;
                 case "earth": _char_label = "Assassino (Veneno Tellurico)"; break;
                 default: _char_label = "Assassino"; break;

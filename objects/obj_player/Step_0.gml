@@ -619,11 +619,6 @@ switch (state) {
                 fh_move_and_collide((input_h / _alen) * _aspeed * _dt, (input_v / _alen) * _aspeed * _dt);
             }
         }
-        if (character_class == "assassin" && variable_instance_exists(id, "synth_assassin_espect_corte_fluido") && synth_assassin_espect_corte_fluido > 0) {
-            // 11 Corte Fluido: desliza suavemente através de modelos de colisão
-            fh_move_and_collide(facing_x * move_speed * 1.15 * _dt, facing_y * move_speed * 1.15 * _dt);
-            if (random(1) < 0.20) fx_spawn_sparks(x, y, c_teal, 1);
-        }
         var _curr_dur = variable_instance_exists(id, "attack_duration_current") ? attack_duration_current : attack_duration;
         if (!attack_has_fired && attack_timer <= _curr_dur * 0.5) {
             attack_has_fired = true;
@@ -745,10 +740,6 @@ switch (state) {
                 with (obj_enemy_parent) {
                     if (point_distance(x, y, other.x, other.y) <= other.paladin_aura_radius) {
                         enemy_apply_slow(id, 0.6, 0.6);
-                        // 14 Correnteza Dilacerante
-                        if (variable_instance_exists(other, "synth_paladino_correnteza_dilacerante") && other.synth_paladino_correnteza_dilacerante > 0) {
-                            enemy_take_damage(id, other.synth_paladino_correnteza_dilacerante + round(_mag_bonus * 0.8), other.x, other.y, 10);
-                        }
                     }
                 }
             }

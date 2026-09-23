@@ -281,7 +281,7 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
     if (variable_instance_exists(_inst, "fh_shell_hits") && _inst.fh_shell_hits > 0 && !is_undefined(_source_x) && !is_undefined(_source_y)) {
         var _from = point_direction(_inst.x, _inst.y, _source_x, _source_y);
         if (abs(angle_difference(_inst.facing_dir, _from)) <= _inst.fh_shell_arc && _inst.fh_pierce_next > 0) {
-            // Geomante / Carrasco de Obsidiana: atravessa a carapaca com dano reduzido e racha 2 placas
+            // Templaria / Cavaleiro Sombrio: atravessa a carapaca com dano reduzido e racha 2 placas
             _amount *= _inst.fh_pierce_next;
             _inst.fh_pierce_next = 0;
             if (_inst.fh_shell_hits < 9999) {
@@ -581,7 +581,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
                 }
             }
         }
-        // Carrasco de Obsidiana: bônus massivo contra vida cheia (+60%)
+        // Cavaleiro Sombrio: bônus massivo contra vida cheia (+60%)
         if (_owner.element_affinity == "earth" && _enemy.hp_max > 0 && (_enemy.hp / _enemy.hp_max) >= 0.85) {
             _base_damage *= 1.60;
             fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 8, "FRATURA", true, c_gray);
@@ -751,27 +751,40 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             var _fury = (_owner.state == "defend" && _owner.defend_active && _owner.defend_mode == "berserk_fury");
             var _rr = _fury ? 72 : 54;
             var _rd = _dmg * (_fury ? 0.50 : 0.35);
+            // Talento Runa Ampliada: +40% de raio e +25% de dano
+            if (variable_instance_exists(_owner, "synth_berserk_arco_incendiario") && _owner.synth_berserk_arco_incendiario > 0) {
+                _rr *= 1.4;
+                _rd *= 1.25;
+            }
+            var _chain = (variable_instance_exists(_owner, "synth_berserk_frenesi_ardente") && _owner.synth_berserk_frenesi_ardente > 0);
             var _rx = _enemy.x;
             var _ry = _enemy.y;
-            with (obj_enemy_parent) {
-                if (hp > 0 && !fh_untargetable && point_distance(x, y, _rx, _ry) <= _rr + body_radius) {
-                    enemy_take_damage(id, _rd, _rx, _ry, 120);
-                    enemy_apply_poison(id, 2, 0.5, 1.5);
-                    if (fh_channeling && !fh_interrupt) {
-                        fh_interrupt = true;
-                        fx_spawn_damage_popup(x, y - body_radius - 26, "INTERROMPIDO!", true, c_orange);
+            for (var _rb = 0; _rb < 2; _rb++) {
+                var _kill_x = -1;
+                var _kill_y = -1;
+                with (obj_enemy_parent) {
+                    if (hp > 0 && !fh_untargetable && point_distance(x, y, _rx, _ry) <= _rr + body_radius) {
+                        enemy_take_damage(id, _rd, _rx, _ry, 120);
+                        enemy_apply_poison(id, 2, 0.5, 1.5);
+                        if (fh_channeling && !fh_interrupt) {
+                            fh_interrupt = true;
+                            fx_spawn_damage_popup(x, y - body_radius - 26, "INTERROMPIDO!", true, c_orange);
+                        }
+                        if (hp <= 0 && _kill_x < 0) {
+                            _kill_x = x;
+                            _kill_y = y;
+                        }
                     }
                 }
+                fx_spawn_death_burst(_rx, _ry, c_orange, _fury ? 16 : 10);
+                // Talento Runa em Cadeia: um abate pela runa acende uma nova runa (1 vez por golpe)
+                if (!_chain || _rb > 0 || _kill_x < 0) break;
+                _rx = _kill_x;
+                _ry = _kill_y;
+                fx_spawn_damage_popup(_rx, _ry - 20, "RUNA EM CADEIA!", false, c_orange);
             }
-            fx_spawn_death_burst(_rx, _ry, c_orange, _fury ? 16 : 10);
             fx_spawn_sparks(_rx, _ry, c_yellow, 6);
             sfx_play("slam", 0.1, 0.3);
-        }
-
-        // 20 Frenesi Ardente (+5% vel ataque ate 6 stacks por 3s)
-        if (variable_instance_exists(_owner, "synth_berserk_frenesi_ardente") && _owner.synth_berserk_frenesi_ardente > 0) {
-            _owner.frenesi_stacks = min(6, _owner.frenesi_stacks + 1);
-            _owner.frenesi_timer = 3.0;
         }
 
         // 22 Sede de Sangue: Criticos recuperam 15% de vida (max 6 HP) e prolongam Furia
@@ -802,12 +815,6 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
 
         // Abate de inimigo (Kill triggers)
         if (_enemy.hp <= 0 && _before_hp > 0) {
-            // 13 Gota Purificadora: Remove veneno/queimadura e cura 8 HP
-            if (variable_instance_exists(_owner, "synth_paladino_gota_purificadora") && _owner.synth_paladino_gota_purificadora > 0) {
-                _owner.poison_active = false;
-                _owner.hp = min(_owner.hp_max, _owner.hp + 8);
-            }
-
             // 21 Combustao Espontanea: Inimigos sob Queimadura explodem
             if (variable_instance_exists(_owner, "synth_berserk_combustao_espontanea") && _owner.synth_berserk_combustao_espontanea > 0) {
                 var _ex_dmg = _dmg * 0.60;
@@ -846,7 +853,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             enemy_apply_poison(_enemy, 4, 0.5, 3.0);
         }
 
-        // Aeromante / Vento
+        // Ilusionista / Vento
         if (_owner.element_affinity == "wind" || (variable_instance_exists(_owner, "synth_aero_arco_eletrico") && _owner.synth_aero_arco_eletrico > 0)) {
             var _chain_dmg = _dmg * 0.40;
             var _ex = _enemy.x;
@@ -860,7 +867,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             }
         }
 
-        // Geomante / Terra
+        // Templaria / Terra
         if (_owner.element_affinity == "earth" || (variable_instance_exists(_owner, "synth_geo_projetil_rochoso") && _owner.synth_geo_projetil_rochoso > 0)) {
             var _ang = point_direction(_owner.x, _owner.y, _enemy.x, _enemy.y);
             _enemy.x += lengthdir_x(20, _ang);
@@ -981,8 +988,20 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             if (variable_instance_exists(_owner, "synth_mage_sifao_alma") && _owner.synth_mage_sifao_alma > 0) {
                 _owner.hp = min(_owner.hp_max, _owner.hp + 3);
             }
-            if (variable_instance_exists(_owner, "synth_crio_orvalho_restaurador") && _owner.synth_crio_orvalho_restaurador > 0) {
-                _owner.hp = min(_owner.hp_max, _owner.hp + 8);
+            // Talento Lanca Estilhacante: o inimigo abatido estilhaca em 4 fragmentos de gelo
+            if (variable_instance_exists(_owner, "synth_crio_orvalho_restaurador") && _owner.synth_crio_orvalho_restaurador > 0 && _owner.element_affinity == "water") {
+                for (var _fr = 0; _fr < 4; _fr++) {
+                    var _frag = instance_create_layer(_enemy.x, _enemy.y, _owner.layer, obj_atk_fireball);
+                    _frag.owner = _owner;
+                    _frag.damage = _dmg * 0.6;
+                    _frag.dir_x = lengthdir_x(1, _fr * 90 + 45);
+                    _frag.dir_y = lengthdir_y(1, _fr * 90 + 45);
+                    _frag.speed_px = 300;
+                    _frag.life = 0.35;
+                    _frag.body_radius = 5;
+                    _frag.hit_list = [_enemy];
+                }
+                fx_spawn_sparks(_enemy.x, _enemy.y, c_aqua, 12);
             }
             if (variable_instance_exists(_owner, "synth_piro_inferno_expansivo") && _owner.synth_piro_inferno_expansivo > 0) {
                 var _ex_x = _enemy.x;
@@ -1190,7 +1209,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             _enemy.spectral_mark = 4.0;
         }
 
-        // Carrasco de Obsidiana (Terra): Fragmenta armadura do alvo
+        // Cavaleiro Sombrio (Terra): Fragmenta armadura do alvo
         if (_owner.element_affinity == "earth") {
             _enemy.damage_reduction = min(1.0, _enemy.damage_reduction * 1.3);
         }
@@ -1201,7 +1220,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
         if (_owner.element_affinity == "fire" || (variable_instance_exists(_owner, "synth_assassin_vulcan_corte_incandescente") && _owner.synth_assassin_vulcan_corte_incandescente > 0)) {
             enemy_apply_poison(_enemy, 4, 0.5, 3.0);
         }
-        if (_owner.element_affinity == "water" || (variable_instance_exists(_owner, "synth_assassin_espect_adaga_criogenica") && _owner.synth_assassin_espect_adaga_criogenica > 0)) {
+        if (_owner.element_affinity == "water") {
             enemy_apply_slow(_enemy, 0.40, 2.0);
         }
 
@@ -1493,6 +1512,16 @@ function player_perform_attack() {
                 _p.speed_px *= 1.35;
                 _p.pierce_remaining += 1;
                 _p.life *= 1.25;
+                // Talento Mira Firme: 1s parada carrega a lanca (+80%, critico, atravessa todos)
+                if (variable_instance_exists(id, "synth_crio_armadura_gelo_negro") && synth_crio_armadura_gelo_negro > 0 && archer_stationary_timer >= 1.0) {
+                    _p.damage *= 1.8;
+                    _p.pierce_remaining = 99;
+                    _p.body_radius += 3;
+                    last_attack_was_crit = true;
+                    archer_stationary_timer = 0;
+                    fx_spawn_damage_popup(x, y - 22, "MIRA FIRME!", true, c_aqua);
+                    fx_spawn_sparks(_sx, _sy, c_white, 8);
+                }
             }
             if (character_class == "archer" && variable_instance_exists(id, "synth_archer_falcao_cosmico") && synth_archer_falcao_cosmico > 0) {
                 _p.life = 10.0;
@@ -1602,7 +1631,7 @@ function player_perform_attack() {
                     fx_spawn_death_burst(_sx, _sy, c_orange, 12);
                     trigger_hitstop(0.08);
                 } else if (element_affinity == "wind" || (variable_instance_exists(id, "synth_aero_vortice_cortante") && synth_aero_vortice_cortante > 0)) {
-                    // Aeromante / 27 Vórtice Cortante: puxa inimigos próximos
+                    // Ilusionista / 27 Vórtice Cortante: puxa inimigos próximos
                     var _vx = x + facing_x * 60;
                     var _vy = y + facing_y * 60;
                     var _vort = instance_create_layer(_vx, _vy, layer, obj_atk_knight);
@@ -1621,7 +1650,7 @@ function player_perform_attack() {
                         }
                     }
                 } else if (element_affinity == "earth") {
-                    // Geomante: Ruptura Sísmica linear perfurante
+                    // Templaria: Ruptura Sísmica linear perfurante
                     for (var _step = 1; _step <= 3; _step++) {
                         var _rx = x + facing_x * (30 * _step);
                         var _ry = y + facing_y * (30 * _step);
@@ -1677,7 +1706,7 @@ function player_perform_attack() {
                         }
                     }
                 } else if (element_affinity == "fire") {
-                    // Balistico Infernal: Morteiro Incendiario + fagulhas
+                    // Artilheiro Arcano: Morteiro Incendiario + fagulhas
                     var _mort = instance_create_layer(_sx, _sy, layer, obj_atk_fireball);
                     _mort.owner = id;
                     _mort.damage = _dmg * 0.65;
@@ -1698,7 +1727,7 @@ function player_perform_attack() {
                         _sub.pierce_remaining = 0;
                     }
                 } else if (element_affinity == "wind") {
-                    // Mestre do Vendaval: Flecha do Vendaval Perfurante
+                    // Cacador Furtivo: Flecha do Vendaval Perfurante
                     var _son = instance_create_layer(_sx, _sy, layer, obj_atk_arrow);
                     _son.owner = id;
                     _son.damage = _dmg * 0.70;
@@ -1709,7 +1738,7 @@ function player_perform_attack() {
                     trigger_hitstop(0.04);
                     fx_spawn_sparks(_sx, _sy, c_lime, 8);
                 } else if (element_affinity == "earth") {
-                    // Balista da Terra: Virote Sismico com fissura concentrada
+                    // Sentinela: Virote Sismico com fissura concentrada
                     var _harp = instance_create_layer(_sx, _sy, layer, obj_atk_arrow);
                     _harp.owner = id;
                     _harp.damage = _dmg * 0.75;
@@ -1747,10 +1776,7 @@ function player_perform_attack() {
         var _radius_mult = 0.7;
 
         if (character_class == "knight") {
-            if (variable_instance_exists(id, "synth_berserk_arco_incendiario") && synth_berserk_arco_incendiario > 0) {
-                _range_mult = 0.8;
-                _radius_mult = 1.2; // Arco Incendiario (+40% area)
-            } else if (element_affinity == "earth") {
+            if (element_affinity == "earth") {
                 _range_mult = 0.5;
                 _radius_mult = 0.75;
             }
@@ -1774,14 +1800,23 @@ function player_perform_attack() {
 
         // Lanceiro (Cavaleiro + Agua -> estilo Arqueiro): cada golpe solta uma lamina d'agua de longo alcance
         if (character_class == "knight" && element_affinity == "water") {
-            var _blade = instance_create_layer(x + facing_x * 16, y + facing_y * 16, layer, obj_atk_arrow);
-            _blade.owner = id;
-            _blade.damage = _dmg * 0.40;
-            _blade.dir_x = facing_x;
-            _blade.dir_y = facing_y;
-            _blade.speed_px = 420;
-            _blade.life = 0.42;
-            _blade.pierce_remaining = 0;
+            // Talento Lamina Perfurante: atravessa +1 e vai 40% mais longe
+            var _pierce_t = (variable_instance_exists(id, "synth_paladino_golpe_nascente") && synth_paladino_golpe_nascente > 0);
+            // Talento Mare de Laminas: todo 3o golpe dispara 3 laminas em leque
+            var _fan_t = (variable_instance_exists(id, "synth_paladino_correnteza_dilacerante") && synth_paladino_correnteza_dilacerante > 0 && ((hit_streak_count + 1) mod 3 == 0));
+            var _bdir = point_direction(0, 0, facing_x, facing_y);
+            var _bcount = _fan_t ? 3 : 1;
+            for (var _bi = 0; _bi < _bcount; _bi++) {
+                var _ba = _bdir + (_bcount == 3 ? (_bi - 1) * 15 : 0);
+                var _blade = instance_create_layer(x + facing_x * 16, y + facing_y * 16, layer, obj_atk_arrow);
+                _blade.owner = id;
+                _blade.damage = _dmg * 0.40;
+                _blade.dir_x = lengthdir_x(1, _ba);
+                _blade.dir_y = lengthdir_y(1, _ba);
+                _blade.speed_px = 420;
+                _blade.life = _pierce_t ? 0.59 : 0.42;
+                _blade.pierce_remaining = _pierce_t ? 1 : 0;
+            }
         }
 
         // Assassin: Laminas Gemeas (segundo corte imediato)
@@ -1897,7 +1932,9 @@ function player_perform_attack() {
                     // Rastreador (Assassino + Agua -> estilo Arqueiro): arremessa 3 facas espectrais em leque.
                     // Cada acerto aplica a Marca Espectral (+50% de dano sofrido por 4s).
                     var _kdir = point_direction(0, 0, facing_x, facing_y);
-                    for (var _k = -1; _k <= 1; _k++) {
+                    // Talento Leque de Facas: 5 facas em vez de 3
+                    var _kn = (variable_instance_exists(id, "synth_assassin_espect_corte_fluido") && synth_assassin_espect_corte_fluido > 0) ? 2 : 1;
+                    for (var _k = -_kn; _k <= _kn; _k++) {
                         var _knife = instance_create_layer(x + facing_x * 12, y + facing_y * 12, layer, obj_atk_arrow);
                         _knife.owner = id;
                         _knife.damage = _dmg * 0.9;
@@ -1910,7 +1947,7 @@ function player_perform_attack() {
                     fx_spawn_sparks(x, y, c_teal, 10);
                     sfx_play("dagger", 0.1, 0.9);
                 } else if (element_affinity == "fire") {
-                    // Lâmina Vulcânica: Detonação de Pólvora em chamas
+                    // Alquimista: Detonação de Pólvora em chamas
                     var _det = instance_create_layer(_hx, _hy, layer, obj_atk_knight);
                     _det.owner = id;
                     _det.damage = _dmg * 1.85;
@@ -1938,7 +1975,7 @@ function player_perform_attack() {
                     fx_spawn_sparks(x, y, c_white, 8);
                     trigger_hitstop(0.05);
                 } else if (element_affinity == "earth") {
-                    // Carrasco de Obsidiana: Fratura Craniana esmagadora
+                    // Cavaleiro Sombrio: Fratura Craniana esmagadora
                     var _cst = instance_create_layer(_hx, _hy, layer, obj_atk_knight);
                     _cst.owner = id;
                     _cst.damage = _dmg * 2.4;
@@ -1957,17 +1994,6 @@ function player_perform_attack() {
 
         if (character_class == "knight") {
             hit_streak_count++;
-
-            // 15 Golpe da Nascente: cada 3o golpe libera onda curativa
-            if (variable_instance_exists(id, "synth_paladino_golpe_nascente") && synth_paladino_golpe_nascente > 0 && (hit_streak_count mod 3 == 0)) {
-                var _wave = instance_create_layer(x + facing_x * 20, y + facing_y * 20, layer, obj_atk_fireball);
-                _wave.owner = id;
-                _wave.damage = _dmg * 0.75;
-                _wave.dir_x = facing_x;
-                _wave.dir_y = facing_y;
-                _wave.speed_px = 320;
-                _wave.pierce_remaining = 3;
-            }
 
             // 39 Fissura Telurica: cada 4o golpe racha o chao e atordoa
             if (variable_instance_exists(id, "synth_guardiao_fissura_telurica") && synth_guardiao_fissura_telurica > 0 && (hit_streak_count mod 4 == 0)) {
@@ -2244,13 +2270,6 @@ function player_take_damage(_amount, _damage_type) {
                 _blocked_fully = true;
             } else {
                 _final *= _ms_mult;
-            }
-            if (variable_instance_exists(_p, "synth_crio_armadura_gelo_negro") && _p.synth_crio_armadura_gelo_negro > 0) {
-                with (obj_enemy_parent) {
-                    if (point_distance(x, y, _p.x, _p.y) <= 70) {
-                        enemy_apply_slow(id, 0.1, 1.5);
-                    }
-                }
             }
             _p.hit_flash_timer = _p.hit_flash_duration;
         }

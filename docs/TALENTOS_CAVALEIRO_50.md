@@ -32,9 +32,9 @@ Este documento reúne **50 ideias originais de talentos** para o Cavaleiro, estr
 |---|---|---|---|---|
 | 11 | **Bênção da Maré** | Aura | A Aura de Sobrevida pulsa 25% mais rápido e aumenta a regeneração natural em +4 HP/s. | Ondas azuis translúcidas mais rítmicas e intensas no chão. |
 | 12 | **Bastião Líquido** | Barreira | A barreira de sobrevida ganha capacidade máxima de +50% do HP e absorve 100% do dano de projéteis. | Bolha aquosa cintilante que envolve o corpo do Cavaleiro. |
-| 13 | **Gota Purificadora** | Suporte | Eliminar um inimigo remove instantaneamente venenos ou queimaduras e cura 8 HP. | Pequenas gotas brilhantes fluem do inimigo abatido até o herói. |
-| 14 | **Correnteza Dilacerante** | Controle | Inimigos dentro da aura sofrem -40% de velocidade e recebem dano mágico contínuo a cada 0.5s. | Espirais de água puxam levemente os inimigos para os lados. |
-| 15 | **Golpe da Nascente** | Em Ataque | Cada 3º golpe de espada libera uma onda d'água penetrante que cura aliados/o próprio jogador em 5 HP. | Corte em crescente azul límpido que atravessa múltiplos alvos. |
+| 13 | **Estocada Distante** | Em Ataque | Lâminas d'água causam +50% de dano em alvos a mais de 120px. | A lâmina ganha um brilho mais intenso quanto mais longe voa. |
+| 14 | **Maré de Lâminas** | Em Ataque | Todo 3º golpe dispara 3 lâminas d'água em leque em vez de uma. | Três crescentes azuis se abrem como um leque. |
+| 15 | **Lâmina Perfurante** | Ofensivo | As lâminas d'água atravessam +1 inimigo e alcançam +40% mais longe. | Lâmina afilada que deixa um rastro de gotas ao atravessar. |
 | 16 | **Escudo Espelhado** | Reativo | Quando a barreira de sobrevida quebra por excesso de dano, explode cegando e empurrando inimigos num raio de 120px. | Som de vidro quebrando com explosão de espuma aquática. |
 | 17 | **Graça Abençoada** | Sustento | Receber cura enquanto estiver com HP cheio converte 50% do valor em barreira de sobrevida. | Efeito de preenchimento azul claro sobre a barra de vida. |
 | 18 | **Julgamento Sereno** | Buff | Enquanto a barreira de sobrevida estiver ativa, a velocidade de ataque da espada aumenta em +25%. | Movimentos graciosos com rastro de água nas pontas da lâmina. |
@@ -46,8 +46,8 @@ Este documento reúne **50 ideias originais de talentos** para o Cavaleiro, estr
 
 | # | Nome do Talento | Tipo | Efeito Mecânico | Game Feel / Feedback |
 |---|---|---|---|---|
-| 19 | **Arco Incendiário** | Ofensivo | Aumenta a área do corte da espada em +40% e queima o chão por 1.5s. | Lâmina em chamas deixando labaredas desenhadas no solo. |
-| 20 | **Frenesi Ardente** | Acúmulo | Cada golpe consecutivo concede +5% de velocidade de ataque (acumula até 6 vezes por 3s). | Fumaça e brasas saem do elmo conforme o combo aumenta. |
+| 19 | **Runa Ampliada** | Ofensivo | As runas de fogo têm +40% de raio e +25% de dano. | Círculo rúnico maior e mais brilhante sob o alvo. |
+| 20 | **Runa em Cadeia** | Em Ataque | Inimigo abatido por uma runa detona outra runa no lugar (1 vez por golpe). | Uma segunda runa acende onde o inimigo caiu. |
 | 21 | **Combustão Espontânea** | Reativo | Inimigos mortos sob efeito de Queimadura explodem causando 60% do dano do ataque em área. | Estouro pirotécnico que encadeia queimadura em outros monstros. |
 | 22 | **Sede de Sangue** | Roubo de Vida | Golpes críticos recuperam 15% do dano causado como vida e prolongam a Fúria Ardente em +0.5s. | Números de cura verdes com faíscas avermelhadas. |
 | 23 | **Cinzas do Sacrifício** | Risco/Recompensa | Ativar Fúria Ardente consome 10% do HP atual, mas dobra o bônus de dano de fogo durante os primeiros 3s. | Efeito de tela piscando em vermelho escuro com rugido de fogo. |

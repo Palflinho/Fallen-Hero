@@ -16,7 +16,7 @@ if (spirit_update_intro(_dt)) exit;
 spirit_check_phase2();
 if (state == "patrol" || state == "chase") state = "idle";
 
-// Geomante: o Pilar de Basalto arranca o espirito de baixo da terra (sem ataque, fica exposto)
+// Templaria: o Pilar de Basalto arranca o espirito de baixo da terra (sem ataque, fica exposto)
 if (fh_force_emerge) {
     fh_force_emerge = false;
     if (state == "under" || state == "emerge_warn" || state == "dive" || state == "burrow") {

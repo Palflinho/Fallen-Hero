@@ -25,18 +25,18 @@ Código: `class_interaction_on_hit()` e helpers em `scripts/scr_elemental_ai`; g
 | Arcano | Verbo base. |
 | **Atiradora Arcana** (Água → Arqueiro) | **Lanças de gelo** rápidas e perfurantes (+30% em alvos lentos) que **derrubam voadores**. **Gelo apaga fogo**: magias apagam chão em chamas e **desarmam o Slime de Fogo inchado**; a Prisão Criogênica **congela o General Magma** no meio da investida. |
 | **Piromante** (Fogo) | **Fogo derrete gelo**: magias derretem chão escorregadio; General da Água **congelado** recebe +30%. |
-| **Aeromante** (Vento) | **Vento não reflete vento**: projéteis ignoram barreiras de vento (Conjurador, Totem, vórtice da Sílfide). |
-| **Geomante** (Terra) | **Terra atravessa terra**: magias passam por carapaças (50% do dano, rachando 2 placas), inclusive a frente do Titã; o **Pilar de Basalto arranca Gnomo e Salamandra do subsolo** (expostos 2,5s). |
+| **Ilusionista** (Vento) | **Vento não reflete vento**: projéteis ignoram barreiras de vento (Conjurador, Totem, vórtice da Sílfide). |
+| **Templária** (Terra) | **Terra atravessa terra**: magias passam por carapaças (50% do dano, rachando 2 placas), inclusive a frente do Titã; o **Pilar de Basalto arranca Gnomo e Salamandra do subsolo** (expostos 2,5s). |
 | Arqueiro | Verbo base. |
 | **Caçador das Marés** (Água) | **Pisa firme no gelo**: não escorrega em gelo nem em chão escorregadio. |
-| **Balístico Infernal** (Fogo) | **Detonador**: flechas explodem na hora o Slime de Fogo inchado — a explosão só fere inimigos. |
-| **Mestre do Vendaval** (Vento) | **Vento não reflete vento** (igual ao Aeromante). |
-| **Balista da Terra** (Terra) | **Ancorado**: com a âncora ativa ignora empurrões e puxões (vórtices, vendavais, ondas, pousos). |
+| **Artilheiro Arcano** (Fogo) | **Detonador**: flechas explodem na hora o Slime de Fogo inchado — a explosão só fere inimigos. |
+| **Caçador Furtivo** (Vento) | **Vento não reflete vento** (igual ao Ilusionista). |
+| **Sentinela** (Terra) | **Ancorado**: com a âncora ativa ignora empurrões e puxões (vórtices, vendavais, ondas, pousos). |
 | Assassino | Verbo base. |
 | **Rastreador** (Água → Arqueiro) | Todo 3º golpe arremessa **3 facas espectrais** que marcam (+50% de dano) e **derrubam voadores**. **Vê através de ilusões**: clones da Ondina aparecem marcados com X e a Sílfide fica visível. |
-| **Lâmina Vulcânica** (Fogo) | **Bomba de cinzas cega**: interrompe canalizações ("CEGADO!") e revela a Sílfide por 4s. |
+| **Alquimista** (Fogo) | **Bomba de cinzas cega**: interrompe canalizações ("CEGADO!") e revela a Sílfide por 4s. |
 | **Algoz do Tufão** (Vento) | **Corta o vento**: adagas acertam o Golem de Tempestade na névoa e o Slime de Vento no ar. |
-| **Carrasco de Obsidiana** (Terra) | **Obsidiana corta pedra**: adagas passam por carapaças (50%, rachando 2 placas), inclusive a frente do Titã. |
+| **Cavaleiro Sombrio** (Terra) | **Obsidiana corta pedra**: adagas passam por carapaças (50%, rachando 2 placas), inclusive a frente do Titã. |
 
 ## Cobertura por chefe
 
@@ -44,9 +44,9 @@ Código: `class_interaction_on_hit()` e helpers em `scripts/scr_elemental_ai`; g
 |---|---|
 | General da Água | Todos rebatem o orbe; Piromante (+30% congelado); Assassino (orbe perde o alvo). |
 | General Magma | Cavaleiro (segura a investida), Guardião/Duelista (total), Atiradora Arcana (congela a investida). |
-| General Zephyrus | Arqueiro e especializações de Água (derrubam com 5 acertos), Assassino (sombra perde o alvo), Balista/Cavaleiro Rúnico (ignoram vendavais). |
-| Titã Monolito | Assassino (núcleo ×2), Geomante e Carrasco (atravessam a frente). |
+| General Zephyrus | Arqueiro e especializações de Água (derrubam com 5 acertos), Assassino (sombra perde o alvo), Sentinela/Cavaleiro Rúnico (ignoram vendavais). |
+| Titã Monolito | Assassino (núcleo ×2), Templária e Carrasco (atravessam a frente). |
 | O Salvador | Todos (drones); Assassino (ataque orbital erra). |
-| Ondina | Maga e Lâmina Vulcânica (interrompem a cura), Rastreador (vê os clones). |
-| Salamandra / Gnomo | Geomante (Pilar de Basalto arranca do subsolo), Assassino (perdem o alvo). |
-| Sílfide | Cavaleiro (rebate a rajada), Rastreador e Lâmina Vulcânica (revelam), Aeromante/Vendaval (vórtice não reflete), Balista/Cavaleiro Rúnico (não são puxados). |
+| Ondina | Maga e Alquimista (interrompem a cura), Rastreador (vê os clones). |
+| Salamandra / Gnomo | Templária (Pilar de Basalto arranca do subsolo), Assassino (perdem o alvo). |
+| Sílfide | Cavaleiro (rebate a rajada), Rastreador e Alquimista (revelam), Ilusionista/Caçador Furtivo (vórtice não reflete), Sentinela/Cavaleiro Rúnico (não são puxados). |

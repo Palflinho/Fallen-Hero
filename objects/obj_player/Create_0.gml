@@ -132,7 +132,7 @@ switch (character_class) {
                 break;
 
             case "wind":
-                archetype_name = "Aeromante";
+                archetype_name = "Ilusionista";
                 body_colour = make_colour_rgb(180, 220, 255);
                 nat_move_spd_base = 185;
                 nat_atk_spd_base = 1 / 0.75;
@@ -142,7 +142,7 @@ switch (character_class) {
                 break;
 
             case "earth":
-                archetype_name = "Geomante";
+                archetype_name = "Templaria";
                 body_colour = make_colour_rgb(190, 150, 90);
                 nat_defesa_base = 7;
                 nat_hp_base = 90;
@@ -186,7 +186,7 @@ switch (character_class) {
                 break;
 
             case "fire":
-                archetype_name = "Balistico Infernal";
+                archetype_name = "Artilheiro Arcano";
                 body_colour = make_colour_rgb(240, 110, 40);
                 defend_mode = "fire_recoil";
                 defend_duration = 0.25;
@@ -195,7 +195,7 @@ switch (character_class) {
                 break;
 
             case "wind":
-                archetype_name = "Mestre do Vendaval";
+                archetype_name = "Cacador Furtivo";
                 body_colour = make_colour_rgb(160, 255, 120);
                 nat_atk_spd_base = 1 / 0.32;
                 defend_mode = "cyclone_roll";
@@ -205,7 +205,7 @@ switch (character_class) {
                 break;
 
             case "earth":
-                archetype_name = "Balista da Terra";
+                archetype_name = "Sentinela";
                 body_colour = make_colour_rgb(140, 170, 70);
                 nat_power_base = 11;
                 nat_atk_spd_base = 1 / 0.45;
@@ -251,7 +251,7 @@ switch (character_class) {
                 break;
 
             case "fire":
-                archetype_name = "Lamina Vulcanica";
+                archetype_name = "Alquimista";
                 body_colour = make_colour_rgb(220, 70, 50);
                 defend_mode = "ash_bomb";
                 defend_duration = 1.0;
@@ -269,7 +269,7 @@ switch (character_class) {
                 break;
 
             case "earth":
-                archetype_name = "Carrasco de Obsidiana";
+                archetype_name = "Cavaleiro Sombrio";
                 body_colour = make_colour_rgb(80, 80, 95);
                 nat_defesa_base = 8;
                 nat_hp_base = 80;

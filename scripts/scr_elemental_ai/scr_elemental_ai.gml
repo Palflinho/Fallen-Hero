@@ -113,7 +113,7 @@ function elem_reflect_player_projectiles(_x, _y, _radius, _colour) {
     var _objs = [obj_atk_arrow, obj_atk_fireball];
     for (var _i = 0; _i < array_length(_objs); _i++) {
         with (_objs[_i]) {
-            // Aeromante e Mestre do Vendaval: vento nao reflete vento
+            // Ilusionista e Cacador Furtivo: vento nao reflete vento
             var _wind_user = (instance_exists(owner) && owner.element_affinity == "wind" && (owner.character_class == "mage" || owner.character_class == "archer"));
             if (!_wind_user && point_distance(x, y, _x, _y) <= _radius) {
                 var _back = (_p != noone) ? point_direction(x, y, _p.x, _p.y) : point_direction(0, 0, -dir_x, -dir_y);
@@ -387,7 +387,7 @@ function player_shield_tier(_p) {
     return 0;
 }
 
-// Ancorado: Balista da Terra (ancora) e Cavaleiro Runico em Furia ignoram empurroes e puxoes
+// Ancorado: Sentinela (ancora) e Cavaleiro Runico em Furia ignoram empurroes e puxoes
 function player_is_anchored(_p) {
     if (_p == noone || !instance_exists(_p)) return false;
     if (variable_instance_exists(_p, "earth_anchored") && _p.earth_anchored) return true;
@@ -430,12 +430,20 @@ function class_interaction_on_hit(_o, _e, _dmg) {
             fx_spawn_damage_popup(_e.x, _e.y - 24, "ABATIDO!", true, c_yellow);
             return _e.hp + 999;
         }
-        // Balistico Infernal: flecha incendiaria detona o Slime de Fogo inchado (explosao so fere inimigos)
+        // Artilheiro Arcano: flecha incendiaria detona o Slime de Fogo inchado (explosao so fere inimigos)
         if (_el == "fire" && _obj == obj_fire_slime && _e.state == "swell") {
             _e.swell_timer = 0;
             _e.swell_safe = true;
             fx_spawn_damage_popup(_e.x, _e.y - 30, "DETONADO!", true, c_orange);
         }
+    }
+
+    // ---------------- CAVALEIRO ----------------
+    // Talento Estocada Distante (Lanceiro): laminas d'agua em alvos a mais de 120px causam +50%
+    if (_cls == "knight" && variable_instance_exists(_o, "synth_paladino_gota_purificadora") && _o.synth_paladino_gota_purificadora > 0
+        && point_distance(_o.x, _o.y, _e.x, _e.y) > 120) {
+        _dmg *= 1.5;
+        if (random(1) < 0.25) fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 20, "ESTOCADA DISTANTE!", false, c_aqua);
     }
 
     // ---------------- MAGA: interromper canalizacoes ----------------
@@ -463,7 +471,7 @@ function class_interaction_on_hit(_o, _e, _dmg) {
             _dmg *= 1.3;
             if (random(1) < 0.35) fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 20, "DERRETENDO!", false, c_orange);
         }
-        // Geomante: terra atravessa terra (carapacas e a frente do Tita)
+        // Templaria: terra atravessa terra (carapacas e a frente do Tita)
         if (_el == "earth" && _e.fh_shell_hits > 0) _e.fh_pierce_next = 0.5;
     }
 
@@ -474,7 +482,13 @@ function class_interaction_on_hit(_o, _e, _dmg) {
             _e.fh_bypass_untargetable = true;
             if (random(1) < 0.3) fx_spawn_damage_popup(_e.x, _e.y - 26, "CORTA O VENTO!", false, c_white);
         }
-        // Carrasco de Obsidiana: obsidiana corta pedra
+        // Talento Presa Marcada (Rastreador): corpo a corpo em alvo marcado = +60% (critico)
+        if (variable_instance_exists(_o, "synth_assassin_espect_adaga_criogenica") && _o.synth_assassin_espect_adaga_criogenica > 0
+            && variable_instance_exists(_e, "spectral_mark") && _e.spectral_mark > 0 && point_distance(_o.x, _o.y, _e.x, _e.y) <= 70) {
+            _dmg *= 1.6;
+            if (random(1) < 0.3) fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 20, "PRESA MARCADA!", true, c_teal);
+        }
+        // Cavaleiro Sombrio: obsidiana corta pedra
         if (_el == "earth" && _e.fh_shell_hits > 0) _e.fh_pierce_next = 0.5;
         // Nucleo do Tita pelas costas: dano dobrado
         if (_obj == obj_boss4 && !_e.vulnerable) {
