@@ -7,8 +7,7 @@ var _player = instance_find(obj_player, 0);
 if (!global.midrun_shop_open) {
     if (_player != noone && point_distance(x, y, _player.x, _player.y) <= interact_radius) {
         prompt_active = true;
-        var _touch_open = touch_room_clicked(x - 50, y - 60, x + 50, y + 40)
-            || (variable_global_exists("touch_attack_pressed") && global.touch_attack_pressed);
+        var _touch_open = touch_room_clicked(x - 50, y - 60, x + 50, y + 40);
         if (input_check_ui_confirm() || _touch_open) {
             selected_index = 0;
             message_text = "";

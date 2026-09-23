@@ -146,6 +146,8 @@ function touch_controls_init() {
     global.touch_defend_held = false;
     global.touch_dash_pressed = false;
     global.touch_dash_held = false;
+    global.touch_action_pressed = false;
+    global.touch_action_held = false;
     global.touch_pause_pressed = false;
     
     global.touch_stick_active = false;
@@ -167,12 +169,14 @@ function touch_controls_update() {
     global.touch_attack_pressed = false;
     global.touch_defend_pressed = false;
     global.touch_dash_pressed = false;
+    global.touch_action_pressed = false;
     global.touch_pause_pressed = false;
     
     // Reseta estados contínuos (serão revalidados se dedos continuarem sobre os botões)
     global.touch_attack_held = false;
     global.touch_defend_held = false;
     global.touch_dash_held = false;
+    global.touch_action_held = false;
 
     if (!touch_controls_is_enabled()) {
         global.touch_input_h = 0;
@@ -201,6 +205,10 @@ function touch_controls_update() {
     var _btn_dash_x = _gw - 105;
     var _btn_dash_y = _gh - 195;
     var _btn_dash_r = 36;
+
+    var _btn_act_x = _gw - 195;
+    var _btn_act_y = _gh - 185;
+    var _btn_act_r = 38;
 
     var _btn_pause_x = _gw - 44;
     var _btn_pause_y = 44;
@@ -288,6 +296,13 @@ function touch_controls_update() {
         if (point_distance(_mx, _my, _btn_dash_x, _btn_dash_y) <= _btn_dash_r + 8) {
             if (_pressed) global.touch_dash_pressed = true;
             global.touch_dash_held = true;
+            continue;
+        }
+
+        // Botão de Ação / Interagir / Confirmar
+        if (point_distance(_mx, _my, _btn_act_x, _btn_act_y) <= _btn_act_r + 8) {
+            if (_pressed) global.touch_action_pressed = true;
+            global.touch_action_held = true;
             continue;
         }
 
@@ -386,6 +401,10 @@ function touch_controls_draw_gui() {
     var _btn_dash_y = _gh - 195;
     var _btn_dash_r = 36;
 
+    var _btn_act_x = _gw - 195;
+    var _btn_act_y = _gh - 185;
+    var _btn_act_r = 38;
+
     // Botão de Ataque
     var _atk_held = global.touch_attack_held;
     draw_set_alpha(_atk_held ? 0.85 : 0.50);
@@ -435,6 +454,35 @@ function touch_controls_draw_gui() {
     draw_talent_icon("haste", _btn_dash_x, _btn_dash_y - 6, 22, c_white);
     draw_set_color(c_white);
     draw_text_transformed(_btn_dash_x, _btn_dash_y + 12, "DASH", 0.95, 0.95, 0);
+
+    // Botão de Ação / Interagir / Confirmar
+    var _act_held = global.touch_action_held;
+    var _near_interact = false;
+    if (_player != noone) {
+        if (instance_exists(obj_village_elder) && point_distance(_player.x, _player.y, obj_village_elder.x, obj_village_elder.y) <= 140) _near_interact = true;
+        if (instance_exists(obj_village_portal) && point_distance(_player.x, _player.y, obj_village_portal.x, obj_village_portal.y) <= 160) _near_interact = true;
+        if (instance_exists(obj_midrun_shop) && point_distance(_player.x, _player.y, obj_midrun_shop.x, obj_midrun_shop.y) <= 140) _near_interact = true;
+        if (instance_exists(obj_pedestal_element) && point_distance(_player.x, _player.y, instance_nearest(_player.x, _player.y, obj_pedestal_element).x, instance_nearest(_player.x, _player.y, obj_pedestal_element).y) <= 120) _near_interact = true;
+    }
+
+    var _act_pulse = _near_interact ? (0.22 + 0.15 * sin(current_time * 0.01)) : 0;
+    draw_set_alpha((_act_held ? 0.90 : 0.50) + _act_pulse);
+    draw_set_color(_act_held ? make_colour_rgb(230, 160, 40) : (_near_interact ? make_colour_rgb(180, 120, 25) : make_colour_rgb(50, 45, 65)));
+    draw_circle(_btn_act_x, _btn_act_y, _act_held ? _btn_act_r - 2 : _btn_act_r, false);
+    
+    draw_set_alpha(1.0);
+    draw_set_color(_near_interact ? make_colour_rgb(255, 230, 100) : make_colour_rgb(200, 180, 120));
+    draw_circle(_btn_act_x, _btn_act_y, _act_held ? _btn_act_r - 2 : _btn_act_r, true);
+    if (_near_interact) {
+        draw_circle(_btn_act_x, _btn_act_y, _btn_act_r + 4 + sin(current_time * 0.01) * 3, true);
+    }
+
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    draw_set_color(_near_interact ? c_yellow : c_white);
+    draw_text_transformed(_btn_act_x, _btn_act_y - 6, "A", 1.4, 1.4, 0);
+    draw_set_color(c_white);
+    draw_text_transformed(_btn_act_x, _btn_act_y + 12, loc("action_btn", "AÇÃO"), 0.85, 0.85, 0);
 
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);

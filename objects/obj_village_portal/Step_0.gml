@@ -4,14 +4,15 @@ hum_sound_timer -= _dt;
 
 var _player = instance_find(obj_player, 0);
 
-if (_player != noone && point_distance(x, y, _player.x, _player.y) <= 160) {
+if (_player != noone) {
     if (hum_sound_timer <= 0) {
         hum_sound_timer = 3.2;
-        sfx_play("portal_hum", 0.05, 0.35);
+        sfx_play_at("portal_hum", x, y, 300, 0.05, 0.6);
     }
 
     if (point_distance(x, y, _player.x, _player.y) <= portal_radius + _player.body_radius) {
-        if (input_check_ui_confirm()) {
+        var _touch_portal = touch_room_clicked(x - portal_radius, y - portal_radius, x + portal_radius, y + portal_radius);
+        if (input_check_ui_confirm() || _touch_portal) {
             sfx_play("magic", 0.05, 0.8);
             trigger_camera_shake(5);
 

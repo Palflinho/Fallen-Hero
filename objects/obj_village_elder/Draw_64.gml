@@ -12,13 +12,7 @@ if (point_distance(x, y, _player.x, _player.y) <= 52 && !is_world_paused()) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_bottom);
 
-    var _txt = "[Espaço / A] Conversar";
-    var _lang = loc_get_language();
-    switch (_lang) {
-        case "en": _txt = "[Space / A] Talk"; break;
-        case "es": _txt = "[Espacio / A] Hablar"; break;
-        case "ja": _txt = "[Space / A] 話す"; break;
-    }
+    var _txt = loc_prompt("talk_prompt");
 
     var _box_w = string_width(_txt) + 18;
     var _box_h = 24;

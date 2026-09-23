@@ -42,6 +42,10 @@ knight_eco_ancestral_used = false;
 
 switch (character_class) {
     case "knight":
+        sprite_walk = -1;
+        sprite_attack = -1;
+        sprite_index = -1;
+
         switch (element_affinity) {
             case "water":
                 archetype_name = "Lanceiro"; // Agua -> estilo Arqueiro

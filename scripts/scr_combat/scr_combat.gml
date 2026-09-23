@@ -371,7 +371,7 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
         if (variable_instance_exists(_inst, "bulwark_hits") && _inst.bulwark_hits > 0) {
             _inst.bulwark_hits -= 1;
             _actual_dmg = 0;
-            sfx_play("parry", 0.05);
+            sfx_play_at("parry", _inst.x, _inst.y, 450, 0.05);
             fx_spawn_damage_popup(_inst.x, _inst.y - 20, "BARREIRA ABSORVEU!", false, make_colour_rgb(60, 190, 255));
             fx_spawn_sparks(_inst.x, _inst.y, make_colour_rgb(60, 190, 255), 8);
         }
@@ -395,14 +395,14 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
                 fx_spawn_damage_popup(_inst.x, _inst.y - 24, "POSTURA QUEBRADA!", true, c_yellow);
                 trigger_hitstop(0.08);
                 trigger_camera_shake(6);
-                sfx_play("stagger", 0.04);
+                sfx_play_at("stagger", _inst.x, _inst.y, 450, 0.04);
                 fx_spawn_sparks(_inst.x, _inst.y, c_yellow, 12);
             }
         }
     }
 
     if (_actual_dmg > 0) {
-        sfx_play("hit", 0.08);
+        sfx_play_at("hit", _inst.x, _inst.y, 450, 0.08);
         if (_is_crit) trigger_camera_shake(5);
     }
 

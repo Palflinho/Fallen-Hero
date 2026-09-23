@@ -237,6 +237,8 @@ if (hp <= 0) {
         _gate.reward_type = "victory";
         _gate.gate_label = "TRIUNFO SUPREMO: Concluir Expedicao (Vitoria)";
         _gate.gate_colour = c_yellow;
+    } else {
+        sfx_play_at("enemy_death", x, y, 450, 0.08);
     }
 
     // Sakurai Juice: tactile death burst and floating rewards
