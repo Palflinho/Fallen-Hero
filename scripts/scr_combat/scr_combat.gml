@@ -330,6 +330,17 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
 
     var _is_boss = enemy_is_boss(_inst);
 
+    // Troca de fase do chefe: imune enquanto muda de postura
+    if (_is_boss && variable_instance_exists(_inst, "boss_phase_shield") && _inst.boss_phase_shield > 0) {
+        if (_inst.boss_phase_shield_popup <= 0) {
+            _inst.boss_phase_shield_popup = 0.4;
+            fx_spawn_damage_popup(_inst.x, _inst.y - _inst.body_radius - 20, "IMUNE!", false, c_ltgray);
+        }
+        fx_spawn_sparks(_inst.x, _inst.y, c_white, 3);
+        sfx_play_at("parry", _inst.x, _inst.y, 450, 0.08);
+        return;
+    }
+
     var _actual_dmg = 0;
     if (_is_boss) {
         if (_inst.damage_reduction <= 0) {
@@ -409,6 +420,7 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
     _inst.hp -= _actual_dmg;
     _inst.hit_flash_timer = _inst.hit_flash_duration;
     if (_inst.hp < 0) _inst.hp = 0;
+    if (_is_boss) _inst.hp = max(_inst.hp, boss_phase_floor(_inst));
 
     // Dynamic HP bar refresh
     if (variable_instance_exists(_inst, "hp_bar_timer")) {

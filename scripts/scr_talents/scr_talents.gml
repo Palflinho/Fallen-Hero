@@ -1781,10 +1781,10 @@ function talent_list_has(_arr, _id) {
     return false;
 }
 
-// Talent points granted on reaching a level: level 1 = 1, level 2 = 2, level 3 = 3...
-// (a run starts at level 1, so the hero begins with 1 point).
+// Talent points granted on reaching a level: about 1/3 of the level, never less than 1
+// (levels 1-4 = 1, 5-7 = 2, 8-10 = 3, 11-13 = 4...). A run starts at level 1 with 1 point.
 function talent_points_for_level(_lvl) {
-    return max(1, _lvl);
+    return max(1, round(_lvl / 3));
 }
 
 // Pads/copies the player's slot arrays to TALENT_SLOTS_TOTAL entries (pre-run loadouts and

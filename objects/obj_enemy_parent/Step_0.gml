@@ -109,6 +109,7 @@ if (poison_active) {
     poison_tick_timer -= _dt * _tick_mult;
     if (poison_tick_timer <= 0) {
         hp -= poison_damage;
+        if (variable_instance_exists(id, "boss_phase")) hp = max(hp, boss_phase_floor(id));
         poison_tick_timer = poison_tick_interval;
         hit_flash_timer = hit_flash_duration;
         hp_bar_timer = hp_bar_duration;

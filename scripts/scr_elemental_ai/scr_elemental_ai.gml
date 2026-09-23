@@ -306,21 +306,55 @@ function boss_init_common(_chip) {
     boss_chip = _chip;
     damage_reduction = _chip;
     boss_phase = 1;
+    boss_phase_shield = 0;
+    boss_phase_shield_popup = 0;
     vulnerable = false;
     vulnerable_timer = 0;
     has_poise = false;
     can_enrage = false;
 }
 
-// Retorna true no frame em que o chefe muda de fase
+// Vida minima da fase atual: o dano nunca atravessa o limite da fase (66% / 33%),
+// entao nenhum golpe forte pula uma fase inteira.
+function boss_phase_floor(_inst) {
+    if (!variable_instance_exists(_inst, "boss_phase")) return 0;
+    if (_inst.boss_phase == 1) return ceil(_inst.hp_max * 0.66);
+    if (_inst.boss_phase == 2) return ceil(_inst.hp_max * 0.33);
+    return 0;
+}
+
+// Retorna true no frame em que o chefe muda de fase.
+// Na troca de fase o chefe PERCEBE: fecha qualquer janela de dano, solta um rugido que
+// empurra o jogador para longe e fica imune por 1.5s enquanto muda de postura.
 function boss_update_phase() {
+    if (boss_phase_shield > 0) {
+        boss_phase_shield -= delta_time / 1000000;
+        if (boss_phase_shield_popup > 0) boss_phase_shield_popup -= delta_time / 1000000;
+        if (random(1) < 0.5) fx_spawn_sparks(x + random_range(-body_radius, body_radius), y + random_range(-body_radius, body_radius), c_white, 1);
+    }
+
     var _target = (hp <= hp_max * 0.33) ? 3 : ((hp <= hp_max * 0.66) ? 2 : 1);
     if (_target <= boss_phase) return false;
     boss_phase = _target;
+
+    // Encerra a janela de dano em andamento (o proprio chefe volta ao estado de recuperacao
+    // no mesmo frame, pelo seu bloco "if (vulnerable)")
+    if (vulnerable) vulnerable_timer = min(vulnerable_timer, 0.001);
+    fh_vuln_timer = 0;
+    boss_phase_shield = 1.5;
+    boss_phase_shield_popup = 0;
+
+    // Rugido: afasta o jogador
+    var _pl = instance_find(obj_player, 0);
+    if (_pl != noone && point_distance(x, y, _pl.x, _pl.y) <= 220) {
+        elem_push_player(point_direction(x, y, _pl.x, _pl.y), 320);
+    }
+
     fx_spawn_damage_popup(x, y - body_radius - 44, "FASE " + string(boss_phase) + "!", true, c_red);
+    fx_spawn_death_burst(x, y, c_white, 28);
     fx_spawn_sparks(x, y, c_red, 24);
-    trigger_camera_shake(8);
-    trigger_hitstop(0.12);
+    trigger_camera_shake(10);
+    trigger_hitstop(0.15);
     sfx_play("thunder", 0.05, 0.9);
     return true;
 }

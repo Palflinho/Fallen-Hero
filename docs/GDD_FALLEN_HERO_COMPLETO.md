@@ -198,7 +198,7 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
 ### 5.3 Slots e Pontos de Talento na Run
 * **5 slots por run:** o jogador escolhe **3 talentos** na tela pré-run; os **2 slots extras** começam vazios e são preenchidos durante a partida com talentos achados em baús/portais (o baú nunca sorteia um talento já equipado).
 * **O rank pertence ao slot:** trocar o talento de um slot mantém o rank já investido nele.
-* **Pontos por nível:** ao atingir o nível N o herói ganha N pontos (nível 1 = 1, nível 2 = 2, nível 3 = 3...). A run começa no nível 1 com 1 ponto. Fórmula em `talent_points_for_level()`.
+* **Pontos por nível:** ao atingir o nível N o herói ganha cerca de N/3 pontos, no mínimo 1 (níveis 1-4 = 1, 5-7 = 2, 8-10 = 3, 11-13 = 4...). A run começa no nível 1 com 1 ponto. Fórmula em `talent_points_for_level()`.
 
 ---
 
@@ -241,6 +241,8 @@ Cada chefe tem **uma mecânica central** (estilo Zelda) que abre a **janela de d
 3. **General Zephyrus (`obj_boss3`) — "Céu e Chão":** **no ar é intangível** (só a sombra fica no chão) e dispara leques de penas. Depois a sombra persegue o jogador, **trava** e ele **mergulha**. Após o último mergulho fica com as **ASAS PRESAS** (3,5s). Fase 1: 1 mergulho; fase 2: 2 mergulhos + 2 ciclones soltos; fase 3: 3 mergulhos + **vendavais** que empurram o jogador pela arena.
 4. **Titã Monolito (`obj_boss4`) — "Costas Expostas":** a **frente é blindada** (golpes ricocheteiam) e o **núcleo brilha nas costas**; ele gira devagar para encarar o jogador (mais rápido a cada fase). **Varredura** em cone na frente. O **pisão** (só quando o jogador está perto) solta uma onda de choque em anel e o deixa **PRESO AO CHÃO** com a couraça aberta (3,2s, dano em qualquer lado). Fase 2: muralhas de pedra atrás de si + pedregulhos que viram obstáculos; fase 3: **giro de 360°** se o jogador acampar nas costas.
 5. **O Salvador (`obj_boss_human`) — "Protocolo de Drones":** o **escudo** fica ativo enquanto houver **drones** vivos (`obj_boss_drone`, destrutíveis, ligados ao traje por um cabo de energia). Destruir todos causa **SOBRECARGA** (4,5s); depois ele lança drones novos (2/3/4 por fase). Também: plasma triplo, **laser** que mira e dispara (fase 2: o feixe **varre**; fase 3: **dois feixes** girando) e **ataque orbital** (fase 2+).
+
+**Troca de fase (todos os chefes):** a vida trava no limite da fase (66% / 33%), então nenhum golpe pula uma fase. Ao mudar de fase o chefe encerra a janela de dano em andamento, solta um rugido que empurra o jogador e fica **IMUNE por 1,5s** enquanto muda de postura (`boss_update_phase` / `boss_phase_floor`).
 
 ### 6.3.0 Regra do Elemento (2 para 1)
 Cada elemento pertence a uma classe e **empresta uma ferramenta** do estilo dela: **Terra → Cavaleiro**, **Água → Arqueiro**, **Fogo → Maga**, **Vento → Assassino**. A classe base continua sendo o corpo (vida, ataque principal, botão de defesa); o elemento acrescenta uma coisa só. A classe no próprio elemento é a **Maestria** (Guardião, Piromante, Caçador das Marés, Algoz do Tufão): na lore, o herói que aprofunda a tradição do próprio povo em vez de aprender com outro (ver `LORE_E_NARRATIVA.md`). Os nomes das especializações evocam a classe emprestada (Duelista, Lanceiro, Cavaleiro Rúnico, Atiradora Arcana, Rastreador).

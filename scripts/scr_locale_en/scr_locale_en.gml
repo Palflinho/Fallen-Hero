@@ -643,6 +643,7 @@ function locale_en_init() {
     _d[$ "Equipe sem perder nada!"] = "Equip without losing anything!";
     _d[$ "SELECIONE O SLOT PARA EQUIPAR  (O NOVO TALENTO HERDA O RANK DO SLOT):"] = "SELECT A SLOT TO EQUIP  (THE NEW TALENT INHERITS THE SLOT'S RANK):";
 
+    _d[$ "IMUNE!"] = "IMMUNE!";
     // ---------------------------------------------------------------------
     // PEDACOS PARA TEXTOS COM NUMEROS (trocados em ordem, so quando a frase
     // inteira nao esta no dicionario)
