@@ -90,6 +90,14 @@ function input_update_device() {
 /// @function input_get_btn_label(action)
 /// @desc Retorna o texto formatado do botao para o dispositivo ativo
 function input_get_btn_label(_action) {
+    if (touch_controls_is_enabled()) {
+        if (_action == "attack") return "[ATK]";
+        if (_action == "defend") return "[HAB]";
+        if (_action == "confirm" || _action == "interact" || _action == "accept" || _action == "action") return "[" + loc("action_btn", "AÇÃO") + "]";
+        if (_action == "dash") return "[DASH]";
+        if (_action == "pause") return "[PAUSA]";
+    }
+
     var _type = input_get_device_type();
     
     if (_action == "attack") {
@@ -102,7 +110,7 @@ function input_get_btn_label(_action) {
         if (_type == "xbox") return "[X]";
         return "[X]";
     }
-    if (_action == "confirm" || _action == "interact" || _action == "accept") {
+    if (_action == "confirm" || _action == "interact" || _action == "accept" || _action == "action") {
         if (_type == "ps") return "[X]";
         if (_type == "xbox") return "[A]";
         return "[Z]";
@@ -290,6 +298,10 @@ function input_check_pause_pressed() {
 /// @function input_check_ui_confirm()
 /// @desc A / Cruz confirma / interage
 function input_check_ui_confirm() {
+    if (variable_global_exists("touch_action_pressed") && global.touch_action_pressed) {
+        return true;
+    }
+
     var _kb = keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z"));
     if (_kb) {
         global.input_last_used = "keyboard";

@@ -13,7 +13,7 @@ if (point_distance(x, y, _player.x, _player.y) <= 75) {
     draw_set_valign(fa_bottom);
 
     var _final_unlocked = all_elements_reclaimed();
-    var _prompt = _final_unlocked ? loc("portal_temple5_prompt") : loc("portal_prompt");
+    var _prompt = _final_unlocked ? loc_prompt("portal_temple5_prompt") : loc_prompt("portal_prompt");
     var _col = _final_unlocked ? make_colour_rgb(255, 220, 80) : make_colour_rgb(120, 220, 255);
 
     var _box_w = string_width(_prompt) + 24;

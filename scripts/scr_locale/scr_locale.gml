@@ -28,12 +28,14 @@ function locale_init() {
     loc_register("lang_name", "Português", "English", "Español", "日本語");
     loc_register("continue", "[Espaço / A] Continuar »", "[Space / A] Continue »", "[Espacio / A] Continuar »", "[Space / A] 次へ »");
     loc_register("accelerate", "[Acelerar]", "[Fast Forward]", "[Acelerar]", "[早送り]");
+    loc_register("action_btn", "AÇÃO", "ACT", "ACCIÓN", "行動");
     
     // Termos do Hub (Vila Subterrânea)
     loc_register("village_title", "Vila Subterrânea dos Refugiados", "Underground Refuge Village", "Aldea Subterránea de Refugiados", "地下の難民村");
     loc_register("portal_title", "Portal de Expedição", "Expedition Portal", "Portal de Expedición", "遠征の門");
     loc_register("portal_prompt", "[Espaço / A] Entrar no Templo", "[Space / A] Enter Temple", "[Espacio / A] Entrar al Templo", "[Space / A] 神殿に入る");
     loc_register("portal_temple5_prompt", "[Espaço / A] Entrar no Santuário Final (O Salvador)", "[Space / A] Enter Final Sanctum (The Savior)", "[Espacio / A] Entrar al Santuario Final (El Salvador)", "[Space / A] 最終聖域に入る (救済者)");
+    loc_register("talk_prompt", "[Espaço / A] Conversar", "[Space / A] Talk", "[Espacio / A] Hablar", "[Space / A] 話す");
     loc_register("bonfire_name", "Fogueira Acolhedora", "Cozy Bonfire", "Hoguera Acogedora", "温かな篝火");
     loc_register("bonfire_desc", "O fogo crepita calmamente, afastando o frio das cavernas.", "The flames crackle warmly, warding off the cavern chill.", "El fuego crepita con calma, alejando el frío de las cavernas.", "炎がパチパチと温かく爆ぜ、洞窟の冷気を払う。");
 
@@ -84,6 +86,19 @@ function loc(_key, _fallback = "") {
         return _entry[$ _lang];
     }
     return _entry.pt;
+}
+
+/// @function loc_prompt(key, fallback)
+/// @desc Retorna o prompt traduzido adaptando a tag de botão caso controles touch estejam ativos
+function loc_prompt(_key, _fallback = "") {
+    var _str = loc(_key, _fallback);
+    if (touch_controls_is_enabled()) {
+        var _btn = "[" + loc("action_btn", "AÇÃO") + "]";
+        _str = string_replace(_str, "[Espaço / A]", _btn);
+        _str = string_replace(_str, "[Space / A]", _btn);
+        _str = string_replace(_str, "[Espacio / A]", _btn);
+    }
+    return _str;
 }
 
 function loc_get_language() {

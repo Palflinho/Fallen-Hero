@@ -24,7 +24,14 @@ if (!typewriter_done) {
 }
 
 // User advance input
-if (input_check_ui_confirm()) {
+var _touch_tap = false;
+for (var _i = 0; _i < 5; _i++) {
+    if (device_mouse_check_button_pressed(_i, mb_left)) {
+        _touch_tap = true;
+        break;
+    }
+}
+if (input_check_ui_confirm() || _touch_tap) {
     if (!typewriter_done) {
         typewriter_pos = string_length(current_text);
         typewriter_done = true;
