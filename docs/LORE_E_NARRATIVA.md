@@ -22,14 +22,17 @@ Antes do cataclismo, o planeta natal dos protagonistas era uma joia viva no cosm
                   [ AS GRANDES FLORESTAS ]
                       Povo Urutau
                   (Assassinos / Sombras)
+                   Templo do VENTO
                            │
-    [ OS PÂNTANOS ] ───────┼─────── [ AS MONTANHAS ]
+    [ OS PÂNTANOS ] ───────┼─────── [ AS MONTANHAS VULCÂNICAS ]
      Povo Lagarto          │          Povo Raposa
 (Arqueiros / Precisão)     │      (Magos / Elementais)
+   Templo da ÁGUA          │        Templo do FOGO
                            │
                   [ AS VASTAS PLANÍCIES ]
                      Povo Rinoceronte
                  (Cavaleiros / Bastiões)
+                   Templo da TERRA
 ```
 
 ---
@@ -38,6 +41,7 @@ Antes do cataclismo, o planeta natal dos protagonistas era uma joia viva no cosm
 
 #### A. O Povo Urutau — A Casta dos Assassinos (Florestas Ancestrais)
 * **Arquétipo de Classe:** **Assassino / Ladino / Sombra**
+* **Templo Guardado:** **Templo do Vento**, no alto das copas, onde as correntes de ar nunca param.
 * **Natureza Biológica & Mística:**
   * Inspirados no místico pássaro *Urutau* (a lendária *Mãe-da-lua*), habitam o dossel das árvores gigantescas.
   * Mestres absolutos da **camuflagem estática**: são capazes de se fundir a troncos, cascas e folhagens secas, tornando-se indistinguíveis da madeira morta até o instante fatal.
@@ -48,6 +52,7 @@ Antes do cataclismo, o planeta natal dos protagonistas era uma joia viva no cosm
 
 #### B. O Povo Lagarto — A Casta dos Arqueiros (Pântanos Traiçoeiros)
 * **Arquétipo de Classe:** **Arqueiro / Caçador / Rastreador**
+* **Templo Guardado:** **Templo da Água**, erguido sobre as nascentes que alimentam todos os pântanos.
 * **Natureza Biológica & Mística:**
   * Habitantes de alagados densos, manguezais venenosos e pântanos de neblina espessa.
   * Sangue frio, respiração lenta e capacidade de permanecer imóveis submersos por horas aguardando a presa.
@@ -58,6 +63,7 @@ Antes do cataclismo, o planeta natal dos protagonistas era uma joia viva no cosm
 
 #### C. O Povo Rinoceronte — A Casta dos Cavaleiros (Grandes Planícies)
 * **Arquétipo de Classe:** **Cavaleiro / Guardião / Lanceiro / Cavaleiro Rúnico / Duelista**
+* **Templo Guardado:** **Templo da Terra**, uma fortaleza de basalto no coração das planícies.
 * **Natureza Biológica & Mística:**
   * Habitantes das planícies sem fim, forjados sob tempestades e solos de pedra dura.
   * Couraça dérmica quase impenetrável por armas convencionais; porte monumental e uma devoção inabalável ao código de honra e proteção de sua manada.
@@ -65,25 +71,34 @@ Antes do cataclismo, o planeta natal dos protagonistas era uma joia viva no cosm
   * Escudos colossais, martelos de guerra, lanças de impacto e espadas bastardas.
   * Linha de frente inamovível: absorvem impactos gigantescos, avançam como avalanches e sustentam a defesa física da equipe.
 
-#### D. O Povo Raposa — A Casta dos Magos (Montanhas Sagradas)
+#### D. O Povo Raposa — A Casta dos Magos (Montanhas Vulcânicas)
 * **Arquétipo de Classe:** **Mago / Arcanista / Conjurador**
+* **Templo Guardado:** **Templo do Fogo**, escavado dentro da cratera do maior vulcão sagrado.
 * **Natureza Biológica & Mística:**
-  * Nômades e monges que habitam os picos nevados e os santuários esculpidos nas escarpas rochosas.
-  * Conhecidos pela sabedoria ancestral, raciocínio veloz e sensibilidade aos fluxos espirituais que correm nas correntes de ar e veios de cristal das montanhas.
+  * Nômades e monges que habitam as encostas das montanhas vulcânicas, em santuários escavados na rocha de basalto ainda morna pelo magma que corre por baixo.
+  * Conhecidos pela sabedoria ancestral, raciocínio veloz e sensibilidade aos fluxos espirituais que correm pelos veios de magma e cristal das montanhas.
 * **Estilo de Combate:**
-  * Condução pura de elementos: fogo das profundezas vulcânicas, gelo dos cumes nevados, relâmpagos das tempestades celestes.
+  * Condução pura de elementos, com o fogo como origem: as chamas das profundezas vulcânicas são a primeira magia que toda Raposa aprende, e a partir delas o gelo, o raio e a pedra.
   * Ataques à distância em área, barreiras arcanas e manipulação do campo de batalha.
 
 ---
 
 ## 3. Os Templos e as Essências Elementais
 
-Nas capitais sagradas de cada um dos biomas, residiam templos erguidos não para deuses distantes, mas para honrar **Os Quatro Guardiões Elementais**:
+Nas capitais sagradas de cada um dos biomas, residiam templos erguidos não para deuses distantes, mas para honrar **Os Quatro Guardiões Elementais**. Cada povo era o guardião de um templo:
 
-1. **O Guardião da Terra (Bastião de Basalto):** Estabilidade física, regeneração do solo, minerais.
-2. **O Guardião da Água/Gelo (Sereia Criogênica):** Rios cristalinos, chuva, equilíbrio térmico.
-3. **O Guardião do Fogo (Salamandra Solar):** Calor, forja, ciclo de renovação pelas chamas.
-4. **O Guardião do Ar/Trovão (Falcão Tempestuoso):** Ventos que espalham pólen, tempestades de energia, ciclo atmosférico.
+1. **O Guardião da Terra (Bastião de Basalto)** — guardado pelo **Povo Rinoceronte**: Estabilidade física, regeneração do solo, minerais.
+2. **O Guardião da Água/Gelo (Sereia Criogênica)** — guardado pelo **Povo Lagarto**: Rios cristalinos, chuva, equilíbrio térmico.
+3. **O Guardião do Fogo (Salamandra Solar)** — guardado pelo **Povo Raposa**: Calor, forja, ciclo de renovação pelas chamas.
+4. **O Guardião do Ar/Trovão (Falcão Tempestuoso)** — guardado pelo **Povo Urutau**: Ventos que espalham pólen, tempestades de energia, ciclo atmosférico.
+
+**Os Caminhos Elementais (a regra do elemento):** viver ao lado de um templo moldou o jeito de lutar de cada povo. Por isso, quando um herói estuda um elemento, ele aprende também um pouco do estilo do povo que guarda aquele templo:
+* **Terra** ensina o jeito do **Rinoceronte**: firmeza, defesa e peso.
+* **Água** ensina o jeito do **Lagarto**: alcance e precisão.
+* **Fogo** ensina o jeito da **Raposa**: explosões e magia em área.
+* **Vento** ensina o jeito do **Urutau**: velocidade e furtividade.
+
+Um Cavaleiro que estuda a Água vira **Lanceiro** (luta com o alcance dos Lagartos); um Assassino que estuda a Terra vira **Cavaleiro Sombrio** (ganha a couraça dos Rinocerontes). Veja a tabela completa no GDD (seção 6.3.0).
 
 As **Essências Elementais** guardadas no interior desses templos não eram apenas combustível mágico; eram os **órgãos vitais que faziam o planeta respirar**. Sem elas, o ciclo das estações cessa instantaneamente.
 
@@ -96,7 +111,7 @@ Um ser colossal, envolto em armadura desconhecida e empunhando tecnologias e art
 
 * **A Corrupção dos Heróis:** O invasor não destruiu os Grandes Guardiões; através de um artefato arcano parasita, ele distorceu suas mentes, quebrou sua honra e transformou os outrora venerados heróis em feras raivosas e servis ao seu comando.
 * **O Saque das Essências:** Arrancando os núcleos vitais de cada templo, o usurpador abriu uma fenda no espaço e levou consigo as quatro Essências e os quatro Guardiões corrompidos para além das estrelas.
-* **O Deserto Vermelho:** Sem as essências, as árvores do Povo Urutau secaram em semanas. Os pântanos dos Lagartos evaporaram em lama salobra. As planícies dos Rinocerontes viraram tempestades de areia vermelha. As montanhas das Raposas congelaram em pedras mortas. Em poucos anos, o planeta natal tornou-se uma rocha desolada, tingida de vermelho ferrugem sob um céu cinzento.
+* **O Deserto Vermelho:** Sem as essências, as árvores do Povo Urutau secaram em semanas. Os pântanos dos Lagartos evaporaram em lama salobra. As planícies dos Rinocerontes viraram tempestades de areia vermelha. Os vulcões das Raposas se apagaram, e suas encostas viraram pedra fria e morta. Em poucos anos, o planeta natal tornou-se uma rocha desolada, tingida de vermelho ferrugem sob um céu cinzento.
 
 ---
 
