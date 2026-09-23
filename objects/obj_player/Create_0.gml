@@ -40,6 +40,15 @@ parry_haste_timer = 0;
 furia_ancestral_timer = 0;
 knight_eco_ancestral_used = false;
 
+// Valores padrao para todas as classes (a Maga sobrescreve abaixo). Sem isso, o Step le
+// estas variaveis em Cavaleiro/Arqueiro/Assassino antes de existirem e o jogo trava.
+mage_run_kills = 0;
+estatica_charge = 0;
+conflagracao_timer = 0;
+cefiro_buff_timer = 0;
+singularidade_timer = 0;
+mage_fire_hits = 0;
+
 switch (character_class) {
     case "knight":
         sprite_walk = -1;
