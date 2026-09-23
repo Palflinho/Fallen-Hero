@@ -193,12 +193,20 @@ function fx_system_draw() {
     draw_set_valign(fa_top);
 }
 
+// Chefes principais (Generais + O Salvador). Espiritos das arenas NAO entram aqui:
+// eles usam o escalonamento normal de bioma.
+function enemy_is_boss(_inst) {
+    if (!instance_exists(_inst)) return false;
+    var _o = _inst.object_index;
+    return (_o == obj_boss || _o == obj_boss2 || _o == obj_boss3 || _o == obj_boss4 || _o == obj_boss_human);
+}
+
 function enemy_ensure_scaling(_inst) {
     if (!instance_exists(_inst)) return;
     if (variable_instance_exists(_inst, "stats_scaled") && _inst.stats_scaled) return;
     _inst.stats_scaled = true;
 
-    var _is_boss = (_inst.object_index == obj_boss || _inst.object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && _inst.object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && _inst.object_index == asset_get_index("obj_boss4")));
+    var _is_boss = enemy_is_boss(_inst);
     if (_is_boss) return;
 
     var _b = variable_global_exists("run_biome") ? global.run_biome : "water";
@@ -302,7 +310,7 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
         _amount *= 1.5;
     }
 
-    var _is_boss = (_inst.object_index == obj_boss || _inst.object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && _inst.object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && _inst.object_index == asset_get_index("obj_boss4")));
+    var _is_boss = enemy_is_boss(_inst);
 
     var _actual_dmg = 0;
     if (_is_boss) {
@@ -536,7 +544,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
             // 49 Lamina da Guilhotina (executa alvos com menos de 15% de HP nas costas)
             if (variable_instance_exists(_owner, "synth_assassin_lamina_guilhotina") && _owner.synth_assassin_lamina_guilhotina > 0) {
                 if (_enemy.hp_max > 0 && (_enemy.hp / _enemy.hp_max) <= 0.15) {
-                    var _is_b = (_enemy.object_index == obj_boss || _enemy.object_index == obj_boss2);
+                    var _is_b = enemy_is_boss(_enemy);
                     if (_is_b) {
                         _base_damage = max(_base_damage, _enemy.hp_max * 0.25);
                     } else {
@@ -565,7 +573,7 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
 
         // 36 Corte de Obsidiana (ignora armadura fisica de elites e chefes)
         if (variable_instance_exists(_owner, "synth_assassin_obsid_corte_obsidiana") && _owner.synth_assassin_obsid_corte_obsidiana > 0) {
-            var _is_elite_or_boss = (variable_instance_exists(_enemy, "is_rare_mob") && _enemy.is_rare_mob) || (variable_instance_exists(_enemy, "is_champion") && _enemy.is_champion) || (_enemy.object_index == obj_boss || _enemy.object_index == obj_boss2);
+            var _is_elite_or_boss = (variable_instance_exists(_enemy, "is_rare_mob") && _enemy.is_rare_mob) || (variable_instance_exists(_enemy, "is_champion") && _enemy.is_champion) || enemy_is_boss(_enemy);
             if (_is_elite_or_boss) {
                 _enemy.damage_reduction = 0;
                 fx_spawn_damage_popup(_enemy.x, _enemy.y - _enemy.body_radius - 16, "OBSIDIANA PURA!", true, c_dkgray);

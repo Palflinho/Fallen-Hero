@@ -53,3 +53,20 @@ dialogue_triggered = false;
 
 exp_reward = 800;
 gold_reward = 100;
+
+// ---------------------------------------------------------------------
+// REDESENHO: "PROTOCOLO DE DRONES"
+// Mecanica central: DRONES reais (destrutiveis) alimentam o ESCUDO do traje.
+// Destrua todos -> SOBRECARGA (janela de dano). Depois ele lanca drones novos.
+// Fase 1: 2 drones | Fase 2: 3 drones + laser que VARRE + ataque orbital
+// Fase 3: 4 drones + laser DUPLO girando.
+// ---------------------------------------------------------------------
+hp_max = 2600;
+hp = hp_max;
+boss_init_common(0.1);
+drones_deployed = false;
+deploy_timer = 1.0;
+overload_duration = 4.5;
+laser_sweep_dir = 1;
+laser_fire_duration = 1.3;
+orbital_count = 5;

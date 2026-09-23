@@ -172,8 +172,13 @@ if (hp <= 0) {
         }
     }
 
-    var _is_boss = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")) || (object_exists(asset_get_index("obj_boss_human")) && object_index == asset_get_index("obj_boss_human")));
-    if (_is_boss) trigger_hitstop(0.25);
+    var _is_boss = enemy_is_boss(id);
+    if (_is_boss) {
+        trigger_hitstop(0.25);
+        // Ajudantes do chefe (orbes, drones) somem junto com ele
+        with (obj_boss_drone) instance_destroy();
+        with (obj_elem_missile) instance_destroy();
+    }
 
     var _killer_class = (instance_exists(obj_player) ? obj_player.character_class : (variable_global_exists("selected_character") ? global.selected_character : "knight"));
 

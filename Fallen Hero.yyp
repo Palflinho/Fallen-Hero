@@ -146,6 +146,7 @@
     {"id":{"name":"obj_spirit_salamandra","path":"objects/obj_spirit_salamandra/obj_spirit_salamandra.yy",},},
     {"id":{"name":"obj_spirit_silfide","path":"objects/obj_spirit_silfide/obj_spirit_silfide.yy",},},
     {"id":{"name":"obj_spirit_gnomo","path":"objects/obj_spirit_gnomo/obj_spirit_gnomo.yy",},},
+    {"id":{"name":"obj_boss_drone","path":"objects/obj_boss_drone/obj_boss_drone.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",

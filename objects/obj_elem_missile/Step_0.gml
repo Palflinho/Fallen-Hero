@@ -222,4 +222,91 @@ switch (kind) {
             instance_destroy();
         }
         break;
+    // ---------------------------------------------------------------
+    // AGUA (CHEFE): ORBE GLACIAL - rebata com qualquer ataque de volta ao General.
+    // Se ele nao conseguir devolver, fica CONGELADO (janela de dano).
+    // ---------------------------------------------------------------
+    case "glacial_orb":
+        life -= _dt;
+        if (!instance_exists(owner)) {
+            instance_destroy();
+            exit;
+        }
+        if (heading == 0) {
+            if (_p != noone) {
+                var _want_o = point_direction(x, y, _p.x, _p.y);
+                dir += clamp(angle_difference(_want_o, dir), -turn_rate * _dt, turn_rate * _dt);
+            }
+            x += lengthdir_x(spd * _dt, dir);
+            y += lengthdir_y(spd * _dt, dir);
+            if (hit_cd <= 0 && elem_player_attack_near(x, y, radius + 8)) {
+                heading = 1;
+                spd *= 1.35;
+                hit_cd = 0.3;
+                fx_spawn_damage_popup(x, y - 20, "REBATIDO!", true, c_aqua);
+                fx_spawn_sparks(x, y, c_white, 12);
+                sfx_play("parry", 0.05, 0.9);
+                trigger_hitstop(0.05);
+            } else if (_p != noone && point_distance(x, y, _p.x, _p.y) <= radius + _p.body_radius) {
+                player_take_damage(damage, "magical");
+                player_apply_slow(0.5, 1.5);
+                fx_spawn_sparks(x, y, colour, 14);
+                owner.orb_active = false;
+                instance_destroy();
+                exit;
+            }
+        } else {
+            dir = point_direction(x, y, owner.x, owner.y);
+            x += lengthdir_x(spd * _dt, dir);
+            y += lengthdir_y(spd * _dt, dir);
+            if (point_distance(x, y, owner.x, owner.y) <= owner.body_radius + radius) {
+                if (returns < max_returns) {
+                    // O General devolve o orbe, mais rapido
+                    returns += 1;
+                    heading = 0;
+                    spd *= 1.2;
+                    hit_cd = 0.25;
+                    dir = (_p != noone) ? point_direction(owner.x, owner.y, _p.x, _p.y) : dir + 180;
+                    fx_spawn_damage_popup(owner.x, owner.y - owner.body_radius - 30, "DEVOLVIDO!", false, c_aqua);
+                    sfx_play("parry", 0.05, 0.7);
+                    with (owner) {
+                        scale_x = 1.3;
+                        scale_y = 0.8;
+                    }
+                } else {
+                    owner.orb_freeze_request = true;
+                    owner.orb_active = false;
+                    fx_spawn_death_burst(x, y, c_aqua, 20);
+                    instance_destroy();
+                    exit;
+                }
+            }
+        }
+        if (life <= 0) {
+            owner.orb_active = false;
+            fx_spawn_sparks(x, y, colour, 8);
+            instance_destroy();
+        }
+        break;
+
+    // ---------------------------------------------------------------
+    // AGUA (CHEFE): ONDA DE MARE - faixa que varre a arena; passe pela brecha.
+    // ---------------------------------------------------------------
+    case "tidal_wave":
+        timer += _dt;
+        if (timer < 1.0) break; // aviso na borda
+        wave_pos += spd * wave_sign * _dt;
+        if (!hit_done && _p != noone) {
+            var _across = wave_vertical ? _p.x : _p.y;
+            var _along = wave_vertical ? _p.y : _p.x;
+            if (abs(_across - wave_pos) <= 20 + _p.body_radius && abs(_along - gap_center) > gap_size * 0.5) {
+                hit_done = true;
+                player_take_damage(damage, "magical");
+                elem_push_player(wave_vertical ? (wave_sign > 0 ? 0 : 180) : (wave_sign > 0 ? 270 : 90), 360);
+                fx_spawn_sparks(_p.x, _p.y, colour, 14);
+            }
+        }
+        var _limit = wave_vertical ? room_width : room_height;
+        if (wave_pos < -40 || wave_pos > _limit + 40) instance_destroy();
+        break;
 }

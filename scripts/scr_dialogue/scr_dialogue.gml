@@ -36,16 +36,16 @@ function dialogue_get_intro_lines(_class) {
             return [
                 {
                     speaker: "knight",
-                    name: "Tatu Cavaleiro [Guardião]",
+                    name: "Rinoceronte Cavaleiro [Guardião]",
                     alien: "« Kro-tash! Zuk-zuk vahr tor'kahn! »",
-                    text: "As ruínas do Templo da Água... Sinto a umidade pesada e o lodo corrompido adiante. Minha carapaça e minha espada não vacilarão!"
+                    text: "As ruínas do Templo da Água... Sinto a umidade pesada e o lodo corrompido adiante. Minha couraça e minha espada não vacilarão!"
                 }
             ];
         case "mage":
             return [
                 {
                     speaker: "mage",
-                    name: "Lobo-Guará Maga [Criomante]",
+                    name: "Raposa Maga [Criomante]",
                     alien: "« Asha-riil... vom mystic vahn lumina! »",
                     text: "As correntes arcanas deste santuário foram completamente distorcidas. O General da Água deve estar guardando o núcleo corrompido."
                 }
@@ -105,12 +105,12 @@ function dialogue_get_boss_intro_lines(_class) {
 
     switch (_class) {
         case "knight":
-            _hero_name = "Tatu Cavaleiro";
+            _hero_name = "Rinoceronte Cavaleiro";
             _hero_speech = "Seu domínio de tirania termina aqui, General! Nenhum maremoto romperá o meu escudo!";
             _hero_alien = "« Kro-tash val-drak! Tok-tok! »";
             break;
         case "mage":
-            _hero_name = "Lobo-Guará Maga";
+            _hero_name = "Raposa Maga";
             _hero_speech = "Eu sinto a essência sufocada em seu peito. Entregue o núcleo antes que seja tarde!";
             _hero_alien = "« Asha-lumina riil-kor! »";
             break;

@@ -30,7 +30,7 @@ function chibi_draw_hero(_inst, _x, _y, _fx, _fy, _state, _blend, _alpha) {
     draw_set_alpha(_alpha);
 
     // =====================================================================
-    // LOBO-GUARÁ MAGA (Chibi Místico)
+    // RAPOSA MAGA (Chibi Místico) - placeholder procedural ate a arte final
     // =====================================================================
     if (_char == "mage") {
         var _fur_col = make_colour_rgb(225, 105, 35);
@@ -48,7 +48,7 @@ function chibi_draw_hero(_inst, _x, _y, _fx, _fy, _state, _blend, _alpha) {
         draw_set_colour(c_white);
         draw_circle(_tx - _fh * 8, _ty + _tail_ang * 0.3, 3.5, false);
 
-        // Patas com "meias" pretas distintivas do Lobo-Guará
+        // Patas escuras distintivas da Raposa
         draw_set_colour(_dark_col);
         draw_circle(_x - 5, _py + 10, 2.5, false);
         draw_circle(_x + 5, _py + 10, 2.5, false);
@@ -238,7 +238,7 @@ function chibi_draw_hero(_inst, _x, _y, _fx, _fy, _state, _blend, _alpha) {
         }
     }
     // =====================================================================
-    // TATU CAVALEIRO (Fallback se não estiver usando spritesheet)
+    // RINOCERONTE CAVALEIRO (Fallback se não estiver usando spritesheet) - placeholder ate a arte final
     // =====================================================================
     else {
         var _shell_col = make_colour_rgb(175, 125, 75);
@@ -256,7 +256,7 @@ function chibi_draw_hero(_inst, _x, _y, _fx, _fy, _state, _blend, _alpha) {
         draw_set_colour(make_colour_rgb(130, 90, 50));
         draw_arc_sim(_x, _py - 1, 10, -_fh);
 
-        // Elmo de Cavaleiro com Focinho de Tatu
+        // Elmo de Cavaleiro com focinho (placeholder)
         draw_set_colour(_armor_col);
         draw_circle(_x + _fh * 2, _py - 8, 8, false);
         draw_set_colour(c_navy);

@@ -40,8 +40,8 @@ function audio_system_init() {
     global.sfx_map[$ "energy_shield"] = audio_synth_bell(0.25, 880, _sr, 0.65);
 
     // Fonemas da Língua dos Bichinhos e Personagens
-    global.sfx_map[$ "voice_tatu"] = audio_synth_tone_sweep(0.05, 200, 130, "saw", _sr, 0.4);
-    global.sfx_map[$ "voice_lobo"] = audio_synth_tone_sweep(0.06, 560, 420, "sine", _sr, 0.4);
+    global.sfx_map[$ "voice_rino"] = audio_synth_tone_sweep(0.05, 200, 130, "saw", _sr, 0.4);
+    global.sfx_map[$ "voice_raposa"] = audio_synth_tone_sweep(0.06, 560, 420, "sine", _sr, 0.4);
     global.sfx_map[$ "voice_lagarto"] = audio_synth_noise_sweep(0.04, 1300, 500, _sr, 0.35);
     global.sfx_map[$ "voice_urutau"] = audio_synth_tone_sweep(0.07, 740, 520, "sine", _sr, 0.45);
     global.sfx_map[$ "voice_general"] = audio_synth_tone_sweep(0.08, 160, 80, "saw", _sr, 0.6);
@@ -50,8 +50,8 @@ function audio_system_init() {
     global.sfx_map[$ "voice_human"] = audio_synth_tone_sweep(0.06, 440, 320, "saw", _sr, 0.5);
 
     // Aliases por classe
-    global.sfx_map[$ "voice_knight"] = global.sfx_map[$ "voice_tatu"];
-    global.sfx_map[$ "voice_mage"] = global.sfx_map[$ "voice_lobo"];
+    global.sfx_map[$ "voice_knight"] = global.sfx_map[$ "voice_rino"];
+    global.sfx_map[$ "voice_mage"] = global.sfx_map[$ "voice_raposa"];
     global.sfx_map[$ "voice_archer"] = global.sfx_map[$ "voice_lagarto"];
     global.sfx_map[$ "voice_assassin"] = global.sfx_map[$ "voice_urutau"];
 }

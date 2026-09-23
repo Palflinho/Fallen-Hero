@@ -17,6 +17,14 @@ if (state == "laser_charge") {
 
     // Ponto de mira no final
     draw_circle(_lx2, _ly2, 4, false);
+    if (variable_instance_exists(id, "boss_phase") && boss_phase >= 3) {
+        draw_line_width(x - lengthdir_x(36, laser_angle), y - lengthdir_y(36, laser_angle), x - lengthdir_x(800, laser_angle), y - lengthdir_y(800, laser_angle), 2);
+    }
+    if (variable_instance_exists(id, "boss_phase") && boss_phase >= 2) {
+        // seta mostrando para que lado o feixe vai varrer
+        var _sw = laser_angle + laser_sweep_dir * 25;
+        draw_line_width(x + lengthdir_x(120, laser_angle), y + lengthdir_y(120, laser_angle), x + lengthdir_x(120, _sw), y + lengthdir_y(120, _sw), 3);
+    }
 } else if (state == "laser_fire") {
     var _lx1 = x + lengthdir_x(36, laser_angle);
     var _ly1 = y + lengthdir_y(36, laser_angle);
@@ -35,6 +43,21 @@ if (state == "laser_charge") {
 
     // Clarão no canhão
     draw_circle(_lx1, _ly1, 14, false);
+
+    // Fase 3: segundo feixe oposto
+    if (variable_instance_exists(id, "boss_phase") && boss_phase >= 3) {
+        var _ba = laser_angle + 180;
+        var _bx1 = x + lengthdir_x(36, _ba);
+        var _by1 = y + lengthdir_y(36, _ba);
+        var _bx2 = x + lengthdir_x(800, _ba);
+        var _by2 = y + lengthdir_y(800, _ba);
+        draw_set_alpha(0.7);
+        draw_set_colour(make_colour_rgb(50, 220, 255));
+        draw_line_width(_bx1, _by1, _bx2, _by2, 14);
+        draw_set_alpha(0.95);
+        draw_set_colour(c_white);
+        draw_line_width(_bx1, _by1, _bx2, _by2, 6);
+    }
 }
 
 // 3. Drones Auxiliares Orbitais
@@ -108,3 +131,5 @@ if (shield_active) {
 }
 
 draw_set_alpha(1.0);
+
+boss_draw_label(shield_active ? "O Salvador - destrua os DRONES do escudo" : "O Salvador", "SOBRECARGA! ATAQUE!");

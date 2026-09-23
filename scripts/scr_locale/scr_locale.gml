@@ -46,8 +46,8 @@ function locale_init() {
     loc_register("essence_missing", "* Vazio - Derrote o General *", "* Empty - Defeat the General *", "* Vacío - Derrota al General *", "* 空虚 - 将軍を討て *");
 
     // Classes e Atributos
-    loc_register("class_knight", "Tatu Cavaleiro", "Armadillo Knight", "Armadillo Caballero", "アルマジロ騎士");
-    loc_register("class_mage", "Lobo-Guará Maga", "Maned Wolf Mage", "Lobo de Crin Maga", "タテガミオオカミ魔術師");
+    loc_register("class_knight", "Rinoceronte Cavaleiro", "Rhino Knight", "Rinoceronte Caballero", "サイ騎士");
+    loc_register("class_mage", "Raposa Maga", "Fox Mage", "Zorra Maga", "キツネ魔術師");
     loc_register("class_archer", "Lagarto Arqueiro", "Lizard Archer", "Lagarto Arquero", "トカゲ弓兵");
     loc_register("class_assassin", "Urutau Assassino", "Potoo Assassin", "Urutaú Asesino", "ポトウ暗殺者");
 

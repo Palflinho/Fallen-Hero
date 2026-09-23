@@ -289,3 +289,71 @@ function spirit_draw_exposed() {
     }
     draw_set_color(c_white);
 }
+
+// =========================================================================
+// CHEFES PRINCIPAIS (Generais e O Salvador)
+// Cada chefe tem UMA mecanica central que abre a janela de dano. Fora da janela
+// recebe so dano leve (boss_chip); na janela recebe 100% +50% (anel amarelo).
+// Fases: 1 (100-66%), 2 (66-33%), 3 (abaixo de 33%) - cada fase adiciona um golpe.
+// =========================================================================
+function boss_init_common(_chip) {
+    boss_chip = _chip;
+    damage_reduction = _chip;
+    boss_phase = 1;
+    vulnerable = false;
+    vulnerable_timer = 0;
+    has_poise = false;
+    can_enrage = false;
+}
+
+// Retorna true no frame em que o chefe muda de fase
+function boss_update_phase() {
+    var _target = (hp <= hp_max * 0.33) ? 3 : ((hp <= hp_max * 0.66) ? 2 : 1);
+    if (_target <= boss_phase) return false;
+    boss_phase = _target;
+    fx_spawn_damage_popup(x, y - body_radius - 44, "FASE " + string(boss_phase) + "!", true, c_red);
+    fx_spawn_sparks(x, y, c_red, 24);
+    trigger_camera_shake(8);
+    trigger_hitstop(0.12);
+    sfx_play("thunder", 0.05, 0.9);
+    return true;
+}
+
+function boss_open_window(_dur) {
+    vulnerable = true;
+    vulnerable_timer = _dur;
+    damage_reduction = 1.0;
+    fh_vuln_timer = _dur;
+}
+
+function boss_close_window() {
+    vulnerable = false;
+    vulnerable_timer = 0;
+    damage_reduction = boss_chip;
+    fh_vuln_timer = 0;
+}
+
+// Distancia de um ponto ao segmento (lasers, ondas)
+function elem_point_segment_dist(_px, _py, _x1, _y1, _x2, _y2) {
+    var _dx = _x2 - _x1;
+    var _dy = _y2 - _y1;
+    var _len2 = _dx * _dx + _dy * _dy;
+    var _t = (_len2 > 0) ? clamp(((_px - _x1) * _dx + (_py - _y1) * _dy) / _len2, 0, 1) : 0;
+    return point_distance(_px, _py, _x1 + _t * _dx, _y1 + _t * _dy);
+}
+
+// Rotulo padrao sobre a cabeca dos chefes
+function boss_draw_label(_name, _hint) {
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_bottom);
+    draw_set_color(vulnerable ? c_yellow : c_white);
+    draw_text(x, y - draw_z - body_radius - 24, vulnerable ? _hint : _name);
+    // Mutacao da IA adaptativa (resistencias/fraquezas aprendidas)
+    if (variable_instance_exists(id, "adaptation") && is_struct(adaptation) && adaptation.active) {
+        draw_set_color(adaptation.aura_colour);
+        draw_text(x, y - draw_z - body_radius - 42, "* " + adaptation.title + " *");
+    }
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_white);
+}

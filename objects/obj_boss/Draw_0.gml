@@ -19,6 +19,30 @@ if (state == "slam_windup") {
 // 3. Renderização Visual Imponente do General da Água
 chibi_draw_boss_water(id, x, y, state, scale_x, scale_y, vulnerable);
 
+// 3.5 Orbe sendo carregado nas maos
+if (state == "orb_windup") {
+    var _ok = 1 - clamp(orb_windup_timer / orb_windup, 0, 1);
+    var _ox = x + lengthdir_x(body_radius + 20, facing_dir);
+    var _oy = y + lengthdir_y(body_radius + 20, facing_dir);
+    draw_set_alpha(0.8);
+    draw_set_color(make_colour_rgb(120, 210, 255));
+    draw_circle(_ox, _oy, 4 + 12 * _ok, false);
+    draw_set_color(c_white);
+    draw_circle(_ox, _oy, 4 + 12 * _ok, true);
+    draw_set_alpha(1);
+}
+// 3.6 Bloco de gelo quando congelado
+if (state == "frozen") {
+    draw_set_alpha(0.45);
+    draw_set_color(make_colour_rgb(190, 235, 255));
+    draw_rectangle(x - body_radius - 8, y - body_radius - 16, x + body_radius + 8, y + body_radius + 8, false);
+    draw_set_alpha(0.9);
+    draw_set_color(c_white);
+    draw_rectangle(x - body_radius - 8, y - body_radius - 16, x + body_radius + 8, y + body_radius + 8, true);
+    draw_line(x - body_radius, y - body_radius, x - body_radius * 0.4, y + body_radius * 0.3);
+    draw_set_alpha(1);
+}
+
 if (hit_flash_timer > 0) {
     draw_set_colour(c_white);
     draw_set_alpha(0.5);
@@ -43,13 +67,15 @@ if (state == "slam_windup") {
 // 5. Títulos e Estado de Vulnerabilidade
 var _label = "General da Água";
 if (vulnerable) {
-    _label = "VULNERÁVEL! ATAQUE AGORA!";
+    _label = (state == "frozen") ? "CONGELADO! ATAQUE AGORA!" : "VULNERÁVEL! ATAQUE AGORA!";
     draw_set_alpha(0.35 + 0.15 * sin(current_time * 0.01));
     draw_set_color(c_yellow);
     draw_circle(x, y, body_radius + 20 + 4 * sin(current_time * 0.008), true);
     draw_set_alpha(1);
 } else if (state == "recover") {
     _label = "Recuperando...";
+} else if (orb_active) {
+    _label = "REBATA O ORBE!";
 }
 
 draw_set_halign(fa_center);

@@ -101,6 +101,62 @@ switch (kind) {
         draw_set_color(c_black);
         draw_circle(x, y - draw_z, 12, true);
         break;
+    case "glacial_orb":
+        var _gp = 1 + 0.1 * sin(current_time * 0.02);
+        draw_set_alpha(0.3);
+        draw_set_color(heading == 0 ? colour : c_white);
+        draw_circle(x, y, (radius + 6) * _gp, false);
+        draw_set_alpha(1);
+        draw_set_color(heading == 0 ? colour : c_white);
+        draw_circle(x, y, radius, false);
+        draw_set_color(c_white);
+        draw_circle(x, y, radius, true);
+        // espinhos de gelo girando
+        for (var _gs = 0; _gs < 6; _gs++) {
+            var _ga = current_time * 0.3 + _gs * 60;
+            draw_line(x + lengthdir_x(radius, _ga), y + lengthdir_y(radius, _ga), x + lengthdir_x(radius + 6, _ga), y + lengthdir_y(radius + 6, _ga));
+        }
+        break;
+
+    case "tidal_wave":
+        var _len = wave_vertical ? room_height : room_width;
+        var _g1 = gap_center - gap_size * 0.5;
+        var _g2 = gap_center + gap_size * 0.5;
+        if (timer < 1.0) {
+            // aviso: setas na borda de onde a onda vem + brecha destacada
+            draw_set_alpha(0.35 + 0.3 * sin(current_time * 0.03));
+            draw_set_color(colour);
+            for (var _w = 20; _w < _len; _w += 60) {
+                if (_w > _g1 && _w < _g2) continue;
+                var _ax = wave_vertical ? wave_pos + wave_sign * 20 : _w;
+                var _ay = wave_vertical ? _w : wave_pos + wave_sign * 20;
+                var _ad = wave_vertical ? (wave_sign > 0 ? 0 : 180) : (wave_sign > 0 ? 270 : 90);
+                draw_triangle(_ax + lengthdir_x(12, _ad), _ay + lengthdir_y(12, _ad), _ax + lengthdir_x(8, _ad + 130), _ay + lengthdir_y(8, _ad + 130), _ax + lengthdir_x(8, _ad - 130), _ay + lengthdir_y(8, _ad - 130), false);
+            }
+            draw_set_color(c_white);
+            if (wave_vertical) draw_rectangle(wave_pos - 4, _g1, wave_pos + 4, _g2, true);
+            else draw_rectangle(_g1, wave_pos - 4, _g2, wave_pos + 4, true);
+        } else {
+            draw_set_alpha(0.55);
+            draw_set_color(colour);
+            if (wave_vertical) {
+                draw_rectangle(wave_pos - 18, 0, wave_pos + 18, _g1, false);
+                draw_rectangle(wave_pos - 18, _g2, wave_pos + 18, _len, false);
+            } else {
+                draw_rectangle(0, wave_pos - 18, _g1, wave_pos + 18, false);
+                draw_rectangle(_g2, wave_pos - 18, _len, wave_pos + 18, false);
+            }
+            draw_set_alpha(0.9);
+            draw_set_color(c_white);
+            if (wave_vertical) {
+                draw_line(wave_pos + wave_sign * 18, 0, wave_pos + wave_sign * 18, _g1);
+                draw_line(wave_pos + wave_sign * 18, _g2, wave_pos + wave_sign * 18, _len);
+            } else {
+                draw_line(0, wave_pos + wave_sign * 18, _g1, wave_pos + wave_sign * 18);
+                draw_line(_g2, wave_pos + wave_sign * 18, _len, wave_pos + wave_sign * 18);
+            }
+        }
+        break;
 }
 draw_set_alpha(1);
 draw_set_color(c_white);

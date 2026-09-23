@@ -1,3 +1,11 @@
+// ---------------------------------------------------------------------
+// GENERAL ZEPHYRUS - "CEU E CHAO"
+//  1. NO AR: intangivel, orbita o jogador e atira leques de penas.
+//  2. MERGULHO: a sombra persegue o jogador, TRAVA e ele despenca ali.
+//  3. ASAS PRESAS: apos o ultimo mergulho fica preso 3.5s (janela +50%).
+//  Fase 2: 2 mergulhos seguidos + 2 ciclones soltos na arena.
+//  Fase 3: 3 mergulhos + VENDAVAIS que empurram o jogador pela arena.
+// ---------------------------------------------------------------------
 // Dispara Diálogo Narrativo de Confronto do Chefe ao entrar na arena dos ventos
 if (!variable_global_exists("dialogue_boss3_shown") || !global.dialogue_boss3_shown) {
     global.dialogue_boss3_shown = true;
@@ -10,123 +18,170 @@ if (is_world_paused()) exit;
 var _dt = delta_time / 1000000;
 var _player = instance_find(obj_player, 0);
 
-if (state == "vulnerable") {
-    rot_angle += 40 * _dt; // Giro lento atordoado
+if (boss_update_phase() && boss_phase == 2) {
+    var _cyc = asset_get_index("obj_wind_cyclone");
+    if (_cyc != -1) {
+        var _c1 = instance_create_layer(room_width * 0.25, room_height * 0.5, layer, _cyc);
+        var _c2 = instance_create_layer(room_width * 0.75, room_height * 0.5, layer, _cyc);
+        _c2.vx = -_c2.vx;
+    }
+}
+
+rot_angle += ((state == "grounded") ? 40 : 240) * _dt;
+
+// ---- Vendavais (fase 3, enquanto ele voa) ----
+if (boss_phase >= 3 && (state == "air" || state == "dive_mark")) {
+    gust_timer -= _dt;
+    if (gust_timer <= 0 && gust_active <= 0) {
+        gust_active = 1.4;
+        gust_dir = choose(0, 90, 180, 270);
+        gust_timer = 5.0;
+        sfx_play("wind_gust", 0.05, 1.0);
+    }
+}
+if (gust_active > 0) {
+    gust_active -= _dt;
+    if (_player != noone) with (_player) fh_move_and_collide(lengthdir_x(95 * _dt, other.gust_dir), lengthdir_y(95 * _dt, other.gust_dir));
+}
+
+// ---- Janela: asas presas no chao ----
+if (vulnerable) {
     vulnerable_timer -= _dt;
-    damage_reduction = 1.0;
-    vulnerable = true;
     body_colour = c_lime;
-    
-    // Estrelas e faíscas de desorientação/vulnerabilidade
     if (random(1) < 0.35) {
         var _sa = random(360);
         fx_spawn_sparks(x + lengthdir_x(32, _sa), y - body_radius - 10 + lengthdir_y(8, _sa), c_yellow, 2);
     }
-    
     if (vulnerable_timer <= 0) {
-        vulnerable = false;
-        damage_reduction = 0;
-        state = "chase";
-        dash_count = 0;
-        attack_cooldown_timer = 1.5;
-        body_colour = make_colour_rgb(180, 245, 255);
-        scale_x = 1.0;
-        scale_y = 1.0;
-        
-        // Pulso expansivo de ar na recuperação
+        boss_close_window();
+        state = "liftoff";
+        state_timer = 0.6;
+        // Rajada ao decolar: afasta quem estiver perto
         trigger_hitstop(0.06);
-        fx_spawn_sparks(x, y, c_white, 16);
-        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= 120) {
-            player_take_damage(20, "magical");
+        fx_spawn_sparks(x, y, c_white, 18);
+        sfx_play("wind_gust", 0.05, 1.0);
+        if (_player != noone) {
+            var _pd = point_distance(x, y, _player.x, _player.y);
+            if (_pd <= 90) player_take_damage(14, "magical");
+            if (_pd <= 180) elem_push_player(point_direction(x, y, _player.x, _player.y), 320);
         }
     }
     exit;
 }
 
-rot_angle += 240 * _dt;
-if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
-
 switch (state) {
-    case "chase":
+    case "liftoff":
+        state_timer -= _dt;
+        draw_z = lerp(draw_z, air_height, 0.12);
+        fh_untargetable = (draw_z > 30);
         body_colour = make_colour_rgb(180, 245, 255);
-        damage_reduction = 0;
-        if (_player != noone && !_player.invisible) {
-            var _dir = point_direction(x, y, _player.x, _player.y);
-            fh_move_and_collide(lengthdir_x(move_speed * _dt, _dir), lengthdir_y(move_speed * _dt, _dir));
-            facing_dir = _dir;
-
-            if (attack_cooldown_timer <= 0 && point_distance(x, y, _player.x, _player.y) <= 360) {
-                state = "windup";
-                dash_windup_timer = dash_windup;
-                var _pdir = point_direction(x, y, _player.x, _player.y);
-                dash_vx = lengthdir_x(480, _pdir);
-                dash_vy = lengthdir_y(480, _pdir);
-                fx_spawn_sparks(x, y, c_white, 8);
-            }
+        if (state_timer <= 0) {
+            state = "air";
+            state_timer = (boss_phase >= 3) ? 3.5 : air_time;
+            fh_untargetable = true;
         }
         break;
 
-    case "windup":
-        dash_windup_timer -= _dt;
-        // Telegrafia clara de ataque iminente
-        scale_x = 1.3 + 0.1 * sin(current_time * 0.04);
-        scale_y = 1.3 + 0.1 * sin(current_time * 0.04);
-        body_colour = c_white;
+    case "air":
+        fh_untargetable = true;
+        draw_z = lerp(draw_z, air_height, 0.1);
+        body_colour = make_colour_rgb(180, 245, 255);
+        state_timer -= _dt;
+        if (_player != noone) {
+            // Orbita o jogador no alto (ignora paredes: esta voando)
+            var _d = point_distance(x, y, _player.x, _player.y);
+            var _to = point_direction(x, y, _player.x, _player.y);
+            var _want = _to + (_d > 250 ? 20 * orbit_side : (_d < 200 ? 160 * orbit_side : 90 * orbit_side));
+            x = clamp(x + lengthdir_x(move_speed * 1.6 * _dt, _want), 80, room_width - 80);
+            y = clamp(y + lengthdir_y(move_speed * 1.6 * _dt, _want), 80, room_height - 80);
+            facing_dir = _to;
 
-        if (dash_windup_timer <= 0) {
-            state = "dash";
-            dash_timer = 0.35;
-            body_colour = make_colour_rgb(180, 245, 255);
-            dash_count++;
-
-            // Dispara leque de 5 penas de vento
-            if (_player != noone) {
-                var _base_ang = point_direction(x, y, _player.x, _player.y);
+            feather_timer -= _dt;
+            if (feather_timer <= 0) {
+                feather_timer = (boss_phase >= 3) ? 1.0 : 1.4;
                 for (var _a = -2; _a <= 2; _a++) {
-                    var _ang = _base_ang + _a * 15;
-                    var _proj = instance_create_layer(x, y, layer, obj_enemy_projectile);
-                    _proj.owner = id;
-                    _proj.damage = 22;
-                    _proj.dir_x = lengthdir_x(1, _ang);
-                    _proj.dir_y = lengthdir_y(1, _ang);
-                    _proj.speed_px = 310;
-                    _proj.colour = c_white;
-                    _proj.damage_type = "magical";
+                    elem_spawn_projectile(x, y, _to + _a * 14, 300, 20, c_white, "projectile");
                 }
+                sfx_play("wind_gust", 0.1, 0.5);
+            }
+        }
+        if (state_timer <= 0) {
+            dives_left = boss_phase;
+            state = "dive_mark";
+            state_timer = 1.1;
+            if (_player != noone) {
+                dive_x = _player.x;
+                dive_y = _player.y;
             }
         }
         break;
 
-    case "dash":
-        dash_timer -= _dt;
-        fh_move_and_collide(dash_vx * _dt, dash_vy * _dt);
-
-        if (random(1) < 0.45) {
-            fx_spawn_sparks(x, y, make_colour_rgb(200, 245, 255), 2);
+    case "dive_mark":
+        // A sombra persegue o jogador por 0.6s e depois TRAVA
+        state_timer -= _dt;
+        fh_untargetable = true;
+        draw_z = lerp(draw_z, air_height * 1.3, 0.1);
+        if (_player != noone && state_timer > 0.5) {
+            dive_x = lerp(dive_x, _player.x, 0.2);
+            dive_y = lerp(dive_y, _player.y, 0.2);
         }
-
-        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius) {
-            player_take_damage(contact_damage, "physical");
+        x = lerp(x, dive_x, 0.25);
+        y = lerp(y, dive_y, 0.25);
+        if (state_timer <= 0) {
+            var _pt = fh_find_free_spawn_pos(dive_x, dive_y, body_radius);
+            dive_x = _pt.x;
+            dive_y = _pt.y;
+            state = "dive";
+            state_timer = 0.28;
         }
+        break;
 
-        if (dash_timer <= 0) {
-            scale_x = 0.9;
-            scale_y = 0.9;
-            if (dash_count >= dash_max) {
-                // Após o 3º dash consecutivo: Descompressão Atmosférica e Janela de Vulnerabilidade!
-                state = "vulnerable";
-                vulnerable = true;
-                vulnerable_timer = vulnerable_duration;
-                damage_reduction = 1.0;
-                scale_x = 1.15;
-                scale_y = 0.80;
-                fx_spawn_sparks(x, y, c_lime, 14);
-                trigger_hitstop(0.08);
+    case "dive":
+        state_timer -= _dt;
+        x = dive_x;
+        y = dive_y;
+        draw_z = max(0, draw_z - 700 * _dt);
+        if (state_timer <= 0) {
+            draw_z = 0;
+            fh_untargetable = false;
+            elem_hit_player_circle(x, y, dive_radius, dive_damage, "physical");
+            if (_player != noone && point_distance(x, y, _player.x, _player.y) <= dive_radius * 2) {
+                elem_push_player(point_direction(x, y, _player.x, _player.y), 300);
+            }
+            fx_spawn_death_burst(x, y, c_white, 20);
+            trigger_camera_shake(9);
+            trigger_hitstop(0.06);
+            sfx_play("slam", 0.05, 0.9);
+            dives_left -= 1;
+            if (dives_left > 0) {
+                state = "reascend";
+                state_timer = 0.45;
             } else {
-                // Intervalo tático breve antes da próxima investida
-                state = "chase";
-                attack_cooldown_timer = 0.40;
+                state = "grounded";
+                boss_open_window(grounded_duration);
+                fx_spawn_damage_popup(x, y - body_radius - 30, "ASAS PRESAS! ATAQUE!", true, c_yellow);
+                scale_x = 1.2;
+                scale_y = 0.8;
             }
         }
+        break;
+
+    case "reascend":
+        state_timer -= _dt;
+        draw_z = lerp(draw_z, air_height, 0.2);
+        fh_untargetable = (draw_z > 30);
+        if (state_timer <= 0) {
+            state = "dive_mark";
+            state_timer = 0.9;
+            if (_player != noone) {
+                dive_x = _player.x;
+                dive_y = _player.y;
+            }
+        }
+        break;
+
+    default:
+        state = "liftoff";
+        state_timer = 0.6;
         break;
 }

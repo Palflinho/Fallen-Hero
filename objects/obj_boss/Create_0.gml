@@ -68,3 +68,24 @@ if (adaptation.active) {
 }
 
 state = "barrage";
+
+// ---------------------------------------------------------------------
+// REDESENHO: "TENIS GLACIAL"
+// Mecanica central: o General lanca um ORBE GLACIAL lento. Rebata-o com qualquer
+// ataque; se ele voltar e o General nao conseguir devolver, ele fica CONGELADO.
+// Fase 1: nao devolve | Fase 2: devolve 1x + ONDA DE MARE | Fase 3: devolve 2x + ondas duplas
+// Fora da janela recebe apenas 20% do dano.
+// ---------------------------------------------------------------------
+hp_max = 1400;
+hp = hp_max;
+boss_init_common(0.2);
+orb_active = false;
+orb_freeze_request = false;
+orb_cooldown = 5.0;
+orb_timer = 3.0;
+orb_windup = 1.0;
+orb_windup_timer = 0;
+frozen_duration = 4.5;
+slam_window = 2.0;
+tide_cooldown = 9.0;
+tide_timer = 2.0;

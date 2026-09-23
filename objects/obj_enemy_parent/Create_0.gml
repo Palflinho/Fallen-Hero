@@ -74,7 +74,7 @@ is_greater_variant = false;
 rare_chest_drop_chance = 0.0;
 
 // Chance de ~12% de um monstro padrão surgir como Campeão Raro (exceto chefes)
-var _is_boss = (object_index == obj_boss || object_index == obj_boss2 || (object_exists(asset_get_index("obj_boss3")) && object_index == asset_get_index("obj_boss3")) || (object_exists(asset_get_index("obj_boss4")) && object_index == asset_get_index("obj_boss4")));
+var _is_boss = enemy_is_boss(id);
 if (!_is_boss && random(1) < 0.12) {
     is_rare_mob = true;
     rare_chest_drop_chance = 0.20;

@@ -10,7 +10,7 @@
 ## 1. RESUMO EXECUTIVO & VISÃO GERAL
 
 ### 1.1 Premissa do Jogo
-Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanescentes de um mundo agonizante. Quatro raças antropomórficas inspiradas na fauna brasileira — o **Tatu-Bola** (Cavaleiro), a **Lobo-Guará** (Maga), o **Lagarto Teiú** (Arqueiro) e o **Pássaro Urutau** (Assassino) — atravessam um portal dimensional arcaico para caçar o suposto "Mal Supremo" que roubou as quatro Essências Elementais de seu planeta, transformando sua pátria em um deserto vermelho de ferrugem e cinzas.
+Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanescentes de um mundo agonizante. Quatro raças antropomórficas — o **Rinoceronte** (Cavaleiro), a **Raposa** (Maga), o **Lagarto Teiú** (Arqueiro) e o **Pássaro Urutau** (Assassino) — atravessam um portal dimensional arcaico para caçar o suposto "Mal Supremo" que roubou as quatro Essências Elementais de seu planeta, transformando sua pátria em um deserto vermelho de ferrugem e cinzas.
 
 À medida que o jogador avança pelas masmorras dos templos da **Água**, **Fogo**, **Vento** e **Terra**, liberta os antigos Guardiões corrompidos e desenvolve uma árvore de **210 Talentos Elementais**, ele descobre que o novo mundo exuberante onde luta é sustentado pelas essências roubadas e que o "monstro invasor" é um **humano comum**, lutando desesperadamente para salvar a Terra asfixiada. Ao vencer, o herói se depara com a maior tragédia moral: recuperar a vida do seu povo significa condenar a civilização humana à extinção.
 
@@ -36,10 +36,10 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
 
 ---
 
-## 3. OS QUATRO HERÓIS JOGÁVEIS (FAUNA BRASILEIRA)
+## 3. OS QUATRO HERÓIS JOGÁVEIS
 
 ```
-       [ O TATU-BOLA ]                     [ A LOBO-GUARÁ ]
+       [ O RINOCERONTE ]                     [ A RAPOSA ]
        Classe: Cavaleiro                   Classe: Maga
        Papel: Tanque / Bastião             Papel: Controle / Artilharia
        Arma: Espada & Broquel              Arma: Orbe Arcana & Centelhas
@@ -54,7 +54,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
        olhos telescópicos, postura baixa.  mágicos luminescentes, andrógino.
 ```
 
-### 3.1 Cavaleiro (Tatu-Bola — Macho)
+### 3.1 Cavaleiro (Rinoceronte — Macho)
 * **Atributos Base (nível 1, sem afinidade — `obj_player/Create_0.gml`):** HP 100, Poder 12 (físico), Defesa 8, recarga do ataque 0,28 s, Velocidade 180 px/s.
 * **Ataque Básico:** Talho frontal amplo (varredura de espada em 180° com repelência física).
 * **Habilidade Especial (Defesa / [X]):** Ergue o escudo. Bloqueia 50% a 100% de dano frontal, absorve projéteis.
@@ -65,7 +65,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
   * *Vento (Duelista):* Concede combo duplo de lâmina veloz e rajadas cortantes de ar.
   * *Terra (Guardião Tectônico):* Aumenta a couraça corporal proporcionalmente aos inimigos próximos.
 
-### 3.2 Maga (Lobo-Guará — Fêmea)
+### 3.2 Maga (Raposa — Fêmea)
 * **Atributos Base (nível 1, sem afinidade):** HP 70, Poder 14 (mágico), Defesa 3, recarga do ataque 0,9 s, Velocidade 160 px/s.
 * **Ataque Básico:** Disparo de esferas místicas de longo alcance com aceleração contínua.
 * **Habilidade Especial (Defesa / [X]):** Prisão Criogênica / Campo de Mana. Concede invulnerabilidade temporária estática.
@@ -229,14 +229,13 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
 5. **Câmara do Guardião (Etapa 7):** Batalha contra o chefe elemental do bioma.
 
 ### 6.3 Os Cinco Grandes Chefes
-1. **Templo da Água — General da Água (`obj_boss`; o HUD o chama de "General Glacial"):** Estilhaços criogênicos, tempestades de granizo e congelamento do solo.
-2. **Templo do Fogo — General Magma (`obj_boss2`):** Poças de lava permanentes, ondas de calor radiante e erupções subterrâneas.
-3. **Templo do Vento — General Zephyrus (`obj_boss3`):** Ciclones móveis, investidas aéreas ultrarrápidas e zonas de vácuo cortante.
-4. **Templo da Terra — Titã Monolito (`obj_boss4`; também aparece como "Colosso Titã"):** Fissuras sísmicas no solo, terremotos de impacto e armadura impenetrável que exige quebra de postura (*stagger*).
-5. **Santuário Orbital — O Guardião Humano (`obj_boss_human`):**
-   * *Fase 1 (Armadura Titânica):* Disparos de laser contínuo (`laser_beam`), escudos de energia defletores (`energy_shield`) e convocação de drones de vigilância.
-   * *Fase 2 (Sobrecarga de Emergência):* Sobrecarga de propulsores, pulsos EMP e chuvas de artilharia orbital.
-   * *Desfecho Dramático:* Quebra da couraça e diálogo final do humano, desvendando o segredo da Terra.
+Cada chefe tem **uma mecânica central** (estilo Zelda) que abre a **janela de dano**. Fora da janela o chefe recebe só dano leve; na janela recebe 100% **+50%** (anel amarelo, aviso "JANELA DE DANO" na barra). Todos têm **3 fases** (marcadas na barra em 66% e 33%): cada fase acrescenta um golpe. Os quatro Generais usam a **IA Adaptativa** (resistem à classe que os venceu nas últimas runs e mostram a mutação sobre a cabeça).
+
+1. **General da Água (`obj_boss`) — "Tênis Glacial":** lança um **Orbe Glacial** lento e teleguiado. Qualquer ataque do jogador rebate o orbe; se voltar e o General não conseguir devolver, ele fica **CONGELADO** (4,5s). Fase 1 ele não devolve; fase 2 devolve 1x; fase 3 devolve 2x (cada vez mais rápido). Também: rajada em leque (pausa enquanto o orbe está em jogo), pisão contra quem gruda nele (fase 2+: congela o chão em cruz) e **Onda de Maré** (fase 2+), uma faixa que varre a arena com uma brecha por onde passar (fase 3: duas ondas cruzadas).
+2. **General Magma (`obj_boss2`) — "Touro de Magma":** a **investida** mira (linha de aviso que trava 0,35s antes) e só para quando bate em algo. Se bater na **parede**: **CROSTA RACHADA** (4s). Se acertar o jogador, ele não fica exposto. Também: erupções marcadas que incendeiam o chão (fase 3: 5 pontos), leque de magma (fase 2+), rastro de fogo na investida e pedras caindo ao se chocar (fase 2+), ricochete na parede antes de ficar exposto (fase 3).
+3. **General Zephyrus (`obj_boss3`) — "Céu e Chão":** **no ar é intangível** (só a sombra fica no chão) e dispara leques de penas. Depois a sombra persegue o jogador, **trava** e ele **mergulha**. Após o último mergulho fica com as **ASAS PRESAS** (3,5s). Fase 1: 1 mergulho; fase 2: 2 mergulhos + 2 ciclones soltos; fase 3: 3 mergulhos + **vendavais** que empurram o jogador pela arena.
+4. **Titã Monolito (`obj_boss4`) — "Costas Expostas":** a **frente é blindada** (golpes ricocheteiam) e o **núcleo brilha nas costas**; ele gira devagar para encarar o jogador (mais rápido a cada fase). **Varredura** em cone na frente. O **pisão** (só quando o jogador está perto) solta uma onda de choque em anel e o deixa **PRESO AO CHÃO** com a couraça aberta (3,2s, dano em qualquer lado). Fase 2: muralhas de pedra atrás de si + pedregulhos que viram obstáculos; fase 3: **giro de 360°** se o jogador acampar nas costas.
+5. **O Salvador (`obj_boss_human`) — "Protocolo de Drones":** o **escudo** fica ativo enquanto houver **drones** vivos (`obj_boss_drone`, destrutíveis, ligados ao traje por um cabo de energia). Destruir todos causa **SOBRECARGA** (4,5s); depois ele lança drones novos (2/3/4 por fase). Também: plasma triplo, **laser** que mira e dispara (fase 2: o feixe **varre**; fase 3: **dois feixes** girando) e **ataque orbital** (fase 2+).
 
 ### 6.4 Os Espíritos Elementais (Chefes das Arenas)
 Criaturas nascidas do próprio poder do elemento, guardiãs de cada arena. Detalhes completos em [`INIMIGOS_ELEMENTAIS.md`](INIMIGOS_ELEMENTAIS.md).
@@ -298,7 +297,7 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
   * Parries e defesas perfeitas (*chimes* harmônicos e sinos metálicos).
   * Baús e triunfos (*fanfares* arpejadas em onda senoidal).
   * Vento, fogo e explosões (*filtered brown/white noise*).
-* **Vozes Chiptune (Estilo Banjo-Kazooie):** Cada raça e personagem tem um tom próprio definido em `scr_audio` (Tatu grave em serra, Lobo médio suave em seno, Lagarto estalado, Urutau etéreo em tom harmônico). **Pendente:** as vozes ainda não tocam nas caixas de diálogo.
+* **Vozes Chiptune (Estilo Banjo-Kazooie):** Cada raça e personagem tem um tom próprio definido em `scr_audio` (Rinoceronte grave em serra, Raposa médio suave em seno, Lagarto estalado, Urutau etéreo em tom harmônico). **Pendente:** as vozes ainda não tocam nas caixas de diálogo.
 * **Música:** ainda não existe. **Pendente.**
 
 ---
@@ -329,7 +328,7 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
 
 | Componente | Quantidade / Dimensão | Status de Implementação | Verificação de Código |
 | :--- | :---: | :---: | :--- |
-| **Classes de Herói** | 4 (Tatu, Lobo, Lagarto, Urutau) | 100% Operante | [`obj_player/Create_0.gml`](../objects/obj_player/Create_0.gml) |
+| **Classes de Herói** | 4 (Rinoceronte, Raposa, Lagarto, Urutau) | 100% Operante | [`obj_player/Create_0.gml`](../objects/obj_player/Create_0.gml) |
 | **Afinidades Elementais** | 4 (Água, Fogo, Vento, Terra) | 100% Operante | [`scr_combat.gml`](../scripts/scr_combat/scr_combat.gml) |
 | **Catálogo de Talentos** | 211 (50×4 + 11 Gerais) | 100% Concluído | [`scr_talents.gml`](../scripts/scr_talents/scr_talents.gml) |
 | **Procs Ativos de Combate** | 211 Efeitos Únicos | 100% Integrado | [`scr_combat.gml`](../scripts/scr_combat/scr_combat.gml) / Projéteis |

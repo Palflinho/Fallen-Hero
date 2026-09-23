@@ -75,13 +75,13 @@ function dialogue_db_init() {
     global.dialogue_db[$ "temple1_water_intro"] = [
         {
             speaker: "knight",
-            name: { pt: "Tatu Cavaleiro [Guardião]", en: "Armadillo Knight [Guardian]", es: "Armadillo Caballero [Guardián]", ja: "アルマジロ騎士 [守護者]" },
+            name: { pt: "Rinoceronte Cavaleiro [Guardião]", en: "Rhino Knight [Guardian]", es: "Rinoceronte Caballero [Guardián]", ja: "サイ騎士 [守護者]" },
             alien: "« Kro-tash! Zuk-zuk vahr tor'kahn! »",
             text: {
-                pt: "As ruínas do Templo da Água... Sinto a umidade pesada e o lodo corrompido adiante. Minha carapaça e minha lâmina não vacilarão!",
-                en: "The ruins of the Water Temple... Heavy moisture and corrupted mire pulse ahead. My shell and blade shall not falter!",
-                es: "Las ruinas del Templo del Agua... Siento la pesada humedad y el lodo corrupto más adelante. ¡Mi caparazón y mi espada no vacilarán!",
-                ja: "水の神殿の遺跡...重い湿気と穢れた泥が渦巻いている。我が甲殻と刃は決して屈せぬ！"
+                pt: "As ruínas do Templo da Água... Sinto a umidade pesada e o lodo corrompido adiante. Minha couraça e minha lâmina não vacilarão!",
+                en: "The ruins of the Water Temple... Heavy moisture and corrupted mire pulse ahead. My hide and blade shall not falter!",
+                es: "Las ruinas del Templo del Agua... Siento la pesada humedad y el lodo corrupto más adelante. ¡Mi coraza y mi espada no vacilarán!",
+                ja: "水の神殿の遺跡...重い湿気と穢れた泥が渦巻いている。我が鎧皮と刃は決して屈せぬ！"
             }
         }
     ];

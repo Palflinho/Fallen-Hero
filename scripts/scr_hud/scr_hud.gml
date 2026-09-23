@@ -371,6 +371,7 @@ function hud_draw_boss_bar(_gw, _gh, boss_room) {
             else if (object_exists(asset_get_index("obj_boss3")) && _boss.object_index == asset_get_index("obj_boss3")) _boss_name = loc("boss_wind_title", "GENERAL ZEPHYRUS (VENTO)");
             else if (object_exists(asset_get_index("obj_boss4")) && _boss.object_index == asset_get_index("obj_boss4")) _boss_name = "TITA MONOLITO (TERRA)";
             else if (object_exists(asset_get_index("obj_boss_human")) && _boss.object_index == asset_get_index("obj_boss_human")) _boss_name = loc("boss_human_title", "O SALVADOR (HUMANO)");
+            if (variable_instance_exists(_boss, "boss_phase")) _boss_name += "  [FASE " + string(_boss.boss_phase) + "]";
     
             // Fundo do quadro do chefe
             draw_set_alpha(0.85);
@@ -394,6 +395,17 @@ function hud_draw_boss_bar(_gw, _gh, boss_room) {
                 draw_set_color(c_white);
                 draw_line(_bx, _by + 1, _bx + _bw * _bhp_ratio, _by + 1);
                 draw_set_alpha(1);
+            }
+
+            // Marcas das fases (66% e 33%) e janela de dano
+            draw_set_color(c_white);
+            draw_line_width(_bx + _bw * 0.66, _by - 2, _bx + _bw * 0.66, _by + _bh + 2, 2);
+            draw_line_width(_bx + _bw * 0.33, _by - 2, _bx + _bw * 0.33, _by + _bh + 2, 2);
+            if (variable_instance_exists(_boss, "vulnerable") && _boss.vulnerable) {
+                draw_set_halign(fa_center);
+                draw_set_valign(fa_top);
+                draw_set_color(c_yellow);
+                draw_text(_bx + _bw / 2, _by + _bh + 6, "JANELA DE DANO! (+50%)");
             }
     
             draw_set_halign(fa_center);
