@@ -23,6 +23,7 @@ function audio_system_init() {
     global.sfx_map[$ "gold"] = audio_synth_chime(0.14, 987, 1318, _sr, 0.55);
     global.sfx_map[$ "chest"] = audio_synth_fanfare(0.32, _sr, 0.7);
     global.sfx_map[$ "stagger"] = audio_synth_bell(0.30, 440, _sr, 0.8);
+    global.sfx_map[$ "enemy_death"] = audio_synth_noise_sweep(0.20, 300, 80, _sr, 0.65);
 
     // Efeitos de Ambiente da Vila e Portal
     global.sfx_map[$ "bonfire_crackle"] = audio_synth_noise_sweep(0.18, 320, 110, _sr, 0.35);
@@ -66,6 +67,19 @@ function sfx_play(_name, _pitch_var = 0.06, _gain_mult = 1.0) {
         audio_sound_gain(_inst, global.sfx_volume * _gain_mult, 0);
     }
     return _inst;
+}
+
+function sfx_play_at(_name, _x, _y, _max_dist = 400, _pitch_var = 0.06, _gain_mult = 1.0) {
+    if (!object_exists(asset_get_index("obj_player"))) return -1;
+    var _p = instance_find(asset_get_index("obj_player"), 0);
+    if (_p == noone) return -1;
+    
+    var _dist = point_distance(_x, _y, _p.x, _p.y);
+    if (_dist > _max_dist) return -1; // Culling de audio espacial
+    
+    // Falloff linear suave de acordo com a distancia
+    var _dist_gain = 1.0 - (_dist / _max_dist);
+    return sfx_play(_name, _pitch_var, _gain_mult * _dist_gain);
 }
 
 // -------------------------------------------------------------------------
