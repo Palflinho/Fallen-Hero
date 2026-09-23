@@ -1,4 +1,4 @@
-﻿if (!active) exit;
+if (!active) exit;
 
 var _w = base_size * image_xscale;
 var _h = base_size * image_yscale;

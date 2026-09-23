@@ -243,8 +243,8 @@ switch (state) {
 
     case "select":
         var _n = array_length(classes);
-        var _total_w = _n * box_w + (_n - 1) * box_gap;
-        var _start_x = (room_width - _total_w) / 2;
+        _total_w = _n * box_w + (_n - 1) * box_gap;
+        _start_x = (room_width - _total_w) / 2;
         var _y = room_height / 2 - box_h / 2 + 10;
 
         // Seletor de Slot ativo na tela de seleção (1, 2, 3)
@@ -369,7 +369,7 @@ switch (state) {
             state = "select_talents";
         }
 
-        var _pad_sel = input_get_active_pad();
+        _pad_sel = input_get_active_pad();
         var _gp_shop_btn = (_pad_sel != -1 && gamepad_button_check_pressed(_pad_sel, gp_face3));
 
         if (keyboard_check_pressed(ord("S")) || _gp_shop_btn) {
@@ -446,7 +446,7 @@ switch (state) {
             var _cols = min(talent_grid_cols, _m);
             if (_cols <= 0) _cols = 1;
             var _total_grid_w = _cols * talent_card_w + (_cols - 1) * talent_card_gap_x;
-            var _start_x = (room_width - _total_grid_w) / 2;
+            _start_x = (room_width - _total_grid_w) / 2;
             var _total_rows = ceil(_m / _cols);
             var _start_vis_row = talent_grid_scroll_row;
             var _end_vis_row = min(_total_rows, _start_vis_row + talent_grid_visible_rows);
@@ -666,7 +666,7 @@ switch (state) {
             var _cols = min(shop_grid_cols, _tn);
             if (_cols <= 0) _cols = 1;
             var _total_grid_w = _cols * talent_card_w + (_cols - 1) * talent_card_gap_x;
-            var _start_x = (room_width - _total_grid_w) / 2;
+            _start_x = (room_width - _total_grid_w) / 2;
             var _total_s_rows = ceil(_tn / _cols);
             var _start_vis_s_row = shop_grid_scroll_row;
             var _end_vis_s_row = min(_total_s_rows, _start_vis_s_row + shop_grid_visible_rows);

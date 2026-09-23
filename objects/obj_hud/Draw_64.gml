@@ -1,4 +1,4 @@
-﻿if (target == noone || !instance_exists(target)) {
+if (target == noone || !instance_exists(target)) {
     target = instance_find(obj_player, 0);
     if (target == noone) exit;
 }
