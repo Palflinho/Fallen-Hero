@@ -100,6 +100,14 @@ Nas capitais sagradas de cada um dos biomas, residiam templos erguidos não para
 
 Um Cavaleiro que estuda a Água vira **Lanceiro** (luta com o alcance dos Lagartos); um Assassino que estuda a Terra vira **Cavaleiro Sombrio** (ganha a couraça dos Rinocerontes). Veja a tabela completa no GDD (seção 6.3.0).
 
+**As Maestrias (o caminho da própria gente):** nem todo herói sai para aprender com outro povo. Alguns ficam e aprofundam a tradição da sua gente, estudando o elemento do templo que o próprio povo guarda. Esses são os **Mestres**, reverenciados como a expressão mais pura de cada casta:
+* **Guardião** — o Rinoceronte que estudou a Terra. Uma muralha viva que nenhuma investida derruba.
+* **Piromante** — a Raposa que estudou o Fogo. Carrega a chama original das crateras sagradas.
+* **Caçador das Marés** — o Lagarto que estudou a Água. Pisa firme onde qualquer outro escorregaria.
+* **Algoz do Tufão** — o Urutau que estudou o Vento. Corta o ar e alcança até quem se esconde na névoa.
+
+Entre os povos existe um respeito silencioso e uma rivalidade antiga: os Mestres guardam a tradição, e os que seguem os Caminhos Elementais levam a sabedoria de um povo para o outro. Depois do Cataclismo, com os templos saqueados, as duas escolhas passaram a significar a mesma coisa: sobreviver unindo o que restou de cada povo.
+
 As **Essências Elementais** guardadas no interior desses templos não eram apenas combustível mágico; eram os **órgãos vitais que faziam o planeta respirar**. Sem elas, o ciclo das estações cessa instantaneamente.
 
 ---
