@@ -156,6 +156,7 @@ switch (state) {
         break;
 
     case "heal":
+        fh_channeling = true;
         heal_timer -= _dt;
         heal_tick -= _dt;
         heal_dmg_taken += _dmg_this_frame;
@@ -167,7 +168,9 @@ switch (state) {
             last_hp = hp;
             fx_spawn_damage_popup(x, y - 30, "+" + string(_h), false, c_aqua);
         }
-        if (heal_dmg_taken >= hp_max * 0.08) {
+        if (heal_dmg_taken >= hp_max * 0.08 || fh_interrupt) {
+            fh_channeling = false;
+            fh_interrupt = false;
             // Interrompida!
             state = "exposed";
             state_timer = 2.0;
@@ -177,6 +180,7 @@ switch (state) {
             trigger_hitstop(0.08);
             sfx_play("stagger", 0.04);
         } else if (heal_timer <= 0) {
+            fh_channeling = false;
             state = "idle";
             action_timer = 1.0;
             heal_cd = 12.0;

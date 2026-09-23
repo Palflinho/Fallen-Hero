@@ -81,6 +81,12 @@ if (vulnerable) {
     draw_circle(x + 10, _by - 8, 4, false);
 }
 
+if (fh_untargetable && fh_air_hits > 0) {
+    draw_set_halign(fa_center);
+    draw_set_color(c_white);
+    draw_text(x, _by + body_radius + 8, "PENAS " + string(fh_air_hits) + "/5");
+    draw_set_halign(fa_left);
+}
 var _hint = "ASAS PRESAS! ATAQUE!";
 var _name = fh_untargetable ? "Zephyrus (no ar - intangivel)" : "General Zephyrus";
 boss_draw_label(_name, _hint);

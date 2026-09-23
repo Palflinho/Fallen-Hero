@@ -237,6 +237,9 @@ Cada chefe tem **uma mecânica central** (estilo Zelda) que abre a **janela de d
 4. **Titã Monolito (`obj_boss4`) — "Costas Expostas":** a **frente é blindada** (golpes ricocheteiam) e o **núcleo brilha nas costas**; ele gira devagar para encarar o jogador (mais rápido a cada fase). **Varredura** em cone na frente. O **pisão** (só quando o jogador está perto) solta uma onda de choque em anel e o deixa **PRESO AO CHÃO** com a couraça aberta (3,2s, dano em qualquer lado). Fase 2: muralhas de pedra atrás de si + pedregulhos que viram obstáculos; fase 3: **giro de 360°** se o jogador acampar nas costas.
 5. **O Salvador (`obj_boss_human`) — "Protocolo de Drones":** o **escudo** fica ativo enquanto houver **drones** vivos (`obj_boss_drone`, destrutíveis, ligados ao traje por um cabo de energia). Destruir todos causa **SOBRECARGA** (4,5s); depois ele lança drones novos (2/3/4 por fase). Também: plasma triplo, **laser** que mira e dispara (fase 2: o feixe **varre**; fase 3: **dois feixes** girando) e **ataque orbital** (fase 2+).
 
+### 6.3.1 Interações de Classe
+Cada classe tem um verbo contra os inimigos — **Cavaleiro segura** investidas com o escudo, **Maga interrompe** canalizações, **Arqueiro derruba** o que voa, **Assassino despista** o que persegue — e cada especialização tem uma interação própria (ex.: Criomante apaga o Slime de Fogo e congela o General Magma; Geomante arranca o Gnomo do subsolo). Tabela completa em [`INTERACOES_DE_CLASSE.md`](INTERACOES_DE_CLASSE.md).
+
 ### 6.4 Os Espíritos Elementais (Chefes das Arenas)
 Criaturas nascidas do próprio poder do elemento, guardiãs de cada arena. Detalhes completos em [`INIMIGOS_ELEMENTAIS.md`](INIMIGOS_ELEMENTAIS.md).
 1. **Ondina (Água, `obj_spirit_ondina`):** leque de gotas, clones de água que morrem com 1 golpe e troca de lugar; na fase 2, cura canalizada (interrompível) e cruz de gelo.

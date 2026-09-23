@@ -26,6 +26,24 @@ if (spirit_update_intro(_dt)) exit;
 if (spirit_check_phase2()) move_speed *= 1.25;
 if (state == "patrol" || state == "chase") state = "idle";
 
+// Geomante: o Pilar de Basalto arranca o espirito de baixo da terra (sem ataque, fica exposto)
+if (fh_force_emerge) {
+    fh_force_emerge = false;
+    if (state == "under" || state == "erupt_warn" || state == "dive" || state == "burrow") {
+        var _fe = fh_find_free_spawn_pos(x, y, body_radius);
+        x = _fe.x;
+        y = _fe.y;
+        fh_untargetable = false;
+        draw_alpha = 1;
+        state = "exposed";
+        state_timer = 2.5;
+        fh_vuln_timer = 2.5;
+        fx_spawn_damage_popup(x, y - body_radius - 30, "ARRANCADO DO SUBSOLO!", true, c_yellow);
+        fx_spawn_death_burst(x, y, elem_colour(element), 16);
+        trigger_hitstop(0.1);
+    }
+}
+
 var _trail_life = phase2 ? 3.5 : 2.5;
 
 switch (state) {
@@ -101,7 +119,8 @@ switch (state) {
         state_timer -= _dt;
         fh_untargetable = true;
         draw_alpha = 0;
-        if (_player != noone) ai_enemy_move(point_direction(x, y, _player.x, _player.y), 200, _dt);
+        var _trk = elem_player_tracking();
+        if (_trk != noone) ai_enemy_move(point_direction(x, y, _trk.x, _trk.y), 200, _dt);
         if (random(1) < 0.5) fx_spawn_sparks(x + random_range(-10, 10), y + random_range(-10, 10), c_orange, 1);
         if (state_timer <= 0) {
             state = "erupt_warn";

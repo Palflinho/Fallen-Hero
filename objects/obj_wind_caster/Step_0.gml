@@ -74,14 +74,16 @@ switch (state) {
         break;
 
     case "barrier":
+        fh_channeling = true;
         barrier_timer -= _dt;
+        if (fh_interrupt) barrier_timer = 0;
         elem_reflect_player_projectiles(x, y, barrier_radius, make_colour_rgb(210, 250, 255));
         if (_player != noone && !_player.invisible) {
             var _pd = point_distance(x, y, _player.x, _player.y);
             if (_pd <= vortex_radius && _pd > 20) {
                 var _pull_dir = point_direction(_player.x, _player.y, x, y);
                 var _pull = vortex_pull * (1 - _pd / vortex_radius * 0.5) * _dt;
-                with (_player) fh_move_and_collide(lengthdir_x(_pull, _pull_dir), lengthdir_y(_pull, _pull_dir));
+                elem_pull_player(lengthdir_x(_pull, _pull_dir), lengthdir_y(_pull, _pull_dir));
             }
             if (vortex_tick > 0) vortex_tick -= _dt;
             if (_pd <= body_radius + 26 && vortex_tick <= 0) {
@@ -91,8 +93,10 @@ switch (state) {
         }
         if (barrier_timer <= 0) {
             state = "exhausted";
-            exhausted_timer = 1.0;
-            fh_vuln_timer = 1.0;
+            exhausted_timer = fh_interrupt ? 1.8 : 1.0;
+            fh_vuln_timer = exhausted_timer;
+            fh_channeling = false;
+            fh_interrupt = false;
             barrier_cooldown = barrier_cooldown_max;
             fx_spawn_sparks(x, y, c_white, 12);
         }

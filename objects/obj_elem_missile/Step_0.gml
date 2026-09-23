@@ -11,8 +11,9 @@ switch (kind) {
     // ---------------------------------------------------------------
     case "bubble":
         life -= _dt;
-        if (_p != noone) {
-            var _want = point_direction(x, y, _p.x, _p.y);
+        var _tb = elem_player_tracking(); // invisivel: a bolha segue reto
+        if (_tb != noone) {
+            var _want = point_direction(x, y, _tb.x, _tb.y);
             dir += clamp(angle_difference(_want, dir), -turn_rate * _dt, turn_rate * _dt);
         }
         x += lengthdir_x(spd * _dt, dir);
@@ -112,14 +113,21 @@ switch (kind) {
                 if (_p != noone) {
                     target_x = _p.x;
                     target_y = _p.y;
+                    // invisivel: o meteoro erra o alvo
+                    if (_p.invisible) {
+                        var _miss = random(360);
+                        target_x += lengthdir_x(random_range(90, 150), _miss);
+                        target_y += lengthdir_y(random_range(90, 150), _miss);
+                    }
                 }
                 fx_spawn_sparks(x, y, colour, 6);
             }
         } else if (phase == 1) {
             // marcador segue o jogador por 0.35s, depois trava por 0.45s
-            if (timer < 0.35 && _p != noone) {
-                target_x = lerp(target_x, _p.x, 0.25);
-                target_y = lerp(target_y, _p.y, 0.25);
+            var _ts = elem_player_tracking(); // invisivel: o marcador para de seguir
+            if (timer < 0.35 && _ts != noone) {
+                target_x = lerp(target_x, _ts.x, 0.25);
+                target_y = lerp(target_y, _ts.y, 0.25);
             }
             if (timer >= 0.8) {
                 phase = 2;
@@ -146,6 +154,12 @@ switch (kind) {
                 if (_p != noone) {
                     target_x = _p.x;
                     target_y = _p.y;
+                    // invisivel: o meteoro erra o alvo
+                    if (_p.invisible) {
+                        var _miss = random(360);
+                        target_x += lengthdir_x(random_range(90, 150), _miss);
+                        target_y += lengthdir_y(random_range(90, 150), _miss);
+                    }
                 }
             }
             break;
@@ -233,8 +247,9 @@ switch (kind) {
             exit;
         }
         if (heading == 0) {
-            if (_p != noone) {
-                var _want_o = point_direction(x, y, _p.x, _p.y);
+            var _to_p = elem_player_tracking();
+            if (_to_p != noone) {
+                var _want_o = point_direction(x, y, _to_p.x, _to_p.y);
                 dir += clamp(angle_difference(_want_o, dir), -turn_rate * _dt, turn_rate * _dt);
             }
             x += lengthdir_x(spd * _dt, dir);

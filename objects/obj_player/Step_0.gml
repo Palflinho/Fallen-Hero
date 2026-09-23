@@ -169,6 +169,8 @@ switch (state) {
         }
 
         on_ice = fh_place_on_ice(x, y);
+        // Cacador das Mares: pisa firme no gelo (nao escorrega)
+        if (on_ice && character_class == "archer" && element_affinity == "water") on_ice = false;
         var _on_puddle = fh_place_on_water_puddle(x, y);
         var _on_mud = fh_place_on_mud(x, y);
 
@@ -431,6 +433,12 @@ switch (state) {
                     }
                 }
                 fx_spawn_sparks(x, y, make_colour_rgb(180, 140, 80), 14);
+                // Interacao: o pilar arranca Gnomo/Salamandra de baixo da terra
+                with (obj_enemy_parent) {
+                    if (fh_untargetable && point_distance(x, y, other.x, other.y) <= 170 && (object_index == obj_spirit_gnomo || object_index == obj_spirit_salamandra)) {
+                        fh_force_emerge = true;
+                    }
+                }
             } else if (defend_mode == "mist_roll") {
                 invuln_timer = defend_duration;
                 player_enter_stealth();
@@ -537,6 +545,16 @@ switch (state) {
                     }
                 }
                 fx_spawn_death_burst(x, y, c_dkgray, 12);
+                // Interacao: as cinzas cegam - interrompem canalizacoes e revelam a Silfide
+                with (obj_enemy_parent) {
+                    if (point_distance(x, y, other.x, other.y) <= 130) {
+                        if (fh_channeling) {
+                            fh_interrupt = true;
+                            fx_spawn_damage_popup(x, y - body_radius - 26, "CEGADO!", true, c_gray);
+                        }
+                        fh_revealed = 4.0;
+                    }
+                }
             } else if (defend_mode == "shadowstep") {
                 var _target = noone;
                 var _min_dist = 9999;

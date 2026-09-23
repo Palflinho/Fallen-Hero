@@ -181,25 +181,35 @@ switch (state) {
             }
         }
 
+        // Criomante: a Prisao Criogenica congela o General no meio da investida
+        if (_player != noone && _player.state == "defend" && _player.defend_active && _player.defend_mode == "cryo_prison"
+            && point_distance(x, y, _player.x, _player.y) <= body_radius + 110) {
+            state = "crashed";
+            boss_open_window(3.0);
+            fx_spawn_damage_popup(x, y - body_radius - 30, "CONGELADO NA INVESTIDA!", true, c_aqua);
+            fx_spawn_death_burst(x, y, c_aqua, 20);
+            trigger_hitstop(0.12);
+            trigger_camera_shake(8);
+            break;
+        }
+
         // Cavaleiro com o ESCUDO erguido segura a investida
-        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius
-            && _player.character_class == "knight" && _player.state == "defend" && _player.defend_active
-            && (_player.defend_mode == "block" || _player.defend_mode == "guardian_aegis")) {
+        var _tier = (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius) ? player_shield_tier(_player) : 0;
+        if (_tier > 0) {
             trigger_hitstop(0.15);
             trigger_camera_shake(12);
             sfx_play("parry", 0.02, 1.0);
             sfx_play("slam", 0.02, 0.8);
             fx_spawn_death_burst(_player.x, _player.y, c_yellow, 20);
-            if (_player.defend_mode == "guardian_aegis") {
-                // Guardiao: muralha viva - nao recua, nao sofre dano, o General fica atordoado como se batesse na parede
-                state = "crashed";
+            state = "crashed";
+            if (_tier >= 2) {
+                // Guardiao (muralha viva) / Duelista (aparar perfeito): sem dano, janela cheia
                 boss_open_window(crash_duration);
-                fx_spawn_damage_popup(x, y - body_radius - 30, "MURALHA INABALAVEL! ATAQUE!", true, c_yellow);
+                fx_spawn_damage_popup(x, y - body_radius - 30, (_player.defend_mode == "parry") ? "APARADO! ATAQUE!" : "MURALHA INABALAVEL! ATAQUE!", true, c_yellow);
             } else {
-                // Cavaleiro comum: segura, mas e arrastado e sente o impacto (dano reduzido pelo bloqueio)
+                // Escudo comum / aura: segura, mas e arrastado e sente o impacto (reduzido pelo bloqueio)
                 player_take_damage(charge_damage, "physical");
                 elem_push_player(charge_dir, 420);
-                state = "crashed";
                 boss_open_window(2.0);
                 fx_spawn_damage_popup(x, y - body_radius - 30, "INVESTIDA CONTIDA!", true, c_yellow);
             }

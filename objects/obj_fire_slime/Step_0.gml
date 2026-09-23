@@ -89,7 +89,7 @@ switch (state) {
         if (_player != noone) ai_enemy_move(point_direction(x, y, _player.x, _player.y), move_speed * 0.45, _dt);
 
         if (swell_timer <= 0) {
-            elem_hit_player_circle(x, y, explode_radius, elem_dmg(18), "magical");
+            if (!swell_safe) elem_hit_player_circle(x, y, explode_radius, elem_dmg(18), "magical");
             elem_hit_enemies_circle(x, y, explode_radius, 20, id);
             for (var _e = 0; _e < 5; _e++) {
                 var _ea = _e * 72 + random(30);

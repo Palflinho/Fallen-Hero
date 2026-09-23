@@ -21,6 +21,7 @@ knockback_resistance = 0.0;
 
 // --- Slime de Fogo: abaixo de 30% de vida incha e explode (1.2s), ferindo tudo ao redor ---
 swell_triggered = false;
+swell_safe = false;   // detonado por flecha incendiaria: nao fere o jogador
 swell_time = 1.2;
 swell_timer = 0;
 explode_radius = 64;

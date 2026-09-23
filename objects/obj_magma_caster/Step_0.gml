@@ -70,14 +70,25 @@ switch (state) {
         break;
 
     case "channel":
+        fh_channeling = true;
         channel_timer -= _dt;
+        if (fh_interrupt) {
+            // Maga interrompeu: os meteoros que ainda nao cairam se desfazem
+            with (obj_elem_missile) {
+                if (owner == other.id && kind == "meteor" && (delay > 0 || phase == 0)) instance_destroy();
+            }
+            channel_timer = 0;
+            fh_vuln_timer = 1.5;
+        }
         scale_y = 1.3 + 0.05 * sin(current_time * 0.04);
         scale_x = 0.8;
         if (random(1) < 0.3) fx_spawn_sparks(x, y - body_radius, c_orange, 1);
         if (channel_timer <= 0) {
             state = "exhausted";
-            exhausted_timer = 1.0;
-            fh_vuln_timer = 1.0;
+            exhausted_timer = fh_interrupt ? 1.5 : 1.0;
+            fh_vuln_timer = exhausted_timer;
+            fh_channeling = false;
+            fh_interrupt = false;
             attack_cooldown_timer = attack_cooldown;
         }
         break;

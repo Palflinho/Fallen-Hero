@@ -70,6 +70,19 @@ switch (state) {
         break;
 
     case "hop":
+        // Arqueiro: uma flecha derruba o slime no ar
+        if (fh_air_shot) {
+            fh_air_shot = false;
+            fh_untargetable = false;
+            draw_z = 0;
+            state = "recover";
+            recover_timer = 1.2;
+            fh_vuln_timer = 1.2;
+            attack_cooldown_timer = attack_cooldown + 0.6;
+            fx_spawn_damage_popup(x, y - 26, "DERRUBADO!", true, c_yellow);
+            fx_spawn_sparks(x, y, c_white, 12);
+            break;
+        }
         hop_timer += _dt;
         var _t = clamp(hop_timer / hop_time, 0, 1);
         var _nx = lerp(hop_start_x, hop_target_x, _t);
@@ -110,5 +123,8 @@ if (state != "hop") {
     fh_untargetable = false;
     draw_z = 0;
 }
+fh_air = (state == "hop");
+fh_mist_cut = (state == "hop");
+fh_air_shot = false;
 
 ai_update_sprite_animation();

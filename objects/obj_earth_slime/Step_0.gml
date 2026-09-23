@@ -96,6 +96,25 @@ switch (state) {
         if (random(1) < 0.4) fx_spawn_sparks(x, y + body_radius, make_colour_rgb(160, 120, 70), 1);
         if (!roll_hit && _player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius + 2) {
             roll_hit = true;
+            var _tier = player_shield_tier(_player);
+            if (_tier > 0) {
+                // Cavaleiro: o slime quica no escudo e fica tonto; Guardiao/Duelista quebram a carapaca
+                if (_tier == 1) player_take_damage(elem_dmg(12), "physical");
+                state = "dizzy";
+                dizzy_timer = 1.5;
+                fh_vuln_timer = 1.5;
+                if (_tier >= 2) {
+                    fh_shell_hits = 0;
+                    defense = 0;
+                    fh_vuln_timer = 2.5;
+                    dizzy_timer = 2.0;
+                }
+                attack_cooldown_timer = attack_cooldown + 0.8;
+                fx_spawn_damage_popup(x, y - 26, (_tier >= 2) ? "CARAPACA ESTILHACADA!" : "QUICOU NO ESCUDO!", true, c_yellow);
+                fx_spawn_sparks(x, y, c_ltgray, 12);
+                sfx_play("parry", 0.05, 0.8);
+                break;
+            }
             player_take_damage(elem_dmg(12), "physical");
             elem_push_player(roll_dir, 280);
         }

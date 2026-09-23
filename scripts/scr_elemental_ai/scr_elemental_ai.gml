@@ -32,6 +32,10 @@ function elem_player() {
 function elem_push_player(_dir, _force) {
     var _p = instance_find(obj_player, 0);
     if (_p == noone) return;
+    if (player_is_anchored(_p)) {
+        fx_spawn_sparks(_p.x, _p.y + _p.body_radius, make_colour_rgb(160, 130, 80), 4);
+        return;
+    }
     _p.fh_push_vx = lengthdir_x(_force, _dir);
     _p.fh_push_vy = lengthdir_y(_force, _dir);
 }
@@ -109,7 +113,9 @@ function elem_reflect_player_projectiles(_x, _y, _radius, _colour) {
     var _objs = [obj_atk_arrow, obj_atk_fireball];
     for (var _i = 0; _i < array_length(_objs); _i++) {
         with (_objs[_i]) {
-            if (point_distance(x, y, _x, _y) <= _radius) {
+            // Aeromante e Mestre do Vendaval: vento nao reflete vento
+            var _wind_user = (instance_exists(owner) && owner.element_affinity == "wind" && (owner.character_class == "mage" || owner.character_class == "archer"));
+            if (!_wind_user && point_distance(x, y, _x, _y) <= _radius) {
                 var _back = (_p != noone) ? point_direction(x, y, _p.x, _p.y) : point_direction(0, 0, -dir_x, -dir_y);
                 var _r = instance_create_layer(x, y, layer, obj_enemy_projectile);
                 _r.owner = noone;
@@ -356,4 +362,121 @@ function boss_draw_label(_name, _hint) {
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_set_color(c_white);
+}
+
+// =========================================================================
+// INTERACOES DE CLASSE (Iwata/Sakurai: "cada heroi le o mesmo inimigo de um jeito")
+// Cada CLASSE tem um verbo base e cada ESPECIALIZACAO uma interacao propria.
+//   Cavaleiro  - SEGURAR: escudo erguido para investidas.
+//   Maga       - INTERROMPER: magia cancela canalizacoes (curas, barreiras, chuvas).
+//   Arqueiro   - DERRUBAR: flechas derrubam o que voa.
+//   Assassino  - SOMBRA: invisivel, o que persegue perde o alvo; nucleos pelas costas.
+// Tabela completa em docs/INTERACOES_DE_CLASSE.md
+// =========================================================================
+
+function player_is_archetype(_p, _class, _elem) {
+    return (_p != noone && instance_exists(_p) && _p.character_class == _class && _p.element_affinity == _elem);
+}
+
+// Escudo do Cavaleiro contra investidas: 0 = nenhum, 1 = parcial (escudo comum, aura), 2 = total (Guardiao, Duelista)
+function player_shield_tier(_p) {
+    if (_p == noone || !instance_exists(_p) || _p.character_class != "knight") return 0;
+    if (_p.state != "defend" || !_p.defend_active) return 0;
+    if (_p.defend_mode == "guardian_aegis" || _p.defend_mode == "parry") return 2;
+    if (_p.defend_mode == "block" || _p.defend_mode == "paladin_aura") return 1;
+    return 0;
+}
+
+// Ancorado: Balista da Terra (ancora) e Berserker em Furia ignoram empurroes e puxoes
+function player_is_anchored(_p) {
+    if (_p == noone || !instance_exists(_p)) return false;
+    if (variable_instance_exists(_p, "earth_anchored") && _p.earth_anchored) return true;
+    if (_p.state == "defend" && _p.defend_active && _p.defend_mode == "berserk_fury") return true;
+    return false;
+}
+
+// Jogador que pode ser RASTREADO (invisivel = o ataque perde o alvo)
+function elem_player_tracking() {
+    var _p = elem_player();
+    if (_p == noone || _p.invisible) return noone;
+    return _p;
+}
+
+// Puxao continuo (vortices, vendavais) respeitando a ancora
+function elem_pull_player(_dx, _dy) {
+    var _p = instance_find(obj_player, 0);
+    if (_p == noone || player_is_anchored(_p)) return;
+    with (_p) fh_move_and_collide(_dx, _dy);
+}
+
+// Chamado por player_on_hit_enemy ANTES do calculo de dano.
+// Retorna o dano (possivelmente modificado) ou -1 quando a interacao consome o golpe.
+function class_interaction_on_hit(_o, _e, _dmg) {
+    var _cls = _o.character_class;
+    var _el = _o.element_affinity;
+    var _obj = _e.object_index;
+
+    // ---------------- ARQUEIRO: derrubar voadores ----------------
+    if (_cls == "archer") {
+        if (_e.fh_untargetable && _e.fh_air) {
+            _e.fh_air_hits += 1;
+            _e.fh_air_shot = true;
+            fx_spawn_sparks(_e.x, _e.y - _e.draw_z, c_white, 8);
+            return -1;
+        }
+        if (_obj == obj_wisp) {
+            fx_spawn_damage_popup(_e.x, _e.y - 24, "ABATIDO!", true, c_yellow);
+            return _e.hp + 999;
+        }
+        // Balistico Infernal: flecha incendiaria detona o Slime de Fogo inchado (explosao so fere inimigos)
+        if (_el == "fire" && _obj == obj_fire_slime && _e.state == "swell") {
+            _e.swell_timer = 0;
+            _e.swell_safe = true;
+            fx_spawn_damage_popup(_e.x, _e.y - 30, "DETONADO!", true, c_orange);
+        }
+    }
+
+    // ---------------- MAGA: interromper canalizacoes ----------------
+    if (_cls == "mage") {
+        if (_e.fh_channeling && !_e.fh_interrupt) {
+            _e.fh_interrupt = true;
+            fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 26, "INTERROMPIDO!", true, c_fuchsia);
+            trigger_hitstop(0.06);
+        }
+        // Criomante: gelo apaga o Slime de Fogo inchado
+        if (_el == "water" && _obj == obj_fire_slime && _e.state == "swell") {
+            _e.state = "chase";
+            _e.scale_x = 1;
+            _e.scale_y = 1;
+            fx_spawn_damage_popup(_e.x, _e.y - 30, "APAGADO!", true, c_aqua);
+            fx_spawn_sparks(_e.x, _e.y, c_white, 12);
+        }
+        // Piromante: fogo derrete o General da Agua congelado
+        if (_el == "fire" && _obj == obj_boss && _e.state == "frozen") {
+            _dmg *= 1.3;
+            if (random(1) < 0.35) fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 20, "DERRETENDO!", false, c_orange);
+        }
+        // Geomante: terra atravessa terra (carapacas e a frente do Tita)
+        if (_el == "earth" && _e.fh_shell_hits > 0) _e.fh_pierce_next = 0.5;
+    }
+
+    // ---------------- ASSASSINO: sombra e pontos fracos ----------------
+    if (_cls == "assassin") {
+        // Algoz do Tufao: corta o vento (acerta quem esta na nevoa ou saltando)
+        if (_el == "wind" && _e.fh_untargetable && _e.fh_mist_cut) {
+            _e.fh_bypass_untargetable = true;
+            if (random(1) < 0.3) fx_spawn_damage_popup(_e.x, _e.y - 26, "CORTA O VENTO!", false, c_white);
+        }
+        // Carrasco de Obsidiana: obsidiana corta pedra
+        if (_el == "earth" && _e.fh_shell_hits > 0) _e.fh_pierce_next = 0.5;
+        // Nucleo do Tita pelas costas: dano dobrado
+        if (_obj == obj_boss4 && !_e.vulnerable) {
+            var _from = point_direction(_e.x, _e.y, _o.x, _o.y);
+            if (abs(angle_difference(_e.facing_dir, _from)) > _e.fh_shell_arc) {
+                _dmg *= 2;
+                if (random(1) < 0.3) fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 20, "NUCLEO PERFURADO!", true, c_yellow);
+            }
+        }
+    }
+    return _dmg;
 }

@@ -20,6 +20,7 @@ if (state == "patrol" || state == "chase") {
 }
 
 fh_untargetable = (state == "mist");
+fh_mist_cut = (state == "mist"); // Algoz do Tufao corta a nevoa
 draw_alpha = (state == "mist") ? 0.3 : 1;
 
 switch (state) {

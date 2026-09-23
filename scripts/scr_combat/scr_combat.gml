@@ -271,13 +271,29 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
         enemy_ensure_scaling(_inst);
     }
 
-    // Ganchos elementais: intangivel (no ar / nevoa / enterrado)
-    if (variable_instance_exists(_inst, "fh_untargetable") && _inst.fh_untargetable) return;
+    // Ganchos elementais: intangivel (no ar / nevoa / enterrado), salvo interacao de classe
+    if (variable_instance_exists(_inst, "fh_untargetable") && _inst.fh_untargetable) {
+        if (_inst.fh_bypass_untargetable) _inst.fh_bypass_untargetable = false;
+        else return;
+    }
 
     // Carapaca frontal (Slime de Terra, Golem de Pedra): golpes pela frente ricocheteiam
     if (variable_instance_exists(_inst, "fh_shell_hits") && _inst.fh_shell_hits > 0 && !is_undefined(_source_x) && !is_undefined(_source_y)) {
         var _from = point_direction(_inst.x, _inst.y, _source_x, _source_y);
-        if (abs(angle_difference(_inst.facing_dir, _from)) <= _inst.fh_shell_arc) {
+        if (abs(angle_difference(_inst.facing_dir, _from)) <= _inst.fh_shell_arc && _inst.fh_pierce_next > 0) {
+            // Geomante / Carrasco de Obsidiana: atravessa a carapaca com dano reduzido e racha 2 placas
+            _amount *= _inst.fh_pierce_next;
+            _inst.fh_pierce_next = 0;
+            if (_inst.fh_shell_hits < 9999) {
+                _inst.fh_shell_hits = max(0, _inst.fh_shell_hits - 2);
+                if (_inst.fh_shell_hits <= 0) {
+                    fx_spawn_damage_popup(_inst.x, _inst.y - 26, "CARAPACA QUEBRADA!", true, c_yellow);
+                    _inst.fh_vuln_timer = max(_inst.fh_vuln_timer, 2.5);
+                    _inst.defense = 0;
+                }
+            }
+            if (random(1) < 0.35) fx_spawn_damage_popup(_inst.x, _inst.y - 22, "ATRAVESSOU!", false, make_colour_rgb(200, 160, 100));
+        } else if (abs(angle_difference(_inst.facing_dir, _from)) <= _inst.fh_shell_arc) {
             _inst.fh_shell_hits -= 1;
             sfx_play("parry", 0.08, 0.7);
             fx_spawn_sparks(_inst.x + lengthdir_x(_inst.body_radius, _from), _inst.y + lengthdir_y(_inst.body_radius, _from), c_ltgray, 6);
@@ -295,6 +311,8 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
             return;
         }
     }
+
+    if (variable_instance_exists(_inst, "fh_pierce_next")) _inst.fh_pierce_next = 0;
 
     // Escudo de pedra concedido pelo Totem de Terra
     if (variable_instance_exists(_inst, "fh_totem_shield") && _inst.fh_totem_shield > 0) {
@@ -457,6 +475,8 @@ function player_apply_slow(_multiplier, _duration) {
     var _p = instance_find(obj_player, 0);
     if (_p == noone) return;
     if (variable_instance_exists(_p, "synth_vontade_indomavel") && _p.synth_vontade_indomavel > 0) return;
+    // Berserker em Furia nao e contido (imune a lentidao e aprisionamento)
+    if (_p.state == "defend" && _p.defend_active && _p.defend_mode == "berserk_fury") return;
     _p.slow_active = true;
     _p.slow_multiplier = _multiplier;
     _p.slow_duration = max(_p.slow_duration, _duration);
@@ -468,8 +488,13 @@ function player_apply_slow(_multiplier, _duration) {
 // lifesteal, on-hit poison) only need to be written once.
 function player_on_hit_enemy(_owner, _enemy, _base_damage) {
     if (!instance_exists(_enemy)) return;
+    // Interacoes de classe (derrubar voadores, interromper, cortar o vento, nucleo...)
+    if (instance_exists(_owner) && variable_instance_exists(_owner, "character_class") && variable_instance_exists(_enemy, "fh_air")) {
+        _base_damage = class_interaction_on_hit(_owner, _enemy, _base_damage);
+        if (_base_damage < 0) return;
+    }
     // No ar / na nevoa / enterrado: o golpe atravessa sem efeitos de acerto
-    if (variable_instance_exists(_enemy, "fh_untargetable") && _enemy.fh_untargetable) return;
+    if (variable_instance_exists(_enemy, "fh_untargetable") && _enemy.fh_untargetable && !_enemy.fh_bypass_untargetable) return;
 
     if (!instance_exists(_owner)) {
         enemy_take_damage(_enemy, _base_damage);

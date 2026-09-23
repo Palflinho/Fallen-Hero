@@ -41,7 +41,7 @@ if (boss_phase >= 3 && (state == "air" || state == "dive_mark")) {
 }
 if (gust_active > 0) {
     gust_active -= _dt;
-    if (_player != noone) with (_player) fh_move_and_collide(lengthdir_x(95 * _dt, other.gust_dir), lengthdir_y(95 * _dt, other.gust_dir));
+    elem_pull_player(lengthdir_x(95 * _dt, gust_dir), lengthdir_y(95 * _dt, gust_dir));
 }
 
 // ---- Janela: asas presas no chao ----
@@ -67,6 +67,31 @@ if (vulnerable) {
         }
     }
     exit;
+}
+
+// ---- Arqueiro: 5 flechas enquanto ele voa o DERRUBAM ----
+fh_air = fh_untargetable;
+if (fh_air_shot) {
+    fh_air_shot = false;
+    if (fh_air_hits >= 5) {
+        fh_air_hits = 0;
+        var _fall = fh_find_free_spawn_pos(x, y, body_radius);
+        x = _fall.x;
+        y = _fall.y;
+        draw_z = 0;
+        fh_untargetable = false;
+        fh_air = false;
+        state = "grounded";
+        boss_open_window(grounded_duration);
+        fx_spawn_damage_popup(x, y - body_radius - 30, "DERRUBADO! ATAQUE!", true, c_yellow);
+        fx_spawn_death_burst(x, y, c_white, 20);
+        trigger_camera_shake(8);
+        trigger_hitstop(0.1);
+        sfx_play("stagger", 0.04);
+        exit;
+    } else {
+        fx_spawn_damage_popup(x, y - draw_z - body_radius - 20, "PENAS " + string(fh_air_hits) + "/5", false, c_white);
+    }
 }
 
 switch (state) {
@@ -121,9 +146,10 @@ switch (state) {
         state_timer -= _dt;
         fh_untargetable = true;
         draw_z = lerp(draw_z, air_height * 1.3, 0.1);
-        if (_player != noone && state_timer > 0.5) {
-            dive_x = lerp(dive_x, _player.x, 0.2);
-            dive_y = lerp(dive_y, _player.y, 0.2);
+        var _trk = elem_player_tracking(); // assassino invisivel: a sombra perde o alvo
+        if (_trk != noone && state_timer > 0.5) {
+            dive_x = lerp(dive_x, _trk.x, 0.2);
+            dive_y = lerp(dive_y, _trk.y, 0.2);
         }
         x = lerp(x, dive_x, 0.25);
         y = lerp(y, dive_y, 0.25);

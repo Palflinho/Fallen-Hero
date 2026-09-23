@@ -143,6 +143,8 @@ if (variable_instance_exists(id, "earth_fracture") && earth_fracture > 0) earth_
 if (variable_instance_exists(id, "spectral_mark") && spectral_mark > 0) spectral_mark -= _dt;
 
 if (fh_vuln_timer > 0) fh_vuln_timer -= _dt;
+if (fh_revealed > 0) fh_revealed -= _dt;
+fh_bypass_untargetable = false;
 
 move_speed_effective = move_speed * (slow_active ? slow_multiplier : 1);
 if (fh_haste_timer > 0) {

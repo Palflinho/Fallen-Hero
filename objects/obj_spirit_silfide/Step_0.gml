@@ -22,7 +22,8 @@ if (state == "patrol" || state == "chase" || state == "idle") {
 switch (state) {
     case "hidden":
         state_timer -= _dt;
-        draw_alpha = lerp(draw_alpha, 0.06, 0.15);
+        // Revelada pela bomba de cinzas (Lamina Vulcanica)
+        draw_alpha = lerp(draw_alpha, (fh_revealed > 0) ? 0.85 : 0.06, 0.15);
         if (_player != noone) {
             var _d = point_distance(x, y, _player.x, _player.y);
             var _to = point_direction(x, y, _player.x, _player.y);
@@ -70,6 +71,19 @@ switch (state) {
         draw_alpha = 1;
         fh_move_and_collide(lengthdir_x(680 * _dt, dash_dir), lengthdir_y(680 * _dt, dash_dir));
         if (random(1) < 0.6) fx_spawn_sparks(x, y, c_white, 1);
+        if (!dash_hit && _player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius + 6 && player_shield_tier(_player) > 0) {
+            // Cavaleiro segura a rajada: ela rebate no escudo e fica exposta mais tempo
+            dash_hit = true;
+            var _st = player_shield_tier(_player);
+            if (_st == 1) player_take_damage(elem_dmg(16), "physical");
+            state = "exposed";
+            state_timer = (_st >= 2) ? 2.8 : 2.0;
+            fh_vuln_timer = state_timer;
+            fx_spawn_damage_popup(x, y - 30, "REBATIDA NO ESCUDO!", true, c_yellow);
+            trigger_hitstop(0.1);
+            sfx_play("parry", 0.05, 0.9);
+            break;
+        }
         if (!dash_hit && _player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius + 6) {
             dash_hit = true;
             player_take_damage(elem_dmg(16), "physical");
@@ -122,7 +136,7 @@ switch (state) {
             if (_pd <= 320 && _pd > 16) {
                 var _pull_dir = point_direction(_player.x, _player.y, x, y);
                 var _pull = 75 * _dt;
-                with (_player) fh_move_and_collide(lengthdir_x(_pull, _pull_dir), lengthdir_y(_pull, _pull_dir));
+                elem_pull_player(lengthdir_x(_pull, _pull_dir), lengthdir_y(_pull, _pull_dir));
             }
             if (vortex_tick > 0) vortex_tick -= _dt;
             if (_pd <= body_radius + 30 && vortex_tick <= 0) {

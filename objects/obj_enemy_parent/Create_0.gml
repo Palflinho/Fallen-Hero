@@ -149,3 +149,15 @@ fh_infused = false;       // infundido por um Fogo-fatuo
 draw_z = 0;               // altura visual (saltos, voo)
 draw_alpha = 1;           // transparencia do corpo (nevoa, invisibilidade)
 is_spirit_boss = false;
+
+// Interacoes de classe (ver docs/INTERACOES_DE_CLASSE.md)
+fh_air = false;                // voando: flechas podem derrubar
+fh_air_hits = 0;
+fh_air_shot = false;
+fh_mist_cut = false;           // nevoa/salto: o Algoz do Tufao consegue cortar
+fh_bypass_untargetable = false;
+fh_channeling = false;         // canalizando: magia interrompe
+fh_interrupt = false;
+fh_pierce_next = 0;            // proximo golpe atravessa carapaca (fracao do dano)
+fh_force_emerge = false;       // Pilar de Basalto arranca quem esta sob o chao
+fh_revealed = 0;               // revelado (Sílfide) pela bomba de cinzas
