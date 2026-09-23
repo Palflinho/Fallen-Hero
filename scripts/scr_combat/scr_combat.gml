@@ -24,7 +24,7 @@ if (!variable_global_exists("combat_particles")) {
 
 function fx_spawn_damage_popup(_x, _y, _amount, _is_crit, _col) {
     if (is_undefined(_col)) _col = _is_crit ? c_yellow : c_white;
-    var _txt = is_string(_amount) ? _amount : (string(round(_amount)) + (_is_crit ? "!" : ""));
+    var _txt = is_string(_amount) ? tr(_amount) : (string(round(_amount)) + (_is_crit ? "!" : ""));
     var _popup = {
         x: _x + random_range(-6, 6),
         y: _y - 12 + random_range(-4, 4),

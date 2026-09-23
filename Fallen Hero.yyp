@@ -117,6 +117,7 @@
     {"id":{"name":"scr_ai","path":"scripts/scr_ai/scr_ai.yy",},},
     {"id":{"name":"scr_elemental_ai","path":"scripts/scr_elemental_ai/scr_elemental_ai.yy",},},
     {"id":{"name":"scr_enemy_visuals","path":"scripts/scr_enemy_visuals/scr_enemy_visuals.yy",},},
+    {"id":{"name":"scr_locale_en","path":"scripts/scr_locale_en/scr_locale_en.yy",},},
     {"id":{"name":"scr_audio","path":"scripts/scr_audio/scr_audio.yy",},},
     {"id":{"name":"scr_combat","path":"scripts/scr_combat/scr_combat.yy",},},
     {"id":{"name":"scr_dialogue_data","path":"scripts/scr_dialogue_data/scr_dialogue_data.yy",},},

@@ -833,7 +833,7 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
     
         // ================= DADOS DO TALENTO ENCONTRADO =================
         var _found_def = get_talent_def_by_id(global.chest_reward_talent_id);
-        var _found_label = is_undefined(_found_def) ? global.chest_reward_talent_id : _found_def.label;
+        var _found_label = is_undefined(_found_def) ? global.chest_reward_talent_id : talent_get_label(_found_def);
         var _found_icon = is_undefined(_found_def) ? "sword" : talent_get_icon_type(_found_def);
         var _found_desc_val = is_undefined(_found_def) ? "" : talent_get_desc_value(_found_def);
         var _found_desc_flv = is_undefined(_found_def) ? "" : talent_get_desc_flavor(_found_def);
@@ -982,7 +982,7 @@ function hud_draw_chest_reward(_hud, target, _gw, _gh) {
                 draw_text_ext(_cx + _col_w / 2, _cols_start_y + 68, "Instale com Rank " + string(_cur_rank) + "!", 15, _col_w - 20);
             } else {
                 var _cur_def = get_talent_def_by_id(_cur_id);
-                var _cur_label = is_undefined(_cur_def) ? _cur_id : _cur_def.label;
+                var _cur_label = is_undefined(_cur_def) ? _cur_id : talent_get_label(_cur_def);
                 var _cur_icon = is_undefined(_cur_def) ? "sword" : talent_get_icon_type(_cur_def);
     
                 draw_talent_icon(_cur_icon, _cx + _col_w / 2, _cols_start_y + 42, 22, c_yellow);
@@ -1365,7 +1365,7 @@ function hud_draw_hero_sheet(_hud, target, _gw, _gh) {
             }
     
             var _def = get_talent_def_by_id(_tid);
-            var _tlabel = is_undefined(_def) ? _tid : _def.label;
+            var _tlabel = is_undefined(_def) ? _tid : talent_get_label(_def);
             var _ticon = is_undefined(_def) ? "sword" : talent_get_icon_type(_def);
             var _tdesc = is_undefined(_def) ? "" : talent_get_desc_value(_def);
     

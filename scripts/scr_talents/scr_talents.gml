@@ -1103,7 +1103,7 @@ function load_meta_from_disk() {
             global.reclaimed_elements = { water: false, fire: false, wind: false, earth: false };
         }
         if (variable_struct_exists(_data, "game_language")) {
-            global.game_language = _data.game_language;
+            global.game_language = (_data.game_language == "en") ? "en" : "pt";
         }
     }
 
@@ -1846,12 +1846,32 @@ function is_world_paused() {
     return global.paused || global.attr_window_open || global.chest_reward_open || (variable_global_exists("midrun_shop_open") && global.midrun_shop_open) || (variable_global_exists("run_victory") && global.run_victory) || (variable_global_exists("dialogue_active") && global.dialogue_active) || global.hitstop_timer > 0;
 }
 
+// Traducao do talento para o idioma atual: [nome, descricao, efeito] (scr_locale_en).
+// Retorna undefined em portugues ou se o talento ainda nao tiver traducao.
+function talent_get_translation(_t) {
+    if (!is_struct(_t) || loc_get_language() != "en" || !variable_struct_exists(_t, "id")) return undefined;
+    locale_en_talents_init();
+    if (variable_struct_exists(global.tr_talent_en, _t.id)) return global.tr_talent_en[$ _t.id];
+    return undefined;
+}
+
+function talent_get_label(_t) {
+    if (!is_struct(_t)) return "";
+    var _tr = talent_get_translation(_t);
+    if (!is_undefined(_tr)) return _tr[0];
+    return variable_struct_exists(_t, "label") ? _t.label : "";
+}
+
 function talent_get_desc_flavor(_t) {
+    var _tr = talent_get_translation(_t);
+    if (!is_undefined(_tr)) return _tr[1];
     if (is_struct(_t) && variable_struct_exists(_t, "desc_flavor")) return _t.desc_flavor;
     return "";
 }
 
 function talent_get_desc_value(_t) {
+    var _tr = talent_get_translation(_t);
+    if (!is_undefined(_tr)) return _tr[2];
     if (is_struct(_t) && variable_struct_exists(_t, "desc_value")) return _t.desc_value;
     return "";
 }

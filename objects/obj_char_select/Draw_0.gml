@@ -633,12 +633,12 @@ switch (state) {
                         draw_set_valign(fa_middle);
                         draw_set_color(_is_cursor ? c_yellow : (_is_picked ? c_white : c_ltgray));
                         var _max_text_w = talent_card_w - 16;
-                        var _line_w = string_width_ext(_t.label, 14, _max_text_w);
+                        var _line_w = string_width_ext(talent_get_label(_t), 14, _max_text_w);
                         if (_line_w > _max_text_w) {
                             var _sc = _max_text_w / _line_w;
-                            draw_text_transformed(_cx + talent_card_w / 2, _cy + 74, _t.label, _sc, _sc, 0);
+                            draw_text_transformed(_cx + talent_card_w / 2, _cy + 74, talent_get_label(_t), _sc, _sc, 0);
                         } else {
-                            draw_text_ext(_cx + talent_card_w / 2, _cy + 74, _t.label, 14, _max_text_w);
+                            draw_text_ext(_cx + talent_card_w / 2, _cy + 74, talent_get_label(_t), 14, _max_text_w);
                         }
 
                         // Selection badge
@@ -688,7 +688,7 @@ switch (state) {
                 draw_set_halign(fa_left);
                 draw_set_valign(fa_top);
                 draw_set_color(c_yellow);
-                draw_text(_box_x + 130, _box_y + 18, _cur_t.label);
+                draw_text(_box_x + 130, _box_y + 18, talent_get_label(_cur_t));
 
                 draw_set_halign(fa_right);
                 if (_cur_picked) {
@@ -899,12 +899,12 @@ switch (state) {
                     draw_set_valign(fa_middle);
                     draw_set_color(_is_cursor ? c_yellow : (_unlocked ? c_white : (_elem_locked ? c_gray : c_ltgray)));
                     var _max_text_w = talent_card_w - 16;
-                    var _line_w = string_width_ext(_t.label, 14, _max_text_w);
+                    var _line_w = string_width_ext(talent_get_label(_t), 14, _max_text_w);
                     if (_line_w > _max_text_w) {
                         var _sc = _max_text_w / _line_w;
-                        draw_text_transformed(_cx + talent_card_w / 2, _cy + 74, _t.label, _sc, _sc, 0);
+                        draw_text_transformed(_cx + talent_card_w / 2, _cy + 74, talent_get_label(_t), _sc, _sc, 0);
                     } else {
-                        draw_text_ext(_cx + talent_card_w / 2, _cy + 74, _t.label, 14, _max_text_w);
+                        draw_text_ext(_cx + talent_card_w / 2, _cy + 74, talent_get_label(_t), 14, _max_text_w);
                     }
 
                     // Status Badge in card
@@ -959,7 +959,7 @@ switch (state) {
             draw_set_halign(fa_left);
             draw_set_valign(fa_top);
             draw_set_color(c_yellow);
-            draw_text(_box_x + 130, _box_y + 18, _cur_t.label);
+            draw_text(_box_x + 130, _box_y + 18, talent_get_label(_cur_t));
 
             draw_set_halign(fa_right);
             if (_unlocked) {
