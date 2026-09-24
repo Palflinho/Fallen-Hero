@@ -12,6 +12,70 @@ function fh_place_free_of_walls(_x, _y, _radius) {
     return _free;
 }
 
+function fh_line_intersects_wall(_x1, _y1, _x2, _y2) {
+    var _hit = false;
+    var _dx = _x2 - _x1;
+    var _dy = _y2 - _y1;
+
+    with (obj_wall) {
+        var _w = base_size * image_xscale;
+        var _h = base_size * image_yscale;
+        var _left = min(x, x + _w);
+        var _right = max(x, x + _w);
+        var _top = min(y, y + _h);
+        var _bottom = max(y, y + _h);
+
+        // Se algum dos extremos estiver dentro da caixa da parede
+        if ((_x1 >= _left && _x1 <= _right && _y1 >= _top && _y1 <= _bottom) ||
+            (_x2 >= _left && _x2 <= _right && _y2 >= _top && _y2 <= _bottom)) {
+            _hit = true;
+            break;
+        }
+
+        var _tmin = 0.0;
+        var _tmax = 1.0;
+        var _hit_possible = true;
+
+        // Eixo X
+        if (abs(_dx) < 0.0001) {
+            if (_x1 < _left || _x1 > _right) _hit_possible = false;
+        } else {
+            var _inv_dx = 1.0 / _dx;
+            var _t1 = (_left - _x1) * _inv_dx;
+            var _t2 = (_right - _x1) * _inv_dx;
+            if (_t1 > _t2) {
+                var _tmp = _t1; _t1 = _t2; _t2 = _tmp;
+            }
+            if (_t1 > _tmin) _tmin = _t1;
+            if (_t2 < _tmax) _tmax = _t2;
+            if (_tmin > _tmax) _hit_possible = false;
+        }
+
+        // Eixo Y
+        if (_hit_possible) {
+            if (abs(_dy) < 0.0001) {
+                if (_y1 < _top || _y1 > _bottom) _hit_possible = false;
+            } else {
+                var _inv_dy = 1.0 / _dy;
+                var _t3 = (_top - _y1) * _inv_dy;
+                var _t4 = (_bottom - _y1) * _inv_dy;
+                if (_t3 > _t4) {
+                    var _tmp = _t3; _t3 = _t4; _t4 = _tmp;
+                }
+                if (_t3 > _tmin) _tmin = _t3;
+                if (_t4 < _tmax) _tmax = _t4;
+                if (_tmin > _tmax) _hit_possible = false;
+            }
+        }
+
+        if (_hit_possible && _tmin <= _tmax && _tmax >= 0.0 && _tmin <= 1.0) {
+            _hit = true;
+            break;
+        }
+    }
+    return _hit;
+}
+
 function fh_move_and_collide(_amount_x, _amount_y) {
     if (_amount_x != 0) {
         var _nx = x + _amount_x;
@@ -515,4 +579,29 @@ function touch_room_clicked(_x1, _y1, _x2, _y2) {
     }
     return false;
 }
+
+function player_change_class(_player_inst, _new_class, _new_element, _new_talents = undefined) {
+    global.selected_character = _new_class;
+    global.selected_element = _new_element;
+    if (_new_talents != undefined) {
+        global.chosen_talent_ids = _new_talents;
+    }
+
+    if (instance_exists(_player_inst)) {
+        with (_player_inst) {
+            var _cur_x = x;
+            var _cur_y = y;
+            event_perform(ev_create, 0);
+            x = _cur_x;
+            y = _cur_y;
+        }
+    }
+
+    if (variable_global_exists("current_save_slot") && save_slot_exists(global.current_save_slot)) {
+        save_slot_save_character_select(global.current_save_slot, _new_class, _new_element, global.chosen_talent_ids);
+    }
+
+    sfx_play("equip");
+}
+
 

@@ -22,6 +22,8 @@ switch (state) {
         if (_seen != noone) {
             state = "chase";
             lost_sight_timer = 0;
+            attack_cooldown_timer = max(attack_cooldown_timer, 0.70);
+            consecutive_shots = 0;
         }
         break;
 
@@ -42,7 +44,7 @@ switch (state) {
         if (_player == noone) break;
         facing_dir = point_direction(x, y, _player.x, _player.y);
 
-        if (_dist <= attack_range && attack_cooldown_timer <= 0) {
+        if (_dist <= attack_range && attack_cooldown_timer <= 0 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "windup";
             attack_windup_timer = attack_windup;
         } else if (_dist < preferred_range - 30) {

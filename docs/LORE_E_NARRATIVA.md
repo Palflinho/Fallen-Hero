@@ -193,3 +193,33 @@ Com a respiração entrecortada, os olhos cansados e apontando para a janela orb
 
 ### C. Para a Trilha Sonora e Efeitos de Áudio
 * **Identidade Sonora:** Não usar orquestra épica genérica de Hollywood. Priorizar instrumentos de cordas melancólicos (violoncelo, rabeca), percussão de madeira pesada para os combates do Rinoceronte, sons sibilantes de vento e o eco lúgubre característico do canto do urutau ressoando nos momentos de contemplação e silêncio.
+
+---
+
+## 9. A Vila Refúgio e os Habitantes Notáveis (O Hub Central)
+
+A **Vila Subterrânea** (`room_village`) é o último bolsão habitável preservado no planeta natal. Iluminada por musgos fluorescentes e pela fogueira primordial, ela serve como o coração comunitário onde os sobreviventes dos 4 povos e suas sub-raças aguardam a expedição dos campeões.
+
+### As Novas Edificações Temáticas & Semiótica
+1. **Forja do Mestre Carapácio (Sudoeste):**
+   * Edificação de rocha vulcânica escura com chaminé exalando fumaça cinzenta e forno incandescente pulsante.
+   * Placa de ferro martelado com o símbolo de uma bigorna e martelo dourado.
+   * Representa o esforço da casta dos armadillos/blindados para moldar o metal ancestral.
+2. **Choupana Botânica da Curandeira Kalina (Sudeste):**
+   * Cabana de pedras de rio com teto de palha coberto de cogumelos azuis luminescentes e prateleiras de frascos medicinais.
+   * Placa suspensa com o desenho de um frasco de elixir borbulhante.
+   * Representa a sabedoria das raposas e lobos-guará no manejo de unguentos e líquens espirituais.
+3. **Torre de Vigia do Rastreador Tico (Noroeste):**
+   * Estrutura de troncos entalhados, contraventamento rústico e plataforma com telescópio de latão apontado para a fenda dimensional.
+   * Placa de madeira entalhada com arco longo e flecha de caça.
+   * Representa a vigilância dos répteis e caçadores que mapeiam as anomalias climáticas.
+4. **Santuário do Guardião do Véu (Nordeste):**
+   * Templo místico esculpido em obsidiana pura, cercado por braseiros etéreos e cristais violetas que levitam em volta do pináculo.
+   * Placa com entalhe do "Olho Místico" do urutau em linhas roxas luminescentes.
+   * Representa a conexão espiritual dos urutaus com as energias invisíveis do cosmos.
+
+### Os NPCs e o Sistema de Diálogos Reativos
+Os NPCs da vila possuem vozes únicas (síntese sonora procedimental afinada ao tom biológico de cada espécie) e um sistema de **diálogos contextuais** (`scr_dialogue_data.gml`):
+- **Reação à Classe do Jogador:** Cada habitante tem comentários específicos conforme o herói ativo (Cavaleiro, Mago, Arqueiro, Assassino), reconhecendo o peso de suas armaduras, as fagulhas de suas mãos ou o silêncio de seus passos.
+- **Reação à Progressão Elemental:** Ao resgatar e purificar Essências nos templos (Água, Fogo, Vento, Terra), os diálogos mudam dinamicamente. O ferreiro celebra a água para temperar o aço e o fogo solar; a herborista festeja a terra fértil e o orvalho para as sementes; o batedor comemora os ventos que limpam as nuvens tóxicas; e o eremita urutau reflete sobre o peso moral e cósmico de cada esfera restaurada.
+

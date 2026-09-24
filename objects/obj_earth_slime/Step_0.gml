@@ -42,10 +42,10 @@ switch (state) {
         }
         if (_player == noone) break;
 
-        if (_dist <= attack_range && attack_cooldown_timer <= 0) {
+        if (_dist <= attack_range && attack_cooldown_timer <= 0 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "windup";
             attack_windup_timer = attack_windup;
-        } else if (attack_cooldown_timer <= 0 && _dist >= roll_min && _dist <= roll_range) {
+        } else if (attack_cooldown_timer <= 0 && _dist >= roll_min && _dist <= roll_range && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "roll_windup";
             attack_windup_timer = 0.55;
             roll_dir = point_direction(x, y, _player.x, _player.y);

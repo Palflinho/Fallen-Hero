@@ -13,6 +13,11 @@ function settings_defaults() {
     global.opt_rumble = true;
 }
 
+// Nome usado pelo codigo da vila/musica (outro PC): mesmo sistema de opcoes
+function settings_init() {
+    settings_load();
+}
+
 function settings_load() {
     if (variable_global_exists("settings_loaded") && global.settings_loaded) return;
     global.settings_loaded = true;
@@ -52,6 +57,10 @@ function settings_apply() {
         if (window_get_fullscreen() != global.opt_fullscreen) window_set_fullscreen(global.opt_fullscreen);
     }
     audio_master_gain(global.opt_vol_master / 10);
+    // Musica (BGM) e efeitos usam os volumes das Opcoes
+    global.bgm_volume = settings_music_gain();
+    bgm_set_volume(global.bgm_volume);
+    global.screen_shake_enabled = global.opt_screen_shake;
 }
 
 // Multiplicadores usados pelo audio (0..1)

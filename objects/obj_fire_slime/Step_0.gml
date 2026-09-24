@@ -50,7 +50,7 @@ switch (state) {
         }
         if (_player == noone) break;
 
-        if (_dist <= attack_range && attack_cooldown_timer <= 0) {
+        if (_dist <= attack_range && attack_cooldown_timer <= 0 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "windup";
             attack_windup_timer = attack_windup;
             facing_dir = point_direction(x, y, _player.x, _player.y);

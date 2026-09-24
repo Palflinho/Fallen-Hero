@@ -1903,7 +1903,7 @@ function skip_chest_reward() {
 // Every Step event that matters checks this instead of the individual flags directly.
 function is_world_paused() {
     if (variable_global_exists("ending_active") && global.ending_active) return true;
-    return global.paused || global.attr_window_open || global.chest_reward_open || (variable_global_exists("midrun_shop_open") && global.midrun_shop_open) || (variable_global_exists("run_victory") && global.run_victory) || (variable_global_exists("dialogue_active") && global.dialogue_active) || global.hitstop_timer > 0;
+    return global.paused || global.attr_window_open || global.chest_reward_open || (variable_global_exists("midrun_shop_open") && global.midrun_shop_open) || (variable_global_exists("village_modal_open") && global.village_modal_open) || (variable_global_exists("run_victory") && global.run_victory) || (variable_global_exists("dialogue_active") && global.dialogue_active) || (variable_global_exists("dialogue_just_closed_timer") && global.dialogue_just_closed_timer > 0) || global.hitstop_timer > 0;
 }
 
 // Traducao do talento para o idioma atual: [nome, descricao, efeito] (scr_locale_en).

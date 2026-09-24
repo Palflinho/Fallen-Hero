@@ -23,6 +23,8 @@ switch (state) {
         if (_seen != noone) {
             state = "chase";
             lost_sight_timer = 0;
+            attack_cooldown_timer = max(attack_cooldown_timer, 0.65);
+            consecutive_shots = 0;
         }
         break;
 
@@ -35,6 +37,9 @@ switch (state) {
             lost_sight_timer = 0;
         } else {
             lost_sight_timer += _dt;
+            if (lost_sight_timer >= 1.5) {
+                consecutive_shots = 0;
+            }
             if (lost_sight_timer >= lost_sight_grace) {
                 state = "patrol";
                 break;
@@ -52,7 +57,7 @@ switch (state) {
             trigger_hitstop(0.06);
         }
 
-        if (_dist <= attack_range && attack_cooldown_timer <= 0 && _seen != noone) {
+        if (_dist <= attack_range && attack_cooldown_timer <= 0 && _seen != noone && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "windup";
             attack_windup_timer = attack_windup;
         } else if (_dist < preferred_range - 20) {

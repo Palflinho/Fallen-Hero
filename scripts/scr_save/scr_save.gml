@@ -395,3 +395,5 @@ function get_save_summary() {
     if (!_info.occupied) return "";
     return _info.hero_label + "   -   " + _info.progress_label;
 }
+
+

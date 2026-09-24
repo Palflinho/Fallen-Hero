@@ -41,7 +41,7 @@ switch (state) {
         }
         if (_player == noone) break;
 
-        if (attack_cooldown_timer <= 0 && _dist <= hop_range) {
+        if (attack_cooldown_timer <= 0 && _dist <= hop_range && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "hop_windup";
             attack_windup_timer = 0.35;
             var _tp = { x: _player.x, y: _player.y };

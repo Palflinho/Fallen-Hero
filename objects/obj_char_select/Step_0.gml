@@ -1,4 +1,6 @@
 input_update_device();
+bgm_play("title");
+
 
 if (locked_warning_timer > 0) locked_warning_timer--;
 if (reset_notice_timer > 0) reset_notice_timer--;
@@ -97,21 +99,24 @@ switch (state) {
             if (touch_room_clicked(_bx, _by, _bx + main_menu_btn_w, _by + main_menu_btn_h)) {
                 main_menu_cursor = _i;
                 switch (_i) {
-                    case 0: // Novo Jogo -> abre tela de 3 slots
+                    case 0: // Novo Jogo
                         save_slot_action = "new_game";
                         save_slot_cursor = global.current_save_slot - 1;
                         state = "save_slots";
+                        sfx_play("menu_select");
                         break;
-                    case 1: // Continuar -> abre tela de 3 slots
+                    case 1: // Continuar
                         if (any_save_slot_exists()) {
                             save_slot_action = "continue";
                             save_slot_cursor = global.current_save_slot - 1;
                             state = "save_slots";
+                            sfx_play("menu_select");
                         }
                         break;
                     case 2: // Opcoes
                         options_cursor = 0;
                         state = "options";
+                        sfx_play("menu_select");
                         break;
                     case 3: // Sair
                         game_end();
@@ -125,28 +130,33 @@ switch (state) {
 
         if (input_check_ui_up_pressed()) {
             main_menu_cursor = (main_menu_cursor - 1 + _opt_count) mod _opt_count;
+            sfx_play("menu_move");
         }
         if (input_check_ui_down_pressed()) {
             main_menu_cursor = (main_menu_cursor + 1) mod _opt_count;
+            sfx_play("menu_move");
         }
 
         if (input_check_ui_confirm()) {
             switch (main_menu_cursor) {
-                case 0: // Novo Jogo -> abre tela de 3 slots
+                case 0: // Novo Jogo
                     save_slot_action = "new_game";
                     save_slot_cursor = global.current_save_slot - 1;
                     state = "save_slots";
+                    sfx_play("menu_select");
                     break;
-                case 1: // Continuar -> abre tela de 3 slots
+                case 1: // Continuar
                     if (any_save_slot_exists()) {
                         save_slot_action = "continue";
                         save_slot_cursor = global.current_save_slot - 1;
                         state = "save_slots";
+                        sfx_play("menu_select");
                     }
                     break;
                 case 2: // Opcoes
                     options_cursor = 0;
                     state = "options";
+                    sfx_play("menu_select");
                     break;
                 case 3: // Sair
                     game_end();
@@ -176,13 +186,15 @@ switch (state) {
 
         if (input_check_ui_left_pressed()) {
             save_slot_cursor = (save_slot_cursor - 1 + 3) mod 3;
+            sfx_play("menu_move");
         }
         if (input_check_ui_right_pressed()) {
             save_slot_cursor = (save_slot_cursor + 1) mod 3;
+            sfx_play("menu_move");
         }
-        if (input_check_slot_pressed(0)) save_slot_cursor = 0;
-        if (input_check_slot_pressed(1)) save_slot_cursor = 1;
-        if (input_check_slot_pressed(2)) save_slot_cursor = 2;
+        if (input_check_slot_pressed(0)) { save_slot_cursor = 0; sfx_play("menu_move"); }
+        if (input_check_slot_pressed(1)) { save_slot_cursor = 1; sfx_play("menu_move"); }
+        if (input_check_slot_pressed(2)) { save_slot_cursor = 2; sfx_play("menu_move"); }
 
         var _slot_to_confirm = -1;
 
@@ -218,6 +230,7 @@ switch (state) {
                 save_slot_delete(_target_slot);
                 save_notice_text = tr("Slot ") + string(_target_slot) + tr(" apagado com sucesso!");
                 save_notice_timer = 90;
+                sfx_play("stagger");
             }
         }
 
@@ -229,43 +242,40 @@ switch (state) {
         if (_slot_to_confirm > 0) {
             var _chosen_slot = _slot_to_confirm;
             if (save_slot_action == "new_game") {
-                // RESET TOTAL E GENUÍNO DO NOVO JOGO
+                // Inicia novo jogo diretamente na Vila Subterrânea!
                 save_slot_init_new_game(_chosen_slot);
                 global.current_save_slot = _chosen_slot;
-                selected_index = 0;
-                selected_element_index = 0;
-                talent_selected_ids = [];
-                save_notice_text = tr("Novo jogo iniciado no Slot ") + string(_chosen_slot) + "!";
-                save_notice_timer = 90;
-                state = "select";
+                global.selected_character = "knight";
+                global.selected_element = "none";
+                global.chosen_talent_ids = ["", "", ""];
+                save_checkpoint_fresh("knight", "room_village", "none");
+                global.dialogue_intro_shown = false;
+                global.dialogue_shop_shown = false;
+                global.dialogue_boss_shown = false;
+                global.run_biome = "water";
+                global.run_room_step = 1;
+                global.inrun_saved_stats = false;
+                sfx_play("door_open");
+                room_goto(room_village);
             } else if (save_slot_action == "continue") {
                 if (save_slot_exists(_chosen_slot)) {
                     save_slot_load(_chosen_slot);
-                    // Atualiza herói e elemento selecionados com base no save
-                    for (var _k = 0; _k < array_length(classes); _k++) {
-                        if (classes[_k] == global.save_character) {
-                            selected_index = _k;
-                            break;
-                        }
-                    }
-                    for (var _e = 0; _e < array_length(elements); _e++) {
-                        if (elements[_e] == global.save_element) {
-                            selected_element_index = _e;
-                            break;
-                        }
-                    }
-                    talent_selected_ids = [];
-                    for (var _t = 0; _t < array_length(global.chosen_talent_ids); _t++) {
-                        if (global.chosen_talent_ids[_t] != "") {
-                            array_push(talent_selected_ids, global.chosen_talent_ids[_t]);
-                        }
-                    }
-                    save_notice_text = tr("Slot ") + string(_chosen_slot) + tr(" carregado com sucesso!");
-                    save_notice_timer = 90;
-                    state = "select";
+                    global.current_save_slot = _chosen_slot;
+                    global.selected_character = global.save_character;
+                    global.selected_element = variable_global_exists("save_element") ? global.save_element : "none";
+                    global.chosen_talent_ids = global.save_talent_ids;
+                    global.dialogue_intro_shown = false;
+                    global.dialogue_shop_shown = false;
+                    global.dialogue_boss_shown = false;
+                    global.run_biome = "water";
+                    global.run_room_step = 1;
+                    global.inrun_saved_stats = false;
+                    sfx_play("door_open");
+                    room_goto(room_village);
                 } else {
                     save_notice_text = tr("Slot ") + string(_chosen_slot) + tr(" esta vazio!");
                     save_notice_timer = 60;
+                    sfx_play("stagger");
                 }
             }
         }
@@ -275,8 +285,10 @@ switch (state) {
         var _btn_back_h = 42;
         if (touch_room_clicked(40, _btn_back_y, 200, _btn_back_y + _btn_back_h) || input_check_ui_cancel()) {
             state = "main_menu";
+            sfx_play("menu_select");
         }
         break;
+
 
     case "select":
         var _n = array_length(classes);

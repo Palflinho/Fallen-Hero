@@ -17,6 +17,9 @@ if (global.screen_damage_flash > 0) global.screen_damage_flash -= delta_time / 1
 if (!variable_global_exists("camera_shake")) global.camera_shake = 0;
 if (global.camera_shake > 0) global.camera_shake = max(0, global.camera_shake - (delta_time / 1000000) * 30);
 
+if (!variable_global_exists("dialogue_just_closed_timer")) global.dialogue_just_closed_timer = 0;
+if (global.dialogue_just_closed_timer > 0) global.dialogue_just_closed_timer -= delta_time / 1000000;
+
 if (!variable_global_exists("run_playtime")) global.run_playtime = 0;
 if (!is_world_paused()) global.run_playtime += delta_time / 1000000;
 
@@ -77,6 +80,51 @@ if (variable_global_exists("sandbox_active") && global.sandbox_active && _player
     _player.state = "idle";
 }
 
+// -------------------------------------------------------------------------
+// Banner e Flash Sensorial: "Sala Conquistada" / "Portal Aberto"
+// -------------------------------------------------------------------------
+var _dt_hud = delta_time / 1000000;
+if (room_banner_timer > 0) room_banner_timer -= _dt_hud;
+if (room_banner_flash > 0) room_banner_flash -= _dt_hud;
+
+if (room != room_village && room != room_char_select && !(variable_global_exists("sandbox_active") && global.sandbox_active)) {
+    // 1. Salas com Monstros
+    if (instance_number(obj_enemy_parent) > 0) {
+        room_had_enemies = true;
+    }
+
+    if (room_had_enemies && !room_cleared_event_done && instance_number(obj_enemy_parent) == 0) {
+        room_cleared_event_done = true;
+        if (room == asset_get_index("room_arena")) {
+            room_banner_title = tr("* ARENA CONQUISTADA! *");
+            room_banner_sub = tr("O bau do campeao e o portal foram liberados!");
+            room_banner_color = make_colour_rgb(255, 220, 80);
+            room_banner_timer = 3.0;
+            room_banner_flash = 0.35;
+            sfx_play("magic", 0.05, 1.25);
+        } else if (!boss_room) {
+            room_banner_title = tr("* SALA CONQUISTADA! *");
+            room_banner_sub = tr("O caminho esta desimpedido!");
+            room_banner_color = make_colour_rgb(100, 240, 180);
+            room_banner_timer = 2.4;
+            room_banner_flash = 0.30;
+            sfx_play("magic", 0.05, 1.20);
+        }
+    }
+
+    // 2. Salas com Botões de Destrancamento de Portal
+    if (!buttons_cleared_event_done && instance_number(obj_boss_button) > 0 && global.boss_buttons_pressed >= 4) {
+        buttons_cleared_event_done = true;
+        room_banner_title = tr("* PORTAL ABERTO! *");
+        room_banner_sub = tr("Todos os selos arcanos foram rompidos!");
+        room_banner_color = make_colour_rgb(80, 210, 255);
+        room_banner_timer = 2.8;
+        room_banner_flash = 0.40;
+        sfx_play("door_open");
+        trigger_camera_shake(4);
+    }
+}
+
 if (!game_over && _player != noone && _player.state == "dead") {
     game_over = true;
     input_rumble_stop();
@@ -92,6 +140,15 @@ if (!game_over && _player != noone && _player.state == "dead") {
     clear_save();
 }
 
+// Gerenciamento Dinâmico de Trilha Sonora (BGM)
+if (room == room_village) {
+    bgm_play("village");
+} else if (room == room_arena || room == Room2 || room == Room4 || room == Room6 || room == Room8 || room == asset_get_index("room_temple5_boss")) {
+    bgm_play("boss");
+} else if (room == Room1 || room == Room3 || room == Room5 || room == Room7 || room == room_exp2 || room == room_exp4 || room == room_shop || room == room_preboss || room == asset_get_index("room_temple5_shop")) {
+    bgm_play("dungeon");
+}
+
 var _touch_pause = (variable_global_exists("touch_pause_pressed") && global.touch_pause_pressed);
 
 if (game_over) {
@@ -101,8 +158,11 @@ if (game_over) {
     }
     if (input_check_ui_confirm() || keyboard_check_pressed(ord("C")) || _touch_tap) {
         global.inrun_saved_stats = false;
-        global.char_select_direct = true;
-        room_goto(room_char_select);
+        global.run_room_step = 1;
+        global.run_biome = "water";
+        global.respawn_at_bonfire = true;
+        save_checkpoint_fresh(global.selected_character, "room_village", global.selected_element);
+        room_goto(room_village);
     } else if (keyboard_check_pressed(ord("M"))) {
         global.inrun_saved_stats = false;
         global.char_select_direct = false;
@@ -135,11 +195,11 @@ if (global.run_victory || level_complete) {
         clear_save();
         global.run_victory = false;
         level_complete = false;
-        global.char_select_direct = true;
-        room_goto(room_char_select);
+        room_goto(room_village);
     }
     exit;
 }
+
 
 if (global.chest_reward_open) {
     if (_player != noone) {

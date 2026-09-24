@@ -45,8 +45,14 @@ options_cursor = 0;
 options_count = 9; // idioma, tela cheia, vol geral, vol efeitos, vol musica, tremor, vibracao, controles, voltar
 main_menu_cursor = any_save_slot_exists() ? 1 : 0;
 main_menu_btn_w = 340;
-main_menu_btn_h = 54;
-main_menu_btn_gap = 18;
+main_menu_btn_h = 52;
+main_menu_btn_gap = 16;
+
+// Parâmetros do Menu de Configurações
+settings_cursor = 0;
+settings_options_count = 7;
+settings_init();
+
 
 // Parâmetros da tela dedicada de Save Slots (Segunda Tela)
 save_slot_action = "new_game"; // "new_game" | "continue"

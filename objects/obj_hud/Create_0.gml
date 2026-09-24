@@ -16,6 +16,7 @@ global.paused = false;
 global.attr_window_open = false;
 global.chest_reward_open = false;
 global.run_victory = false;
+global.village_modal_open = false;
 
 // Talento ganho ao cruzar um portal: abre a escolha de slot ja na sala nova
 if (variable_global_exists("pending_chest_talent") && global.pending_chest_talent != "") {
@@ -30,5 +31,19 @@ global.boss_buttons_pressed = 0;
 death_gold_earned = 0;
 death_gold_kept = 0;
 death_gold_lost = 0;
+
+// Feedback de Sala Conquistada & Portal Aberto
+room_banner_timer = 0;
+room_banner_flash = 0;
+room_banner_title = "";
+room_banner_sub = "";
+room_banner_color = c_yellow;
+room_had_enemies = false;
+room_cleared_event_done = false;
+buttons_cleared_event_done = false;
+
+// Telemetria de tempo total de expedição
+if (!variable_global_exists("run_timer_seconds")) global.run_timer_seconds = 0;
+if (room == room_village) global.run_timer_seconds = 0;
 
 touch_controls_init();

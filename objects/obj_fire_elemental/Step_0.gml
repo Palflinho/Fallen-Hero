@@ -21,6 +21,8 @@ switch (state) {
         if (_seen != noone) {
             state = "chase";
             lost_sight_timer = 0;
+            attack_cooldown_timer = max(attack_cooldown_timer, 0.60);
+            consecutive_shots = 0;
         }
         break;
 
@@ -33,6 +35,9 @@ switch (state) {
             lost_sight_timer = 0;
         } else {
             lost_sight_timer += _dt;
+            if (lost_sight_timer >= 1.5) {
+                consecutive_shots = 0;
+            }
             if (lost_sight_timer >= lost_sight_grace) {
                 state = "patrol";
                 break;
@@ -41,7 +46,7 @@ switch (state) {
         if (_player == noone) break;
         facing_dir = point_direction(x, y, _player.x, _player.y);
 
-        if (_dist <= attack_range && attack_cooldown_timer <= 0 && _seen != noone) {
+        if (_dist <= attack_range && attack_cooldown_timer <= 0 && _seen != noone && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "windup";
             attack_windup_timer = attack_windup;
         } else if (_dist < preferred_range - 20) {
@@ -55,7 +60,13 @@ switch (state) {
         attack_windup_timer -= _dt;
         scale_x = 1.25 + 0.05 * sin(current_time * 0.03);
         scale_y = scale_x;
-        if (_player != noone) facing_dir = point_direction(x, y, _player.x, _player.y);
+        // Mira acompanha o jogador e TRAVA nos ultimos 35% do aviso (da para esquivar)
+        if (_player != noone && attack_windup_timer > attack_windup * 0.35) {
+            facing_dir = point_direction(x, y, _player.x, _player.y);
+        } else if (locked_aim_dir == -1) {
+            locked_aim_dir = facing_dir;
+            fx_spawn_sparks(x + lengthdir_x(14, facing_dir), y + lengthdir_y(14, facing_dir), c_orange, 2);
+        }
         if (attack_windup_timer <= 0) {
             for (var _f = -1; _f <= 1; _f++) {
                 var _a = facing_dir + _f * fan_spread;
@@ -63,6 +74,7 @@ switch (state) {
                 _s.life = 1.1;
                 _s.radius = 7;
             }
+            locked_aim_dir = -1;
             attack_cooldown_timer = attack_cooldown;
             state = "recover";
             recover_timer = 0.6;

@@ -399,12 +399,19 @@ segundo_folego_cooldown = 0;
 paladin_barrier_active = 0;
 parry_flash_timer = 0;
 duelist_combo_count = 0;
+last_attack_was_crit = false;
 
 // Variáveis de controle de combate para talentos do Mago
 mage_consecutive_hits = 0;
 mage_static_charge = 0;
 mage_fenix_used = false;
 cryo_prison_absorb = 0;
+conflagracao_timer = 0;
+cefiro_buff_timer = 0;
+singularidade_timer = 0;
+estatica_charge = 0;
+mage_run_kills = 0;
+mage_fire_hits = 0;
 
 // Variáveis de controle de combate para talentos do Arqueiro
 archer_stationary_timer = 0;
@@ -416,6 +423,7 @@ archer_wind_dance_shots = 0;
 archer_phantom_timer = 0;
 archer_phantom_x = 0;
 archer_phantom_y = 0;
+earth_anchored = false;
 
 // Variáveis de controle de combate para talentos do Assassino
 assassin_combo_counter = 0;
@@ -435,6 +443,13 @@ hp = hp_max;
 if (variable_global_exists("inrun_saved_stats") && global.inrun_saved_stats && variable_global_exists("inrun_hp")) {
     hp = clamp(global.inrun_hp, 1, hp_max);
 }
+
+if (variable_global_exists("respawn_at_bonfire") && global.respawn_at_bonfire && room == room_village) {
+    x = 800;
+    y = 650;
+    global.respawn_at_bonfire = false;
+}
+
 
 facing_x = 0;
 facing_y = 1;

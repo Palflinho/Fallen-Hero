@@ -26,6 +26,7 @@ switch (state) {
         if (_seen != noone) {
             state = "chase";
             lost_sight_timer = 0;
+            attack_cooldown_timer = max(attack_cooldown_timer, 0.70);
         }
         break;
 
@@ -46,10 +47,10 @@ switch (state) {
         if (_player == noone) break;
         facing_dir = point_direction(x, y, _player.x, _player.y);
 
-        if (barrier_cooldown <= 0 && _dist <= 240) {
+        if (barrier_cooldown <= 0 && _dist <= 240 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "windup";
             attack_windup_timer = attack_windup;
-        } else if (attack_cooldown_timer <= 0 && _dist <= 300) {
+        } else if (attack_cooldown_timer <= 0 && _dist <= 300 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "cast";
             cast_target_x = _player.x;
             cast_target_y = _player.y;
@@ -114,7 +115,7 @@ switch (state) {
         scale_y = 1.25;
         scale_x = 0.85;
         if (cast_timer <= 0) {
-            if (_player != noone && !_player.invisible && point_distance(cast_target_x, cast_target_y, _player.x, _player.y) <= aoe_radius) {
+            if (_player != noone && !_player.invisible && point_distance(cast_target_x, cast_target_y, _player.x, _player.y) <= aoe_radius && !fh_line_intersects_wall(cast_target_x, cast_target_y, _player.x, _player.y)) {
                 player_take_damage(elem_dmg(aoe_damage), "magical");
                 elem_push_player(point_direction(cast_target_x, cast_target_y, _player.x, _player.y), 300);
                 player_apply_slow(0.5, 1.2);

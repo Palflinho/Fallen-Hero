@@ -11,7 +11,7 @@ with (obj_enemy_parent) {
             break;
         }
     }
-    if (!_already_hit && !fh_untargetable && point_distance(x, y, other.x, other.y) <= body_radius + other.body_radius) {
+    if (!_already_hit && !fh_untargetable && point_distance(x, y, other.x, other.y) <= body_radius + other.body_radius && !fh_line_intersects_wall(other.x, other.y, x, y)) {
         array_push(other.hit_list, id);
         player_on_hit_enemy(other.owner, id, other.damage);
     }

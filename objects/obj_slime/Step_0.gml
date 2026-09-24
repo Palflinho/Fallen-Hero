@@ -89,12 +89,12 @@ switch (state) {
         }
         if (_player == noone) break;
 
-        if (!is_mini && attack_cooldown_timer <= 0 && _dist <= lunge_range && _dist > 30) {
+        if (!is_mini && attack_cooldown_timer <= 0 && _dist <= lunge_range && _dist > 30 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "lunge_windup";
             attack_windup_timer = 0.35;
             lunge_dir = point_direction(x, y, _player.x, _player.y);
             facing_dir = lunge_dir;
-        } else if (_dist <= attack_range && attack_cooldown_timer <= 0) {
+        } else if (_dist <= attack_range && attack_cooldown_timer <= 0 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             state = "windup";
             attack_windup_timer = attack_windup;
             facing_dir = point_direction(x, y, _player.x, _player.y);

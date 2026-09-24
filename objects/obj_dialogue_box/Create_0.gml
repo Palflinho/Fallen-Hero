@@ -18,6 +18,11 @@ box_alpha = 0;
 dialogue_setup_current_line = function() {
     if (line_index >= array_length(lines)) {
         global.dialogue_active = false;
+        global.dialogue_just_closed_timer = 0.35;
+        keyboard_clear(vk_space);
+        keyboard_clear(vk_enter);
+        keyboard_clear(ord("Z"));
+        io_clear();
         var _cb = on_finish;
         instance_destroy();
         if (!is_undefined(_cb) && is_method(_cb)) {

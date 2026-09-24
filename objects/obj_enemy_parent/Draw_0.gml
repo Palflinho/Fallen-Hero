@@ -163,12 +163,20 @@ if (sprite_index != -1) {
 
     var _hw = body_radius * scale_x;
     var _hh = body_radius * scale_y;
+    
+    // Corpo organico arredondado (Esfera elemental / Slime estilizado)
     draw_set_color(_col);
-    draw_rectangle(x - _hw, _body_y - _hh, x + _hw, _body_y + _hh, false);
-    draw_set_color(c_black);
-    draw_rectangle(x - _hw, _body_y - _hh, x + _hw, _body_y + _hh, true);
+    draw_ellipse(x - _hw, _body_y - _hh, x + _hw, _body_y + _hh, false);
+    draw_set_color(make_colour_rgb(10, 15, 25));
+    draw_ellipse(x - _hw, _body_y - _hh, x + _hw, _body_y + _hh, true);
+    
+    // Brilho interno translucido (reflexo de esfera de energia/fluido)
+    draw_set_alpha(0.35);
+    draw_set_color(c_white);
+    draw_ellipse(x - _hw * 0.5, _body_y - _hh * 0.65, x + _hw * 0.1, _body_y - _hh * 0.2, false);
+    draw_set_alpha(1.0);
 
-    // Olhos Ameaçadores de Monstro (Claridade visual para nunca parecer objeto passivo)
+    // Olhos Ameacadores de Monstro (Claridade visual para nunca parecer objeto passivo)
     var _facing_sign = variable_instance_exists(id, "facing_h") ? facing_h : ((facing_dir > 90 && facing_dir < 270) ? -1 : 1);
     var _eye_x = x + _facing_sign * 3;
     var _eye_y = _body_y - 2;

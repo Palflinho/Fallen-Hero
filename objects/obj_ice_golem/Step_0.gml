@@ -59,7 +59,7 @@ switch (state) {
                 ai_enemy_move(_dir, move_speed * _dt * 60, _dt);
             }
 
-            if (attack_cooldown_timer <= 0) {
+            if (attack_cooldown_timer <= 0 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
                 if (combo_count == 0) {
                     // 1. Ataque Ranged Assinatura do Bioma
                     state = "fan_windup";
@@ -130,7 +130,7 @@ switch (state) {
         fh_move_and_collide(dash_vx * _dt, dash_vy * _dt);
         if (random(1) < 0.45) fx_spawn_sparks(x, y, make_colour_rgb(180, 240, 255), 2);
 
-        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius) {
+        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             player_take_damage(contact_damage, "physical");
         }
 

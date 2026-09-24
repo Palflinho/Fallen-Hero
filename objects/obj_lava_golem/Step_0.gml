@@ -54,7 +54,7 @@ switch (state) {
                 ai_enemy_move(_dir, move_speed * _dt * 60, _dt);
             }
 
-            if (attack_cooldown_timer <= 0) {
+            if (attack_cooldown_timer <= 0 && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
                 if (combo_count == 0) {
                     // 1. Erupção Magmática Telegrafada
                     state = "erupcao_windup";
@@ -91,7 +91,7 @@ switch (state) {
                 var _ty = erupcao_targets_y[_i];
                 fx_spawn_sparks(_tx, _ty, c_red, 12);
                 fx_spawn_sparks(_tx, _ty, c_orange, 8);
-                if (_player != noone && point_distance(_player.x, _player.y, _tx, _ty) <= erupcao_radius) {
+                if (_player != noone && point_distance(_player.x, _player.y, _tx, _ty) <= erupcao_radius && !fh_line_intersects_wall(_tx, _ty, _player.x, _player.y)) {
                     player_take_damage(erupcao_damage, "magical");
                     player_apply_poison(3, 0.5, 2.5);
                 }
@@ -120,7 +120,7 @@ switch (state) {
 
         if (random(1) < 0.5) fx_spawn_sparks(x, y, c_orange, 2);
 
-        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius) {
+        if (_player != noone && point_distance(x, y, _player.x, _player.y) <= body_radius + _player.body_radius && !fh_line_intersects_wall(x, y, _player.x, _player.y)) {
             player_take_damage(charge_damage, "physical");
             player_apply_poison(3, 0.5, 2.5);
         }
