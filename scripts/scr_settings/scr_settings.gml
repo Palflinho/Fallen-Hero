@@ -78,6 +78,9 @@ function settings_rumble_enabled() {
 // -------------------------------------------------------------------------
 function char_select_refresh_texts() {
     main_menu_options = [tr("Novo Jogo"), tr("Continuar"), tr("Opcoes"), tr("Sair")];
+    // Modo Dev ligado: atalho para a sala de testes
+    if (variable_global_exists("dev_mode") && global.dev_mode) array_push(main_menu_options, tr("Sandbox (Dev)"));
+    if (variable_instance_exists(id, "main_menu_cursor")) main_menu_cursor = min(main_menu_cursor, array_length(main_menu_options) - 1);
     labels = [tr("Cavaleiro"), tr("Mago"), tr("Arqueiro"), tr("Assassino")];
 }
 

@@ -6,6 +6,7 @@ global.midrun_shop_open = false;
 global.run_victory = false;
 global.ending_active = false;
 global.run_in_progress = false;
+global.sandbox_active = false;
 global.hitstop_timer = 0;
 global.run_playtime = 0;
 if (!variable_global_exists("dev_mode")) global.dev_mode = false;
@@ -37,6 +38,7 @@ if (variable_global_exists("char_select_direct") && global.char_select_direct) {
 }
 
 main_menu_options = [tr("Novo Jogo"), tr("Continuar"), tr("Opcoes"), tr("Sair")];
+if (global.dev_mode) array_push(main_menu_options, tr("Sandbox (Dev)"));
 
 // Tela de Opcoes
 options_cursor = 0;

@@ -344,6 +344,19 @@ Nenhuma tela de tutorial: o jogo ensina pelo próprio espaço.
 
 ---
 
+### 8.4 Sandbox do Desenvolvedor (`room_sandbox`)
+Sala livre para testar sem jogar a campanha. Com o **Modo Dev** ligado ([F1] na tela inicial), entre pelo botão **"Sandbox (Dev)"** do menu ou com **[F5]** (na tela de seleção de herói, entra com a classe e o elemento escolhidos).
+* **Painel à direita** ([F6] mostra/esconde), com abas:
+  * **Herói:** classe, elemento (especialização), nível, +10 pontos de talento, curar e a escala dos inimigos (Água/Fogo/Vento/Terra).
+  * **Inimigos:** todos os mobs, totem, fogo-fátuo e os dois bonecos de treino, com variante Normal / Alfa / Campeão Raro.
+  * **Chefes:** os 5 chefes e os 4 espíritos.
+  * **Cenário:** paredes (3 tamanhos), selo, baú de talento, orbe de cura, todos os perigos e armadilhas.
+  * **Talentos:** escolha o slot (1 a 5) e clique no talento para equipá-lo no rank máximo.
+* **Mouse:** botão esquerdo coloca o item escolhido; botão direito apaga o que estiver embaixo do cursor.
+* **[F7] Colisões:** mostra o raio de corpo do herói e dos inimigos, o alcance de visão, as caixas das paredes e os raios dos objetos.
+* **Vida infinita** ligada por padrão; se desligada, o herói volta com a vida cheia em vez de morrer.
+* **Nada é salvo:** ouro, desbloqueios e a IA adaptativa ganhos no sandbox são descartados ao sair (a tela inicial recarrega o save do disco). Portais e o final do jogo não aparecem no sandbox.
+
 ## 9. MAPA DE ARQUITETURA TÉCNICA DO PROJETO
 
 ### 9.1 Scripts Centrais

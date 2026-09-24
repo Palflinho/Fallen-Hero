@@ -71,6 +71,12 @@ if (!boss_room && !mob_clear_chest_spawned && instance_number(obj_enemy_parent) 
     mob_clear_chest_spawned = true;
 }
 
+// Sandbox: o heroi nunca morre de verdade, so volta com a vida cheia
+if (variable_global_exists("sandbox_active") && global.sandbox_active && _player != noone && (_player.state == "dead" || _player.hp <= 0)) {
+    _player.hp = _player.hp_max;
+    _player.state = "idle";
+}
+
 if (!game_over && _player != noone && _player.state == "dead") {
     game_over = true;
     input_rumble_stop();

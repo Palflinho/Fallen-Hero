@@ -1147,6 +1147,8 @@ function load_meta_from_disk() {
 }
 
 function save_meta() {
+    // Sandbox do desenvolvedor: nada e salvo
+    if (variable_global_exists("sandbox_active") && global.sandbox_active) return;
     // Roguelite: durante a expedicao nada vai para o disco. O progresso so e salvo
     // ao entrar no portal da vila e ao fim da partida (morte, desistencia ou final).
     if (variable_global_exists("run_in_progress") && global.run_in_progress) {

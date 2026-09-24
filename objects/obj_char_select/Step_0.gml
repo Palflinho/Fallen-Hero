@@ -19,6 +19,7 @@ if ((keyboard_check_pressed(ord("L")) || _gp_lang) && state != "options") {
 if (keyboard_check_pressed(vk_f1) || keyboard_check_pressed(vk_f2) || _touch_dev) {
     global.dev_mode = !global.dev_mode;
     save_meta();
+    char_select_refresh_texts();
     if (state == "select_talents") {
         var _character = classes[selected_index];
         var _elem_current = elements[selected_element_index];
@@ -68,6 +69,16 @@ if (keyboard_check_pressed(vk_f3)) {
     }
 }
 
+// Sandbox do desenvolvedor com F5 (so com o Modo Dev ligado)
+if (keyboard_check_pressed(vk_f5) && global.dev_mode && (state == "main_menu" || state == "select")) {
+    if (state == "select") {
+        global.selected_character = classes[selected_index];
+        global.selected_element = elements[selected_element_index];
+    }
+    sandbox_enter();
+    exit;
+}
+
 // Alternar Modo Touch Simulado com F4
 if (keyboard_check_pressed(vk_f4)) {
     global.dev_touch_mode = !global.dev_touch_mode;
@@ -105,6 +116,9 @@ switch (state) {
                     case 3: // Sair
                         game_end();
                         break;
+                    case 4: // Sandbox (Dev)
+                        sandbox_enter();
+                        break;
                 }
             }
         }
@@ -136,6 +150,9 @@ switch (state) {
                     break;
                 case 3: // Sair
                     game_end();
+                    break;
+                case 4: // Sandbox (Dev)
+                    sandbox_enter();
                     break;
             }
         }
