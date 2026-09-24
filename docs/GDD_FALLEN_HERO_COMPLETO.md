@@ -233,6 +233,17 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
 4. **Exploração Avançada & Pré-Chefe (Salas 5 e 6):** Densidade máxima de inimigos e sala de preparação com fontes de cura.
 5. **Câmara do Guardião (Etapa 7):** Batalha contra o chefe elemental do bioma.
 
+### 6.2.1 Composição de Monstros por Sala
+* **Exploração 1:** só slimes corpo a corpo e no máximo 3 atiradores. Sem conjuradoras, totens ou fogos-fátuos; o guardião de elite da saída vira um slime grande.
+* **Exploração 2 e 3:** mistura atiradores e corpo a corpo (35% dos slimes viram atiradores) e traz as conjuradoras, que vêm com totem 65% das vezes.
+* **Arena:** sem mudanças.
+* **Pré-Chefe:** o golem do templo com uma tropa variada: 2 slimes, 2 atiradores (um Alfa), conjuradora com totem e fogo-fátuo.
+
+### 6.2.2 Progressão de Inimigos e XP
+* **XP para subir de nível:** `30 + 10·n + 2·n²` (n = nível − 1): 30, 42, 58, 78, 102...
+* **Escala por templo:** Água ×1,0 vida/dano/XP · Fogo ×1,5 vida, ×1,3 dano, ×1,25 XP · Vento ×2,1 / ×1,65 / ×1,5 · Terra ×2,85 / ×2,1 / ×1,75.
+* **Chefes escalam com o herói:** nível esperado Água 10, Magma 14, Zephyrus 17, Titã 20, Salvador 22. Cada nível acima disso dá +4% de vida ao chefe (máximo +80%).
+
 ### 6.3 Os Cinco Grandes Chefes
 Cada chefe tem **uma mecânica central** (estilo Zelda) que abre a **janela de dano**. Fora da janela o chefe recebe só dano leve; na janela recebe 100% **+50%** (anel amarelo, aviso "JANELA DE DANO" na barra). Todos têm **3 fases** (marcadas na barra em 66% e 33%): cada fase acrescenta um golpe. Os quatro Generais usam a **IA Adaptativa** (resistem à classe que os venceu nas últimas runs e mostram a mutação sobre a cabeça).
 

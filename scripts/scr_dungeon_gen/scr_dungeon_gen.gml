@@ -21,9 +21,28 @@ function dungeon_spawn_door(_x, _y, _w, _h) {
     return _door;
 }
 
+// Composicao de monstros por sala do templo (aplicada sobre o que o chunk pede):
+//  - Exploracao 1: so slimes corpo a corpo e no maximo 3 atiradores (sem conjuradoras,
+//    totens ou fogos-fatuos) - a sala ensina o basico.
+//  - Exploracao 2 e 3: mistura atiradores com corpo a corpo e traz as conjuradoras
+//    acompanhadas de totens.
+#macro DUNGEON_STEP1_MAX_RANGED 3
+
 function dungeon_spawn_enemy(_biome, _type, _x, _y) {
     var _layer_id = layer_get_id("Instances");
     if (_layer_id == -1) _layer_id = layer_create(0, "Instances");
+
+    var _step = variable_global_exists("run_room_step") ? global.run_room_step : 1;
+    if (!variable_global_exists("dg_ranged_count")) global.dg_ranged_count = 0;
+    if (_step == 1) {
+        if (_type == "caster") _type = "ranged";
+        if (_type == "ranged") {
+            if (global.dg_ranged_count >= DUNGEON_STEP1_MAX_RANGED) _type = "slime";
+            else global.dg_ranged_count += 1;
+        }
+    } else if (_type == "slime" && random(1) < 0.35) {
+        _type = "ranged";
+    }
     
     var _obj = -1;
     var _make_greater = false;
@@ -73,8 +92,10 @@ function dungeon_spawn_enemy(_biome, _type, _x, _y) {
         _inst.is_greater_variant = true;
     }
 
-    // Suportes elementais: conjuradores as vezes vem com um Totem; atiradores com um Fogo-fatuo
-    if (_inst != noone && _type == "caster" && random(1) < 0.30) {
+    // Suportes elementais: conjuradores vem com um Totem; atiradores as vezes com um Fogo-fatuo
+    // (nada disso na Exploracao 1)
+    if (_step == 1) return _inst;
+    if (_inst != noone && _type == "caster" && random(1) < 0.65) {
         var _tp = fh_find_free_spawn_pos(_safe.x + choose(-60, 60), _safe.y + choose(-50, 50), 20);
         instance_create_layer(_tp.x, _tp.y, _layer_id, obj_elem_totem);
     } else if (_inst != noone && _type == "ranged" && random(1) < 0.20) {
@@ -526,7 +547,8 @@ function dungeon_instantiate_chunk(_ox, _oy, _chunk_lines, _type, _biome, _layer
                     break;
                     
                 case "E":
-                    var _elite = dungeon_spawn_enemy(_biome, "ranged", _cx, _cy);
+                    var _elite_step = variable_global_exists("run_room_step") ? global.run_room_step : 1;
+                    var _elite = dungeon_spawn_enemy(_biome, (_elite_step == 1) ? "slime" : "ranged", _cx, _cy);
                     if (_elite != noone) {
                         _elite.is_greater_variant = true;
                         _elite.scale_x = 1.42;
@@ -577,6 +599,7 @@ function dungeon_generate_modular() {
     room_height = 1620;
     
     global.boss_buttons_pressed = 0;
+    global.dg_ranged_count = 0;
     
     if (room == Room1) {
         global.run_biome = "water";

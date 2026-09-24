@@ -214,19 +214,23 @@ function enemy_ensure_scaling(_inst) {
     var _atk_mult = 1.0;
     var _def_bonus = 0;
     var _red_mult = 1.0;
+    var _xp_mult = 1.0;
 
     // Escalonamento sequencial progressivo dos 4 Templos
     if (_b == "water") {
+        _xp_mult = 1.00;
         _hp_mult = 1.00;
         _atk_mult = 1.00;
         _def_bonus = 0;
         _red_mult = 1.00;
     } else if (_b == "fire") {
+        _xp_mult = 1.25;
         _hp_mult = 1.50;
         _atk_mult = 1.30;
         _def_bonus = 2;
         _red_mult = 0.90;
     } else if (_b == "wind") {
+        _xp_mult = 1.50;
         _hp_mult = 2.10;
         _atk_mult = 1.65;
         _def_bonus = 4;
@@ -234,6 +238,7 @@ function enemy_ensure_scaling(_inst) {
         _inst.move_speed = round(_inst.move_speed * 1.15);
         _inst.move_speed_effective = _inst.move_speed;
     } else if (_b == "earth") {
+        _xp_mult = 1.75;
         _hp_mult = 2.85;
         _atk_mult = 2.10;
         _def_bonus = 6;
@@ -260,6 +265,7 @@ function enemy_ensure_scaling(_inst) {
     _inst.damage_reduction = _inst.damage_reduction * _red_mult;
     _inst.hp_lag = _inst.hp_max;
     _inst.atk_scale = _atk_mult;
+    if (variable_instance_exists(_inst, "exp_reward")) _inst.exp_reward = round(_inst.exp_reward * _xp_mult);
 }
 
 function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_force, _is_crit) {

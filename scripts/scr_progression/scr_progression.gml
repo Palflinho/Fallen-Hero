@@ -27,7 +27,8 @@ function player_recompute_attributes(_p) {
     // Poder Fisico (synth_pwr_fisica) escala diretamente o Auto-Ataque (AA) basico com a arma de qualquer heroi
     _p.attack_damage = _p.nat_power + _p.synth_pwr_fisica + global.shop_boost_power;
 
-    _p.xp_to_next = 30 + 7 * (_p.level - 1);
+    // Curva quadratica: cada nivel pede cada vez mais XP (30, 42, 58, 78, 102...)
+    _p.xp_to_next = 30 + 10 * _lv + 2 * _lv * _lv;
 
     // Leveling never removes HP you already have -- the extra max HP is added on top,
     // it doesn't force a heal-to-full either.

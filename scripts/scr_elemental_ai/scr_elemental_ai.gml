@@ -308,10 +308,36 @@ function boss_init_common(_chip) {
     boss_phase = 1;
     boss_phase_shield = 0;
     boss_phase_shield_popup = 0;
+    boss_level_scaled = false;
     vulnerable = false;
     vulnerable_timer = 0;
     has_poise = false;
     can_enrage = false;
+}
+
+// Nivel esperado do heroi ao chegar em cada chefe (curva de XP quadratica)
+function boss_expected_level(_obj) {
+    if (_obj == obj_boss) return 10;
+    if (_obj == obj_boss2) return 14;
+    if (_obj == obj_boss3) return 17;
+    if (_obj == obj_boss4) return 20;
+    if (_obj == obj_boss_human) return 22;
+    return 1;
+}
+
+// Chefe escala com o heroi: +4% de vida por nivel acima do esperado (maximo +80%).
+// Quem chega no nivel normal (ou abaixo) enfrenta o chefe com a vida base.
+function boss_apply_level_scaling() {
+    boss_level_scaled = true;
+    var _pl = instance_find(obj_player, 0);
+    if (_pl == noone) { boss_level_scaled = false; return; }
+    var _over = max(0, _pl.level - boss_expected_level(object_index));
+    if (_over <= 0) return;
+    var _mult = min(1.8, 1 + 0.04 * _over);
+    var _ratio = (hp_max > 0) ? (hp / hp_max) : 1;
+    hp_max = round(hp_max * _mult);
+    hp = round(hp_max * _ratio);
+    if (variable_instance_exists(id, "hp_lag")) hp_lag = hp;
 }
 
 // Vida minima da fase atual: o dano nunca atravessa o limite da fase (66% / 33%),
@@ -327,6 +353,7 @@ function boss_phase_floor(_inst) {
 // Na troca de fase o chefe PERCEBE: fecha qualquer janela de dano, solta um rugido que
 // empurra o jogador para longe e fica imune por 1.5s enquanto muda de postura.
 function boss_update_phase() {
+    if (!boss_level_scaled) boss_apply_level_scaling();
     if (boss_phase_shield > 0) {
         boss_phase_shield -= delta_time / 1000000;
         if (boss_phase_shield_popup > 0) boss_phase_shield_popup -= delta_time / 1000000;
