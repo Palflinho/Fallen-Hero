@@ -12,6 +12,7 @@ touch_controls_update();
 // itself, hitstop would freeze permanently the moment it started.
 if (global.hitstop_timer > 0) global.hitstop_timer -= delta_time / 1000000;
 if (!variable_global_exists("screen_damage_flash")) global.screen_damage_flash = 0;
+if (variable_global_exists("seal_ping_timer") && global.seal_ping_timer > 0) global.seal_ping_timer -= delta_time / 1000000;
 if (global.screen_damage_flash > 0) global.screen_damage_flash -= delta_time / 1000000;
 if (!variable_global_exists("camera_shake")) global.camera_shake = 0;
 if (global.camera_shake > 0) global.camera_shake = max(0, global.camera_shake - (delta_time / 1000000) * 30);

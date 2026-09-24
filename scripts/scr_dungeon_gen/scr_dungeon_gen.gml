@@ -861,6 +861,13 @@ function dungeon_generate_modular() {
     var _treasure_room = _other_rooms[5];
     var _combat_room1 = _other_rooms[6];
     var _combat_room2 = _other_rooms[7];
+
+    // Primeira sala do jogo (Exploracao 1 da Agua): um dos selos fica na sala mais proxima
+    // da entrada, para o jogador ver logo no inicio a relacao selo -> luz no portal.
+    if (_biome == "water" && global.run_room_step == 1) {
+        _button_rooms[3] = _other_rooms[7];
+        _combat_room2 = _other_rooms[4];
+    }
     
     // Posiciona o Jogador no Hall de Entrada
     var _spawn_px = _start_gx * _cw + 360;

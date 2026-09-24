@@ -90,3 +90,8 @@ draw_set_color(c_white);
 
 // Render Sakurai world-space combat popups, damage numbers & particle bursts
 fx_system_draw();
+
+// Dica de primeira vez: ganhou pontos de talento e ainda nao evoluiu nenhum
+if (talent_pending_points > 0 && state != "dead" && !tutorial_done("talent_sheet") && !is_world_paused()) {
+    tutorial_draw_key_hint(x, y - 58, "pause", tr("Talentos"), 1);
+}

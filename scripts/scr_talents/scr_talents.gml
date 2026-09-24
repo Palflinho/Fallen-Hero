@@ -1050,6 +1050,7 @@ function load_meta_from_disk() {
     };
     global.meta_mastery = {};
     global.meta_endings = { vinganca: false, conquistador: false, sintese: false };
+    global.meta_tutorial = {};
     global.meta_adaptive_ai = adaptive_ai_get_default_data();
     if (!variable_global_exists("dev_mode")) global.dev_mode = false;
 
@@ -1094,6 +1095,9 @@ function load_meta_from_disk() {
         }
         if (variable_struct_exists(_data, "mastery") && is_struct(_data.mastery)) {
             global.meta_mastery = _data.mastery;
+        }
+        if (variable_struct_exists(_data, "tutorial") && is_struct(_data.tutorial)) {
+            global.meta_tutorial = _data.tutorial;
         }
         if (variable_struct_exists(_data, "endings") && is_struct(_data.endings)) {
             global.meta_endings = _data.endings;
@@ -1157,6 +1161,7 @@ function save_meta() {
         game_language: variable_global_exists("game_language") ? global.game_language : "pt",
         mastery: variable_global_exists("meta_mastery") ? global.meta_mastery : {},
         endings: variable_global_exists("meta_endings") ? global.meta_endings : { vinganca: false, conquistador: false, sintese: false },
+        tutorial: variable_global_exists("meta_tutorial") ? global.meta_tutorial : {},
         adaptive_ai: variable_global_exists("meta_adaptive_ai") ? global.meta_adaptive_ai : adaptive_ai_get_default_data(),
         dev_mode: variable_global_exists("dev_mode") ? global.dev_mode : false
     };
@@ -1822,6 +1827,7 @@ function player_apply_talent_point(_p, _slot_index) {
 
     _p.talent_slot_ranks[_slot_index] += 1;
     _p.talent_pending_points -= _cost;
+    tutorial_mark("talent_sheet");
 
     player_recompute_synthetics(_p);
     player_recompute_attributes(_p);

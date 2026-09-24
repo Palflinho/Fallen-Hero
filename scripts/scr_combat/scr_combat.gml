@@ -429,7 +429,9 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
     _inst.hit_flash_timer = _inst.hit_flash_duration;
     if (_inst.hp < 0) _inst.hp = 0;
     if (_is_boss) _inst.hp = max(_inst.hp, boss_phase_floor(_inst));
-    run_stats_on_damage_dealt(_hp_before - _inst.hp, variable_global_exists("dmg_ctx_physical") && global.dmg_ctx_physical);
+    if (!variable_instance_exists(_inst, "is_training_dummy")) {
+        run_stats_on_damage_dealt(_hp_before - _inst.hp, variable_global_exists("dmg_ctx_physical") && global.dmg_ctx_physical);
+    }
 
     // Dynamic HP bar refresh
     if (variable_instance_exists(_inst, "hp_bar_timer")) {

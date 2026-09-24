@@ -749,6 +749,10 @@ function locale_en_init() {
     _d[$ "TECLADO"] = "KEYBOARD";
     _d[$ "CONTROLE"] = "GAMEPAD";
     _d[$ "ESC / Enter: Voltar"] = "ESC / Enter: Back";
+    _d[$ "Defender / Esquivar"] = "Defend / Dodge";
+    _d[$ "Use a defesa quando ele ficar vermelho!"] = "Defend when it turns red!";
+    _d[$ "BOA!"] = "NICE!";
+    _d[$ "Talentos"] = "Talents";
     // ---------------------------------------------------------------------
     // PEDACOS PARA TEXTOS COM NUMEROS (trocados em ordem, so quando a frase
     // inteira nao esta no dicionario)

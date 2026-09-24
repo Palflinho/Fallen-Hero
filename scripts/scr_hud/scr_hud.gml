@@ -503,8 +503,9 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
         with (obj_boss_button) {
             var _bx = _inner_x + x * _scale_x;
             var _by = _inner_y + y * _scale_y;
-            draw_set_color(pressed ? c_gray : c_orange);
-            draw_rectangle(_bx - 1, _by - 1, _bx + 1, _by + 1, false);
+            // Selos: pendentes piscam em laranja, ativados ficam verdes
+            draw_set_color(pressed ? make_colour_rgb(120, 255, 150) : merge_colour(c_orange, c_yellow, 0.5 + 0.5 * sin(current_time * 0.01)));
+            draw_rectangle(_bx - 2, _by - 2, _bx + 2, _by + 2, false);
         }
         with (obj_boss_door) {
             var _dx = _inner_x + x * _scale_x;
@@ -533,10 +534,18 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
     
         // Portal de Saída no radar
         draw_set_color(make_colour_rgb(100, 220, 255));
+        var _ping = variable_global_exists("seal_ping_timer") ? global.seal_ping_timer : 0;
         with (obj_stage_gate) {
             var _gx = _inner_x + x * _scale_x;
             var _gy = _inner_y + y * _scale_y;
             draw_circle(_gx, _gy, 3, false);
+            // Um selo acabou de ser ativado: o portal pisca no radar
+            if (_ping > 0 && trigger_mode == "buttons") {
+                var _pr = 4 + (1 - frac(_ping)) * 10;
+                draw_set_alpha(frac(_ping));
+                draw_circle(_gx, _gy, _pr, true);
+                draw_set_alpha(1);
+            }
         }
         if (object_exists(asset_get_index("obj_stage_gate2"))) {
             with (asset_get_index("obj_stage_gate2")) {

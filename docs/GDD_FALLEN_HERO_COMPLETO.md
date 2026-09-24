@@ -320,6 +320,12 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
 * **Card de Baú Tríplice:** Ao abrir um baú de arena, o jogo pausa e exibe cards nítidos comparando os slots de talento do herói (3 iniciais + 2 extras) com o novo poder sorteado.
 * **Ficha do Herói em Duas Colunas:** Painel limpo com árvore de maestria, atributos calculados em tempo real (dano físico, mágico, defesa, velocidade, cadência) e descrições com auto-ajuste de linha (`string_height_ext`).
 
+### 8.2.1 Ensino sem Tutorial (World 1-1)
+Nenhuma tela de tutorial: o jogo ensina pelo próprio espaço.
+* **Bonecos de treino na vila** (`obj_training_dummy`): um parado com "[Z] Atacar" em cima e um que arma um golpe lento (fica vermelho) com "[X] Defender / Esquivar". O botão mostrado muda com a entrada (teclado, Xbox, PlayStation, toque). Não causam dano nem dão XP; o golpe só empurra.
+* **Selos que se explicam:** o portal da exploração tem 4 luzes; ao pisar num selo, um rastro de luz voa até o portal e acende uma delas, e o portal pisca no minimapa. Na Exploração 1 da Água um selo fica sempre na sala vizinha à entrada.
+* **Dicas de primeira vez** (salvas no meta do slot): ao ganhar o primeiro ponto de talento aparece "[ESC] Talentos" acima do herói até ele evoluir um talento.
+
 ### 8.3 Síntese Sonora Procedural 16-bit (`scr_audio.gml`)
 * **Zero Dependências Externas:** O jogo sintetiza seus próprios efeitos sonoros em tempo de execução via buffers PCM (`audio_create_buffer_sound`):
   * Lâminas, impactos pesados e socos (*noise sweeps* e *crunches*).

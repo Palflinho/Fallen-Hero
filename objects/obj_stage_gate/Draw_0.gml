@@ -33,6 +33,27 @@ draw_set_alpha(1);
 draw_set_color(c_white);
 draw_circle(x, y, radius, true);
 
+// Portal dos selos: 4 luzes ao redor, uma acende para cada selo ativado
+if (trigger_mode == "buttons") {
+    var _lit = min(4, global.boss_buttons_pressed);
+    for (var _s = 0; _s < 4; _s++) {
+        var _sa = 45 + _s * 90;
+        var _sx = x + lengthdir_x(radius + 16, _sa);
+        var _sy = y + lengthdir_y(radius + 16, _sa);
+        var _on = (_s < _lit);
+        if (_on) {
+            draw_set_alpha(0.35 + 0.15 * sin(current_time * 0.008 + _s));
+            draw_set_color(c_aqua);
+            draw_circle(_sx, _sy, 11, false);
+            draw_set_alpha(1);
+        }
+        draw_set_color(_on ? c_white : make_colour_rgb(40, 50, 66));
+        draw_circle(_sx, _sy, 6, false);
+        draw_set_color(_on ? c_aqua : make_colour_rgb(90, 110, 140));
+        draw_circle(_sx, _sy, 6, true);
+    }
+}
+
 // Brasão / Ícone flutuante estilo Hades acima do portal
 var _float_y = y - radius - 24 + 4 * sin(current_time / 100);
 
