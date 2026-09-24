@@ -27,8 +27,9 @@ if (!_is_village_modal && !_is_dialogue) {
     hud_draw_boss_bar(_gw, _gh, boss_room);
 }
 
-// 4. Minimapa Radar e Trilha de Nos do Bioma (apenas em masmorras, nunca na Vila nem em modais)
-if (room != room_village && !_is_village_modal && !_is_dialogue && !_is_sheet_or_pause) {
+// 4. Minimapa Radar e Trilha de Nos do Bioma (apenas em masmorras, nunca na Vila, no Sandbox nem em modais)
+var _is_sandbox = (variable_global_exists("sandbox_active") && global.sandbox_active);
+if (room != room_village && !_is_sandbox && !_is_village_modal && !_is_dialogue && !_is_sheet_or_pause) {
     hud_draw_minimap_and_tracker(id, target, _gw, _gh, game_over, level_complete);
 }
 

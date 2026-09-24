@@ -359,7 +359,7 @@ Nenhuma tela de tutorial: o jogo ensina pelo próprio espaço.
 
 ### 8.4 Sandbox do Desenvolvedor (`room_sandbox`)
 Sala livre para testar sem jogar a campanha. Com o **Modo Dev** ligado ([F1] na tela inicial), entre pelo botão **"Sandbox (Dev)"** do menu ou com **[F5]** no menu principal. A classe e o elemento se trocam pelo painel.
-* **Painel à direita** ([F6] mostra/esconde), com abas:
+* **Painel à direita** ([F6] mostra/esconde; o minimapa fica escondido no sandbox), com abas:
   * **Herói:** classe, elemento (especialização), nível, +10 pontos de talento, curar e a escala dos inimigos (Água/Fogo/Vento/Terra).
   * **Inimigos:** todos os mobs, totem, fogo-fátuo e os dois bonecos de treino, com variante Normal / Alfa / Campeão Raro.
   * **Chefes:** os 5 chefes e os 4 espíritos.
