@@ -303,12 +303,16 @@ if (global.paused || global.attr_window_open) {
     }
 
     if (keyboard_check_pressed(ord("C"))) {
+        // Abandonar e voltar direto para a fogueira da vila (mesma penalidade da morte)
         if (variable_global_exists("run_in_progress") && global.run_in_progress) run_finish_and_save(true);
         global.inrun_saved_stats = false;
         global.paused = false;
         global.attr_window_open = false;
-        global.char_select_direct = true;
-        room_goto(room_char_select);
+        global.run_room_step = 1;
+        global.run_biome = "water";
+        global.respawn_at_bonfire = true;
+        save_checkpoint_fresh(global.selected_character, "room_village", global.selected_element);
+        room_goto(room_village);
     } else if (keyboard_check_pressed(ord("Q"))) {
         if (variable_global_exists("run_in_progress") && global.run_in_progress) run_finish_and_save(true);
         game_end();
@@ -320,7 +324,7 @@ if (input_check_pause_pressed() || _touch_pause) {
     global.paused = true;
     global.attr_window_open = true;
 } else if (keyboard_check_pressed(vk_f1)) {
-    global.char_select_direct = true;
+    global.char_select_direct = false;
     room_goto(room_char_select);
 } else if (keyboard_check_pressed(vk_f2)) {
     global.dev_mode = !global.dev_mode;

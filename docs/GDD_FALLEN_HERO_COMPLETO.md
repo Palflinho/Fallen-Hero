@@ -3,7 +3,7 @@
 **Engine:** GameMaker LTS (Compatibilidade GML LTS 2026)  
 **Gênero:** Top-Down Action Roguelike RPG com Progressão Elemental  
 **Inspirações de Design:** *Hades*, *Dead Cells*, *Hyper Light Drifter*, *Super Smash Bros* (Filosofia Sakurai) e *The Legend of Zelda* (Filosofia Miyamoto)  
-**Status do Projeto:** Em desenvolvimento — protótipo jogável com sistemas completos; arte final, música e finais ainda pendentes. Compile e teste a cada entrega.
+**Status do Projeto:** Em desenvolvimento — MVP jogável do título aos créditos (vila, 5 templos, 3 finais, opções, save roguelite, sandbox). Pendentes: arte final, música definitiva e balanceamento por playtest. Compile e teste a cada entrega.
 
 ---
 
@@ -18,7 +18,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
 1. **Combate Responsivo com "Juice" (Sakurai Polish):** Impactos pesados com *hit-stop*, *screen shake* com decaimento exponencial, física de ricochete em paredes, atrito reduzido no gelo e retroalimentação visual de números flutuantes e partículas dinâmicas.
 2. **Coesão de Mecânicas (Miyamoto Design):** Nenhuma habilidade tem propósito único. A defesa do Cavaleiro protege, absorve projéteis, dispara ondas de choque e pode ser cancelada instantaneamente com `[X]`. A invisibilidade do Assassino corta aggro de inimigos, permite posicionamento pelas costas (*backstab*) e arma minas de basalto na quebra.
 3. **Matriz Elemental 4×4:** Quatro classes cruzadas com quatro afinidades elementais geram 16 arquétipos especializados de combate (ex: Cavaleiro Paladino com Água, Berserker com Fogo, Duelista com Vento, Guardião com Terra).
-4. **Progressão Dupla (Roguelike + Metagame):** Runs dinâmicas pelas masmorras de 7 etapas por fase, complementadas pelo Hub da **Vila Subterrânea**, onde o ouro acumulado (com retenção de 60% na morte) desbloqueia árvores permanentes, diálogos e novos pedestais de poder.
+4. **Progressão Dupla (Roguelike + Metagame):** Runs dinâmicas pelas masmorras de 7 etapas por fase, complementadas pelo Hub da **Vila Subterrânea**, onde o ouro acumulado (60% mantido na morte, 100% ao voltar pelo portal depois de um chefe) desbloqueia talentos permanentes, afinidades e diálogos.
 
 ---
 
@@ -196,7 +196,7 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
   * Ranks 5 $\rightarrow$ 10: 6 a 9 pontos por nível (Especialização final e investimento de endgame)
 
 ### 5.3 Slots e Pontos de Talento na Run
-* **5 slots por run:** o jogador escolhe **3 talentos** na tela pré-run; os **2 slots extras** começam vazios e são preenchidos durante a partida com talentos achados em baús/portais (o baú nunca sorteia um talento já equipado).
+* **5 slots por run:** o jogador escolhe **3 talentos** no Portal da Fenda, na vila (ver 6.1); os **2 slots extras** começam vazios e são preenchidos durante a partida com talentos achados em baús/portais (o baú nunca sorteia um talento já equipado).
 * **O rank pertence ao slot:** trocar o talento de um slot mantém o rank já investido nele.
 * **Pontos por nível:** ao atingir o nível N o herói ganha cerca de N/3 pontos, no mínimo 1 (níveis 1-4 = 1, 5-7 = 2, 8-10 = 3, 11-13 = 4...). A run começa no nível 1 com 1 ponto. Fórmula em `talent_points_for_level()`.
 
@@ -205,10 +205,12 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
 ## 6. ARQUITETURA DE FASES, DUNGEONS & VILA HUB
 
 ```
-   [ VILA SUBTERRÂNEA ] ────► [ PORTAL DIMENSIONAL ]
-     • Ancião (Lore & Metagame)     │
-     • Fogueira (Save & Cura)       │
-     • 4 Pedestais Elementais       ▼
+   [ TELA INICIAL ] ─► [ SLOT DE SAVE ] ─► [ VILA SUBTERRÂNEA ] ────► [ PORTAL DA FENDA ]
+                                             • Casa dos Heróis (classe)   │ (3 talentos da run)
+                                             • Empório da Fenda (loja)    │
+                                             • Ancião, moradores          │
+                                             • Fogueira (volta da morte)  │
+                                             • 4 Pedestais Elementais     ▼
                            [ TEMPLO ELEMENTAL ]
                              Etapa 1: Exploração 1
                              Etapa 2: Exploração 2
@@ -217,14 +219,20 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
                              Etapa 5: Exploração 3
                              Etapa 6: Arena (Ondas + Espírito + Cura OU Talento)
                              Etapa 7: Chefe Guardião ──► Resgate da Essência
-                                                           (Retorna ao Hub)
+                                                           ├─► Portal da Vila (fim da run, 100% do ouro)
+                                                           └─► Portal do Próximo Templo
 ```
 
 ### 6.1 O Hub: A Vila Subterrânea (`room_village`)
-* **A Fogueira Ancestral (`obj_bonfire`):** Ponto de descanso que regenera vida e registra a memória da jornada.
-* **O Ancião da Vila (`obj_village_elder`):** NPC com sistema completo de diálogos e revelações graduais sobre a origem do cataclismo.
-* **Os Pedestais das Essências (`obj_pedestal_element`):** Quatro totens sagrados onde as essências resgatadas são alocadas, acendendo o templo e ativando bênçãos mundiais permanentes.
-* **O Portal de Expedição (`obj_village_portal`):** Seleção de masmorras elementais desbloqueadas e progressão contínua.
+A tela inicial só tem **Novo Jogo, Continuar, Opções e Sair** (+ **Sandbox** no Modo Dev). Depois de escolher o slot, o jogo abre direto na vila; toda a preparação da run acontece dentro dela, andando até cada construção e apertando `[Espaço / A]`.
+* **Casa dos Heróis (`obj_village_house_heroes`, "Alojamento dos Campeões"):** troca a classe e a afinidade elemental do herói. Afinidades ainda não conquistadas aparecem bloqueadas. A troca é feita na hora (`player_change_class`).
+* **Empório da Fenda (`obj_village_house_shop`):** gasta o ouro salvo para desbloquear talentos permanentes da classe e afinidade atuais.
+* **Portal da Fenda (`obj_village_portal`):** abre a janela de preparação. O jogador equipa até **3 talentos** desbloqueados e parte para a expedição (Templo da Água ou, depois dos 4 templos, o Templo 5). Entrar no portal é o save automático do início da run.
+* **A Fogueira Ancestral (`obj_bonfire`):** é onde o herói reaparece depois de morrer, desistir ou voltar pelo portal pós-chefe.
+* **O Ancião (`obj_village_elder`) e os moradores (`obj_village_npc`):** Ancião Tatupóba (lore e revelações graduais), Mestre Carapácio (ferreiro), Curandeira Kalina, Rastreador Tico e o Guardião do Véu. As falas dos moradores reagem à classe e ao elemento do herói (`village_<npc>_<classe|elem_x|default>`).
+* **Os Pedestais das Essências (`obj_pedestal_element`):** acendem conforme as essências são resgatadas.
+* **Bonecos de treino:** ver 8.2.1.
+* Enquanto uma janela da vila está aberta (`global.village_modal_open`) o mundo fica pausado.
 
 ### 6.2 O Ciclo de 7 Etapas por Masmorra
 **Primeira metade (sem conjuradoras):**
@@ -236,6 +244,8 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
 4. **Exploração 3 (Sala 5):** as conjuradoras e os totens entram em cena.
 5. **Arena (Sala 6):** ondas cheias (Água 2, Fogo 3, Vento 3, Terra 4), com conjuradoras, e a última onda sempre traz um golem. Depois desperta o **Espírito Elemental** (ver 6.4); libertado, ele agradece e encoraja o herói a libertar o templo. Em seguida o jogador **escolhe UMA recompensa: Cura Total ou Baú de Talento** (a outra some).
 6. **Câmara do Guardião (Sala 7):** batalha contra o chefe elemental do bioma.
+
+**Depois do chefe** surgem **dois portais**: **Voltar para a Vila** (termina a run com save e mantém 100% do ouro ganho) ou **Avançar** para o próximo templo (continua a run, arriscando o ouro). O HUD mostra a etapa atual (1 a 7) e um banner com o nome da sala ao entrar.
 
 ### 6.2.1 Composição de Monstros por Sala
 * **Exploração 1:** só slimes corpo a corpo e no máximo 3 atiradores. Sem conjuradoras, totens ou fogos-fátuos; o guardião de elite da saída vira um slime grande.
@@ -302,6 +312,7 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
    * *Interação com Talento:* O talento **Passo Silencioso** do Assassino desativa o Sentido Aranha dos monstros, permitindo contorná-los sem ser notado.
 3. **Ponto Cego Traseiro:** Permite emboscadas, abates silenciosos e multiplicadores colossais de *Backstab*.
 4. **Táticas de Bando & Mira Preditiva:** Elites e arqueiros calculam a velocidade do jogador para disparar à frente da trajetória (*lead aim*), enquanto unidades leves tentam flanquear pelas pontas da sala.
+5. **Linha de Visão:** paredes bloqueiam a visão (`fh_line_intersects_wall`). Inimigos não detectam nem atiram através de paredes; o jogador pode quebrar a perseguição dobrando uma esquina.
 
 ---
 
@@ -323,7 +334,9 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
 ### 8.1.1 Save Automático (Roguelite)
 Só existem 2 pontos de save, e nenhum checkpoint durante a expedição:
 1. **Ao entrar no portal da vila** (início da expedição, e também ao ir para o Templo 5).
-2. **Ao fim da partida:** morte (perde 40% do ouro da partida), desistência pelo menu de pausa (conta como morte) ou final do jogo (mantém tudo).
+2. **Ao fim da partida:** morte (perde 40% do ouro da partida), desistência pelo menu de pausa (conta como morte), portal de volta à vila depois de um chefe (mantém tudo) ou final do jogo (mantém tudo).
+
+Depois da morte, a tela de derrota mostra as estatísticas da partida; confirmar leva o herói de volta à **fogueira da vila**, `[R]` recomeça a expedição e `[M]` volta à tela inicial. Desistir pelo pause também leva à fogueira (`[C]`) ou à tela inicial (`[M]`).
 
 Durante a expedição o progresso (ouro, desbloqueios, maestrias, IA adaptativa, dicas vistas) fica só em memória. Fechar o jogo no meio descarta o que foi ganho nela. Opções (`settings.ini`) e compras feitas fora da expedição continuam salvando na hora.
 
@@ -340,12 +353,12 @@ Nenhuma tela de tutorial: o jogo ensina pelo próprio espaço.
   * Baús e triunfos (*fanfares* arpejadas em onda senoidal).
   * Vento, fogo e explosões (*filtered brown/white noise*).
 * **Vozes Chiptune (Estilo Banjo-Kazooie):** Cada raça e personagem tem um tom próprio definido em `scr_audio` (Rinoceronte grave em serra, Raposa médio suave em seno, Lagarto estalado, Urutau etéreo em tom harmônico). As vozes tocam nas caixas de diálogo.
-* **Música:** ainda não existe. **Pendente.**
+* **Música (`bgm_play`):** trilhas procedurais em loop para **título, vila, masmorra e chefe**, trocadas automaticamente por sala com fade. Para usar música de verdade basta colocar `bgm/<faixa>.ogg` (`title`, `village`, `dungeon`, `boss`) em `datafiles`: o arquivo externo tem prioridade sobre a síntese. O volume segue **Opções → Música** (e o volume geral).
 
 ---
 
 ### 8.4 Sandbox do Desenvolvedor (`room_sandbox`)
-Sala livre para testar sem jogar a campanha. Com o **Modo Dev** ligado ([F1] na tela inicial), entre pelo botão **"Sandbox (Dev)"** do menu ou com **[F5]** (na tela de seleção de herói, entra com a classe e o elemento escolhidos).
+Sala livre para testar sem jogar a campanha. Com o **Modo Dev** ligado ([F1] na tela inicial), entre pelo botão **"Sandbox (Dev)"** do menu ou com **[F5]** no menu principal. A classe e o elemento se trocam pelo painel.
 * **Painel à direita** ([F6] mostra/esconde), com abas:
   * **Herói:** classe, elemento (especialização), nível, +10 pontos de talento, curar e a escala dos inimigos (Água/Fogo/Vento/Terra).
   * **Inimigos:** todos os mobs, totem, fogo-fátuo e os dois bonecos de treino, com variante Normal / Alfa / Campeão Raro.
@@ -378,7 +391,9 @@ A lista completa de sprites, tilesets, efeitos, UI, tamanhos, animações e pale
 * `obj_pedestal_element`: Receptáculo das quatro essências na vila subterrânea.
 * `obj_bonfire`: Ponto de descanso e salvação na vila.
 * `obj_midrun_shop`: Interface de compra e melhorias a meio da masmorra.
-* `obj_char_select`: Tela de seleção dos quatro heróis com pré-visualização de atributos e lore.
+* `obj_char_select`: Tela inicial (menu principal, slots de save, opções e controles). A escolha de herói, talentos e loja fica na vila.
+* `obj_village_house_heroes` / `obj_village_house_shop` / `obj_village_portal`: Casa dos Heróis, Empório da Fenda e Portal da Fenda (preparação da run).
+* `obj_hud`: HUD, pause/talentos, tela de derrota com estatísticas, banners de sala e troca de música por sala.
 
 ---
 
@@ -393,12 +408,15 @@ A lista completa de sprites, tilesets, efeitos, UI, tamanhos, animações e pale
 | **Mitigação Físico vs Mágico** | 2 Tipos + Retornos Decrescentes | 100% Integrado | [`scr_combat.gml:2205`](../scripts/scr_combat/scr_combat.gml#L2205) |
 | **Mecânica de Furtividade** | Perda de Aggro + 80% Vel | 100% Integrado | [`player_enter_stealth()`](../scripts/scr_combat/scr_combat.gml#L1567) |
 | **Cancelamento de Habilidade** | `[X]` para Cavaleiro e Maga | 100% Integrado | [`obj_player/Step_0.gml:630`](../objects/obj_player/Step_0.gml#L630) |
-| **Hub da Vila Subterrânea** | Fogueira, Ancião, Pedestais | 100% Operante | [`room_village`](../rooms/room_village) |
+| **Hub da Vila Subterrânea** | Casa dos Heróis, Empório, Portal (3 talentos), Fogueira, Ancião, 4 moradores, Pedestais, bonecos de treino | Operante | [`room_village`](../rooms/room_village) |
+| **Portais Pós-Chefe** | Voltar à Vila (100% do ouro) / Avançar | Operante | [`obj_stage_gate`](../objects/obj_stage_gate) / [`obj_enemy_parent/Step_0.gml`](../objects/obj_enemy_parent/Step_0.gml) |
 | **Chefes de Masmorra** | 5 (4 Elementais + Humano) | 100% Operante | [`obj_boss_human`](../objects/obj_boss_human) / `obj_boss 1-4` |
 | **Síntese de Áudio Procedural**| 27 Efeitos PCM + 9 Vozes | Efeitos e vozes dos diálogos operantes | [`scr_audio.gml`](../scripts/scr_audio/scr_audio.gml) |
-| **Música** | — | Não existe | — |
+| **Música** | 4 faixas (título, vila, masmorra, chefe) | Procedural provisória; aceita `.ogg` em `datafiles/bgm/` | [`bgm_play()`](../scripts/scr_audio/scr_audio.gml) |
+| **Save Roguelite** | 2 pontos (portal da vila / fim da run) | Operante | [`scr_progression.gml`](../scripts/scr_progression/scr_progression.gml) |
+| **Sandbox do Desenvolvedor** | Heróis, inimigos, chefes, cenário, talentos, colisões | Operante (nada é salvo) | [`scr_sandbox.gml`](../scripts/scr_sandbox/scr_sandbox.gml) |
 | **Três Finais (Vingança, Conquistador, Síntese)** | 3 + créditos | Revelação do Salvador → escolha → epílogo → créditos; finais vistos salvos no meta | [`obj_ending_controller`](../objects/obj_ending_controller) / [`scr_endings.gml`](../scripts/scr_endings/scr_endings.gml) |
-| **Menu de Opções** | Idioma, tela cheia, 3 volumes, tremor, vibração, controles | Operante (`settings.ini`, vale para todos os slots) | [`scr_settings.gml`](../scripts/scr_settings/scr_settings.gml) |
+| **Menu de Opções** | Idioma, tela cheia, volumes (geral, efeitos, música), tremor, vibração, controles | Operante (`settings.ini`, vale para todos os slots) | [`scr_settings.gml`](../scripts/scr_settings/scr_settings.gml) |
 | **Estatísticas da Partida** | Dano causado/recebido (físico e mágico), cura, abates, quem matou | Exibidas na tela de derrota | [`scr_run_stats.gml`](../scripts/scr_run_stats/scr_run_stats.gml) |
 | **Fonte da Interface** | Liberation Sans (SIL OFL), faixa Latin-1 | Embutida em `datafiles/fonts` | [`ui_font()`](../scripts/scr_locale/scr_locale.gml) |
 | **Idiomas** | PT, EN | PT completo; EN traduzido (interface, talentos, diálogos) | [`scr_locale.gml`](../scripts/scr_locale/scr_locale.gml) / [`scr_locale_en.gml`](../scripts/scr_locale_en/scr_locale_en.gml) |

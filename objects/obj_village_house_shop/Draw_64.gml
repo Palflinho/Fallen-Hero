@@ -26,10 +26,6 @@ if (!modal_open) {
         draw_set_valign(fa_middle);
 
         var _txt = tr("[Espaco / A] Emporio da Fenda (Loja)");
-        var _lang = loc_get_language();
-        if (_lang == "en") _txt = tr("[Space / A] Rift Emporium (Shop)");
-        else if (_lang == "es") _txt = tr("[Espacio / A] Bazar de la Falla (Tienda)");
-        else if (_lang == "ja") _txt = tr("[Space / A] 裂け目の商店 (ショップ)");
 
         var _bw = string_width(_txt) + 24;
         var _bh = 26;
