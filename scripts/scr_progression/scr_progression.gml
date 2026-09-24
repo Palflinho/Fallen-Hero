@@ -128,3 +128,31 @@ function run_get_room_title(_step) {
     if (_step == 7) return tr("Chefe");
     return tr("Sala");
 }
+
+// =========================================================================
+// SAVE AUTOMATICO DE ROGUELITE (2 pontos)
+//  1. Ao entrar no portal da vila (inicio da expedicao).
+//  2. Ao fim da partida: morte, desistencia (conta como morte) ou final do jogo.
+// Entre esses pontos o save_meta() so marca o progresso como pendente; fechar o
+// jogo no meio da expedicao descarta o que foi ganho nela.
+// =========================================================================
+function run_start_autosave() {
+    global.run_in_progress = false;
+    save_meta();
+    global.run_in_progress = true;
+}
+
+// Encerra a partida e salva. Com penalidade (morte/desistencia) perde 40% do ouro da partida.
+// Retorna {earned, kept, lost}.
+function run_finish_and_save(_death_penalty) {
+    ensure_meta_loaded();
+    if (!variable_global_exists("run_gold_earned")) global.run_gold_earned = 0;
+    var _earned = global.run_gold_earned;
+    var _kept = _death_penalty ? round(_earned * 0.60) : _earned;
+    var _lost = _earned - _kept;
+    if (_death_penalty) global.gold = max(0, global.gold - _lost);
+    global.run_gold_earned = 0;
+    global.run_in_progress = false;
+    save_meta();
+    return { earned: _earned, kept: _kept, lost: _lost };
+}

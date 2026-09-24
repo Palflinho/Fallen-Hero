@@ -5,6 +5,7 @@ global.chest_reward_open = false;
 global.midrun_shop_open = false;
 global.run_victory = false;
 global.ending_active = false;
+global.run_in_progress = false;
 global.hitstop_timer = 0;
 global.run_playtime = 0;
 if (!variable_global_exists("dev_mode")) global.dev_mode = false;

@@ -16,6 +16,9 @@ if (_player != noone) {
             sfx_play("magic", 0.05, 0.8);
             trigger_camera_shake(5);
 
+            // Save automatico: entrar no portal da vila salva o progresso antes da expedicao
+            run_start_autosave();
+
             if (all_elements_reclaimed()) {
                 // Todas as essencias recuperadas! Abre passagem ao Templo 5 (O Humano)
                 global.run_biome = "human";

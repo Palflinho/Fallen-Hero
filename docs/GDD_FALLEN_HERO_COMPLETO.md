@@ -320,6 +320,13 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
 * **Card de Baú Tríplice:** Ao abrir um baú de arena, o jogo pausa e exibe cards nítidos comparando os slots de talento do herói (3 iniciais + 2 extras) com o novo poder sorteado.
 * **Ficha do Herói em Duas Colunas:** Painel limpo com árvore de maestria, atributos calculados em tempo real (dano físico, mágico, defesa, velocidade, cadência) e descrições com auto-ajuste de linha (`string_height_ext`).
 
+### 8.1.1 Save Automático (Roguelite)
+Só existem 2 pontos de save, e nenhum checkpoint durante a expedição:
+1. **Ao entrar no portal da vila** (início da expedição, e também ao ir para o Templo 5).
+2. **Ao fim da partida:** morte (perde 40% do ouro da partida), desistência pelo menu de pausa (conta como morte) ou final do jogo (mantém tudo).
+
+Durante a expedição o progresso (ouro, desbloqueios, maestrias, IA adaptativa, dicas vistas) fica só em memória. Fechar o jogo no meio descarta o que foi ganho nela. Opções (`settings.ini`) e compras feitas fora da expedição continuam salvando na hora.
+
 ### 8.2.1 Ensino sem Tutorial (World 1-1)
 Nenhuma tela de tutorial: o jogo ensina pelo próprio espaço.
 * **Bonecos de treino na vila** (`obj_training_dummy`): um parado com "[Z] Atacar" em cima e um que arma um golpe lento (fica vermelho) com "[X] Defender / Esquivar". O botão mostrado muda com a entrada (teclado, Xbox, PlayStation, toque). Não causam dano nem dão XP; o golpe só empurra.

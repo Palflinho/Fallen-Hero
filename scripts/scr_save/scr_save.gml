@@ -371,6 +371,7 @@ function goto_checkpoint() {
     global.use_saved_stats = false;
     global.chosen_talent_ids = global.save_talent_ids;
     run_stats_reset();
+    run_start_autosave(); // reiniciar a expedicao direto no Templo da Agua = entrar no portal
     room_goto(Room1);
 }
 

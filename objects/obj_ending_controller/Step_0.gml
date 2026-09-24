@@ -84,6 +84,7 @@ switch (state) {
         fade = min(1, fade + _dt * 1.2);
         if (fade >= 1 && !finished) {
             finished = true;
+            run_finish_and_save(false);
             ending_mark_seen(chosen);
             var _pl = instance_find(obj_player, 0);
             if (_pl != noone) mastery_unlock(_pl.character_class, _pl.element_affinity);

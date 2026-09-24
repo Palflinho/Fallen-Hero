@@ -78,17 +78,11 @@ if (!game_over && _player != noone && _player.state == "dead") {
     global.attr_window_open = false;
     global.chest_reward_open = false;
 
-    // Mantem 60% do ouro ganho na partida
-    if (!variable_global_exists("run_gold_earned")) global.run_gold_earned = 0;
-    death_gold_earned = global.run_gold_earned;
-    death_gold_kept = round(death_gold_earned * 0.60);
-    death_gold_lost = death_gold_earned - death_gold_kept;
-
-    ensure_meta_loaded();
-    global.gold = max(0, global.gold - death_gold_lost);
-    save_meta();
-
-    global.run_gold_earned = 0;
+    // Save automatico da morte: mantem 60% do ouro ganho na partida
+    var _res = run_finish_and_save(true);
+    death_gold_earned = _res.earned;
+    death_gold_kept = _res.kept;
+    death_gold_lost = _res.lost;
     clear_save();
 }
 
@@ -130,6 +124,7 @@ if (global.run_victory || level_complete) {
         if (device_mouse_check_button_pressed(_i, mb_left)) _touch_tap = true;
     }
     if (input_check_ui_confirm() || keyboard_check_pressed(ord("C")) || _touch_tap) {
+        run_finish_and_save(false);
         global.inrun_saved_stats = false;
         clear_save();
         global.run_victory = false;
@@ -192,6 +187,8 @@ if (global.paused || global.attr_window_open) {
         global.paused = false;
         global.attr_window_open = false;
     } else if (keyboard_check_pressed(ord("M")) || _touch_menu || _pad_abandon) {
+        // Abandonar a expedicao conta como morte (mesma penalidade e save)
+        if (variable_global_exists("run_in_progress") && global.run_in_progress) run_finish_and_save(true);
         global.inrun_saved_stats = false;
         global.paused = false;
         global.attr_window_open = false;
@@ -240,12 +237,14 @@ if (global.paused || global.attr_window_open) {
     }
 
     if (keyboard_check_pressed(ord("C"))) {
+        if (variable_global_exists("run_in_progress") && global.run_in_progress) run_finish_and_save(true);
         global.inrun_saved_stats = false;
         global.paused = false;
         global.attr_window_open = false;
         global.char_select_direct = true;
         room_goto(room_char_select);
     } else if (keyboard_check_pressed(ord("Q"))) {
+        if (variable_global_exists("run_in_progress") && global.run_in_progress) run_finish_and_save(true);
         game_end();
     }
     exit;
