@@ -33,24 +33,25 @@ if (room == Room1) {
     reward_value = 12;
 } else if (room == asset_get_index("room_exp2")) {
     trigger_mode = "buttons";
-    gate_label = tr("Desafio: A Arena Elemental (Sala 2.5)");
-    gate_colour = make_colour_rgb(255, 180, 50);
+    gate_label = tr("Desafio: O Guardiao do Templo (Mini-Chefe)");
+    gate_colour = make_colour_rgb(200, 100, 255);
     reward_type = "heal";
+} else if (room == asset_get_index("room_preboss")) {
+    trigger_mode = "clear_mobs";
+    gate_label = tr("Avanco: O Mercador Arcano (Loja)");
+    gate_colour = c_yellow;
+    reward_type = "boss";
+    reward_value = 18;
 } else if (room == asset_get_index("room_shop")) {
     trigger_mode = "always_open";
-    gate_label = tr("Avanco: Exploracao 3 (Sala 4)");
+    gate_label = tr("Avanco: Exploracao 3 (Sala 5)");
     gate_colour = c_aqua;
     reward_type = "heal";
 } else if (room == asset_get_index("room_exp4")) {
     trigger_mode = "buttons";
-    gate_label = tr("Desafio: O Santuario Pre-Chefe (Sala 5)");
-    gate_colour = make_colour_rgb(200, 100, 255);
-    reward_type = "talent";
-} else if (room == asset_get_index("room_preboss")) {
-    trigger_mode = "clear_mobs";
-    gate_label = tr("Avanco: Camara do General (Chefe)");
-    gate_colour = make_colour_rgb(230, 80, 255);
-    reward_type = "boss";
-    reward_value = 18;
+    gate_label = tr("Desafio: A Arena Elemental (Sala 6)");
+    gate_colour = make_colour_rgb(255, 180, 50);
+    reward_type = "gold";
+    reward_value = 15;
 }
 

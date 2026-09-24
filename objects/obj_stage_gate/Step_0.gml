@@ -35,8 +35,9 @@ if (_ready) {
             _player.hp = min(_player.hp_max, _player.hp + _player.hp_max * 0.40);
             fx_spawn_sparks(_player.x, _player.y, c_lime, 12);
         } else if (reward_type == "talent") {
+            // Aberto na proxima sala (o HUD da sala nova reinicia a janela do bau)
             var _tid = roll_chest_talent();
-            if (_tid != "") open_chest_reward(_tid);
+            if (_tid != "") global.pending_chest_talent = _tid;
         } else if (reward_type == "boss") {
             _player.hp = min(_player.hp_max, _player.hp + _player.hp_max * 0.25);
             player_gain_gold(reward_value);
@@ -48,7 +49,8 @@ if (_ready) {
             exit;
         }
 
-        // Roteamento inteligente do ciclo de 7 etapas da fase
+        // Roteamento do ciclo de 7 etapas do templo:
+        // 1 Exploracao 1 -> 2 Exploracao 2 -> 3 Mini-Chefe -> 4 Mercador -> 5 Exploracao 3 -> 6 Arena -> 7 Chefe
         if (!variable_global_exists("run_biome")) global.run_biome = "water";
         var _dest = target_room;
 
@@ -70,29 +72,29 @@ if (_ready) {
             global.run_room_step = 2;
             _dest = asset_get_index("room_exp2");
         }
-        // Sala 2 (Exploracao 2) -> Sala 2.5 (room_arena)
+        // Sala 2 (Exploracao 2) -> Sala 3 (Mini-Chefe: room_preboss)
         else if (room == asset_get_index("room_exp2")) {
-            global.run_room_step = 2.5;
-            _dest = asset_get_index("room_arena");
-        }
-        // Sala 2.5 (Arena) -> Sala 3 (room_shop)
-        else if (room == asset_get_index("room_arena")) {
             global.run_room_step = 3;
-            _dest = asset_get_index("room_shop");
-        }
-        // Sala 3 (Mercado) -> Sala 4 (room_exp4)
-        else if (room == asset_get_index("room_shop")) {
-            global.run_room_step = 4;
-            _dest = asset_get_index("room_exp4");
-        }
-        // Sala 4 (Exploracao 3) -> Sala 5 (room_preboss)
-        else if (room == asset_get_index("room_exp4")) {
-            global.run_room_step = 5;
             _dest = asset_get_index("room_preboss");
         }
-        // Sala 5 (Pre-Chefe) -> Sala 6 (Chefe correspondente)
+        // Sala 3 (Mini-Chefe) -> Sala 4 (room_shop)
         else if (room == asset_get_index("room_preboss")) {
+            global.run_room_step = 4;
+            _dest = asset_get_index("room_shop");
+        }
+        // Sala 4 (Mercado) -> Sala 5 (Exploracao 3: room_exp4)
+        else if (room == asset_get_index("room_shop")) {
+            global.run_room_step = 5;
+            _dest = asset_get_index("room_exp4");
+        }
+        // Sala 5 (Exploracao 3) -> Sala 6 (room_arena)
+        else if (room == asset_get_index("room_exp4")) {
             global.run_room_step = 6;
+            _dest = asset_get_index("room_arena");
+        }
+        // Sala 6 (Arena) -> Sala 7 (Chefe correspondente)
+        else if (room == asset_get_index("room_arena")) {
+            global.run_room_step = 7;
             if (global.run_biome == "water") _dest = asset_get_index("Room2");
             else if (global.run_biome == "fire") _dest = asset_get_index("Room4");
             else if (global.run_biome == "wind") _dest = asset_get_index("Room6");

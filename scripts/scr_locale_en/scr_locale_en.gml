@@ -644,6 +644,18 @@ function locale_en_init() {
     _d[$ "SELECIONE O SLOT PARA EQUIPAR  (O NOVO TALENTO HERDA O RANK DO SLOT):"] = "SELECT A SLOT TO EQUIP  (THE NEW TALENT INHERITS THE SLOT'S RANK):";
 
     _d[$ "IMUNE!"] = "IMMUNE!";
+    _d[$ "Desafio: O Guardiao do Templo (Mini-Chefe)"] = "Challenge: The Temple Guardian (Mini-Boss)";
+    _d[$ "Avanco: Exploracao 3 (Sala 5)"] = "Next: Exploration 3 (Room 5)";
+    _d[$ "Desafio: A Arena Elemental (Sala 6)"] = "Challenge: The Elemental Arena (Room 6)";
+    _d[$ "Mini-Chefe"] = "Mini-Boss";
+    _d[$ " LIBERTADO! *"] = " FREED! *";
+    _d[$ "* ESPIRITO "] = "* SPIRIT ";
+    _d[$ "ESCOLHA UMA RECOMPENSA: CURA OU TALENTO"] = "CHOOSE A REWARD: HEALING OR TALENT";
+    _d[$ "Escolha apenas UMA recompensa"] = "Choose only ONE reward";
+    _d[$ "CURA TOTAL"] = "FULL HEAL";
+    _d[$ "BAU DE TALENTO"] = "TALENT CHEST";
+    _d[$ "VIDA RESTAURADA!"] = "HEALTH RESTORED!";
+    _d[$ "ESPIRITO"] = "SPIRIT";
     // ---------------------------------------------------------------------
     // PEDACOS PARA TEXTOS COM NUMEROS (trocados em ordem, so quando a frase
     // inteira nao esta no dicionario)

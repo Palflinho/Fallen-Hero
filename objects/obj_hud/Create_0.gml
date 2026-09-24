@@ -15,6 +15,12 @@ global.attr_window_open = false;
 global.chest_reward_open = false;
 global.run_victory = false;
 
+// Talento ganho ao cruzar um portal: abre a escolha de slot ja na sala nova
+if (variable_global_exists("pending_chest_talent") && global.pending_chest_talent != "") {
+    open_chest_reward(global.pending_chest_talent);
+    global.pending_chest_talent = "";
+}
+
 hud_chest_slot_cursor = 0;
 hud_talent_slot_cursor = 0;
 

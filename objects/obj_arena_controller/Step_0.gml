@@ -104,25 +104,63 @@ switch (arena_state) {
 
     case "spirit":
         if (!instance_exists(spirit_inst) && instance_number(obj_enemy_parent) == 0) {
-            arena_state = "victory";
+            // O espirito libertado agradece e encoraja o heroi antes do chefe
+            arena_state = "spirit_farewell";
             arena_barrier_active = false;
-            banner_text = "* " + spirit_name + tr(" VENCIDO! BAU DO CAMPEAO LIBERADO! *");
-            banner_timer = 3.5;
+            banner_text = tr("* ESPIRITO ") + spirit_name + tr(" LIBERTADO! *");
+            banner_timer = 3.0;
             sfx_play("victory", 0.05, 0.9);
+            fx_spawn_sparks(x, y, theme_colour, 35);
+            dialogue_play_id("spirit_freed_" + biome, function() {
+                with (obj_arena_controller) arena_state = "victory";
+            });
         }
+        break;
+
+    case "spirit_farewell":
+        // Aguardando o fim do dialogo (o mundo fica pausado enquanto ele esta aberto)
         break;
 
     case "victory":
         if (!reward_spawned) {
+            // Escolha unica: CURA TOTAL ou BAU DE TALENTO
             reward_spawned = true;
-            var _chest = instance_create_layer(x, y + 20, layer, obj_chest);
+            reward_heal_inst = instance_create_layer(x - 130, y + 30, layer, obj_reward_heal);
+            reward_chest_inst = instance_create_layer(x + 130, y + 30, layer, obj_chest);
+            if (reward_chest_inst != noone) {
+                with (reward_chest_inst) {
+                    is_points = false;
+                    points_amount = 0;
+                    if (talent_id == "") talent_id = roll_chest_talent();
+                    if (talent_id == "") { is_points = true; points_amount = 3; }
+                }
+            }
+            arena_state = "reward_choice";
+            banner_text = tr("ESCOLHA UMA RECOMPENSA: CURA OU TALENTO");
+            banner_timer = 4.0;
+            fx_spawn_sparks(x, y, c_yellow, 35);
+        }
+        break;
+
+    case "reward_choice":
+        if (!instance_exists(reward_heal_inst) || !instance_exists(reward_chest_inst)) {
+            // A outra opcao se desfaz
+            if (instance_exists(reward_heal_inst)) {
+                fx_spawn_sparks(reward_heal_inst.x, reward_heal_inst.y, c_lime, 14);
+                instance_destroy(reward_heal_inst);
+            }
+            if (instance_exists(reward_chest_inst)) {
+                fx_spawn_sparks(reward_chest_inst.x, reward_chest_inst.y, c_yellow, 14);
+                instance_destroy(reward_chest_inst);
+            }
+            arena_state = "done";
             var _gate = instance_create_layer(x, y - 220, layer, obj_stage_gate);
             _gate.trigger_mode = "always_open";
-            _gate.target_room = asset_get_index("room_shop");
-            _gate.reward_type = "heal";
-            _gate.gate_label = tr("Avanco: O Mercador Arcano (Loja)");
-            _gate.gate_colour = c_yellow;
-            fx_spawn_sparks(x, y, c_yellow, 35);
+            _gate.reward_type = "gold";
+            _gate.reward_value = 18;
+            _gate.gate_label = tr("Avanco: Camara do General (Chefe)");
+            _gate.gate_colour = make_colour_rgb(230, 80, 255);
+            fx_spawn_sparks(x, y - 220, c_yellow, 30);
         }
         break;
 }

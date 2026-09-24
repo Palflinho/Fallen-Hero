@@ -6,7 +6,7 @@
 // FORMATO DE CADA CENA:
 // global.dialogue_db[$ "id_da_cena"] = [
 //     {
-//         speaker: "hero" (classe jogada) | "knight" | "mage" | "archer" | "assassin" | "merchant" | "general" | "elder" | "human",
+//         speaker: "hero" (classe jogada) | "knight" | "mage" | "archer" | "assassin" | "merchant" | "general" | "elder" | "human" | "spirit",
 //         by_class: { knight: {...}, mage: {...}, archer: {...}, assassin: {...} } (opcional, so com speaker "hero")
 //         name: { pt: "Nome PT", en: "Name EN" }  // ou string simples
 //         alien: "« Texto na lingua dos bichinhos »", // opcional
@@ -249,6 +249,94 @@ function dialogue_db_init() {
             text: {
                 pt: "Não posso recuar. Não quando estou tão perto. Ativar exoesqueleto de combate! Protocolo de Defesa Máxima!",
                 en: "I cannot turn back. Not when I am this close. Combat exoskeleton engaged! Maximum Defense Protocol initiated!"
+            }
+        }
+    ];
+
+    // Espirito da arena libertado: agradece e encoraja o heroi antes do chefe
+    global.dialogue_db[$ "spirit_freed_water"] = [
+        {
+            speaker: "spirit",
+            name: { pt: "Ondina, Espírito da Água", en: "Undine, Spirit of Water" },
+            alien: "",
+            text: {
+                pt: "Ahh... a corrente volta a correr limpa. Por tanto tempo eu fui uma prisioneira nas minhas próprias águas...",
+                en: "Ahh... the current runs clear again. For so long I was a prisoner in my own waters..."
+            }
+        },
+        {
+            speaker: "spirit",
+            name: { pt: "Ondina, Espírito da Água", en: "Undine, Spirit of Water" },
+            alien: "",
+            text: {
+                pt: "O General da Água ainda guarda o coração do templo. Não tenha medo das marés, pequeno guardião. Liberte-nos a todos!",
+                en: "The Water General still guards the heart of the temple. Do not fear the tides, little guardian. Set us all free!"
+            }
+        }
+    ];
+
+    // Espirito da arena libertado: agradece e encoraja o heroi antes do chefe
+    global.dialogue_db[$ "spirit_freed_fire"] = [
+        {
+            speaker: "spirit",
+            name: { pt: "Salamandra, Espírito do Fogo", en: "Salamander, Spirit of Fire" },
+            alien: "",
+            text: {
+                pt: "Minha chama... ela é minha de novo! Eles a usavam como uma fornalha para as máquinas deles.",
+                en: "My flame... it is mine again! They used it as a furnace for their machines."
+            }
+        },
+        {
+            speaker: "spirit",
+            name: { pt: "Salamandra, Espírito do Fogo", en: "Salamander, Spirit of Fire" },
+            alien: "",
+            text: {
+                pt: "O General Magma espera nas forjas. Que o seu coração queime mais forte que o dele! Liberte o templo!",
+                en: "General Magma waits in the forges. Let your heart burn brighter than his! Free the temple!"
+            }
+        }
+    ];
+
+    // Espirito da arena libertado: agradece e encoraja o heroi antes do chefe
+    global.dialogue_db[$ "spirit_freed_wind"] = [
+        {
+            speaker: "spirit",
+            name: { pt: "Sílfide, Espírito do Vento", en: "Sylph, Spirit of Wind" },
+            alien: "",
+            text: {
+                pt: "Consigo respirar... o vento canta outra vez entre as colunas. Obrigada, viajante.",
+                en: "I can breathe... the wind sings between the columns once more. Thank you, traveler."
+            }
+        },
+        {
+            speaker: "spirit",
+            name: { pt: "Sílfide, Espírito do Vento", en: "Sylph, Spirit of Wind" },
+            alien: "",
+            text: {
+                pt: "Zephyrus prendeu o céu inteiro. Siga o sopro que eu te dou e derrube-o! Devolva o ar ao nosso povo!",
+                en: "Zephyrus has caged the whole sky. Follow the breath I give you and bring him down! Return the air to our people!"
+            }
+        }
+    ];
+
+    // Espirito da arena libertado: agradece e encoraja o heroi antes do chefe
+    global.dialogue_db[$ "spirit_freed_earth"] = [
+        {
+            speaker: "spirit",
+            name: { pt: "Gnomo, Espírito da Terra", en: "Gnome, Spirit of Earth" },
+            alien: "",
+            text: {
+                pt: "Hmm-hmm... as raízes voltam a me ouvir. A pedra lembra do seu nome, guardião.",
+                en: "Hmm-hmm... the roots can hear me again. The stone remembers your name, guardian."
+            }
+        },
+        {
+            speaker: "spirit",
+            name: { pt: "Gnomo, Espírito da Terra", en: "Gnome, Spirit of Earth" },
+            alien: "",
+            text: {
+                pt: "O Titã Monolito é o último cadeado deste mundo. Firme os pés e não recue! Liberte a última essência!",
+                en: "The Monolith Titan is the last lock on this world. Plant your feet and do not falter! Free the last essence!"
             }
         }
     ];

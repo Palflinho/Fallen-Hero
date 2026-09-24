@@ -42,3 +42,21 @@ if (arena_state == "waiting") {
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 }
+
+// 4. Escolha de recompensa apos libertar o espirito
+if (arena_state == "reward_choice") {
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_bottom);
+    draw_set_color(c_yellow);
+    draw_text(x, y - 40, tr("Escolha apenas UMA recompensa"));
+    if (instance_exists(reward_heal_inst)) {
+        draw_set_color(c_lime);
+        draw_text(reward_heal_inst.x, reward_heal_inst.y - 30, tr("CURA TOTAL"));
+    }
+    if (instance_exists(reward_chest_inst)) {
+        draw_set_color(c_yellow);
+        draw_text(reward_chest_inst.x, reward_chest_inst.y - 30, tr("BAU DE TALENTO"));
+    }
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+}

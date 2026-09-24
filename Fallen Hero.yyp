@@ -149,6 +149,7 @@
     {"id":{"name":"obj_spirit_silfide","path":"objects/obj_spirit_silfide/obj_spirit_silfide.yy",},},
     {"id":{"name":"obj_spirit_gnomo","path":"objects/obj_spirit_gnomo/obj_spirit_gnomo.yy",},},
     {"id":{"name":"obj_boss_drone","path":"objects/obj_boss_drone/obj_boss_drone.yy",},},
+    {"id":{"name":"obj_reward_heal","path":"objects/obj_reward_heal/obj_reward_heal.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",

@@ -472,7 +472,7 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
         draw_set_valign(fa_middle);
         draw_set_color(c_yellow);
         var _b_name = run_get_biome_name(global.run_biome);
-        var _step_str = (global.run_room_step == 2.5) ? tr("ARENA (2.5)") : (tr("SALA ") + string(global.run_room_step) + "/6");
+        var _step_str = tr("SALA ") + string(global.run_room_step) + "/7";
         var _header_txt = _b_name + " · " + _step_str;
         var _tw = string_width(_header_txt);
         var _max_tw = _map_w - 12;
@@ -578,8 +578,8 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
     
         // ================= TRILHA DE NÓS (7 ETAPAS DO BIOMA) =================
         var _trail_y = _map_y + _map_h + 6;
-        var _step_keys = [1, 2, 2.5, 3, 4, 5, 6];
-        var _node_labels = ["1", "2", "2.5", "3", "4", "5", "6"];
+        var _step_keys = [1, 2, 3, 4, 5, 6, 7];
+        var _node_labels = ["1", "2", "3", "4", "5", "6", "7"];
         var _node_count = array_length(_step_keys);
         var _node_gap = 4;
         var _node_w = 24;

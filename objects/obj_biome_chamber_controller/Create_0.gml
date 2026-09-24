@@ -14,22 +14,20 @@ var _is_preboss = (room == asset_get_index("room_preboss"));
 var _is_exp4 = (room == asset_get_index("room_exp4"));
 
 if (_is_preboss) {
-    // Sala 5 (Pre-Chefe): o golem do templo acompanhado de uma tropa variada
-    // (slimes, atirador, conjuradora com totem e fogo-fatuo) - revisao de tudo antes do chefe.
-    var _pb_slime, _pb_ranged, _pb_caster, _pb_golem;
+    // Sala 3 (Mini-Chefe): o golem do templo acompanhado de slimes, atiradores e um
+    // fogo-fatuo. Conjuradoras e totens so aparecem depois do mercador.
+    var _pb_slime, _pb_ranged, _pb_golem;
     if (_b == "water") {
-        _pb_slime = obj_slime; _pb_ranged = obj_elemental; _pb_caster = obj_frost_caster; _pb_golem = obj_ice_golem;
+        _pb_slime = obj_slime; _pb_ranged = obj_elemental; _pb_golem = obj_ice_golem;
     } else if (_b == "fire") {
-        _pb_slime = obj_fire_slime; _pb_ranged = obj_fire_elemental; _pb_caster = obj_magma_caster; _pb_golem = obj_lava_golem;
+        _pb_slime = obj_fire_slime; _pb_ranged = obj_fire_elemental; _pb_golem = obj_lava_golem;
     } else if (_b == "wind") {
         _pb_slime = asset_get_index("obj_wind_slime"); if (_pb_slime == -1) _pb_slime = obj_slime;
         _pb_ranged = asset_get_index("obj_wind_elemental"); if (_pb_ranged == -1) _pb_ranged = obj_elemental;
-        _pb_caster = asset_get_index("obj_wind_caster"); if (_pb_caster == -1) _pb_caster = obj_frost_caster;
         _pb_golem = obj_storm_golem; // alterna solido/nevoa, tornado e fica tonto
     } else { // Earth
         _pb_slime = asset_get_index("obj_earth_slime"); if (_pb_slime == -1) _pb_slime = obj_slime;
         _pb_ranged = asset_get_index("obj_earth_elemental"); if (_pb_ranged == -1) _pb_ranged = obj_elemental;
-        _pb_caster = asset_get_index("obj_earth_caster"); if (_pb_caster == -1) _pb_caster = obj_frost_caster;
         _pb_golem = obj_stone_golem; // inempurravel, armadura quebravel, pisao em anel
     }
 
@@ -40,8 +38,8 @@ if (_is_preboss) {
     _spawn_safe(_pb_ranged, 450, 250);
     var _r2 = _spawn_safe(_pb_ranged, 950, 250);
     if (_r2 != noone) _r2.is_greater_variant = true;
-    _spawn_safe(_pb_caster, 700, 450);
-    _spawn_safe(obj_elem_totem, 780, 430);
+    var _s3 = _spawn_safe(_pb_slime, 700, 450);
+    if (_s3 != noone) _s3.is_greater_variant = true;
     _spawn_safe(obj_wisp, 620, 600);
 
     // Perigos do bioma

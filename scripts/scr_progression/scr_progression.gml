@@ -84,26 +84,26 @@ function run_update_current_room_state() {
         global.run_room_step = 1;
     } else if (room == asset_get_index("room_exp2")) {
         global.run_room_step = 2;
-    } else if (room == asset_get_index("room_arena")) {
-        global.run_room_step = 2.5;
-    } else if (room == asset_get_index("room_shop")) {
-        global.run_room_step = 3;
-    } else if (room == asset_get_index("room_exp4")) {
-        global.run_room_step = 4;
     } else if (room == asset_get_index("room_preboss")) {
+        global.run_room_step = 3;
+    } else if (room == asset_get_index("room_shop")) {
+        global.run_room_step = 4;
+    } else if (room == asset_get_index("room_exp4")) {
         global.run_room_step = 5;
+    } else if (room == asset_get_index("room_arena")) {
+        global.run_room_step = 6;
     } else if (room == Room2) {
         global.run_biome = "water";
-        global.run_room_step = 6;
+        global.run_room_step = 7;
     } else if (room == Room4) {
         global.run_biome = "fire";
-        global.run_room_step = 6;
+        global.run_room_step = 7;
     } else if (room == Room6) {
         global.run_biome = "wind";
-        global.run_room_step = 6;
+        global.run_room_step = 7;
     } else if (room == Room8) {
         global.run_biome = "earth";
-        global.run_room_step = 6;
+        global.run_room_step = 7;
     }
     global.run_room_index = global.run_room_step;
 }
@@ -119,10 +119,10 @@ function run_get_biome_name(_b) {
 function run_get_room_title(_step) {
     if (_step == 1) return tr("Exploracao 1");
     if (_step == 2) return tr("Exploracao 2");
-    if (_step == 2.5) return tr("Arena");
-    if (_step == 3) return tr("Mercado");
-    if (_step == 4) return tr("Exploracao 3");
-    if (_step == 5) return tr("Pre-Chefe");
-    if (_step == 6) return tr("Chefe");
+    if (_step == 3) return tr("Mini-Chefe");
+    if (_step == 4) return tr("Mercado");
+    if (_step == 5) return tr("Exploracao 3");
+    if (_step == 6) return tr("Arena");
+    if (_step == 7) return tr("Chefe");
     return tr("Sala");
 }

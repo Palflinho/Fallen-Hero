@@ -24,8 +24,9 @@ function dungeon_spawn_door(_x, _y, _w, _h) {
 // Composicao de monstros por sala do templo (aplicada sobre o que o chunk pede):
 //  - Exploracao 1: so slimes corpo a corpo e no maximo 3 atiradores (sem conjuradoras,
 //    totens ou fogos-fatuos) - a sala ensina o basico.
-//  - Exploracao 2 e 3: mistura atiradores com corpo a corpo e traz as conjuradoras
-//    acompanhadas de totens.
+//  - Exploracao 2: mistura atiradores com corpo a corpo; fogos-fatuos ja aparecem,
+//    conjuradoras ainda nao (viram atiradores).
+//  - Exploracao 3 (depois do mercador): conjuradoras acompanhadas de totens.
 #macro DUNGEON_STEP1_MAX_RANGED 3
 
 function dungeon_spawn_enemy(_biome, _type, _x, _y) {
@@ -40,8 +41,9 @@ function dungeon_spawn_enemy(_biome, _type, _x, _y) {
             if (global.dg_ranged_count >= DUNGEON_STEP1_MAX_RANGED) _type = "slime";
             else global.dg_ranged_count += 1;
         }
-    } else if (_type == "slime" && random(1) < 0.35) {
-        _type = "ranged";
+    } else {
+        if (_step < 5 && _type == "caster") _type = "ranged";
+        if (_type == "slime" && random(1) < 0.35) _type = "ranged";
     }
     
     var _obj = -1;
@@ -616,7 +618,7 @@ function dungeon_generate_modular() {
     } else if (room == asset_get_index("room_exp2")) {
         global.run_room_step = 2;
     } else if (room == asset_get_index("room_exp4")) {
-        global.run_room_step = 4;
+        global.run_room_step = 5;
     }
     
     if (!variable_global_exists("run_biome")) global.run_biome = "water";

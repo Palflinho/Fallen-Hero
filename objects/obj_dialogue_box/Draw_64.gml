@@ -56,6 +56,9 @@ if (current_portrait != -1 && sprite_exists(current_portrait)) {
     } else if (current_speaker == "human") {
         draw_set_colour(c_aqua);
         draw_text(_port_x + _port_size * 0.5, _port_y + _port_size * 0.5, loc("human", "HUMANO"));
+    } else if (current_speaker == "spirit") {
+        draw_set_colour(make_colour_rgb(150, 255, 210));
+        draw_text(_port_x + _port_size * 0.5, _port_y + _port_size * 0.5, tr("ESPIRITO"));
     }
 }
 

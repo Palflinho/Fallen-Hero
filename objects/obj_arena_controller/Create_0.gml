@@ -47,7 +47,44 @@ banner_text = "";
 reward_spawned = false;
 spirit_inst = noone;
 
-// Função para enfileirar inimigos da onda
+reward_heal_inst = noone;
+reward_chest_inst = noone;
+
+// Monstros do templo usados nas ondas: slime, atirador, conjuradora e golem
+arena_mob_slime = obj_slime;
+arena_mob_ranged = obj_elemental;
+arena_mob_caster = obj_frost_caster;
+arena_mob_golem = obj_ice_golem;
+arena_tier = 1;
+if (biome == "fire") {
+    arena_mob_slime = obj_fire_slime;
+    arena_mob_ranged = obj_fire_elemental;
+    arena_mob_caster = obj_magma_caster;
+    arena_mob_golem = obj_lava_golem;
+    arena_tier = 2;
+} else if (biome == "wind") {
+    var _ws = asset_get_index("obj_wind_slime");
+    var _we = asset_get_index("obj_wind_elemental");
+    var _wc = asset_get_index("obj_wind_caster");
+    if (_ws != -1) arena_mob_slime = _ws;
+    if (_we != -1) arena_mob_ranged = _we;
+    if (_wc != -1) arena_mob_caster = _wc;
+    arena_mob_golem = obj_storm_golem;
+    arena_tier = 3;
+} else if (biome == "earth") {
+    var _es = asset_get_index("obj_earth_slime");
+    var _ee = asset_get_index("obj_earth_elemental");
+    var _ec = asset_get_index("obj_earth_caster");
+    if (_es != -1) arena_mob_slime = _es;
+    if (_ee != -1) arena_mob_ranged = _ee;
+    if (_ec != -1) arena_mob_caster = _ec;
+    arena_mob_golem = obj_stone_golem;
+    arena_tier = 4;
+}
+
+// Função para enfileirar inimigos da onda.
+// A arena vem depois do mercador: ondas cheias, com conjuradoras, e a ULTIMA onda
+// sempre traz um golem do templo. Templos mais avancados somam mobs extras.
 function queue_wave_spawns(_biome, _wave) {
     spawn_queue = [];
     var _cx = x;
@@ -60,107 +97,38 @@ function queue_wave_spawns(_biome, _wave) {
         {x: _cx - 240, y: _cy + 120},
         {x: _cx + 240, y: _cy + 120},
         {x: _cx, y: _cy - 200},
-        {x: _cx, y: _cy + 180}
+        {x: _cx, y: _cy + 180},
+        {x: _cx - 120, y: _cy - 220},
+        {x: _cx + 120, y: _cy + 220}
     ];
 
-    if (_biome == "water") {
-        if (_wave == 1) {
-            array_push(spawn_queue, {obj: obj_slime, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: obj_slime, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_elemental, x: _pts[4].x, y: _pts[4].y});
-        } else if (_wave == 2) {
-            array_push(spawn_queue, {obj: obj_elemental, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: obj_frost_caster, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_slime, x: _pts[2].x, y: _pts[2].y});
-            array_push(spawn_queue, {obj: obj_slime, x: _pts[3].x, y: _pts[3].y});
-        } else {
-            array_push(spawn_queue, {obj: obj_elemental, x: _pts[4].x, y: _pts[4].y, greater: true});
-            array_push(spawn_queue, {obj: obj_frost_caster, x: _pts[0].x, y: _pts[0].y, greater: true});
-            array_push(spawn_queue, {obj: obj_elemental, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_slime, x: _pts[2].x, y: _pts[2].y});
-        }
-    } else if (_biome == "fire") {
-        if (_wave == 1) {
-            array_push(spawn_queue, {obj: obj_fire_slime, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: obj_fire_slime, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[4].x, y: _pts[4].y});
-        } else if (_wave == 2) {
-            array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: obj_magma_caster, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: obj_fire_slime, x: _pts[2].x, y: _pts[2].y});
-        } else if (_wave == 3) {
-            array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[4].x, y: _pts[4].y, greater: true});
-            array_push(spawn_queue, {obj: obj_fire_slime, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: obj_magma_caster, x: _pts[1].x, y: _pts[1].y});
-        } else {
-            array_push(spawn_queue, {obj: obj_magma_caster, x: _pts[4].x, y: _pts[4].y, greater: true});
-            array_push(spawn_queue, {obj: obj_magma_caster, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[1].x, y: _pts[1].y, greater: true});
-            array_push(spawn_queue, {obj: obj_fire_elemental, x: _pts[3].x, y: _pts[3].y});
-        }
-    } else if (_biome == "wind") {
-        var _we = asset_get_index("obj_wind_elemental");
-        if (_we == -1) _we = obj_elemental;
-        var _ws = asset_get_index("obj_wind_slime");
-        if (_ws == -1) _ws = obj_slime;
-        var _wc = asset_get_index("obj_wind_caster");
-        if (_wc == -1) _wc = obj_frost_caster;
-
-        if (_wave == 1) {
-            array_push(spawn_queue, {obj: _ws, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _ws, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[4].x, y: _pts[4].y});
-        } else if (_wave == 2) {
-            array_push(spawn_queue, {obj: _we, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _wc, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _ws, x: _pts[4].x, y: _pts[4].y});
-        } else if (_wave == 3) {
-            array_push(spawn_queue, {obj: _ws, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _wc, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[2].x, y: _pts[2].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[4].x, y: _pts[4].y, greater: true});
-        } else {
-            array_push(spawn_queue, {obj: _we, x: _pts[0].x, y: _pts[0].y, greater: true});
-            array_push(spawn_queue, {obj: _ws, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _we, x: _pts[2].x, y: _pts[2].y});
-            array_push(spawn_queue, {obj: _ws, x: _pts[3].x, y: _pts[3].y});
-            array_push(spawn_queue, {obj: _wc, x: _pts[4].x, y: _pts[4].y, greater: true});
-        }
-    } else { // Earth
-        var _ee = asset_get_index("obj_earth_elemental");
-        if (_ee == -1) _ee = obj_elemental;
-        var _es = asset_get_index("obj_earth_slime");
-        if (_es == -1) _es = obj_slime;
-        var _ec = asset_get_index("obj_earth_caster");
-        if (_ec == -1) _ec = obj_frost_caster;
-
-        if (_wave == 1) {
-            array_push(spawn_queue, {obj: _es, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _es, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[4].x, y: _pts[4].y});
-        } else if (_wave == 2) {
-            array_push(spawn_queue, {obj: _ee, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _ec, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _es, x: _pts[4].x, y: _pts[4].y});
-        } else if (_wave == 3) {
-            array_push(spawn_queue, {obj: _es, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _ec, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[4].x, y: _pts[4].y, greater: true});
-        } else if (_wave == 4) {
-            array_push(spawn_queue, {obj: _ee, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _es, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _ec, x: _pts[2].x, y: _pts[2].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[4].x, y: _pts[4].y, greater: true});
-        } else {
-            array_push(spawn_queue, {obj: _ee, x: _pts[0].x, y: _pts[0].y});
-            array_push(spawn_queue, {obj: _es, x: _pts[1].x, y: _pts[1].y});
-            array_push(spawn_queue, {obj: _ee, x: _pts[2].x, y: _pts[2].y, greater: true});
-            array_push(spawn_queue, {obj: _es, x: _pts[4].x, y: _pts[4].y, greater: true});
-            array_push(spawn_queue, {obj: _ec, x: _pts[5].x, y: _pts[5].y, greater: true});
-        }
+    // Lista de [objeto, alfa?]
+    var _list = [];
+    var _last = (_wave >= total_waves);
+    if (_wave == 1) {
+        _list = [[arena_mob_slime, false], [arena_mob_slime, false], [arena_mob_slime, false],
+                 [arena_mob_ranged, false], [arena_mob_ranged, false], [arena_mob_caster, false]];
+    } else if (!_last) {
+        _list = [[arena_mob_slime, false], [arena_mob_slime, true], [arena_mob_ranged, false],
+                 [arena_mob_ranged, true], [arena_mob_caster, false], [arena_mob_caster, false]];
+    } else {
+        _list = [[arena_mob_golem, false], [arena_mob_slime, false], [arena_mob_slime, false],
+                 [arena_mob_ranged, false], [arena_mob_caster, true]];
+    }
+    // Templos avancados: +1 mob por templo alem da Agua (alternando slime/atirador)
+    for (var _e = 0; _e < arena_tier - 1; _e++) {
+        array_push(_list, [(_e mod 2 == 0) ? arena_mob_slime : arena_mob_ranged, false]);
     }
 
-    // Novos inimigos de suporte: Fogo-fatuo (infunde aliados) e Totem Elemental (aura)
+    for (var _i = 0; _i < array_length(_list); _i++) {
+        var _pt = _pts[_i mod array_length(_pts)];
+        var _item = {obj: _list[_i][0], x: _pt.x, y: _pt.y};
+        if (_list[_i][1]) _item.greater = true;
+        if (_list[_i][0] == arena_mob_golem) { _item.x = _cx; _item.y = _cy - 200; }
+        array_push(spawn_queue, _item);
+    }
+
+    // Suportes: Fogo-fatuo (infunde aliados) e Totem Elemental (aura) na ultima onda
     if (_wave >= 2) array_push(spawn_queue, {obj: obj_wisp, x: _pts[4].x + 40, y: _pts[4].y});
-    if (_wave == total_waves) array_push(spawn_queue, {obj: obj_elem_totem, x: _pts[5].x, y: _pts[5].y});
+    if (_last) array_push(spawn_queue, {obj: obj_elem_totem, x: _pts[5].x, y: _pts[5].y});
 }

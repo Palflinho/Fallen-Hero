@@ -49,6 +49,7 @@ function audio_system_init() {
     global.sfx_map[$ "voice_merchant"] = audio_synth_chime(0.06, 680, 880, _sr, 0.4);
     global.sfx_map[$ "voice_elder"] = audio_synth_tone_sweep(0.07, 140, 100, "saw", _sr, 0.45);
     global.sfx_map[$ "voice_human"] = audio_synth_tone_sweep(0.06, 440, 320, "saw", _sr, 0.5);
+    global.sfx_map[$ "voice_spirit"] = audio_synth_chime(0.07, 520, 780, _sr, 0.35);
 
     // Aliases por classe
     global.sfx_map[$ "voice_knight"] = global.sfx_map[$ "voice_rino"];

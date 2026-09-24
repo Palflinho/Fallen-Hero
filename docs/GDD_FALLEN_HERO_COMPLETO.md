@@ -212,11 +212,11 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
                            [ TEMPLO ELEMENTAL ]
                              Etapa 1: Exploração 1
                              Etapa 2: Exploração 2
-                             Etapa 3: Arena 2.5 (Ondas + Baú de Talento)
-                             Etapa 4: Loja Mid-Run 3 (Mercador)
+                             Etapa 3: Mini-Chefe (Golem do Templo)
+                             Etapa 4: Mercador
                              Etapa 5: Exploração 3
-                             Etapa 6: Câmara Pré-Chefe 5 (Descanso)
-                             Etapa 7: Chefe Guardião 6 ──► Resgate da Essência
+                             Etapa 6: Arena (Ondas + Espírito + Cura OU Talento)
+                             Etapa 7: Chefe Guardião ──► Resgate da Essência
                                                            (Retorna ao Hub)
 ```
 
@@ -227,17 +227,22 @@ Gerenciada por `talent_get_upgrade_cost(_id, _cur_rank)`:
 * **O Portal de Expedição (`obj_village_portal`):** Seleção de masmorras elementais desbloqueadas e progressão contínua.
 
 ### 6.2 O Ciclo de 7 Etapas por Masmorra
-1. **Exploração Inicial (Salas 1 e 2):** Combates contra patrulhas de inimigos comuns, descoberta de potes de ouro e aprendizado dos perigos ambientais (lama movediça, poças de lava, gelo).
-2. **Arena de Desafio (Etapa 3):** Portas trancam-se magicamente; o jogador enfrenta ondas escalonadas de inimigos com elites (Água 2, Fogo 3, Vento 3, Terra 4) e, ao final, o **Espírito Elemental** do templo desperta como chefe da arena (ver 6.4). A vitória gera o **Baú de Tesouro com Cards Comparativos** no estilo Nintendo.
-3. **Loja de Intermissão (Etapa 4):** Espaço neutro protegido pelo Mercador Interdimensional. Permite comprar poções de cura, aumentos definitivos de ataque/defesa para a run e trocar talentos ativos.
-4. **Exploração Avançada & Pré-Chefe (Salas 5 e 6):** Densidade máxima de inimigos e sala de preparação com fontes de cura.
-5. **Câmara do Guardião (Etapa 7):** Batalha contra o chefe elemental do bioma.
+**Primeira metade (sem conjuradoras):**
+1. **Exploração 1 e 2 (Salas 1 e 2):** labirintos com os 4 selos; slimes e atiradores, perigos ambientais (lama movediça, poças de lava, gelo).
+2. **Mini-Chefe (Sala 3):** o golem do templo com sua tropa. Derrotar todos abre o portal (+25% de vida e ouro).
+
+**Segunda metade:**
+3. **Mercador (Sala 4):** poções, aumentos de atributo para a run e talentos.
+4. **Exploração 3 (Sala 5):** as conjuradoras e os totens entram em cena.
+5. **Arena (Sala 6):** ondas cheias (Água 2, Fogo 3, Vento 3, Terra 4), com conjuradoras, e a última onda sempre traz um golem. Depois desperta o **Espírito Elemental** (ver 6.4); libertado, ele agradece e encoraja o herói a libertar o templo. Em seguida o jogador **escolhe UMA recompensa: Cura Total ou Baú de Talento** (a outra some).
+6. **Câmara do Guardião (Sala 7):** batalha contra o chefe elemental do bioma.
 
 ### 6.2.1 Composição de Monstros por Sala
 * **Exploração 1:** só slimes corpo a corpo e no máximo 3 atiradores. Sem conjuradoras, totens ou fogos-fátuos; o guardião de elite da saída vira um slime grande.
-* **Exploração 2 e 3:** mistura atiradores e corpo a corpo (35% dos slimes viram atiradores) e traz as conjuradoras, que vêm com totem 65% das vezes.
-* **Arena:** sem mudanças.
-* **Pré-Chefe:** o golem do templo com uma tropa variada: 2 slimes, 2 atiradores (um Alfa), conjuradora com totem e fogo-fátuo.
+* **Exploração 2:** mistura atiradores e corpo a corpo (35% dos slimes viram atiradores); fogos-fátuos já aparecem, conjuradoras ainda não.
+* **Mini-Chefe:** golem do templo, 3 slimes (um Alfa), 2 atiradores (um Alfa) e um fogo-fátuo.
+* **Exploração 3:** entram as conjuradoras, que vêm com totem 65% das vezes.
+* **Arena:** onda 1 com 6 mobs (slimes, atiradores, conjuradora); ondas do meio com 6 (Alfas e 2 conjuradoras); última onda com golem, slimes, atirador, conjuradora Alfa e totem. +1 mob por onda a cada templo além da Água.
 
 ### 6.2.2 Progressão de Inimigos e XP
 * **XP para subir de nível:** `30 + 10·n + 2·n²` (n = nível − 1): 30, 42, 58, 78, 102...
