@@ -357,6 +357,9 @@ Sala livre para testar sem jogar a campanha. Com o **Modo Dev** ligado ([F1] na 
 * **Vida infinita** ligada por padrão; se desligada, o herói volta com a vida cheia em vez de morrer.
 * **Nada é salvo:** ouro, desbloqueios e a IA adaptativa ganhos no sandbox são descartados ao sair (a tela inicial recarrega o save do disco). Portais e o final do jogo não aparecem no sandbox.
 
+### 8.5 Arte
+A lista completa de sprites, tilesets, efeitos, UI, tamanhos, animações e paletas para o artista está em [`ESPECIFICACAO_DE_ARTE.md`](ESPECIFICACAO_DE_ARTE.md).
+
 ## 9. MAPA DE ARQUITETURA TÉCNICA DO PROJETO
 
 ### 9.1 Scripts Centrais
