@@ -123,9 +123,8 @@ function loc_set_language(_lang_code) {
     locale_init();
     if (_lang_code == "pt" || _lang_code == "en") {
         global.game_language = _lang_code;
-        if (variable_global_exists("meta_loaded") && global.meta_loaded) {
-            save_meta();
-        }
+        // O idioma vale para o jogo todo (settings.ini), nao para um slot de save
+        if (variable_global_exists("settings_loaded") && global.settings_loaded) settings_save();
     }
 }
 

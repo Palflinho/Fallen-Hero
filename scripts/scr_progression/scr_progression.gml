@@ -34,6 +34,8 @@ function player_recompute_attributes(_p) {
     // it doesn't force a heal-to-full either.
     var _hp_delta = _p.hp_max - _old_hp_max;
     if (_hp_delta > 0) _p.hp += _hp_delta;
+    // Vida extra do nivel nao conta como cura nas estatisticas
+    if (variable_instance_exists(_p, "stats_hp_prev") && _hp_delta > 0) _p.stats_hp_prev += _hp_delta;
     _p.hp = clamp(_p.hp, 0, _p.hp_max);
 }
 

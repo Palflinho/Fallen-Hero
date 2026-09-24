@@ -645,92 +645,140 @@ function hud_draw_minimap_and_tracker(_hud, target, _gw, _gh, game_over, level_c
 }
 
 function hud_draw_game_over(_gw, _gh, death_gold_earned, death_gold_lost, death_gold_kept) {
+        run_stats_ensure();
+        var _st = global.run_stats;
+        var _pl = instance_find(obj_player, 0);
+
         // Fundo escurecido com tom avermelhado
         draw_set_alpha(0.88);
         draw_set_color(make_colour_rgb(18, 10, 14));
         draw_rectangle(0, 0, _gw, _gh, false);
         draw_set_alpha(1);
-    
-        var _box_w = min(680, _gw - 40);
-        var _box_h = 360;
+
+        var _box_w = min(780, _gw - 40);
+        var _box_h = min(560, _gh - 24);
         var _bx = (_gw - _box_w) / 2;
         var _by = (_gh - _box_h) / 2;
-    
-        // Janela de Game Over
+        var _cx = _bx + _box_w / 2;
+
         draw_set_alpha(0.95);
         draw_set_color(make_colour_rgb(22, 16, 20));
         draw_rectangle(_bx, _by, _bx + _box_w, _by + _box_h, false);
         draw_set_alpha(1);
-    
         draw_set_color(make_colour_rgb(140, 45, 55));
         draw_rectangle(_bx, _by, _bx + _box_w, _by + _box_h, true);
         draw_rectangle(_bx - 1, _by - 1, _bx + _box_w + 1, _by + _box_h + 1, true);
-    
-        // Titulo
+
+        // ---------------- Cabecalho ----------------
         draw_set_halign(fa_center);
         draw_set_valign(fa_top);
         draw_set_color(make_colour_rgb(255, 75, 75));
-        draw_text(_bx + _box_w / 2, _by + 24, tr("VOCE FOI DERROTADO"));
-    
+        draw_text_transformed(_cx, _by + 16, tr("VOCE FOI DERROTADO"), 1.5, 1.5, 0);
+
+        draw_set_color(make_colour_rgb(255, 170, 90));
+        draw_text(_cx, _by + 50, tr("Derrotado por: ") + run_stats_obj_name(_st.killer_obj));
+
+        var _lvl = (_pl != noone) ? _pl.level : 1;
+        var _time = format_playtime(variable_global_exists("run_playtime") ? global.run_playtime : 0);
+        var _step = variable_global_exists("run_room_step") ? global.run_room_step : 1;
+        var _where = run_get_biome_name(variable_global_exists("run_biome") ? global.run_biome : "water") + " - " + run_get_room_title(_step);
         draw_set_color(c_ltgray);
-        draw_text(_bx + _box_w / 2, _by + 52, tr("Sua jornada nesta masmorra chegou ao fim."));
-    
-        // Divisor
+        draw_text(_cx, _by + 74, _where + "   |   " + tr("Nivel ") + string(_lvl) + "   |   " + _time + "   |   " + tr("Abates: ") + string(_st.kills));
+
         draw_set_color(make_colour_rgb(70, 30, 40));
-        draw_line(_bx + 30, _by + 80, _bx + _box_w - 30, _by + 80);
-    
-        // Extrato de Ouro da Partida (60% retido)
-        var _ry = _by + 98;
+        draw_line(_bx + 30, _by + 100, _bx + _box_w - 30, _by + 100);
+
+        // ---------------- Colunas de combate ----------------
+        var _col_w = (_box_w - 90) / 2;
+        var _lx = _bx + 30;
+        var _rx = _lx + _col_w + 30;
+        var _ry = _by + 112;
+        var _line = 24;
+
         draw_set_halign(fa_left);
-    
-        draw_set_color(c_white);
-        draw_text(_bx + 50, _ry, tr("Ouro obtido nesta partida:"));
-        draw_set_halign(fa_right);
         draw_set_color(c_yellow);
-        draw_text(_bx + _box_w - 50, _ry, "+" + string(death_gold_earned) + tr(" Ouro"));
-        _ry += 30;
-    
-        draw_set_halign(fa_left);
-        draw_set_color(make_colour_rgb(240, 95, 95));
-        draw_text(_bx + 50, _ry, tr("Penalidade por Morte (40%):"));
-        draw_set_halign(fa_right);
-        draw_text(_bx + _box_w - 50, _ry, "-" + string(death_gold_lost) + tr(" Ouro"));
-        _ry += 30;
-    
+        draw_text(_lx, _ry, tr("DANO CAUSADO"));
+        draw_text(_rx, _ry, tr("DANO RECEBIDO"));
+        _ry += _line + 4;
+
+        var _rows_l = [
+            [tr("Fisico"), _st.dealt_phys, make_colour_rgb(235, 200, 150)],
+            [tr("Magico"), _st.dealt_mag, make_colour_rgb(190, 150, 255)],
+            [tr("Total"), _st.dealt_phys + _st.dealt_mag, c_white]
+        ];
+        var _rows_r = [
+            [tr("Fisico"), _st.taken_phys, make_colour_rgb(235, 200, 150)],
+            [tr("Magico"), _st.taken_mag, make_colour_rgb(190, 150, 255)],
+            [tr("Total"), _st.taken_phys + _st.taken_mag, c_white]
+        ];
+        for (var _i = 0; _i < 3; _i++) {
+            var _yy = _ry + _i * _line;
+            draw_set_halign(fa_left);
+            draw_set_color(_rows_l[_i][2]);
+            draw_text(_lx + 12, _yy, _rows_l[_i][0]);
+            draw_set_color(_rows_r[_i][2]);
+            draw_text(_rx + 12, _yy, _rows_r[_i][0]);
+            draw_set_halign(fa_right);
+            draw_set_color(_rows_l[_i][2]);
+            draw_text(_lx + _col_w, _yy, string(round(_rows_l[_i][1])));
+            draw_set_color(_rows_r[_i][2]);
+            draw_text(_rx + _col_w, _yy, string(round(_rows_r[_i][1])));
+        }
+        _ry += 3 * _line + 6;
+
         draw_set_halign(fa_left);
         draw_set_color(make_colour_rgb(80, 220, 120));
-        draw_text(_bx + 50, _ry, tr("Ouro resgatado ao cofre (60%):"));
+        draw_text(_lx, _ry, tr("CURA RECEBIDA"));
         draw_set_halign(fa_right);
-        draw_text(_bx + _box_w - 50, _ry, "+" + string(death_gold_kept) + tr(" Ouro"));
-        _ry += 34;
-    
-        // Divisor
+        draw_text(_lx + _col_w, _ry, string(round(_st.healed)));
+
+        draw_set_halign(fa_left);
+        draw_set_color(make_colour_rgb(240, 110, 110));
+        draw_text(_rx, _ry, tr("Maior golpe"));
+        draw_set_halign(fa_right);
+        draw_text(_rx + _col_w, _ry, string(round(_st.biggest_hit)));
+        _ry += _line;
+        if (_st.biggest_hit > 0) {
+            draw_set_color(make_colour_rgb(170, 130, 130));
+            draw_text(_rx + _col_w, _ry, "(" + run_stats_obj_name(_st.biggest_hit_obj) + ")");
+        }
+        _ry += _line + 4;
+
         draw_set_color(make_colour_rgb(70, 30, 40));
         draw_line(_bx + 30, _ry, _bx + _box_w - 30, _ry);
-        _ry += 16;
-    
-        draw_set_halign(fa_left);
-        draw_set_color(c_white);
-        draw_text(_bx + 50, _ry, tr("Saldo Atual no Cofre:"));
-        draw_set_halign(fa_right);
-        draw_set_color(c_yellow);
-        draw_text(_bx + _box_w - 50, _ry, string(global.gold) + tr(" Ouro"));
-        _ry += 40;
-    
-        // Botoes de Acao
+        _ry += 12;
+
+        // ---------------- Ouro (60% retido) ----------------
+        var _gold_rows = [
+            [tr("Ouro obtido nesta partida:"), "+" + string(death_gold_earned), c_yellow],
+            [tr("Penalidade por Morte (40%):"), "-" + string(death_gold_lost), make_colour_rgb(240, 95, 95)],
+            [tr("Ouro resgatado ao cofre (60%):"), "+" + string(death_gold_kept), make_colour_rgb(80, 220, 120)],
+            [tr("Saldo Atual no Cofre:"), string(global.gold), c_yellow]
+        ];
+        for (var _g = 0; _g < 4; _g++) {
+            draw_set_halign(fa_left);
+            draw_set_color((_g == 3) ? c_white : _gold_rows[_g][2]);
+            draw_text(_bx + 50, _ry, _gold_rows[_g][0]);
+            draw_set_halign(fa_right);
+            draw_set_color(_gold_rows[_g][2]);
+            draw_text(_bx + _box_w - 50, _ry, _gold_rows[_g][1] + tr(" Ouro"));
+            _ry += 22;
+        }
+
+        // ---------------- Botoes de Acao ----------------
         draw_set_halign(fa_center);
         var _pulse = 0.6 + 0.4 * abs(sin(current_time * 0.006));
         var _is_mob = (os_type == os_android || os_type == os_ios || (variable_global_exists("dev_touch_mode") && global.dev_touch_mode));
+        var _btn_y = _by + _box_h - 50;
         draw_set_color(merge_colour(c_yellow, c_white, _pulse));
         var _cont_str = _is_mob ? tr("Toque na tela para Voltar a Selecao de Herois") : (input_get_btn_label("confirm") + tr(" Voltar para Selecao de Personagem"));
-        draw_text(_bx + _box_w / 2, _ry, _cont_str);
-        _ry += 26;
-    
+        draw_text(_cx, _btn_y, _cont_str);
+
         if (!_is_mob) {
             draw_set_color(c_ltgray);
-            draw_text(_bx + _box_w / 2, _ry, tr("[R] Reiniciar Expedicao   -   [M] Menu Principal"));
+            draw_text(_cx, _btn_y + 24, tr("[R] Reiniciar Expedicao   -   [M] Menu Principal"));
         }
-    
+
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
 }

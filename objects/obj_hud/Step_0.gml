@@ -1,3 +1,6 @@
+// Sequencia final (revelacao/escolha/creditos) assume a tela: nada de pausa ou HUD
+if (variable_global_exists("ending_active") && global.ending_active) exit;
+
 // Atualiza sistema de vibracao e deteccao dinamica de dispositivos
 input_rumble_update(delta_time / 1000000);
 input_update_device();

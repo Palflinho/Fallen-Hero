@@ -61,6 +61,7 @@ function elem_hit_enemies_circle(_x, _y, _radius, _damage, _ignore) {
 function elem_spawn_ground(_x, _y, _kind, _radius, _life) {
     var _g = instance_create_layer(_x, _y, layer, obj_elem_ground);
     _g.kind = _kind;
+    _g.owner_obj = object_index;
     _g.radius = _radius;
     _g.life = _life;
     _g.life_max = _life;
@@ -75,6 +76,7 @@ function elem_spawn_missile(_x, _y, _kind, _dir, _speed, _damage, _colour) {
     var _m = instance_create_layer(_x, _y, layer, obj_elem_missile);
     _m.kind = _kind;
     _m.owner = id;
+    _m.owner_obj = object_index;
     _m.dir = _dir;
     _m.spd = _speed;
     _m.damage = _damage;
@@ -87,6 +89,7 @@ function elem_spawn_missile(_x, _y, _kind, _dir, _speed, _damage, _colour) {
 function elem_spawn_projectile(_x, _y, _dir, _speed, _damage, _colour, _type) {
     var _p = instance_create_layer(_x, _y, layer, obj_enemy_projectile);
     _p.owner = id;
+    _p.owner_obj = object_index;
     _p.damage = _damage;
     _p.dir_x = lengthdir_x(1, _dir);
     _p.dir_y = lengthdir_y(1, _dir);

@@ -253,6 +253,37 @@ function dialogue_db_init() {
         }
     ];
 
+    // Derrota do Salvador: a couraca estilhaca e revela um homem comum
+    global.dialogue_db[$ "temple5_human_defeat"] = [
+        {
+            speaker: "human",
+            name: { pt: "O Salvador [Dr. Victor - Humano]", en: "The Savior [Dr. Victor - Human]" },
+            alien: "",
+            text: {
+                pt: "Vocês... conseguiram... Nosso mundo, a Terra... nós a destruímos séculos atrás. A ganância dos meus antepassados esgotou o ar, secou os oceanos e cobriu nossos filhos de cinzas.",
+                en: "You... did it... Our world, Earth... we destroyed it centuries ago. My ancestors' greed drained the air, dried the oceans and buried our children in ash."
+            }
+        },
+        {
+            speaker: "human",
+            name: { pt: "O Salvador [Dr. Victor - Humano]", en: "The Savior [Dr. Victor - Human]" },
+            alien: "",
+            text: {
+                pt: "Quando descobri o mundo de vocês, tão cheio de vida... eu vi uma chance. Eu não queria que a minha filha morresse sufocada num abrigo subterrâneo. Aceitei ser a besta... para que eles vissem o céu azul mais uma vez.",
+                en: "When I found your world, so full of life... I saw a chance. I did not want my daughter to suffocate in an underground shelter. I accepted becoming the beast... so they could see the blue sky one more time."
+            }
+        },
+        {
+            speaker: "human",
+            name: { pt: "O Salvador [Dr. Victor - Humano]", en: "The Savior [Dr. Victor - Human]" },
+            alien: "",
+            text: {
+                pt: "E agora vocês vieram pegar tudo de volta. Me diga, guerreiro... quando o meu povo morrer de sede amanhã... qual de nós dois é o herói?",
+                en: "And now you have come to take it all back. Tell me, warrior... when my people die of thirst tomorrow... which of us is the hero?"
+            }
+        }
+    ];
+
     // Espirito da arena libertado: agradece e encoraja o heroi antes do chefe
     global.dialogue_db[$ "spirit_freed_water"] = [
         {

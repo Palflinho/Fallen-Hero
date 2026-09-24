@@ -370,6 +370,7 @@ function goto_checkpoint() {
     global.selected_element = variable_global_exists("save_element") ? global.save_element : "none";
     global.use_saved_stats = false;
     global.chosen_talent_ids = global.save_talent_ids;
+    run_stats_reset();
     room_goto(Room1);
 }
 

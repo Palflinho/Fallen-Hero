@@ -4,6 +4,7 @@ global.attr_window_open = false;
 global.chest_reward_open = false;
 global.midrun_shop_open = false;
 global.run_victory = false;
+global.ending_active = false;
 global.hitstop_timer = 0;
 global.run_playtime = 0;
 if (!variable_global_exists("dev_mode")) global.dev_mode = false;
@@ -11,6 +12,7 @@ if (!variable_global_exists("current_save_slot")) global.current_save_slot = 1;
 
 load_save_from_disk();
 load_meta_from_disk();
+settings_load();
 
 locked_warning_timer = 0;
 reset_notice_timer = 0;
@@ -30,10 +32,14 @@ if (variable_global_exists("char_select_direct") && global.char_select_direct) {
     state = "select";
     global.char_select_direct = false;
 } else {
-    state = "main_menu"; // main_menu | save_slots | select | shop | select_talents
+    state = "main_menu"; // main_menu | save_slots | select | shop | select_talents | options | controls
 }
 
-main_menu_options = [tr("Novo Jogo"), tr("Continuar"), tr("Sair")];
+main_menu_options = [tr("Novo Jogo"), tr("Continuar"), tr("Opcoes"), tr("Sair")];
+
+// Tela de Opcoes
+options_cursor = 0;
+options_count = 9; // idioma, tela cheia, vol geral, vol efeitos, vol musica, tremor, vibracao, controles, voltar
 main_menu_cursor = any_save_slot_exists() ? 1 : 0;
 main_menu_btn_w = 340;
 main_menu_btn_h = 54;

@@ -4,9 +4,14 @@ var _dt = delta_time / 1000000;
 fx_system_update(_dt);
 
 if (hp <= 0) {
+    if (state != "dead") run_stats_on_death();
     state = "dead";
     input_rumble_stop();
 }
+
+// Estatisticas: toda vida recuperada desde o ultimo quadro conta como cura
+if (hp > stats_hp_prev && hp > 0) run_stats_add_heal(hp - stats_hp_prev);
+stats_hp_prev = hp;
 
 if (hit_flash_timer > 0) hit_flash_timer -= _dt;
 if (invuln_timer > 0) invuln_timer -= _dt;
@@ -70,6 +75,9 @@ if (poison_active) {
         }
         if (_pdmg > 0) {
             hp -= _pdmg;
+            stats_hp_prev = hp;
+            run_stats_ensure();
+            run_stats_on_player_hit(_pdmg, "magical", global.run_stats.poison_obj);
         }
         poison_tick_timer = poison_tick_interval;
         hit_flash_timer = hit_flash_duration;

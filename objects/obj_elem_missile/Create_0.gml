@@ -34,3 +34,4 @@ wave_sign = 1;
 gap_center = 0;
 gap_size = 120;
 hit_done = false;
+owner_obj = -1; // objeto de quem criou (estatisticas da partida)

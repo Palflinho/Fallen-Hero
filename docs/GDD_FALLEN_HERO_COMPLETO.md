@@ -32,7 +32,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
 ### 2.2 As Três Conclusões Possíveis
 * **Final da Vingança (Padrão):** O jogador recupera as 4 Essências, volta à Vila Subterrânea e restaura o mundo natal. O planeta Terra e seus abrigos colapsam sem energia.
 * **Final do Conquistador:** O herói decide não retornar, destrói a cúpula dos sobreviventes e assume o trono do paraíso como novo tirano protetor.
-* **Final da Síntese (True Ending Secreto):** Conquistado ao finalizar a run com nível de Maestria Máxima e completando o ciclo de orbes na Vila. O herói funde a própria força vital aos quatro pedestais sagrados, tecendo uma ponte dimensional perpétua que compartilha a energia vital entre os dois planetas.
+* **Final da Síntese (True Ending Secreto):** Liberado quando o herói está jogando com a Maestria da sua classe (Guardião, Piromante, Caçador das Marés ou Algoz do Tufão) e o jogador já viu pelo menos um outro final. O herói funde a própria força vital aos quatro pedestais sagrados, tecendo uma ponte dimensional perpétua que compartilha a energia vital entre os dois planetas.
 
 ---
 
@@ -326,7 +326,7 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
   * Parries e defesas perfeitas (*chimes* harmônicos e sinos metálicos).
   * Baús e triunfos (*fanfares* arpejadas em onda senoidal).
   * Vento, fogo e explosões (*filtered brown/white noise*).
-* **Vozes Chiptune (Estilo Banjo-Kazooie):** Cada raça e personagem tem um tom próprio definido em `scr_audio` (Rinoceronte grave em serra, Raposa médio suave em seno, Lagarto estalado, Urutau etéreo em tom harmônico). **Pendente:** as vozes ainda não tocam nas caixas de diálogo.
+* **Vozes Chiptune (Estilo Banjo-Kazooie):** Cada raça e personagem tem um tom próprio definido em `scr_audio` (Rinoceronte grave em serra, Raposa médio suave em seno, Lagarto estalado, Urutau etéreo em tom harmônico). As vozes tocam nas caixas de diálogo.
 * **Música:** ainda não existe. **Pendente.**
 
 ---
@@ -366,11 +366,13 @@ A IA dos inimigos (`scr_ai.gml`) combina comportamentos clássicos de arcade com
 | **Cancelamento de Habilidade** | `[X]` para Cavaleiro e Maga | 100% Integrado | [`obj_player/Step_0.gml:630`](../objects/obj_player/Step_0.gml#L630) |
 | **Hub da Vila Subterrânea** | Fogueira, Ancião, Pedestais | 100% Operante | [`room_village`](../rooms/room_village) |
 | **Chefes de Masmorra** | 5 (4 Elementais + Humano) | 100% Operante | [`obj_boss_human`](../objects/obj_boss_human) / `obj_boss 1-4` |
-| **Síntese de Áudio Procedural**| 27 Efeitos PCM + 8 Vozes | Efeitos operantes; vozes não tocadas nos diálogos | [`scr_audio.gml`](../scripts/scr_audio/scr_audio.gml) |
+| **Síntese de Áudio Procedural**| 27 Efeitos PCM + 9 Vozes | Efeitos e vozes dos diálogos operantes | [`scr_audio.gml`](../scripts/scr_audio/scr_audio.gml) |
 | **Música** | — | Não existe | — |
-| **Três Finais (Vingança, Conquistador, Síntese)** | 3 | Não implementado (derrotar o Humano leva direto à tela de vitória) | [`obj_stage_gate/Step_0.gml`](../objects/obj_stage_gate/Step_0.gml) |
+| **Três Finais (Vingança, Conquistador, Síntese)** | 3 + créditos | Revelação do Salvador → escolha → epílogo → créditos; finais vistos salvos no meta | [`obj_ending_controller`](../objects/obj_ending_controller) / [`scr_endings.gml`](../scripts/scr_endings/scr_endings.gml) |
+| **Menu de Opções** | Idioma, tela cheia, 3 volumes, tremor, vibração, controles | Operante (`settings.ini`, vale para todos os slots) | [`scr_settings.gml`](../scripts/scr_settings/scr_settings.gml) |
+| **Estatísticas da Partida** | Dano causado/recebido (físico e mágico), cura, abates, quem matou | Exibidas na tela de derrota | [`scr_run_stats.gml`](../scripts/scr_run_stats/scr_run_stats.gml) |
 | **Fonte da Interface** | Liberation Sans (SIL OFL), faixa Latin-1 | Embutida em `datafiles/fonts` | [`ui_font()`](../scripts/scr_locale/scr_locale.gml) |
-| **Idiomas** | PT, EN, ES, JA | PT completo; demais parciais; JA sem fonte com caracteres japoneses | [`scr_locale.gml`](../scripts/scr_locale/scr_locale.gml) |
+| **Idiomas** | PT, EN | PT completo; EN traduzido (interface, talentos, diálogos) | [`scr_locale.gml`](../scripts/scr_locale/scr_locale.gml) / [`scr_locale_en.gml`](../scripts/scr_locale_en/scr_locale_en.gml) |
 | **Planilhas de Metadados** | Excel `.xlsx` e `.csv` | 100% Sincronizado | [`Talentos_Fallen_Hero.xlsx`](../Talentos_Fallen_Hero.xlsx) (0 Pendências) |
 
 ---

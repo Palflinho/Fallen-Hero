@@ -9,6 +9,7 @@ function trigger_hitstop(_duration) {
 
 function trigger_camera_shake(_amount) {
     if (!variable_global_exists("camera_shake")) global.camera_shake = 0;
+    if (!settings_shake_enabled()) return;
     global.camera_shake = max(global.camera_shake, _amount);
 }
 
@@ -423,10 +424,12 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
         if (_is_crit) trigger_camera_shake(5);
     }
 
+    var _hp_before = _inst.hp;
     _inst.hp -= _actual_dmg;
     _inst.hit_flash_timer = _inst.hit_flash_duration;
     if (_inst.hp < 0) _inst.hp = 0;
     if (_is_boss) _inst.hp = max(_inst.hp, boss_phase_floor(_inst));
+    run_stats_on_damage_dealt(_hp_before - _inst.hp, variable_global_exists("dmg_ctx_physical") && global.dmg_ctx_physical);
 
     // Dynamic HP bar refresh
     if (variable_instance_exists(_inst, "hp_bar_timer")) {
@@ -483,6 +486,8 @@ function player_apply_poison(_dmg_per_tick, _tick_interval, _duration) {
     if (_p == noone) return;
     if (variable_instance_exists(_p, "synth_crio_coracao_geada") && _p.synth_crio_coracao_geada > 0) return;
     _p.poison_active = true;
+    run_stats_ensure();
+    global.run_stats.poison_obj = instance_exists(id) ? run_stats_source_obj(id) : -1;
     _p.poison_damage = _dmg_per_tick;
     _p.poison_tick_interval = _tick_interval;
     _p.poison_tick_timer = _tick_interval;
@@ -746,7 +751,10 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
     if (variable_instance_exists(_owner, "synth_piro_ponto_fusao") && _owner.synth_piro_ponto_fusao > 0 && (_is_fire_hit || _owner.character_class == "mage")) {
         _enemy.defense = _orig_def * 0.5;
     }
+    // Ataque basico: fisico para Cavaleiro/Arqueiro/Assassino, magico para a Maga
+    global.dmg_ctx_physical = (_owner.character_class != "mage");
     enemy_take_damage(_enemy, _dmg, _owner.x, _owner.y, _force, _is_crit);
+    global.dmg_ctx_physical = false;
     _enemy.defense = _orig_def;
     var _dealt = max(0, _before_hp - _enemy.hp);
 
@@ -2050,6 +2058,8 @@ function player_perform_attack() {
 
 function player_take_damage(_amount, _damage_type) {
     if (is_undefined(_damage_type)) _damage_type = "physical";
+    // Quem chamou esta funcao e a fonte do dano (inimigo, projetil, armadilha...)
+    var _stats_src = instance_exists(id) ? run_stats_source_obj(id) : -1;
 
     var _p = instance_find(obj_player, 0);
     if (_p == noone) return;
@@ -2421,6 +2431,7 @@ function player_take_damage(_amount, _damage_type) {
         }
 
         _p.hp -= _final;
+        run_stats_on_player_hit(_final, _damage_type, _stats_src);
         _p.hit_flash_timer = _p.hit_flash_duration;
         _p.invuln_timer = _p.invuln_duration;
         if (_final > 0) {

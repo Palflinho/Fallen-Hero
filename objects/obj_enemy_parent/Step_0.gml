@@ -108,8 +108,10 @@ if (poison_active) {
     }
     poison_tick_timer -= _dt * _tick_mult;
     if (poison_tick_timer <= 0) {
+        var _hp_before_poison = hp;
         hp -= poison_damage;
         if (variable_instance_exists(id, "boss_phase")) hp = max(hp, boss_phase_floor(id));
+        run_stats_on_damage_dealt(_hp_before_poison - max(0, hp), false);
         poison_tick_timer = poison_tick_interval;
         hit_flash_timer = hit_flash_duration;
         hp_bar_timer = hp_bar_duration;
@@ -154,6 +156,8 @@ if (fh_haste_timer > 0) {
 }
 
 if (hp <= 0) {
+    run_stats_ensure();
+    global.run_stats.kills += 1;
     player_gain_exp(exp_reward);
     player_gain_gold(gold_reward);
 
@@ -229,15 +233,10 @@ if (hp <= 0) {
         _gate.gate_label = tr("Retorno Ancestral: Vila Subterranea (Abrir Templo 5)");
         _gate.gate_colour = c_yellow;
     } else if (object_exists(asset_get_index("obj_boss_human")) && object_index == asset_get_index("obj_boss_human")) {
-        // Conquista final: O Salvador foi vencido!
-        global.run_victory = true;
+        // O Salvador foi vencido: revelacao, escolha do final, epilogo e creditos
         sfx_play("victory", 0.08, 1.0);
         trigger_camera_shake(8);
-        var _gate = instance_create_layer(x, y, layer, obj_stage_gate);
-        _gate.trigger_mode = "clear_mobs";
-        _gate.reward_type = "victory";
-        _gate.gate_label = tr("TRIUNFO SUPREMO: Concluir Expedicao (Vitoria)");
-        _gate.gate_colour = c_yellow;
+        if (!instance_exists(obj_ending_controller)) instance_create_depth(0, 0, -9500, obj_ending_controller);
     } else {
         sfx_play_at("enemy_death", x, y, 450, 0.08);
     }

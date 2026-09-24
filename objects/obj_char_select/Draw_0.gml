@@ -67,11 +67,12 @@ draw_text(_lx + 10, _ly + 4, _lang_str);
 if (mouse_check_button_pressed(mb_left)) {
     if (mouse_x >= _lx && mouse_x <= _lx + _lw && mouse_y >= _ly && mouse_y <= _ly + 24) {
         loc_next_language();
+        char_select_refresh_texts();
         sfx_play("menu_select", 0.05, 1.2);
     }
 }
 
-if (state != "main_menu" && state != "save_slots") {
+if (state != "main_menu" && state != "save_slots" && state != "options" && state != "controls") {
     draw_set_halign(fa_right);
     draw_set_valign(fa_top);
     draw_set_color(c_yellow);
@@ -155,6 +156,14 @@ switch (state) {
         draw_set_color(make_colour_rgb(160, 170, 185));
         var _menu_tip = _is_mobile ? tr("Toque na opcao desejada para navegar") : tr("W / S ou Setas: Navegar   |   Z / Enter / Espaco / Clique: Confirmar");
         draw_text(room_width / 2, room_height - 45, _menu_tip);
+        break;
+
+    case "options":
+        char_select_options_draw();
+        break;
+
+    case "controls":
+        char_select_controls_draw();
         break;
 
     case "save_slots":

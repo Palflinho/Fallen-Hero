@@ -1049,6 +1049,7 @@ function load_meta_from_disk() {
         water: false, fire: false, wind: false, earth: false
     };
     global.meta_mastery = {};
+    global.meta_endings = { vinganca: false, conquistador: false, sintese: false };
     global.meta_adaptive_ai = adaptive_ai_get_default_data();
     if (!variable_global_exists("dev_mode")) global.dev_mode = false;
 
@@ -1094,6 +1095,10 @@ function load_meta_from_disk() {
         if (variable_struct_exists(_data, "mastery") && is_struct(_data.mastery)) {
             global.meta_mastery = _data.mastery;
         }
+        if (variable_struct_exists(_data, "endings") && is_struct(_data.endings)) {
+            global.meta_endings = _data.endings;
+            endings_ensure();
+        }
         if (variable_struct_exists(_data, "adaptive_ai") && is_struct(_data.adaptive_ai)) {
             global.meta_adaptive_ai = _data.adaptive_ai;
         } else {
@@ -1107,7 +1112,8 @@ function load_meta_from_disk() {
         } else {
             global.reclaimed_elements = { water: false, fire: false, wind: false, earth: false };
         }
-        if (variable_struct_exists(_data, "game_language")) {
+        // Saves antigos guardavam o idioma aqui; agora ele vem do settings.ini
+        if (variable_struct_exists(_data, "game_language") && !(variable_global_exists("settings_loaded") && global.settings_loaded)) {
             global.game_language = (_data.game_language == "en") ? "en" : "pt";
         }
     }
@@ -1150,6 +1156,7 @@ function save_meta() {
         reclaimed_elements: variable_global_exists("reclaimed_elements") ? global.reclaimed_elements : { water: false, fire: false, wind: false, earth: false },
         game_language: variable_global_exists("game_language") ? global.game_language : "pt",
         mastery: variable_global_exists("meta_mastery") ? global.meta_mastery : {},
+        endings: variable_global_exists("meta_endings") ? global.meta_endings : { vinganca: false, conquistador: false, sintese: false },
         adaptive_ai: variable_global_exists("meta_adaptive_ai") ? global.meta_adaptive_ai : adaptive_ai_get_default_data(),
         dev_mode: variable_global_exists("dev_mode") ? global.dev_mode : false
     };
@@ -1880,6 +1887,7 @@ function skip_chest_reward() {
 // (pause/attribute window/chest reward) AND the brief hit-stop freeze on impactful hits.
 // Every Step event that matters checks this instead of the individual flags directly.
 function is_world_paused() {
+    if (variable_global_exists("ending_active") && global.ending_active) return true;
     return global.paused || global.attr_window_open || global.chest_reward_open || (variable_global_exists("midrun_shop_open") && global.midrun_shop_open) || (variable_global_exists("run_victory") && global.run_victory) || (variable_global_exists("dialogue_active") && global.dialogue_active) || global.hitstop_timer > 0;
 }
 

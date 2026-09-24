@@ -10,8 +10,9 @@ var _touch_dev = _is_mobile_dev && touch_room_clicked(12, 12, 280, 42);
 
 // Alternar Idioma com [L] ou Gamepad Select
 var _gp_lang = (gamepad_is_connected(0) && gamepad_button_check_pressed(0, gp_select));
-if (keyboard_check_pressed(ord("L")) || _gp_lang) {
+if ((keyboard_check_pressed(ord("L")) || _gp_lang) && state != "options") {
     loc_next_language();
+    char_select_refresh_texts();
     sfx_play("menu_select", 0.05, 1.2);
 }
 
@@ -76,7 +77,7 @@ switch (state) {
     case "main_menu":
         var _opt_count = array_length(main_menu_options);
         var _menu_start_x = (room_width - main_menu_btn_w) / 2;
-        var _menu_start_y = 250;
+        var _menu_start_y = 270;
 
         // Suporte a clique / toque nos botões do Menu Principal
         for (var _i = 0; _i < _opt_count; _i++) {
@@ -97,7 +98,11 @@ switch (state) {
                             state = "save_slots";
                         }
                         break;
-                    case 2: // Sair
+                    case 2: // Opcoes
+                        options_cursor = 0;
+                        state = "options";
+                        break;
+                    case 3: // Sair
                         game_end();
                         break;
                 }
@@ -125,10 +130,25 @@ switch (state) {
                         state = "save_slots";
                     }
                     break;
-                case 2: // Sair
+                case 2: // Opcoes
+                    options_cursor = 0;
+                    state = "options";
+                    break;
+                case 3: // Sair
                     game_end();
                     break;
             }
+        }
+        break;
+
+    case "options":
+        char_select_options_step();
+        break;
+
+    case "controls":
+        if (input_check_ui_cancel() || input_check_ui_confirm() || touch_room_clicked(0, 0, room_width, room_height)) {
+            sfx_play("menu_select", 0.05, 0.9);
+            state = "options";
         }
         break;
 
@@ -574,6 +594,7 @@ switch (state) {
                 global.temple_arena_layout = irandom(3);
                 global.temple_arena_biome = "water";
                 global.inrun_saved_stats = false;
+                run_stats_reset();
                 room_goto(asset_get_index("room_village"));
             }
         }
@@ -603,6 +624,7 @@ switch (state) {
                 global.temple_arena_layout = irandom(3);
                 global.temple_arena_biome = "water";
                 global.inrun_saved_stats = false;
+                run_stats_reset();
                 room_goto(asset_get_index("room_village"));
             }
         }

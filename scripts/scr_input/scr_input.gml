@@ -466,6 +466,7 @@ function input_check_slot_discard_pressed() {
 /// @function input_rumble(left_motor, right_motor, duration)
 /// @desc Aciona vibracao haptica no controle conectado
 function input_rumble(_left_motor, _right_motor, _duration) {
+    if (!settings_rumble_enabled()) return;
     var _pad = input_get_active_pad();
     if (_pad != -1) {
         gamepad_set_vibration(_pad, clamp(_left_motor, 0, 1), clamp(_right_motor, 0, 1));

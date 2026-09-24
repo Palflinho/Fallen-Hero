@@ -479,3 +479,6 @@ poison_duration = 0;
 slow_active = false;
 slow_multiplier = 1;
 slow_duration = 0;
+
+// Estatisticas da partida: vida do quadro anterior (para somar a cura recebida)
+stats_hp_prev = hp;

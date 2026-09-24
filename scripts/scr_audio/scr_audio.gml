@@ -68,7 +68,7 @@ function sfx_play(_name, _pitch_var = 0.06, _gain_mult = 1.0) {
     if (_inst != -1) {
         var _pitch = 1.0 + random_range(-_pitch_var, _pitch_var);
         audio_sound_pitch(_inst, max(0.5, _pitch));
-        audio_sound_gain(_inst, global.sfx_volume * _gain_mult, 0);
+        audio_sound_gain(_inst, global.sfx_volume * _gain_mult * settings_sfx_gain(), 0);
     }
     return _inst;
 }
