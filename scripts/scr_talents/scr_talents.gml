@@ -850,6 +850,12 @@ function talent_get_def(_id) {
     return get_talent_def_by_id(_id);
 }
 
+// Afinidade do talento; talentos gerais nao tem o campo e contam como "none"
+function talent_get_affinity(_def) {
+    if (!is_struct(_def) || !variable_struct_exists(_def, "affinity")) return "none";
+    return _def.affinity;
+}
+
 function get_talents_for_character_and_affinity(_character, _affinity) {
     var _all = get_talents_for_character(_character);
     var _out = [];
@@ -1240,7 +1246,8 @@ function talent_purchase(_id) {
 
     // Se o elemento estiver bloqueado na campanha normal, impede a compra
     var _req_c = variable_struct_exists(_def, "class_req") ? _def.class_req : "";
-    if (_def.affinity != "none" && !element_is_unlocked(_def.affinity, _req_c)) return false;
+    var _def_aff = talent_get_affinity(_def);
+    if (_def_aff != "none" && !element_is_unlocked(_def_aff, _req_c)) return false;
 
     if (global.gold < _def.cost) return false;
 

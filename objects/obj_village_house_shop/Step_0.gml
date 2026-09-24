@@ -108,7 +108,7 @@ if (_tn > 0) {
             notice_text = tr("Talento ja desbloqueado!");
             notice_timer = 50;
             sfx_play("stagger", 0.05, 0.4);
-        } else if (_cur_t.affinity != "none" && !element_is_unlocked(_cur_t.affinity, classes[shop_tab_index])) {
+        } else if (talent_get_affinity(_cur_t) != "none" && !element_is_unlocked(talent_get_affinity(_cur_t), classes[shop_tab_index])) {
             notice_text = tr("Afinidade bloqueada! Conquiste o templo elemental correspondente.");
             notice_timer = 70;
             sfx_play("stagger", 0.05, 0.6);

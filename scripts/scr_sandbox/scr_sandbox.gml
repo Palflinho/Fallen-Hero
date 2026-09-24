@@ -274,9 +274,10 @@ function sandbox_build_panel() {
             for (var _g = 0; _g < array_length(_gen); _g++) array_push(_list, _gen[_g]);
             for (var _t2 = 0; _t2 < array_length(_list); _t2++) {
                 var _def = _list[_t2];
-                var _aff = (_def.character == "general") ? tr("Geral") : element_get_name(_def.affinity);
-                if (_def.affinity == "hybrid") _aff = tr("Hibrido");
-                if (_def.affinity == "legendary") _aff = tr("Lendario");
+                var _def_aff = talent_get_affinity(_def);
+                var _aff = (_def.character == "general") ? tr("Geral") : element_get_name(_def_aff);
+                if (_def_aff == "hybrid") _aff = tr("Hibrido");
+                if (_def_aff == "legendary") _aff = tr("Lendario");
                 var _equipped = talent_list_has(sandbox_slots, _def.id);
                 array_push(_content, ["r", talent_get_label(_def) + "  [" + _aff + "]", "talent", _def.id, _equipped]);
             }

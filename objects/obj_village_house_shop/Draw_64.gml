@@ -142,7 +142,7 @@ if (_tn > 0) {
             var _is_sel = (_idx == shop_talent_index);
 
             var _unlocked = talent_is_unlocked(_t_item.id);
-            var _affinity_ok = (_t_item.affinity == "none" || element_is_unlocked(_t_item.affinity, classes[shop_tab_index]));
+            var _affinity_ok = (talent_get_affinity(_t_item) == "none" || element_is_unlocked(talent_get_affinity(_t_item), classes[shop_tab_index]));
 
             // Clique no card
             if (touch_gui_clicked(_cx, _cy, _cx + talent_card_w, _cy + talent_card_h)) {
@@ -219,7 +219,7 @@ if (_tn > 0 && shop_talent_index < _tn) {
     draw_set_valign(fa_top);
 
     draw_set_colour(c_yellow);
-    draw_text(_mx + 96, _det_y + 8, _cur_sel_t.label + " (" + string_upper(_cur_sel_t.affinity) + ")");
+    draw_text(_mx + 96, _det_y + 8, _cur_sel_t.label + " (" + string_upper(talent_get_affinity(_cur_sel_t)) + ")");
 
     draw_set_colour(make_colour_rgb(180, 200, 220));
     draw_text_ext(_mx + 96, _det_y + 28, _cur_sel_t.desc_value, 14, _mw - 140);
