@@ -140,13 +140,15 @@ if (!game_over && _player != noone && _player.state == "dead") {
     clear_save();
 }
 
-// Gerenciamento Dinâmico de Trilha Sonora (BGM)
+// Gerenciamento Dinâmico de Trilha Sonora (BGM): cada templo tem a sua musica
+// (datafiles/bgm/templo_<bioma>.ogg); a sala do chefe usa boss_<bioma>.ogg se existir.
+var _bgm_biome = variable_global_exists("run_biome") ? global.run_biome : "water";
 if (room == room_village) {
     bgm_play("village");
 } else if (room == room_arena || room == Room2 || room == Room4 || room == Room6 || room == Room8 || room == asset_get_index("room_temple5_boss")) {
-    bgm_play("boss");
+    bgm_play("boss_" + _bgm_biome);
 } else if (room == Room1 || room == Room3 || room == Room5 || room == Room7 || room == room_exp2 || room == room_exp4 || room == room_shop || room == room_preboss || room == asset_get_index("room_temple5_shop")) {
-    bgm_play("dungeon");
+    bgm_play("dungeon_" + _bgm_biome);
 }
 
 var _touch_pause = (variable_global_exists("touch_pause_pressed") && global.touch_pause_pressed);

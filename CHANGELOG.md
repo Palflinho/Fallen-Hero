@@ -18,6 +18,14 @@ Todas as mudanças importantes do jogo ficam registradas aqui, da mais nova para
 ## [Não lançado]
 _(anote aqui o que for mudando até a próxima versão)_
 
+### Áudio
+- **Música de verdade** (Google Flow Music): vila (também na tela inicial), um tema para cada templo (Água, Fogo, Vento, Terra) e o tema do chefe final.
+  - Convertidas para OGG: ~3 MB cada, contra ~32 MB em WAV.
+  - Silêncio do começo e do fim cortado para o loop ficar mais justo.
+  - Volume igualado entre as faixas.
+- A música do templo continua na arena e na sala do chefe sem reiniciar. Um `boss_<templo>.ogg` substitui a música só no chefe.
+- Correção: as faixas que saíam com fade ficavam tocando mudas em loop; agora são paradas.
+
 ---
 
 ## [0.1.0] Alpha — 2026-09-25

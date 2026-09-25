@@ -28,6 +28,12 @@
   ],
   "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[
+    {"$GMIncludedFile":"","%Name":"boss_final.ogg","CopyToMask":-1,"filePath":"datafiles/bgm","name":"boss_final.ogg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"templo_agua.ogg","CopyToMask":-1,"filePath":"datafiles/bgm","name":"templo_agua.ogg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"templo_fogo.ogg","CopyToMask":-1,"filePath":"datafiles/bgm","name":"templo_fogo.ogg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"templo_terra.ogg","CopyToMask":-1,"filePath":"datafiles/bgm","name":"templo_terra.ogg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"templo_vento.ogg","CopyToMask":-1,"filePath":"datafiles/bgm","name":"templo_vento.ogg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"vila.ogg","CopyToMask":-1,"filePath":"datafiles/bgm","name":"vila.ogg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"LiberationSans-OFL.txt","CopyToMask":-1,"filePath":"datafiles/fonts","name":"LiberationSans-OFL.txt","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"LiberationSans-Regular.ttf","CopyToMask":-1,"filePath":"datafiles/fonts","name":"LiberationSans-Regular.ttf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],

@@ -354,7 +354,12 @@ Nenhuma tela de tutorial: o jogo ensina pelo próprio espaço.
   * Baús e triunfos (*fanfares* arpejadas em onda senoidal).
   * Vento, fogo e explosões (*filtered brown/white noise*).
 * **Vozes Chiptune (Estilo Banjo-Kazooie):** Cada raça e personagem tem um tom próprio definido em `scr_audio` (Rinoceronte grave em serra, Raposa médio suave em seno, Lagarto estalado, Urutau etéreo em tom harmônico). As vozes tocam nas caixas de diálogo.
-* **Música (`bgm_play`):** trilhas procedurais em loop para **título, vila, masmorra e chefe**, trocadas automaticamente por sala com fade. Para usar música de verdade basta colocar `bgm/<faixa>.ogg` (`title`, `village`, `dungeon`, `boss`) em `datafiles`: o arquivo externo tem prioridade sobre a síntese. O volume segue **Opções → Música** (e o volume geral).
+* **Música (`bgm_play`):** trilhas em `datafiles/bgm/*.ogg`, trocadas por sala com fade (originais em WAV na pasta `music/`):
+  * `vila.ogg`: tela inicial e vila (continua sem reiniciar ao entrar na vila).
+  * `templo_agua/fogo/vento/terra.ogg`: todas as salas do templo, incluindo arena e chefe.
+  * `boss_final.ogg`: luta contra o Salvador.
+  * Para dar música própria a um chefe, basta criar `boss_agua.ogg`, `boss_fogo.ogg`, etc. (e `templo_final.ogg` para o mercador do Templo 5). Faixa que não existir cai na música procedural.
+  * O volume segue **Opções → Música** (e o volume geral).
 
 ---
 
@@ -413,7 +418,7 @@ A lista completa de sprites, tilesets, efeitos, UI, tamanhos, animações e pale
 | **Portais Pós-Chefe** | Voltar à Vila (100% do ouro) / Avançar | Operante | [`obj_stage_gate`](../objects/obj_stage_gate) / [`obj_enemy_parent/Step_0.gml`](../objects/obj_enemy_parent/Step_0.gml) |
 | **Chefes de Masmorra** | 5 (4 Elementais + Humano) | 100% Operante | [`obj_boss_human`](../objects/obj_boss_human) / `obj_boss 1-4` |
 | **Síntese de Áudio Procedural**| 27 Efeitos PCM + 9 Vozes | Efeitos e vozes dos diálogos operantes | [`scr_audio.gml`](../scripts/scr_audio/scr_audio.gml) |
-| **Música** | 4 faixas (título, vila, masmorra, chefe) | Procedural provisória; aceita `.ogg` em `datafiles/bgm/` | [`bgm_play()`](../scripts/scr_audio/scr_audio.gml) |
+| **Música** | 6 faixas (vila, 4 templos, chefe final) | Faixas reais em `datafiles/bgm/`; procedural só onde não há arquivo | [`bgm_play()`](../scripts/scr_audio/scr_audio.gml) |
 | **Save Roguelite** | 2 pontos (portal da vila / fim da run) | Operante | [`scr_progression.gml`](../scripts/scr_progression/scr_progression.gml) |
 | **Sandbox do Desenvolvedor** | Heróis, inimigos, chefes, cenário, talentos, colisões | Operante (nada é salvo) | [`scr_sandbox.gml`](../scripts/scr_sandbox/scr_sandbox.gml) |
 | **Três Finais (Vingança, Conquistador, Síntese)** | 3 + créditos | Revelação do Salvador → escolha → epílogo → créditos; finais vistos salvos no meta | [`obj_ending_controller`](../objects/obj_ending_controller) / [`scr_endings.gml`](../scripts/scr_endings/scr_endings.gml) |

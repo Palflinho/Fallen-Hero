@@ -119,32 +119,102 @@ function sfx_play_at(_name, _x, _y, _max_dist = 400, _pitch_var = 0.06, _gain_mu
 // -------------------------------------------------------------------------
 // Motor de BGM (Música de Fundo)
 // -------------------------------------------------------------------------
+// Nome do templo em portugues, usado nos arquivos de musica (templo_agua.ogg, boss_final.ogg...)
+function bgm_biome_suffix(_biome) {
+    switch (_biome) {
+        case "water": return "agua";
+        case "fire": return "fogo";
+        case "wind": return "vento";
+        case "earth": return "terra";
+        case "human": return "final";
+    }
+    return "agua";
+}
+
+// Arquivos (em datafiles/bgm, sem extensao) que cada trilha tenta, em ordem.
+// Se nenhum existir, toca a musica procedural do tipo base (bgm_procedural_id).
+//   "title" | "village" | "dungeon_<bioma>" | "boss_<bioma>"
+function bgm_file_candidates(_track_id) {
+    if (_track_id == "title") return ["title", "vila"];
+    if (_track_id == "village") return ["village", "vila"];
+    if (string_pos("dungeon_", _track_id) == 1) {
+        var _b = bgm_biome_suffix(string_delete(_track_id, 1, 8));
+        return ["templo_" + _b];
+    }
+    if (string_pos("boss_", _track_id) == 1) {
+        // Chefe: faixa propria do chefe; senao continua a musica do templo
+        var _bb = bgm_biome_suffix(string_delete(_track_id, 1, 5));
+        return ["boss_" + _bb, "templo_" + _bb];
+    }
+    return [_track_id];
+}
+
+function bgm_procedural_id(_track_id) {
+    if (string_pos("dungeon", _track_id) == 1) return "dungeon";
+    if (string_pos("boss", _track_id) == 1) return "boss";
+    return _track_id;
+}
+
+// Para de vez as faixas que ja terminaram o fade out (senao seguem tocando em loop, mudas)
+function bgm_cleanup_fading() {
+    if (!variable_global_exists("bgm_fading")) { global.bgm_fading = []; return; }
+    for (var _i = array_length(global.bgm_fading) - 1; _i >= 0; _i--) {
+        var _f = global.bgm_fading[_i];
+        if (!audio_is_playing(_f) || audio_sound_get_gain(_f) <= 0.001) {
+            if (audio_is_playing(_f)) audio_stop_sound(_f);
+            array_delete(global.bgm_fading, _i, 1);
+        }
+    }
+}
+
+function bgm_fade_out_current(_fade_ms) {
+    if (global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
+        audio_sound_gain(global.bgm_current_inst, 0, _fade_ms);
+        if (!variable_global_exists("bgm_fading")) global.bgm_fading = [];
+        array_push(global.bgm_fading, global.bgm_current_inst);
+    }
+    global.bgm_current_inst = -1;
+}
+
 function bgm_play(_track_id, _fade_ms = 400) {
     audio_system_init();
     if (!variable_global_exists("bgm_current_id")) global.bgm_current_id = "";
     if (!variable_global_exists("bgm_current_inst")) global.bgm_current_inst = -1;
+    if (!variable_global_exists("bgm_current_file")) global.bgm_current_file = "";
     if (!variable_global_exists("bgm_volume")) global.bgm_volume = 0.7;
+    if (!variable_global_exists("bgm_streams")) global.bgm_streams = {};
+    bgm_cleanup_fading();
 
-    if (global.bgm_current_id == _track_id && global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
+    var _playing = (global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst));
+    if (global.bgm_current_id == _track_id && _playing) return;
+
+    // 1. Procura uma faixa externa (.ogg em datafiles/bgm)
+    var _file = "";
+    var _cands = bgm_file_candidates(_track_id);
+    for (var _c = 0; _c < array_length(_cands); _c++) {
+        var _path = "bgm/" + _cands[_c] + ".ogg";
+        if (file_exists(_path)) { _file = _path; break; }
+    }
+
+    // Mesma musica de antes (ex.: templo -> sala do chefe sem faixa propria): continua sem reiniciar
+    if (_file != "" && _file == global.bgm_current_file && _playing) {
+        global.bgm_current_id = _track_id;
         return;
     }
 
-    // Fade out suave na faixa anterior
-    if (global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
-        audio_sound_gain(global.bgm_current_inst, 0, _fade_ms);
-    }
-
+    bgm_fade_out_current(_fade_ms);
     global.bgm_current_id = _track_id;
-    var _snd = -1;
+    global.bgm_current_file = _file;
 
-    // 1. Tenta carregar faixa externa (.ogg) caso o desenvolvedor a forneça
-    var _ogg_path = "bgm/" + _track_id + ".ogg";
-    if (file_exists(_ogg_path)) {
-        _snd = audio_create_stream(_ogg_path);
+    var _snd = -1;
+    if (_file != "") {
+        if (!variable_struct_exists(global.bgm_streams, _file)) global.bgm_streams[$ _file] = audio_create_stream(_file);
+        _snd = global.bgm_streams[$ _file];
         global.bgm_current_stream = _snd;
-    } else if (variable_global_exists("bgm_map") && variable_struct_exists(global.bgm_map, _track_id)) {
-        // 2. Fallback automático para a melodia procedural sintetizada em PCM
-        _snd = global.bgm_map[$ _track_id];
+    } else {
+        // 2. Fallback automatico para a melodia procedural sintetizada em PCM
+        var _proc = bgm_procedural_id(_track_id);
+        if (variable_global_exists("bgm_map") && variable_struct_exists(global.bgm_map, _proc)) _snd = global.bgm_map[$ _proc];
         global.bgm_current_stream = -1;
     }
 
@@ -160,10 +230,10 @@ function bgm_play(_track_id, _fade_ms = 400) {
 }
 
 function bgm_stop(_fade_ms = 400) {
-    if (variable_global_exists("bgm_current_inst") && global.bgm_current_inst != -1 && audio_is_playing(global.bgm_current_inst)) {
-        audio_sound_gain(global.bgm_current_inst, 0, _fade_ms);
-    }
+    if (!variable_global_exists("bgm_current_inst")) return;
+    bgm_fade_out_current(_fade_ms);
     global.bgm_current_id = "";
+    global.bgm_current_file = "";
 }
 
 function bgm_set_volume(_vol) {
