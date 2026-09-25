@@ -122,6 +122,7 @@
     {"id":{"name":"scr_ai","path":"scripts/scr_ai/scr_ai.yy",},},
     {"id":{"name":"scr_elemental_ai","path":"scripts/scr_elemental_ai/scr_elemental_ai.yy",},},
     {"id":{"name":"scr_enemy_visuals","path":"scripts/scr_enemy_visuals/scr_enemy_visuals.yy",},},
+    {"id":{"name":"scr_version","path":"scripts/scr_version/scr_version.yy",},},
     {"id":{"name":"scr_sandbox","path":"scripts/scr_sandbox/scr_sandbox.yy",},},
     {"id":{"name":"scr_tutorial","path":"scripts/scr_tutorial/scr_tutorial.yy",},},
     {"id":{"name":"scr_settings","path":"scripts/scr_settings/scr_settings.yy",},},

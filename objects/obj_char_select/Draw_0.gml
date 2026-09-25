@@ -23,6 +23,14 @@ if (global.dev_mode && !_is_mobile) {
     draw_text(18, 42, tr("[F3] Zerar Elementos da Campanha"));
 }
 
+// Versao do jogo no canto inferior direito
+draw_set_halign(fa_right);
+draw_set_valign(fa_bottom);
+draw_set_color(make_colour_rgb(110, 120, 140));
+draw_text(room_width - 12, room_height - 8, game_version_string());
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);
+
 if (reset_notice_timer > 0) {
     draw_set_color(c_yellow);
     draw_text(260, 40, tr(">> Elementos reiniciados para bloqueados!"));

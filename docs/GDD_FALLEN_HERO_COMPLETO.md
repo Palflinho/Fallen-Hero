@@ -1,5 +1,6 @@
 # FALLEN HERO — GAME DESIGN DOCUMENT (GDD) COMPLETO & OFICIAL
 **Versão:** 3.0 (Master Gold Definitive)  
+**Versão do Jogo:** v0.1.0 Alpha (`scripts/scr_version`, exibida na tela inicial)  
 **Engine:** GameMaker LTS (Compatibilidade GML LTS 2026)  
 **Gênero:** Top-Down Action Roguelike RPG com Progressão Elemental  
 **Inspirações de Design:** *Hades*, *Dead Cells*, *Hyper Light Drifter*, *Super Smash Bros* (Filosofia Sakurai) e *The Legend of Zelda* (Filosofia Miyamoto)  
