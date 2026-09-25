@@ -18,7 +18,7 @@ Código: `class_interaction_on_hit()` e helpers em `scripts/scr_elemental_ai`; g
 | Especialização | Interação |
 |---|---|
 | Cavaleiro | Verbo base (escudo segura parcial). |
-| **Lanceiro** (Água → Arqueiro) | Cada golpe solta uma **lâmina d'água** de longo alcance, que também **derruba voadores**. A aura **purifica o chão**: apaga fogo e derrete gelo dentro do raio. Segura investidas (parcial). |
+| **Lanceiro** (Água) | Depois de cada golpe, uma **ponta d'água** atrasada vai um pouco além da lança (até +15% de alcance) e **derruba voadores**. A aura **purifica o chão**: apaga fogo e derrete gelo dentro do raio. Segura investidas (parcial). |
 | **Cavaleiro Rúnico** (Fogo → Maga) | Todo golpe que acerta detona uma **runa de fogo em área**, que também **interrompe canalizações**. **Fúria inabalável**: durante a Fúria não é empurrado, puxado, lento nem preso em bolhas. |
 | **Duelista** (Vento) | **Aparar** no momento do impacto segura investidas por completo ("APARADO!"). |
 | **Guardião** (Terra) | **Muralha viva**: segura investidas sem recuar nem sofrer dano; carapaça do Slime de Terra estilhaça no escudo. |
@@ -33,7 +33,7 @@ Código: `class_interaction_on_hit()` e helpers em `scripts/scr_elemental_ai`; g
 | **Caçador Furtivo** (Vento) | **Vento não reflete vento** (igual ao Ilusionista). |
 | **Sentinela** (Terra) | **Ancorado**: com a âncora ativa ignora empurrões e puxões (vórtices, vendavais, ondas, pousos). |
 | Assassino | Verbo base. |
-| **Rastreador** (Água → Arqueiro) | Todo 3º golpe arremessa **3 facas espectrais** que marcam (+50% de dano) e **derrubam voadores**. **Vê através de ilusões**: clones da Ondina aparecem marcados com X e a Sílfide fica visível. |
+| **Rastreador** (Água) | Depois de todo 3º golpe, **3 pontas d'água** em leque vão um pouco além das adagas, marcam (+50% de dano) e **derrubam voadores**. **Vê através de ilusões**: clones da Ondina aparecem marcados com X e a Sílfide fica visível. |
 | **Alquimista** (Fogo) | **Bomba de cinzas cega**: interrompe canalizações ("CEGADO!") e revela a Sílfide por 4s. |
 | **Algoz do Tufão** (Vento) | **Corta o vento**: adagas acertam o Golem de Tempestade na névoa e o Slime de Vento no ar. |
 | **Cavaleiro Sombrio** (Terra) | **Obsidiana corta pedra**: adagas passam por carapaças (50%, rachando 2 placas), inclusive a frente do Titã. |

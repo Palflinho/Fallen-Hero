@@ -60,7 +60,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
 * **Habilidade Especial (Defesa / [X]):** Ergue o escudo. Bloqueia 50% a 100% de dano frontal, absorve projéteis.
   * **QoL Integrada:** Pode cancelar a qualquer instante antes do fim da duração apertando `[X]` novamente.
 * **Afinidades Elementais:**
-  * *Água (Lanceiro — estilo Arqueiro):* Cada golpe solta uma lâmina d'água de longo alcance; a aura de sobrevida cura e protege.
+  * *Água (Lanceiro):* depois de cada golpe sai uma **ponta d'água** com um pequeno atraso, indo só um pouco além da lança (no máximo +15% do alcance do golpe); a aura de sobrevida cura e protege.
   * *Fogo (Cavaleiro Rúnico — estilo Maga):* Alcance normal, mas todo golpe que acerta detona uma runa de fogo em área (maior durante a Fúria) que também interrompe canalizações.
   * *Vento (Duelista — estilo Assassino):* Aparar e contra-atacar; combo duplo de lâmina veloz e rajadas cortantes de ar.
   * *Terra (Guardião — Maestria):* Aumenta a couraça corporal proporcionalmente aos inimigos próximos.
@@ -94,7 +94,7 @@ Em **Fallen Hero**, o jogador assume o papel de um dos quatro campeões remanesc
   * **Movimentação Tática:** Move-se a 80% da velocidade normal enquanto invisível.
   * **Emboscada:** Quebra a invisibilidade atacando para desferir um acerto crítico garantido e plantar uma Mina de Basalto.
 * **Afinidades Elementais:**
-  * *Água (Rastreador — estilo Arqueiro):* Todo 3º golpe arremessa facas espectrais que marcam o alvo.
+  * *Água (Rastreador):* depois de todo 3º golpe, 3 pontas d'água em leque vão um pouco além das adagas (no máximo +15% do alcance) e marcam o alvo.
   * *Fogo (Alquimista — estilo Maga):* Bomba de cinzas com cegueira, marcas de enxofre e lâmina de magma derretido.
   * *Vento (Algoz do Tufão — Maestria):* Reflexos que cortam projéteis inimigos em voo e tornados de adagas frontais.
   * *Terra (Cavaleiro Sombrio — estilo Cavaleiro):* Ignora armadura física de elites e crava adagas no solo em choques tectônicos.
@@ -158,7 +158,7 @@ O catálogo de talentos está 100% definido em [`scr_talents.gml`](../scripts/sc
 ### 5.1 Distribuição Estrutural (211 Talentos Totais)
 * **Cavaleiro (50 Talentos):**
   * 10 Base (Postura Firme, Lâmina Afiada, Golpe Pesado, Escudo de Choque, Segundo Fôlego, etc.)
-  * 8 Água / Lanceiro (Lâmina Perfurante, Estocada Distante, Maré de Lâminas, Bastião Líquido, Escudo Espelhado, etc.)
+  * 8 Água / Lanceiro (Correnteza Gélida, Estocada Distante, Maré de Lâminas, Bastião Líquido, Escudo Espelhado, etc.)
   * 8 Fogo / Cavaleiro Rúnico (Runa Ampliada, Runa em Cadeia, Combustão Espontânea, Lâmina em Brasa, Fúria Imortal, etc.)
   * 8 Vento / Duelista (Combo Vendaval, Postura Eólica, Lâmina Relâmpago, Dança das Lâminas, etc.)
   * 8 Terra / Guardião (Fissura Telúrica, Carapaça de Granito, Fortaleza Viva, Peso Esmagador, etc.)
@@ -271,7 +271,7 @@ Cada chefe tem **uma mecânica central** (estilo Zelda) que abre a **janela de d
 **Troca de fase (todos os chefes):** a vida trava no limite da fase (66% / 33%), então nenhum golpe pula uma fase. Ao mudar de fase o chefe encerra a janela de dano em andamento, solta um rugido que empurra o jogador e fica **IMUNE por 1,5s** enquanto muda de postura (`boss_update_phase` / `boss_phase_floor`).
 
 ### 6.3.0 Regra do Elemento (2 para 1)
-Cada elemento pertence a uma classe e **empresta uma ferramenta** do estilo dela: **Terra → Cavaleiro**, **Água → Arqueiro**, **Fogo → Maga**, **Vento → Assassino**. A classe base continua sendo o corpo (vida, ataque principal, botão de defesa); o elemento acrescenta uma coisa só. A classe no próprio elemento é a **Maestria** (Guardião, Piromante, Caçador das Marés, Algoz do Tufão): na lore, o herói que aprofunda a tradição do próprio povo em vez de aprender com outro (ver `LORE_E_NARRATIVA.md`). Os nomes das especializações evocam a classe emprestada (Duelista, Lanceiro, Cavaleiro Rúnico, Atiradora Arcana, Rastreador).
+Cada elemento pertence a uma classe e **empresta uma ferramenta** do estilo dela: **Terra → Cavaleiro**, **Água → Arqueiro**, **Fogo → Maga**, **Vento → Assassino**. A classe base continua sendo o corpo (vida, ataque principal, botão de defesa); o elemento acrescenta uma coisa só. **Exceção da Água nas classes corpo a corpo** (Lanceiro e Rastreador): elas não viram atiradoras; o golpe sai primeiro e, com um pequeno atraso, uma **ponta d'água** vai só um pouco além da arma (no máximo +15% do alcance do golpe, `WATER_TIP_EXTEND`). A ponta ainda derruba voadores. A classe no próprio elemento é a **Maestria** (Guardião, Piromante, Caçador das Marés, Algoz do Tufão): na lore, o herói que aprofunda a tradição do próprio povo em vez de aprender com outro (ver `LORE_E_NARRATIVA.md`). Os nomes das especializações evocam a classe emprestada (Duelista, Lanceiro, Cavaleiro Rúnico, Atiradora Arcana, Rastreador).
 
 ### 6.3.1 Interações de Classe
 Cada classe tem um verbo contra os inimigos — **Cavaleiro segura** investidas com o escudo, **Maga interrompe** canalizações, **Arqueiro derruba** o que voa, **Assassino despista** o que persegue — e cada especialização tem uma interação própria (ex.: Criomante apaga o Slime de Fogo e congela o General Magma; Templária arranca o Gnomo do subsolo). Tabela completa em [`INTERACOES_DE_CLASSE.md`](INTERACOES_DE_CLASSE.md).

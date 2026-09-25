@@ -24,6 +24,7 @@ if (variable_instance_exists(id, "fh_push_vx") && (abs(fh_push_vx) > 2 || abs(fh
     fh_push_vy *= _push_fric;
 }
 if (attack_cooldown_timer > 0) attack_cooldown_timer -= _dt;
+player_update_water_tips(_dt);
 if (attack_buffer_timer > 0) attack_buffer_timer -= _dt;
 if (defend_cooldown_timer > 0) defend_cooldown_timer -= _dt;
 if (second_wind_cooldown_timer > 0) second_wind_cooldown_timer -= _dt;

@@ -42,6 +42,7 @@ function locale_en_init() {
     _d[$ "BACKSTAB!"] = "BACKSTAB!";
     _d[$ "BALISTA PIROMANTE!"] = "PYRO BALLISTA!";
     _d[$ "BARREIRA ABSORVEU!"] = "BARRIER ABSORBED!";
+    _d[$ "BARREIRA QUEBRADA!"] = "BARRIER BROKEN!";
     _d[$ "CARAPACA ESTILHACADA!"] = "SHELL SHATTERED!";
     _d[$ "CARAPACA QUEBRADA!"] = "SHELL BROKEN!";
     _d[$ "CARRASCO!"] = "EXECUTIONER!";
@@ -435,7 +436,7 @@ function locale_en_init() {
     _d[$ "Lagarto Arqueiro"] = "Lizard Archer";
     _d[$ "Lagarto Arqueiro [Franco-Atirador]"] = "Lizard Archer [Sniper]";
     _d[$ "Lanceiro"] = "Lancer";
-    _d[$ "Lanceiro: Cada golpe solta uma lamina d'agua de longo alcance. Especial gera Aura de Sobrevida que cura/protege."] = "Lancer: Each hit releases a long-range water blade. Special creates a Survival Aura that heals/protects.";
+    _d[$ "Lanceiro: Depois de cada golpe, uma ponta d'agua vai um pouco alem da lanca. Especial gera Aura de Sobrevida que cura/protege."] = "Lancer: After each hit, a water tip reaches a little past the spear. Special creates a Survival Aura that heals/protects.";
     _d[$ "Loja de Talentos"] = "Talent Shop";
     _d[$ "MERCADOR ARCANO - BAZAR DA EXPEDICAO"] = "ARCANE MERCHANT - EXPEDITION BAZAAR";
     _d[$ "MODO DEV: ATIVADO"] = "DEV MODE: ON";
@@ -500,7 +501,7 @@ function locale_en_init() {
     _d[$ "Raposa Maga"] = "Fox Mage";
     _d[$ "Raposa Maga [Atiradora Arcana]"] = "Fox Mage [Arcane Sharpshooter]";
     _d[$ "Rastreador"] = "Tracker";
-    _d[$ "Rastreador: Todo 3o golpe arremessa facas espectrais que marcam o alvo. Especial Dissipacao em Nevoa atravessa corpos e regenera vida."] = "Tracker: Every 3rd hit throws spectral knives that mark the target. Special Mist Dissipation passes through bodies and regenerates health.";
+    _d[$ "Rastreador: Depois de todo 3o golpe, pontas d'agua em leque vao um pouco alem das adagas e marcam o alvo. Especial Dissipacao em Nevoa atravessa corpos e regenera vida."] = "Tracker: After every 3rd hit, a fan of water tips reaches a little past the daggers and marks the target. Special Mist Dissipation passes through bodies and regenerates health.";
     _d[$ "Recuperando..."] = "Recovering...";
     _d[$ "Requisito: "] = "Requirement: ";
     _d[$ "Resistência Física +40% e reflete dano colado. Fraqueza Crítica à Magia (+50% de dano da Maga)."] = "Physical Resistance +40% and reflects melee damage. Critical Weakness to Magic (+50% damage from the Mage).";
@@ -937,9 +938,9 @@ function locale_en_talents_init() {
     _t[$ "knight_vontade_indomavel"] = ["Indomitable Will", "An unshakable stance that ignores slippery ground, gales and the shoves of colossal bosses.", "Makes the Knight immune to pushes, knockback and slows from traps or bosses."];
     _t[$ "knight_paladino_bencao_mare"] = ["Tide's Blessing", "Sacred waters flow in quickened pulses, restoring flesh and healing deep wounds.", "The Overheal Aura pulses 25% faster and grants +4 HP/s natural regeneration."];
     _t[$ "knight_paladino_bastiao_liquido"] = ["Liquid Bastion", "A translucent film of water that dissolves ranged shots before they reach the body.", "The overheal barrier gains +50% max HP capacity and absorbs 100% of projectile damage."];
-    _t[$ "knight_paladino_gota_purificadora"] = ["Long Thrust", "The lancer measures distance like a swamp hunter: the farther the target, the deeper the cut.", "Water blades deal +50% damage to targets more than 120px away."];
-    _t[$ "knight_paladino_correnteza_dilacerante"] = ["Tide of Blades", "Every third motion, the blade splits into three cutting currents.", "Every 3rd strike fires 3 water blades in a fan instead of one."];
-    _t[$ "knight_paladino_golpe_nascente"] = ["Piercing Blade", "The current sharpens the water's edge until it cuts through shields and entire ranks.", "Water blades pierce +1 enemy and travel 40% farther."];
+    _t[$ "knight_paladino_gota_purificadora"] = ["Long Thrust", "The lancer measures distance like a swamp hunter: the right strike is the one that lands with the tip.", "The water tip deals +50% damage."];
+    _t[$ "knight_paladino_correnteza_dilacerante"] = ["Tide of Blades", "Every third motion, the water splits into three cutting currents.", "Every 3rd strike, the water tip splits into 3 jets in a fan."];
+    _t[$ "knight_paladino_golpe_nascente"] = ["Freezing Current", "The water follows the spear without hesitation and chills whatever it touches.", "The water tip comes out twice as fast and slows the target by 40% for 1.5s."];
     _t[$ "knight_paladino_escudo_espelhado"] = ["Mirror Shield", "When the barrier breaks, the water mirror shatters in a blast that stuns attackers.", "When the overheal barrier breaks from damage, it explodes, blinding and pushing enemies within 120px."];
     _t[$ "knight_paladino_graca_abencoada"] = ["Blessed Grace", "Excess vitality is never wasted, condensing into a shield of sacred energy.", "Healing received at full HP converts 50% of the amount into overheal barrier."];
     _t[$ "knight_paladino_julgamento_sereno"] = ["Serene Judgment", "Shielded by the shining barrier, the knight wields the sword with calm, radiant rhythm.", "While the overheal barrier is active, sword attack speed increases by +25%."];
@@ -1085,7 +1086,7 @@ function locale_en_talents_init() {
     _t[$ "assassin_execucao_fria"] = ["Cold Execution", "Merciless coldness to cut down wounded monsters before they can strike back.", "Enemies below 25% HP take double damage from normal cuts."];
     _t[$ "assassin_emboscada_perfeita"] = ["Perfect Ambush", "A strike from the shadowy void stuns the surprised attacker's mind.", "Striking from Invisibility (X) stuns the target for 1.5 seconds."];
     _t[$ "assassin_presteza_sombria"] = ["Shadow Haste", "Affinity with the shadows shortens the time between moments of concealment.", "The Invisibility cooldown is reduced by 1.5 seconds."];
-    _t[$ "assassin_espect_corte_fluido"] = ["Knife Fan", "Trained fingers release more blades than the eye can count.", "The 3rd-strike throw launches 5 knives instead of 3."];
+    _t[$ "assassin_espect_corte_fluido"] = ["Knife Fan", "Trained fingers release more blades than the eye can count.", "The 3rd strike releases 5 water tips in a fan instead of 3."];
     _t[$ "assassin_espect_gota_hemofagica"] = ["Hemophagic Drop", "The daggers condense the victim's life force, restoring the assassin's breath.", "Critical cuts drain the target's vitality, healing 4 HP per hit."];
     _t[$ "assassin_espect_nevoa_ilusoria"] = ["Illusory Mist", "A sudden dissolve into water droplets when a blow is about to land, cancelling the impact.", "When taking damage, dissolve into mist for a moment, cancelling the hit (cooldown: 20s)."];
     _t[$ "assassin_espect_adaga_criogenica"] = ["Marked Prey", "The tracker never misses the prey they marked themselves.", "Melee hits on targets with the Spectral Mark deal +60% damage (critical)."];

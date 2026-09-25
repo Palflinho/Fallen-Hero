@@ -481,7 +481,7 @@ function class_interaction_on_hit(_o, _e, _dmg) {
     var _obj = _e.object_index;
 
     // ---------------- ARQUEIRO: derrubar voadores ----------------
-    // Regra do elemento: Agua empresta o estilo do Arqueiro - as laminas do Lanceiro e as facas do
+    // Regra do elemento: Agua empresta o estilo do Arqueiro - as pontas d'agua do Lanceiro e do
     // Rastreador e as lancas da Atiradora Arcana tambem derrubam voadores.
     if ((_cls == "archer" || _el == "water") && _e.fh_untargetable && _e.fh_air) {
         _e.fh_air_hits += 1;
@@ -503,12 +503,6 @@ function class_interaction_on_hit(_o, _e, _dmg) {
     }
 
     // ---------------- CAVALEIRO ----------------
-    // Talento Estocada Distante (Lanceiro): laminas d'agua em alvos a mais de 120px causam +50%
-    if (_cls == "knight" && variable_instance_exists(_o, "synth_paladino_gota_purificadora") && _o.synth_paladino_gota_purificadora > 0
-        && point_distance(_o.x, _o.y, _e.x, _e.y) > 120) {
-        _dmg *= 1.5;
-        if (random(1) < 0.25) fx_spawn_damage_popup(_e.x, _e.y - _e.body_radius - 20, "ESTOCADA DISTANTE!", false, c_aqua);
-    }
 
     // ---------------- MAGA: interromper canalizacoes ----------------
     if (_cls == "mage") {

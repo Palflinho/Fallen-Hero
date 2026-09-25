@@ -53,7 +53,7 @@ function get_talent_defs() {
          desc_flavor: "Postura inabalavel que ignora terrenos escorregadios, ventanias e empurroes de chefes colossais.",
          desc_value: "Torna o Cavaleiro imune a empurroes, knockback e desaceleracoes de armadilhas ou chefes.", icon_type: "bastion"},
 
-        // 2. LANCEIRO (antigo Paladino - ELEMENTO AGUA / estilo ARQUEIRO - 8 TALENTOS)
+        // 2. LANCEIRO (antigo Paladino - ELEMENTO AGUA / ponta d'agua atrasada - 8 TALENTOS)
         {id: "knight_paladino_bencao_mare", character: "knight", affinity: "water", label: "Bencao da Mare", synth_field: "synth_paladino_bencao_mare", per_rank: 4, cost: 85,
          desc_flavor: "As aguas sagradas circulam em pulsos acelerados, revitalizando tecidos e curando feridas profundas.",
          desc_value: "A Aura de Sobrevida pulsa 25% mais rapido e aumenta a regeneracao natural em +4 HP/s.", icon_type: "holy"},
@@ -61,14 +61,14 @@ function get_talent_defs() {
          desc_flavor: "Uma pelicula aquosa translucida que dissipa disparos a distancia antes que toquem o corpo.",
          desc_value: "Barreira de sobrevida ganha capacidade maxima de +50% do HP e absorve 100% do dano de projeteis.", icon_type: "barrier"},
         {id: "knight_paladino_gota_purificadora", character: "knight", affinity: "water", label: "Estocada Distante", synth_field: "synth_paladino_gota_purificadora", per_rank: 1, cost: 95,
-         desc_flavor: "O lanceiro mede a distancia como um cacador do pantano: quanto mais longe, mais fundo o corte.",
-         desc_value: "Laminas d'agua causam +50% de dano em alvos a mais de 120px.", icon_type: "crit"},
+         desc_flavor: "O lanceiro mede a distancia como um cacador do pantano: o golpe certo e o que chega com a ponta.",
+         desc_value: "A ponta d'agua causa +50% de dano.", icon_type: "crit"},
         {id: "knight_paladino_correnteza_dilacerante", character: "knight", affinity: "water", label: "Mare de Laminas", synth_field: "synth_paladino_correnteza_dilacerante", per_rank: 1, cost: 115,
          desc_flavor: "A cada terceiro movimento a lamina se parte em tres correntes cortantes.",
-         desc_value: "Todo 3o golpe dispara 3 laminas d'agua em leque em vez de uma.", icon_type: "wind"},
-        {id: "knight_paladino_golpe_nascente", character: "knight", affinity: "water", label: "Lamina Perfurante", synth_field: "synth_paladino_golpe_nascente", per_rank: 1, cost: 200,
-         desc_flavor: "A correnteza afia o gume da agua ate atravessar escudos e fileiras inteiras.",
-         desc_value: "As laminas d'agua atravessam +1 inimigo e alcancam +40% mais longe.", icon_type: "sword"},
+         desc_value: "Todo 3o golpe a ponta d'agua se abre em 3 jatos em leque.", icon_type: "wind"},
+        {id: "knight_paladino_golpe_nascente", character: "knight", affinity: "water", label: "Correnteza Gelida", synth_field: "synth_paladino_golpe_nascente", per_rank: 1, cost: 200,
+         desc_flavor: "A agua segue a lanca sem hesitar e gela o que toca.",
+         desc_value: "A ponta d'agua sai na metade do tempo e deixa o alvo 40% mais lento por 1,5s.", icon_type: "sword"},
         {id: "knight_paladino_escudo_espelhado", character: "knight", affinity: "water", label: "Escudo Espelhado", synth_field: "synth_paladino_escudo_espelhado", per_rank: 1, cost: 115,
          desc_flavor: "A quebra da barreira estilhaca o espelho dagua em um estrondo que atordoa agressores.",
          desc_value: "Quando a barreira de sobrevida quebra por dano, explode cegando e empurrando num raio de 120px.", icon_type: "shockwave"},
@@ -548,10 +548,10 @@ function get_talent_defs() {
          desc_flavor: "Afinidade com as sombras reduzindo o intervalo entre momentos de ocultamento.",
          desc_value: "O tempo de recarga da habilidade de Invisibilidade e reduzido em 1.5 segundos.", icon_type: "cdr"},
 
-        // 2. RASTREADOR (antiga Lamina Espectral - ASSASSINO / AGUA / estilo ARQUEIRO - 8 TALENTOS)
+        // 2. RASTREADOR (antiga Lamina Espectral - ASSASSINO / AGUA / ponta d'agua atrasada - 8 TALENTOS)
         {id: "assassin_espect_corte_fluido", character: "assassin", affinity: "water", label: "Leque de Facas", synth_field: "synth_assassin_espect_corte_fluido", per_rank: 1, cost: 85,
          desc_flavor: "Dedos treinados soltam mais laminas do que o olho consegue contar.",
-         desc_value: "O arremesso do 3o golpe lanca 5 facas em vez de 3.", icon_type: "dagger"},
+         desc_value: "O 3o golpe solta 5 pontas d'agua em leque em vez de 3.", icon_type: "dagger"},
         {id: "assassin_espect_gota_hemofagica", character: "assassin", affinity: "water", label: "Gota Hemofagica", synth_field: "synth_assassin_espect_gota_hemofagica", per_rank: 4, cost: 105,
          desc_flavor: "As adagas condensam a forca vital da vitima recompondo o folego do assassino.",
          desc_value: "Cortes criticos drenam a vitalidade do alvo, curando 4 de HP por golpe.", icon_type: "lifesteal"},
@@ -790,7 +790,7 @@ function class_get_archetype_desc(_class, _elem) {
     switch (_class) {
         case "knight":
             switch (_elem) {
-                case "water": return tr("Lanceiro: Cada golpe solta uma lamina d'agua de longo alcance. Especial gera Aura de Sobrevida que cura/protege.");
+                case "water": return tr("Lanceiro: Depois de cada golpe, uma ponta d'agua vai um pouco alem da lanca. Especial gera Aura de Sobrevida que cura/protege.");
                 case "fire": return tr("Cavaleiro Runico: Golpes que acertam detonam uma runa de fogo em area. Especial entra em Furia Ardente (+50% dano/+regen, runas maiores).");
                 case "wind": return tr("Duelista: Ataque duplo veloz em combo. Especial e Aparar (Parry com contra-ataque de 360).");
                 case "earth": return tr("Guardiao: Ataque concentrado. Especial Bastiao bloqueia 100% dano fisico e magico + Taunt.");
@@ -814,7 +814,7 @@ function class_get_archetype_desc(_class, _elem) {
             }
         case "assassin":
             switch (_elem) {
-                case "water": return tr("Rastreador: Todo 3o golpe arremessa facas espectrais que marcam o alvo. Especial Dissipacao em Nevoa atravessa corpos e regenera vida.");
+                case "water": return tr("Rastreador: Depois de todo 3o golpe, pontas d'agua em leque vao um pouco alem das adagas e marcam o alvo. Especial Dissipacao em Nevoa atravessa corpos e regenera vida.");
                 case "fire": return tr("Alquimista: Adagas igneas e explosoes a cada golpe. Especial Bomba de Cinzas cega e queima em area.");
                 case "wind": return tr("Algoz do Tufao: Cortes de ar em hipervelocidade. Especial Salto das Sombras teletransporta atras do alvo com estocada.");
                 case "earth": return tr("Cavaleiro Sombrio: Veneno petrificante e alta resistencia. Especial Carapaca de Obsidiana reduz 80% do dano.");

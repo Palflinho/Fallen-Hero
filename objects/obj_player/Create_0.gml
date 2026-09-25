@@ -57,7 +57,7 @@ switch (character_class) {
 
         switch (element_affinity) {
             case "water":
-                archetype_name = tr("Lanceiro"); // Agua -> estilo Arqueiro
+                archetype_name = tr("Lanceiro"); // Agua -> ponta d'agua atrasada (ate +15% de alcance)
                 body_colour = c_teal;
                 defend_mode = "paladin_aura";
                 defend_duration = 3.5;
@@ -256,7 +256,7 @@ switch (character_class) {
 
         switch (element_affinity) {
             case "water":
-                archetype_name = tr("Rastreador"); // Agua -> estilo Arqueiro
+                archetype_name = tr("Rastreador"); // Agua -> pontas d'agua atrasadas no 3o golpe
                 body_colour = make_colour_rgb(90, 160, 220);
                 defend_mode = "spectral_mist";
                 defend_duration = 2.5;
@@ -427,6 +427,7 @@ earth_anchored = false;
 
 // Variáveis de controle de combate para talentos do Assassino
 assassin_combo_counter = 0;
+water_tip_queue = []; // pontas d'agua atrasadas (Lanceiro / Rastreador)
 assassin_smoke_timer = 0;
 assassin_entered_room_timer = 2.0;
 assassin_free_evade_cooldown = 0;

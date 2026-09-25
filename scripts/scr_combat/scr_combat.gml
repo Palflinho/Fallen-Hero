@@ -392,8 +392,14 @@ function enemy_take_damage(_inst, _amount, _source_x, _source_y, _knockback_forc
             _inst.bulwark_hits -= 1;
             _actual_dmg = 0;
             sfx_play_at("parry", _inst.x, _inst.y, 450, 0.05);
-            fx_spawn_damage_popup(_inst.x, _inst.y - 20, "BARREIRA ABSORVEU!", false, make_colour_rgb(60, 190, 255));
-            fx_spawn_sparks(_inst.x, _inst.y, make_colour_rgb(60, 190, 255), 8);
+            if (_inst.bulwark_hits <= 0) {
+                // Ultimo golpe: a barreira estoura
+                fx_spawn_damage_popup(_inst.x, _inst.y - 20, "BARREIRA QUEBRADA!", true, make_colour_rgb(60, 190, 255));
+                fx_spawn_death_burst(_inst.x, _inst.y, make_colour_rgb(60, 190, 255), 12);
+            } else {
+                fx_spawn_damage_popup(_inst.x, _inst.y - 20, "BARREIRA ABSORVEU!", false, make_colour_rgb(60, 190, 255));
+                fx_spawn_sparks(_inst.x, _inst.y, make_colour_rgb(60, 190, 255), 8);
+            }
         }
 
         // Taticas de Bando: Alerta em cadeia para monstros aliados proximos
@@ -1365,6 +1371,59 @@ function player_on_hit_enemy(_owner, _enemy, _base_damage) {
     }
 }
 
+// =========================================================================
+// PONTA D'AGUA (Cavaleiro e Assassino com Agua)
+// Primeiro sai o golpe corpo a corpo; logo depois um jato curto de agua vai so
+// um pouco alem da arma. O alcance extra nunca passa de 15% do alcance do golpe.
+// =========================================================================
+#macro WATER_TIP_EXTEND 0.15
+#macro WATER_TIP_DELAY 0.12
+
+// _reach: alcance do golpe corpo a corpo (centro + raio da hitbox)
+function player_queue_water_tip(_reach, _dmg, _count, _spread) {
+    if (!variable_instance_exists(id, "water_tip_queue")) water_tip_queue = [];
+    var _delay = WATER_TIP_DELAY;
+    var _slow = false;
+    // Talento Correnteza Gelida (Lanceiro): sai na metade do tempo e deixa o alvo lento
+    if (character_class == "knight" && variable_instance_exists(id, "synth_paladino_golpe_nascente") && synth_paladino_golpe_nascente > 0) {
+        _delay *= 0.5;
+        _slow = true;
+    }
+    array_push(water_tip_queue, {
+        t: _delay, reach: _reach, dmg: _dmg, count: _count, spread: _spread, slow: _slow,
+        dir: point_direction(0, 0, facing_x, facing_y)
+    });
+}
+
+function player_update_water_tips(_dt) {
+    if (!variable_instance_exists(id, "water_tip_queue")) return;
+    for (var _i = array_length(water_tip_queue) - 1; _i >= 0; _i--) {
+        var _q = water_tip_queue[_i];
+        _q.t -= _dt;
+        if (_q.t > 0) continue;
+        array_delete(water_tip_queue, _i, 1);
+        if (hp <= 0) continue;
+
+        // A ponta cobre de 85% a 115% do alcance do golpe
+        var _r = max(4, _q.reach * WATER_TIP_EXTEND);
+        var _group = { ids: [] };
+        for (var _k = 0; _k < _q.count; _k++) {
+            var _a = _q.dir + (_q.count > 1 ? (_k - (_q.count - 1) / 2) * _q.spread : 0);
+            var _tx = x + lengthdir_x(_q.reach, _a);
+            var _ty = y + lengthdir_y(_q.reach, _a);
+            if (fh_line_intersects_wall(x, y, _tx, _ty)) continue;
+            var _tip = instance_create_layer(_tx, _ty, layer, obj_atk_water_tip);
+            _tip.owner = id;
+            _tip.damage = _q.dmg;
+            _tip.body_radius = _r;
+            _tip.dir = _a;
+            _tip.slow = _q.slow;
+            _tip.hit_group = _group;
+            fx_spawn_sparks(_tx, _ty, c_aqua, 3);
+        }
+    }
+}
+
 function player_perform_attack() {
     var _eff_crit_chance = min(0.40, synth_crit_chance);
     var _is_crit = (random(1) < _eff_crit_chance);
@@ -1828,25 +1887,17 @@ function player_perform_attack() {
         _hit.damage = _dmg;
         _hit.body_radius = attack_range * _radius_mult;
 
-        // Lanceiro (Cavaleiro + Agua -> estilo Arqueiro): cada golpe solta uma lamina d'agua de longo alcance
+        // Alcance real do golpe corpo a corpo (base da ponta d'agua)
+        var _melee_reach = attack_range * (_range_mult + _radius_mult);
+
+        // Lanceiro (Cavaleiro + Agua): depois do golpe, a ponta d'agua vai um pouco alem da arma
         if (character_class == "knight" && element_affinity == "water") {
-            // Talento Lamina Perfurante: atravessa +1 e vai 40% mais longe
-            var _pierce_t = (variable_instance_exists(id, "synth_paladino_golpe_nascente") && synth_paladino_golpe_nascente > 0);
-            // Talento Mare de Laminas: todo 3o golpe dispara 3 laminas em leque
+            var _tip_dmg = _dmg * 0.40;
+            // Talento Estocada Distante: a ponta d'agua causa +50%
+            if (variable_instance_exists(id, "synth_paladino_gota_purificadora") && synth_paladino_gota_purificadora > 0) _tip_dmg *= 1.5;
+            // Talento Mare de Laminas: todo 3o golpe a ponta se abre em 3 jatos em leque
             var _fan_t = (variable_instance_exists(id, "synth_paladino_correnteza_dilacerante") && synth_paladino_correnteza_dilacerante > 0 && ((hit_streak_count + 1) mod 3 == 0));
-            var _bdir = point_direction(0, 0, facing_x, facing_y);
-            var _bcount = _fan_t ? 3 : 1;
-            for (var _bi = 0; _bi < _bcount; _bi++) {
-                var _ba = _bdir + (_bcount == 3 ? (_bi - 1) * 15 : 0);
-                var _blade = instance_create_layer(x + facing_x * 16, y + facing_y * 16, layer, obj_atk_arrow);
-                _blade.owner = id;
-                _blade.damage = _dmg * 0.40;
-                _blade.dir_x = lengthdir_x(1, _ba);
-                _blade.dir_y = lengthdir_y(1, _ba);
-                _blade.speed_px = 420;
-                _blade.life = _pierce_t ? 0.59 : 0.42;
-                _blade.pierce_remaining = _pierce_t ? 1 : 0;
-            }
+            player_queue_water_tip(_melee_reach, _tip_dmg, _fan_t ? 3 : 1, 25);
         }
 
         // Assassin: Laminas Gemeas (segundo corte imediato)
@@ -1959,21 +2010,11 @@ function player_perform_attack() {
             // 3º Golpe Elemental do Assassino
             if (assassin_combo_counter mod 3 == 0) {
                 if (element_affinity == "water") {
-                    // Rastreador (Assassino + Agua -> estilo Arqueiro): arremessa 3 facas espectrais em leque.
-                    // Cada acerto aplica a Marca Espectral (+50% de dano sofrido por 4s).
-                    var _kdir = point_direction(0, 0, facing_x, facing_y);
-                    // Talento Leque de Facas: 5 facas em vez de 3
-                    var _kn = (variable_instance_exists(id, "synth_assassin_espect_corte_fluido") && synth_assassin_espect_corte_fluido > 0) ? 2 : 1;
-                    for (var _k = -_kn; _k <= _kn; _k++) {
-                        var _knife = instance_create_layer(x + facing_x * 12, y + facing_y * 12, layer, obj_atk_arrow);
-                        _knife.owner = id;
-                        _knife.damage = _dmg * 0.9;
-                        _knife.dir_x = lengthdir_x(1, _kdir + _k * 10);
-                        _knife.dir_y = lengthdir_y(1, _kdir + _k * 10);
-                        _knife.speed_px = 460;
-                        _knife.life = 0.5;
-                        _knife.pierce_remaining = 1;
-                    }
+                    // Rastreador (Assassino + Agua): depois do 3o golpe, 3 pontas d'agua em leque
+                    // vao um pouco alem das adagas. Cada acerto aplica a Marca Espectral (+50% de dano sofrido por 4s).
+                    // Talento Leque de Facas: 5 pontas em vez de 3
+                    var _kn = (variable_instance_exists(id, "synth_assassin_espect_corte_fluido") && synth_assassin_espect_corte_fluido > 0) ? 5 : 3;
+                    player_queue_water_tip(_melee_reach, _dmg * 1.2, _kn, 22);
                     fx_spawn_sparks(x, y, c_teal, 10);
                     sfx_play("dagger", 0.1, 0.9);
                 } else if (element_affinity == "fire") {

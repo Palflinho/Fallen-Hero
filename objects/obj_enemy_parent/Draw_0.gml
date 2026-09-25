@@ -58,8 +58,10 @@ if (variable_instance_exists(id, "is_greater_variant") && is_greater_variant) {
     draw_set_color(c_white);
 }
 
-// 1.86. Aura de Afixo de Elite
-if (variable_instance_exists(id, "elite_affix") && elite_affix != "none") {
+// 1.86. Aura de Afixo de Elite (a bolha azul do Baluarte some quando a barreira quebra)
+var _affix_aura = variable_instance_exists(id, "elite_affix") && elite_affix != "none";
+if (_affix_aura && elite_affix == "bulwark" && (!variable_instance_exists(id, "bulwark_hits") || bulwark_hits <= 0)) _affix_aura = false;
+if (_affix_aura) {
     var _epulse = 0.5 + 0.5 * sin(current_time * 0.01);
     draw_set_alpha(0.25 + 0.15 * _epulse);
     draw_set_color(affix_colour);
@@ -131,10 +133,12 @@ if (fh_haste_timer > 0 && random(1) < 0.3) {
     fx_spawn_sparks(x, y + body_radius * 0.5, make_colour_rgb(255, 150, 60), 1);
 }
 if (fh_infused) {
-    draw_set_alpha(0.35 + 0.2 * sin(current_time * 0.02));
-    draw_set_color(make_colour_rgb(150, 255, 220));
-    draw_circle(x, y - draw_z, body_radius * scale_x + 5, false);
+    // Infundido por fogo-fatuo (buff permanente): contorno dourado e faiscas, para nao parecer barreira
+    draw_set_alpha(0.45 + 0.25 * sin(current_time * 0.02));
+    draw_set_color(make_colour_rgb(255, 225, 120));
+    draw_circle(x, y - draw_z, body_radius * scale_x + 4, true);
     draw_set_alpha(1);
+    if (random(1) < 0.12) fx_spawn_sparks(x, y - draw_z, make_colour_rgb(255, 225, 120), 1);
 }
 
 // 1.96. Sombra no chao quando o corpo esta no ar (salto do slime de vento, voo)

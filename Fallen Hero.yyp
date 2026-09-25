@@ -164,6 +164,7 @@
     {"id":{"name":"obj_training_dummy","path":"objects/obj_training_dummy/obj_training_dummy.yy",},},
     {"id":{"name":"obj_seal_trail","path":"objects/obj_seal_trail/obj_seal_trail.yy",},},
     {"id":{"name":"obj_sandbox_controller","path":"objects/obj_sandbox_controller/obj_sandbox_controller.yy",},},
+    {"id":{"name":"obj_atk_water_tip","path":"objects/obj_atk_water_tip/obj_atk_water_tip.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",

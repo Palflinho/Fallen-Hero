@@ -25,16 +25,16 @@ Este documento reúne **50 ideias originais de talentos** para o Cavaleiro, estr
 
 ---
 
-## 2. Lanceiro (antigo Paladino — Elemento Água / estilo Arqueiro - 8 Talentos)
+## 2. Lanceiro (antigo Paladino — Elemento Água / ponta d'água atrasada - 8 Talentos)
 *Focado em cura, barreira protetora, suporte contínuo, controle de grupo e purificação.*
 
 | # | Nome do Talento | Tipo | Efeito Mecânico | Game Feel / Feedback |
 |---|---|---|---|---|
 | 11 | **Bênção da Maré** | Aura | A Aura de Sobrevida pulsa 25% mais rápido e aumenta a regeneração natural em +4 HP/s. | Ondas azuis translúcidas mais rítmicas e intensas no chão. |
 | 12 | **Bastião Líquido** | Barreira | A barreira de sobrevida ganha capacidade máxima de +50% do HP e absorve 100% do dano de projéteis. | Bolha aquosa cintilante que envolve o corpo do Cavaleiro. |
-| 13 | **Estocada Distante** | Em Ataque | Lâminas d'água causam +50% de dano em alvos a mais de 120px. | A lâmina ganha um brilho mais intenso quanto mais longe voa. |
-| 14 | **Maré de Lâminas** | Em Ataque | Todo 3º golpe dispara 3 lâminas d'água em leque em vez de uma. | Três crescentes azuis se abrem como um leque. |
-| 15 | **Lâmina Perfurante** | Ofensivo | As lâminas d'água atravessam +1 inimigo e alcançam +40% mais longe. | Lâmina afilada que deixa um rastro de gotas ao atravessar. |
+| 13 | **Estocada Distante** | Em Ataque | A ponta d'água causa +50% de dano. | A ponta ganha um brilho mais intenso. |
+| 14 | **Maré de Lâminas** | Em Ataque | Todo 3º golpe a ponta d'água se abre em 3 jatos em leque. | Três jatos azuis se abrem como um leque. |
+| 15 | **Correnteza Gélida** | Ofensivo | A ponta d'água sai na metade do tempo e deixa o alvo 40% mais lento por 1,5s. | Jato azul-claro que deixa cristais de gelo no alvo. |
 | 16 | **Escudo Espelhado** | Reativo | Quando a barreira de sobrevida quebra por excesso de dano, explode cegando e empurrando inimigos num raio de 120px. | Som de vidro quebrando com explosão de espuma aquática. |
 | 17 | **Graça Abençoada** | Sustento | Receber cura enquanto estiver com HP cheio converte 50% do valor em barreira de sobrevida. | Efeito de preenchimento azul claro sobre a barra de vida. |
 | 18 | **Julgamento Sereno** | Buff | Enquanto a barreira de sobrevida estiver ativa, a velocidade de ataque da espada aumenta em +25%. | Movimentos graciosos com rastro de água nas pontas da lâmina. |
